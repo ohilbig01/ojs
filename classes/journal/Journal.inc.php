@@ -9,9 +9,9 @@
 /**
  * @file classes/journal/Journal.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Journal
  * @ingroup journal
@@ -20,18 +20,23 @@
  * @brief Describes basic journal properties.
  */
 
+namespace APP\journal;
+
+use \PKP\context\Context;
+use \APP\i18n\AppLocale;
+use \PKP\core\DAORegistry;
+use \PKP\plugins\PluginRegistry;
 
 define('PUBLISHING_MODE_OPEN', 0);
 define('PUBLISHING_MODE_SUBSCRIPTION', 1);
 define('PUBLISHING_MODE_NONE', 2);
 
-import('lib.pkp.classes.context.Context');
-
 class Journal extends Context {
 
 	/**
 	 * Get "localized" journal page title (if applicable).
-	 * @return string
+	 * @return string|null
+	 * @deprecated 3.3.0, use getLocalizedData() instead
 	 */
 	function getLocalizedPageHeaderTitle() {
 		$titleArray = $this->getData('name');
@@ -45,24 +50,13 @@ class Journal extends Context {
 
 	/**
 	 * Get "localized" journal page logo (if applicable).
-	 * @return string
+	 * @return array|null
+	 * @deprecated 3.3.0, use getLocalizedData() instead
 	 */
 	function getLocalizedPageHeaderLogo() {
 		$logoArray = $this->getData('pageHeaderLogoImage');
 		foreach (array(AppLocale::getLocale(), AppLocale::getPrimaryLocale()) as $locale) {
 			if (isset($logoArray[$locale])) return $logoArray[$locale];
-		}
-		return null;
-	}
-
-	/**
-	 * Get localized favicon
-	 * @return string
-	 */
-	function getLocalizedFavicon() {
-		$faviconArray = $this->getData('favicon');
-		foreach (array(AppLocale::getLocale(), AppLocale::getPrimaryLocale()) as $locale) {
-			if (isset($faviconArray[$locale])) return $faviconArray[$locale];
 		}
 		return null;
 	}
@@ -80,7 +74,7 @@ class Journal extends Context {
 	}
 
 	/**
-	 * @copydoc DataObject::getDAO()
+	 * @copydoc \PKP\core\DataObject::getDAO()
 	 */
 	function getDAO() {
 		return DAORegistry::getDAO('JournalDAO');
@@ -134,7 +128,7 @@ class Journal extends Context {
 				$defaultMetricType = $availableMetrics[0];
 			} else {
 				// Use the site-wide default metric.
-				$application = Application::getApplication();
+				$application = Application::get();
 				$defaultMetricType = $application->getDefaultMetricType();
 			}
 		} else {
@@ -161,9 +155,12 @@ class Journal extends Context {
 	function getMetrics($metricType = null, $columns = array(), $filter = array(), $orderBy = array(), $range = null) {
 		// Add a journal filter and run the report.
 		$filter[STATISTICS_DIMENSION_CONTEXT_ID] = $this->getId();
-		$application = Application::getApplication();
+		$application = Application::get();
 		return $application->getMetrics($metricType, $columns, $filter, $orderBy, $range);
 	}
 }
 
+if (!PKP_STRICT_MODE) {
+	class_alias('\APP\journal\Journal', '\Journal');
+}
 

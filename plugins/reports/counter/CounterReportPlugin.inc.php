@@ -3,9 +3,9 @@
 /**
  * @file plugins/reports/counter/CounterReportPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CounterReportPlugin
  * @ingroup plugins_reports_counter
@@ -150,7 +150,7 @@ class CounterReportPlugin extends ReportPlugin {
 						Validation::redirectLogin();
 					}
 					import('plugins.reports.counter.classes.LegacyJR1');
-					$r3jr1 = new LegacyJR1($this->getTemplatePath());
+					$r3jr1 = new LegacyJR1($this);
 					$r3jr1->display($request);
 					return;
 				case 'fetch':
@@ -207,6 +207,20 @@ class CounterReportPlugin extends ReportPlugin {
 		// legacy reports are site-wide, so only site admins have access
 		$templateManager->assign('showLegacy', Validation::isSiteAdmin());
 		if (!empty($legacyYears)) $templateManager->assign('legacyYears', $legacyYears);
+		$templateManager->assign([
+			'breadcrumbs' => [
+				[
+					'id' => 'reports',
+					'name' => __('manager.statistics.reports'),
+					'url' => $request->getRouter()->url($request, null, 'stats', 'reports'),
+				],
+				[
+					'id' => 'counter',
+					'name' => __('plugins.reports.counter')
+				],
+			],
+			'pageTitle', __('plugins.reports.counter')
+		]);
 		$templateManager->display($this->getTemplateResource('index.tpl'));
 	}
 

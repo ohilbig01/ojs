@@ -3,9 +3,9 @@
 /**
  * @file pages/payments/PaymentsHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PaymentsHandler
  * @ingroup pages_payments
@@ -15,7 +15,13 @@
 
 import('classes.handler.Handler');
 
+use \PKP\core\JSONMessage;
+
 class PaymentsHandler extends Handler {
+
+	/** @copydoc PKPHandler::_isBackendPage */
+	var $_isBackendPage = true;
+
 	/**
 	 * Constructor.
 	 */
@@ -36,6 +42,9 @@ class PaymentsHandler extends Handler {
 		$this->setupTemplate($request);
 		AppLocale::requireComponents(LOCALE_COMPONENT_APP_MANAGER);
 		$templateMgr = TemplateManager::getManager($request);
+		$templateMgr->assign([
+			'pageTitle' => __('manager.subscriptions'),
+		]);
 		$templateMgr->display('payments/index.tpl');
 	}
 
@@ -61,7 +70,7 @@ class PaymentsHandler extends Handler {
 				return $templateMgr->fetchAjax(
 					'institutionalSubscriptionsGridContainer',
 					$dispatcher->url(
-						$request, ROUTE_COMPONENT, null,
+						$request, PKPApplication::ROUTE_COMPONENT, null,
 						'grid.subscriptions.InstitutionalSubscriptionsGridHandler', 'fetchGrid'
 					)
 				);
@@ -69,7 +78,7 @@ class PaymentsHandler extends Handler {
 				return $templateMgr->fetchAjax(
 					'individualSubscriptionsGridContainer',
 					$dispatcher->url(
-						$request, ROUTE_COMPONENT, null,
+						$request, PKPApplication::ROUTE_COMPONENT, null,
 						'grid.subscriptions.IndividualSubscriptionsGridHandler', 'fetchGrid'
 					)
 				);
@@ -88,7 +97,7 @@ class PaymentsHandler extends Handler {
 		return $templateMgr->fetchAjax(
 			'subscriptionTypesGridContainer',
 			$dispatcher->url(
-				$request, ROUTE_COMPONENT, null,
+				$request, PKPApplication::ROUTE_COMPONENT, null,
 				'grid.subscriptions.SubscriptionTypesGridHandler', 'fetchGrid'
 			)
 		);
@@ -190,7 +199,7 @@ class PaymentsHandler extends Handler {
 		return $templateMgr->fetchAjax(
 			'paymentsGridContainer',
 			$dispatcher->url(
-				$request, ROUTE_COMPONENT, null,
+				$request, PKPApplication::ROUTE_COMPONENT, null,
 				'grid.subscriptions.PaymentsGridHandler', 'fetchGrid'
 			)
 		);

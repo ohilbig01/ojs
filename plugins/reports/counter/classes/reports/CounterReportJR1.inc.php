@@ -33,7 +33,7 @@ class CounterReportJR1 extends CounterReport {
 	 * @return array COUNTER\ReportItem array
 	 */
 	function getReportItems($columns = array(), $filters = array(), $orderBy = array(), $range = null) {
-		$metricsDao = DAORegistry::getDAO('MetricsDAO');
+		$metricsDao = DAORegistry::getDAO('MetricsDAO'); /* @var $metricsDao MetricsDAO */
 
 		// Columns are fixed for this report
 		$defaultColumns = array(STATISTICS_DIMENSION_MONTH, STATISTICS_DIMENSION_FILE_TYPE, STATISTICS_DIMENSION_CONTEXT_ID);
@@ -130,7 +130,7 @@ class CounterReportJR1 extends CounterReport {
 	 * @return mixed COUNTER\ReportItems or false
 	 */
 	private function _createReportItem($journalId, $metrics) {
-		$journalDao = DAORegistry::getDAO('JournalDAO');
+		$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
 		$journal = $journalDao->getById($journalId);
 		if (!$journal) {
 			return false;
@@ -149,7 +149,7 @@ class CounterReportJR1 extends CounterReport {
 		$journalPubIds[] = new COUNTER\Identifier(COUNTER_LITERAL_PROPRIETARY, $journal->getPath());
 		$reportItem = array();
 		try {
-			$reportItem = new COUNTER\ReportItems(__('common.openJournalSystems'), $journalName, COUNTER_LITERAL_JOURNAL, $metrics, NULL, $journalPubIds);
+			$reportItem = new COUNTER\ReportItems(__('common.software'), $journalName, COUNTER_LITERAL_JOURNAL, $metrics, NULL, $journalPubIds);
 		} catch (Exception $e) {
 			$this->setError($e, COUNTER_EXCEPTION_ERROR | COUNTER_EXCEPTION_INTERNAL);
 		}

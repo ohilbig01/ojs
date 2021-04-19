@@ -2,9 +2,9 @@
 /**
  * @file classes/components/form/FieldArchivingPn.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class FieldArchivingPn
  * @ingroup classes_controllers_form
@@ -14,12 +14,21 @@
  *  access the settings, from a form-like view in the distribution settings.
  */
 namespace APP\components\forms;
+
+use PKP\components\forms\FieldOptions;
+
 class FieldArchivingPn extends FieldOptions {
 	/** @copydoc Field::$component */
 	public $component = 'field-archiving-pn';
 
 	/** @var string The message to show in a modal when the link is clicked.  */
 	public $terms = '';
+
+	/** @var string The message to show when the plugin is disabled. */
+	public $disablePluginSuccess = '';
+
+	/** @var string The message to show when the plugin was enabled.. */
+	public $enablePluginSuccess = '';
 
 	/** @var string The URL to enable the PLN plugin. */
 	public $enablePluginUrl = '';
@@ -30,19 +39,17 @@ class FieldArchivingPn extends FieldOptions {
 	/** @var string The URL to load the PN plugin settings. */
 	public $settingsUrl = '';
 
-	/** @var string A CSRF token for the plugin enable/disable requests */
-	public $csrfToken = '';
-
 	/**
 	 * @copydoc Field::getConfig()
 	 */
 	public function getConfig() {
 		$config = parent::getConfig();
 		$config['terms'] = $this->terms;
+		$config['disablePluginSuccess'] = $this->disablePluginSuccess;
+		$config['enablePluginSuccess'] = $this->enablePluginSuccess;
 		$config['enablePluginUrl'] = $this->enablePluginUrl;
 		$config['disablePluginUrl'] = $this->disablePluginUrl;
 		$config['settingsUrl'] = $this->settingsUrl;
-		$config['csrfToken'] = $this->csrfToken;
 
 		return $config;
 	}

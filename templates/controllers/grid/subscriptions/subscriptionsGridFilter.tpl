@@ -1,9 +1,9 @@
 {**
  * templates/controllers/grid/subscriptions/subscriptionsGridFilter.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Filter template for individual subscriptions grid.
  *}
@@ -22,7 +22,7 @@
 		{fbvFormSection title="common.search" for="search"}
 			{fbvElement type="select" id="searchField" from=$filterData.fieldOptions selected=$filterSelectionData.searchField inline=true size=$fbvStyles.size.SMALL}
 			{fbvElement type="select" id="searchMatch" from=$filterData.matchOptions selected=$filterSelectionData.searchMatch inline=true size=$fbvStyles.size.SMALL}
-			{fbvElement type="text" name="search" id="search" value=$filterSelectionData.search size=$fbvStyles.size.LARGE inline="true"}
+			{fbvElement type="search" name="search" id="search" value=$filterSelectionData.search size=$fbvStyles.size.LARGE inline="true"}
 		{/fbvFormSection}
 		{fbvFormButtons hideCancel=true submitText="common.search"}
 	{/fbvFormArea}

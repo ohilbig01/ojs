@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/subscriptions/SubscriptionsGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubscriptionsGridHandler
  * @ingroup controllers_grid_subscriptions
@@ -90,34 +90,6 @@ abstract class SubscriptionsGridHandler extends GridHandler {
 	 */
 	protected function getRowInstance() {
 		return new SubscriptionsGridRow();
-	}
-
-	/**
-	 * @copydoc GridHandler::renderFilter()
-	 */
-	function renderFilter($request, $filterData = array()) {
-		$context = $request->getContext();
-
-		// Import UserDAO to define the USER_FIELD_* constants.
-		import('lib.pkp.classes.user.UserDAO');
-		$fieldOptions = array(
-			IDENTITY_SETTING_GIVENNAME => 'user.givenName',
-			IDENTITY_SETTING_FAMILYNAME => 'user.familyName',
-			USER_FIELD_USERNAME => 'user.username',
-			USER_FIELD_EMAIL => 'user.email'
-		);
-
-		$matchOptions = array(
-			'contains' => 'form.contains',
-			'is' => 'form.is'
-		);
-
-		$filterData = array(
-			'fieldOptions' => $fieldOptions,
-			'matchOptions' => $matchOptions
-		);
-
-		return parent::renderFilter($request, $filterData);
 	}
 
 	/**

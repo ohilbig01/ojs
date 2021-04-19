@@ -4,16 +4,16 @@
 <!--
   * 3.0.0_postupdate.xml
   *
-  * Copyright (c) 2014-2019 Simon Fraser University
-  * Copyright (c) 2003-2019 John Willinsky
-  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+  * Copyright (c) 2014-2021 Simon Fraser University
+  * Copyright (c) 2003-2021 John Willinsky
+  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
   *
   * 3.0.0 post database updates XML file.
   -->
 <data>
 	<sql><!-- Issue #1208: Remove signoffs. -->
+		<drop table="signoffs" />
 		<query>DELETE FROM notifications WHERE assoc_type=1048582</query><!-- ASSOC_TYPE_SIGNOFF -->
-		<query>DROP TABLE signoffs</query>
 		<query>DELETE FROM notifications WHERE type = 16777226</query><!-- NOTIFICATION_TYPE_SIGNOFF_COPYEDIT -->
 		<query>DELETE FROM notifications WHERE type = 16777228</query><!-- NOTIFICATION_TYPE_SIGNOFF_PROOF -->
 	</sql>

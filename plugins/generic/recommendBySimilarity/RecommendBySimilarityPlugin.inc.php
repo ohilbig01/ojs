@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/recommendBySimilarity/RecommendBySimilarityPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class RecommendBySimilarityPlugin
  * @ingroup plugins_generic_recommendBySimilarity
@@ -81,11 +81,18 @@ class RecommendBySimilarityPlugin extends GenericPlugin {
 		// ... and pagination.
 		$rangeInfo = Handler::getRangeInfo($request, 'articlesBySimilarity');
 		$rangeInfo->setCount(RECOMMEND_BY_SIMILARITY_PLUGIN_COUNT);
-
-		$results = $articleSearch->retrieveResults($request, $journal, $keywords, $error, null, null, $rangeInfo, array($articleId));
-		$smarty->assign('articlesBySimilarity', $results);
-		$smarty->assign('articlesBySimilarityQuery', $query);
-
+		$smarty->assign(array(
+			'articlesBySimilarity' => $articleSearch->retrieveResults(
+					$request,
+					$journal,
+					$keywords,
+					$error,
+					null, null,
+					$rangeInfo,
+					array($articleId)
+			),
+			'articlesBySimilarityQuery' => $query,
+		));
 		$output .= $smarty->fetch($this->getTemplateResource('articleFooter.tpl'));
 		return false;
 	}

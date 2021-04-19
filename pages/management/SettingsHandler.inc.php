@@ -3,9 +3,9 @@
 /**
  * @file pages/management/SettingsHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SettingsHandler
  * @ingroup pages_management
@@ -37,6 +37,17 @@ class SettingsHandler extends ManagementHandler {
 	}
 
 	/**
+	 * Add the workflow settings page
+	 *
+	 * @param $args array
+	 * @param $request Request
+	 */
+	function workflow($args, $request) {
+		parent::workflow($args, $request);
+		TemplateManager::getManager($request)->display('management/workflow.tpl');
+	}
+
+	/**
 	 * Add the archive and payments tabs to the distribution settings page
 	 *
 	 * @param $args array
@@ -50,7 +61,7 @@ class SettingsHandler extends ManagementHandler {
 		$router = $request->getRouter();
 		$dispatcher = $request->getDispatcher();
 
-		$apiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
+		$apiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
 		$lockssUrl = $router->url($request, $context->getPath(), 'gateway', 'lockss');
 		$clockssUrl = $router->url($request, $context->getPath(), 'gateway', 'clockss');
 
@@ -67,9 +78,8 @@ class SettingsHandler extends ManagementHandler {
 		// form loads a single field which enables/disables the plugin, and does
 		// not need to be submitted. It's a dirty hack, but we can change this once
 		// an API is in place for plugins and plugin settings.
-		$versionDao = DAORegistry::getDAO('VersionDAO');
-		$isPlnInstalled = $versionDao->getCurrentVersion('plugins.generic', 'pln', true);
-		$archivePnForm = new \PKP\components\forms\FormComponent('archivePn', 'PUT', 'dummy', 'dummy', $supportedFormLocales);
+		$plnPlugin = PluginRegistry::getPlugin('generic', 'plnplugin');
+		$archivePnForm = new \PKP\components\forms\FormComponent('archivePn', 'PUT', 'dummy', $supportedFormLocales);
 		$archivePnForm->addPage([
 				'id' => 'default',
 				'submitButton' => null,
@@ -79,19 +89,13 @@ class SettingsHandler extends ManagementHandler {
 				'pageId' => 'default',
 			]);
 
-		if (!$isPlnInstalled) {
-			$archivePnForm->addField(new \PKP\components\forms\FieldHTML('pn', [
-				'label' => __('manager.setup.plnPluginArchiving'),
-				'description' => __('manager.setup.plnPluginNotInstalled'),
-				'groupId' => 'default',
-			]));
-		} else {
+		if ($plnPlugin) {
 			$plnPlugin = PluginRegistry::getPlugin('generic', 'plnplugin');
-			$pnEnablePluginUrl = $dispatcher->url($request, ROUTE_COMPONENT, null, 'grid.settings.plugins.SettingsPluginGridHandler', 'enable', null, array('plugin' => 'plnplugin', 'category' => 'generic'));
-			$pnDisablePluginUrl = $dispatcher->url($request, ROUTE_COMPONENT, null, 'grid.settings.plugins.SettingsPluginGridHandler', 'disable', null, array('plugin' => 'plnplugin', 'category' => 'generic'));
-			$pnSettingsUrl = $dispatcher->url($request, ROUTE_COMPONENT, null, 'grid.settings.plugins.SettingsPluginGridHandler', 'manage', null, array('verb' => 'settings', 'plugin' => 'plnplugin', 'category' => 'generic'));
+			$pnEnablePluginUrl = $dispatcher->url($request, PKPApplication::ROUTE_COMPONENT, null, 'grid.settings.plugins.SettingsPluginGridHandler', 'enable', null, array('plugin' => 'plnplugin', 'category' => 'generic'));
+			$pnDisablePluginUrl = $dispatcher->url($request, PKPApplication::ROUTE_COMPONENT, null, 'grid.settings.plugins.SettingsPluginGridHandler', 'disable', null, array('plugin' => 'plnplugin', 'category' => 'generic'));
+			$pnSettingsUrl = $dispatcher->url($request, PKPApplication::ROUTE_COMPONENT, null, 'grid.settings.plugins.SettingsPluginGridHandler', 'manage', null, array('verb' => 'settings', 'plugin' => 'plnplugin', 'category' => 'generic'));
 
-			$archivePnForm->addField(new \PKP\components\forms\FieldArchivingPn('pn', [
+			$archivePnForm->addField(new \APP\components\forms\FieldArchivingPn('pn', [
 				'label' => __('manager.setup.plnPluginArchiving'),
 				'description' => __('manager.setup.plnDescription'),
 				'terms' => __('manager.setup.plnSettingsDescription'),
@@ -107,20 +111,32 @@ class SettingsHandler extends ManagementHandler {
 				'settingsUrl' => $pnSettingsUrl,
 				'csrfToken' => $request->getSession()->getCSRFToken(),
 				'groupId' => 'default',
-				'i18n' => [
-					'enablePluginError' => __('api.submissions.unknownError'),
-					'enablePluginSuccess' => __('common.pluginEnabled', ['pluginName' => __('manager.setup.plnPluginArchiving')]),
-					'disablePluginSuccess' => __('common.pluginDisabled', ['pluginName' => __('manager.setup.plnPluginArchiving')]),
-				],
+				'enablePluginSuccess' => __('common.pluginEnabled', ['pluginName' => __('manager.setup.plnPluginArchiving')]),
+				'disablePluginSuccess' => __('common.pluginDisabled', ['pluginName' => __('manager.setup.plnPluginArchiving')]),
+			]));
+		} else {
+			$archivePnForm->addField(new \PKP\components\forms\FieldHTML('pn', [
+				'label' => __('manager.setup.plnPluginArchiving'),
+				'description' => __('manager.setup.plnPluginNotInstalled'),
+				'groupId' => 'default',
 			]));
 		}
 
 		// Add forms to the existing settings data
-		$settingsData = $templateMgr->getTemplateVars('settingsData');
-		$settingsData['forms'][$accessForm->id] = $accessForm->getConfig();
-		$settingsData['forms'][$archivingLockssForm->id] = $archivingLockssForm->getConfig();
-		$settingsData['forms'][$archivePnForm->id] = $archivePnForm->getConfig();
-		$templateMgr->assign('settingsData', $settingsData);
+		$components = $templateMgr->getState('components');
+		$components[$accessForm->id] = $accessForm->getConfig();
+		$components[$archivingLockssForm->id] = $archivingLockssForm->getConfig();
+		$components[$archivePnForm->id] = $archivePnForm->getConfig();
+		$templateMgr->setState(['components' => $components]);
+
+		// Add a payments link to be added/removed when payments form submitted
+		$templateMgr->setState([
+			'paymentsNavLink' => [
+				'name' => __('common.payments'),
+				'url' => $router->url($request, null, 'payments'),
+				'isCurrent' => false,
+			],
+		]);
 
 		// Hook into the settings templates to add the appropriate tabs
 		HookRegistry::register('Template::Settings::distribution', function($hookName, $args) {

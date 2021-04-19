@@ -8,9 +8,9 @@
 /**
  * @file classes/issue/Issue.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Issue
  * @ingroup issue
@@ -22,7 +22,7 @@
 define('ISSUE_ACCESS_OPEN', 1);
 define('ISSUE_ACCESS_SUBSCRIPTION', 2);
 
-class Issue extends DataObject {
+class Issue extends \PKP\core\DataObject {
 	/**
 	 * get journal id
 	 * @return int
@@ -529,7 +529,7 @@ class Issue extends DataObject {
 	 * @return int
 	 */
 	function getNumArticles() {
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /** @var $issueDao IssueDAO */
 		return $issueDao->getNumArticles($this->getId());
 	}
 
@@ -539,9 +539,9 @@ class Issue extends DataObject {
 	 * @return string
 	 */
 	function getBestIssueId() {
-		$publicIssueId = $this->getStoredPubId('publisher-id');
-		if (!empty($publicIssueId)) return $publicIssueId;
-		return $this->getId();
+		return $this->getData('urlPath')
+			? $this->getData('urlPath')
+			: $this->getId();
 	}
 
 	/**
@@ -554,7 +554,7 @@ class Issue extends DataObject {
 	}
 
 	/**
-	 * @copydoc DataObject::getDAO()
+	 * @copydoc \PKP\core\DataObject::getDAO()
 	 */
 	function getDAO() {
 		return DAORegistry::getDAO('IssueDAO');

@@ -3,9 +3,9 @@
 /**
  * @file classes/submission/form/SubmissionSubmitStep3Form.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionSubmitStep3Form
  * @ingroup submission_form
@@ -34,8 +34,8 @@ class SubmissionSubmitStep3Form extends PKPSubmissionSubmitStep3Form {
 	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 		// get word count of the section
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
-		$section = $sectionDao->getById($this->submission->getSectionId());
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
+		$section = $sectionDao->getById($this->submission->getCurrentPublication()->getData('sectionId'));
 		$wordCount = $section->getAbstractWordCount();
 		$templateMgr->assign('wordCount', $wordCount);
 		return parent::fetch($request, $template, $display);

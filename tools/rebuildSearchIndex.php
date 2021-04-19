@@ -3,9 +3,9 @@
 /**
  * @file tools/rebuildSearchIndex.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class rebuildSearchIndex
  * @ingroup tools
@@ -64,7 +64,7 @@ class rebuildSearchIndex extends CommandLineTool {
 	 * when constructing galley/supp file download URLs.
 	 * @see PKPRequest::getBaseUrl()
 	 */
-	public function callbackBaseUrl($hookName, &$params) {
+	public function callbackBaseUrl($hookName, $params) {
 		$baseUrl =& $params[0];
 		$baseUrl = Config::getVar('general', 'base_url');
 		return true;

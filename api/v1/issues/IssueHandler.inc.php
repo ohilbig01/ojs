@@ -3,9 +3,9 @@
 /**
  * @file api/v1/issues/IssueHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class IssueHandler
  * @ingroup api_v1_issues
@@ -15,7 +15,8 @@
  */
 
 import('lib.pkp.classes.handler.APIHandler');
-import('classes.core.Services');
+
+use \APP\core\Services;
 
 class IssueHandler extends APIHandler {
 
@@ -38,7 +39,7 @@ class IssueHandler extends APIHandler {
 					'roles' => $roles
 				),
 				array(
-					'pattern' => $this->getEndpointPattern().  '/{issueId}',
+					'pattern' => $this->getEndpointPattern().  '/{issueId:\d+}',
 					'handler' => array($this, 'get'),
 					'roles' => $roles
 				),
@@ -89,7 +90,6 @@ class IssueHandler extends APIHandler {
 		$request = $this->getRequest();
 		$currentUser = $request->getUser();
 		$context = $request->getContext();
-		$issueService = Services::get('issue');
 
 		if (!$context) {
 			return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
@@ -141,7 +141,7 @@ class IssueHandler extends APIHandler {
 						$param .= 's';
 					}
 
-					if (is_string($val) && strpos($val, ',') > -1) {
+					if (is_string($val)) {
 						$val = explode(',', $val);
 					} elseif (!is_array($val)) {
 						$val = array($val);
@@ -151,6 +151,10 @@ class IssueHandler extends APIHandler {
 
 				case 'isPublished':
 					$params[$param] = $val ? true : false;
+					break;
+
+				case 'searchPhrase':
+					$params[$param] = $val;
 					break;
 			}
 		}
@@ -168,19 +172,17 @@ class IssueHandler extends APIHandler {
 		}
 
 		$items = array();
-		$issues = $issueService->getMany($params);
-		if (!empty($issues)) {
-			$propertyArgs = array(
-				'request' => $request,
-				'slimRequest' => $slimRequest,
-			);
-			foreach ($issues as $issue) {
-				$items[] = $issueService->getSummaryProperties($issue, $propertyArgs);
-			}
+		$issuesIterator = Services::get('issue')->getMany($params);
+		$propertyArgs = array(
+			'request' => $request,
+			'slimRequest' => $slimRequest,
+		);
+		foreach ($issuesIterator as $issue) {
+			$items[] = Services::get('issue')->getSummaryProperties($issue, $propertyArgs);
 		}
 
 		$data = array(
-			'itemsMax' => $issueService->getMax($params),
+			'itemsMax' => Services::get('issue')->getMax($params),
 			'items' => $items,
 		);
 
@@ -201,7 +203,7 @@ class IssueHandler extends APIHandler {
 		$request = $this->getRequest();
 		$context = $request->getContext();
 
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		$issue = $issueDao->getCurrent($context->getId());
 
 		if (!$issue) {

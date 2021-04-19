@@ -22,7 +22,7 @@
 			"type": "string",
 			"default": "issue",
 			"validation": [
-				"in:issue,article"
+				"in:issue,submission"
 			]
 		},
 		"delayedOpenAccessDuration": {
@@ -50,6 +50,15 @@
 			"validation": [
 				"nullable"
 			]
+		},
+		"enablePublisherId": {
+			"type": "array",
+			"items": {
+				"type": "string",
+				"validation": [
+					"in:publication,galley,issue,issueGalley"
+				]
+			}
 		},
 		"enableSubscriptionOnlinePaymentNotificationPurchaseIndividual": {
 			"type": "boolean",

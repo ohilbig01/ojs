@@ -3,9 +3,9 @@
 /**
  * @file classes/plugins/PubObjectCache.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PubObjectCache
  * @ingroup plugins
@@ -24,22 +24,25 @@ class PubObjectCache {
 	//
 	/**
 	 * Add a publishing object to the cache.
-	 * @param $object Issue|PublishedSubmission|ArticleGalley
-	 * @param $parent PublishedSubmission|null Only required when adding a galley.
+	 * @param $object Issue|Submission|ArticleGalley
+	 * @param $parent Submission|null Only required when adding a galley.
 	 */
 	function add($object, $parent) {
 		if (is_a($object, 'Issue')) {
 			$this->_insertInternally($object, 'issues', $object->getId());
 		}
-		if (is_a($object, 'PublishedSubmission')) {
+		if (is_a($object, 'Submission')) {
 			$this->_insertInternally($object, 'articles', $object->getId());
-			$this->_insertInternally($object, 'articlesByIssue', $object->getIssueId(), $object->getId());
+			$this->_insertInternally($object, 'articlesByIssue', $object->getcurrentPublication()->getData('issueId'), $object->getId());
 		}
 		if (is_a($object, 'ArticleGalley')) {
-			assert(is_a($parent, 'PublishedSubmission'));
+			assert(is_a($parent, 'Submission'));
 			$this->_insertInternally($object, 'galleys', $object->getId());
-			$this->_insertInternally($object, 'galleysByArticle', $object->getSubmissionId(), $object->getId());
+			$this->_insertInternally($object, 'galleysByArticle', $object->getData('submissionId'), $object->getId());
 			$this->_insertInternally($object, 'galleysByIssue', $parent->getIssueId(), $object->getId());
+		}
+		if (is_a($object, 'Genre')) {
+			$this->_insertInternally($object, 'genres', $object->getId());
 		}
 	}
 

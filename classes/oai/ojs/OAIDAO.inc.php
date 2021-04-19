@@ -3,9 +3,9 @@
 /**
  * @file classes/oai/ojs/OAIDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OAIDAO
  * @ingroup oai_ojs
@@ -16,17 +16,16 @@
 
 import('lib.pkp.classes.oai.PKPOAIDAO');
 import('classes.issue.Issue');
+use Illuminate\Support\Facades\DB;
 
 class OAIDAO extends PKPOAIDAO {
 
  	/** Helper DAOs */
  	var $journalDao;
  	var $sectionDao;
-	var $publishedSubmissionDao;
 	var $articleGalleyDao;
 	var $issueDao;
  	var $authorDao;
- 	var $journalSettingsDao;
 
  	var $journalCache;
 	var $sectionCache;
@@ -39,14 +38,12 @@ class OAIDAO extends PKPOAIDAO {
 		parent::__construct();
 		$this->journalDao = DAORegistry::getDAO('JournalDAO');
 		$this->sectionDao = DAORegistry::getDAO('SectionDAO');
-		$this->publishedSubmissionDao = DAORegistry::getDAO('PublishedSubmissionDAO');
 		$this->articleGalleyDao = DAORegistry::getDAO('ArticleGalleyDAO');
 		$this->issueDao = DAORegistry::getDAO('IssueDAO');
 		$this->authorDao = DAORegistry::getDAO('AuthorDAO');
-		$this->journalSettingsDao = DAORegistry::getDAO('JournalSettingsDAO');
 
-		$this->journalCache = array();
-		$this->sectionCache = array();
+		$this->journalCache = [];
+		$this->sectionCache = [];
 	}
 
 	/**
@@ -117,7 +114,7 @@ class OAIDAO extends PKPOAIDAO {
 			$abbrev = $journal->getPath();
 			array_push($sets, new OAISet(urlencode($abbrev), $title, ''));
 
-			$tombstoneDao = DAORegistry::getDAO('DataObjectTombstoneDAO');
+			$tombstoneDao = DAORegistry::getDAO('DataObjectTombstoneDAO'); /* @var $tombstoneDao DataObjectTombstoneDAO */
 			$articleTombstoneSets = $tombstoneDao->getSets(ASSOC_TYPE_JOURNAL, $journal->getId());
 
 			$sections = $this->sectionDao->getByJournalId($journal->getId());
@@ -183,11 +180,11 @@ class OAIDAO extends PKPOAIDAO {
 		$record->sets = array(urlencode($journal->getPath()) . ':' . urlencode($section->getLocalizedAbbrev()));
 
 		if ($isRecord) {
-			$publishedSubmission = $this->publishedSubmissionDao->getBySubmissionId($articleId);
+			$submission = Services::get('submission')->get($articleId);
 			$issue = $this->getIssue($row['issue_id']);
-			$galleys = $this->articleGalleyDao->getBySubmissionId($articleId)->toArray();
+			$galleys = $this->articleGalleyDao->getByPublicationId($submission->getCurrentPublication()->getId())->toArray();
 
-			$record->setData('article', $publishedSubmission);
+			$record->setData('article', $submission);
 			$record->setData('journal', $journal);
 			$record->setData('section', $section);
 			$record->setData('issue', $issue);
@@ -206,13 +203,25 @@ class OAIDAO extends PKPOAIDAO {
 	 * @param $set string
 	 * @param $submissionId int optional
 	 * @param $orderBy string UNFILTERED
-	 * @return ADORecordSet
+	 * @return Iterable
 	 */
 	function _getRecordsRecordSet($setIds, $from, $until, $set, $submissionId = null, $orderBy = 'journal_id, submission_id') {
 		$journalId = array_shift($setIds);
 		$sectionId = array_shift($setIds);
 
-		$params = array('enableOai', (int) STATUS_DECLINED);
+		# Exlude all journals that do not have Oai specifically turned on, see #pkp/pkp-lib#6503
+		$excludeJournals = DB::table('journals')
+			->whereNotIn('journal_id',function($query){
+				$query->select('journal_id')
+				->from('journal_settings')
+				->where('setting_name', 'enableOai')
+				->where('setting_value', 1);
+			})
+		->groupBy('journal_id')
+		->pluck('journal_id')
+		->all();
+
+		$params = array((int) STATUS_PUBLISHED);
 		if (isset($journalId)) $params[] = (int) $journalId;
 		if (isset($sectionId)) $params[] = (int) $sectionId;
 		if ($submissionId) $params[] = (int) $submissionId;
@@ -223,7 +232,7 @@ class OAIDAO extends PKPOAIDAO {
 			$params[] = $set . ':%';
 		}
 		if ($submissionId) $params[] = (int) $submissionId;
-		$result = $this->retrieve(
+		return $this->retrieve(
 			'SELECT	GREATEST(a.last_modified, i.last_modified) AS last_modified,
 				a.submission_id AS submission_id,
 				j.journal_id AS journal_id,
@@ -233,15 +242,16 @@ class OAIDAO extends PKPOAIDAO {
 				NULL AS set_spec,
 				NULL AS oai_identifier
 			FROM
-				published_submissions pa
-				JOIN submissions a ON (a.submission_id = pa.submission_id)
-				JOIN issues i ON (i.issue_id = pa.issue_id)
-				JOIN sections s ON (s.section_id = a.section_id)
+				submissions a
+				JOIN publications p ON (a.current_publication_id = p.publication_id)
+				JOIN publication_settings psissue ON (psissue.publication_id = p.publication_id AND psissue.setting_name=\'issueId\' AND psissue.locale=\'\')
+				JOIN issues i ON (CAST(i.issue_id AS CHAR(20)) = psissue.setting_value)
+				JOIN sections s ON (s.section_id = p.section_id)
 				JOIN journals j ON (j.journal_id = a.context_id)
-				LEFT JOIN journal_settings jsl ON (jsl.journal_id = j.journal_id AND jsl.setting_name=?)
-			WHERE pa.is_current_submission_version = 1 AND	i.published = 1 AND j.enabled = 1 AND (jsl.setting_value IS NULL OR jsl.setting_value <> ?) AND a.status <> ?
+			WHERE	i.published = 1 AND j.enabled = 1 AND a.status = ?
+				' . ($excludeJournals ?' AND j.journal_id NOT IN ('.implode(',', $excludeJournals).')':'') . '
 				' . (isset($journalId) ?' AND j.journal_id = ?':'') . '
-				' . (isset($sectionId) ?' AND s.section_id = ?':'') . '
+				' . (isset($sectionId) ?' AND p.section_id = ?':'') . '
 				' . ($from?' AND GREATEST(a.last_modified, i.last_modified) >= ' . $this->datetimeToDB($from):'') . '
 				' . ($until?' AND GREATEST(a.last_modified, i.last_modified) <= ' . $this->datetimeToDB($until):'') . '
 				' . ($submissionId?' AND a.submission_id = ?':'') . '
@@ -265,7 +275,6 @@ class OAIDAO extends PKPOAIDAO {
 			ORDER BY ' . $orderBy,
 			$params
 		);
-		return $result;
 	}
 }
 

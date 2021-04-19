@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/settings/sections/SectionGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SectionGridHandler
  * @ingroup controllers_grid_settings_section
@@ -16,6 +16,8 @@
 import('lib.pkp.controllers.grid.settings.SetupGridHandler');
 import('controllers.grid.settings.sections.SectionGridRow');
 
+use \PKP\core\JSONMessage;
+
 class SectionGridHandler extends SetupGridHandler {
 	/**
 	 * Constructor
@@ -24,7 +26,7 @@ class SectionGridHandler extends SetupGridHandler {
 		parent::__construct();
 		$this->addRoleAssignment(
 			array(ROLE_ID_MANAGER),
-			array('fetchGrid', 'fetchRow', 'addSection', 'editSection', 'updateSection', 'deleteSection', 'saveSequence')
+			array('fetchGrid', 'fetchRow', 'addSection', 'editSection', 'updateSection', 'deleteSection', 'saveSequence', 'deactivateSection','activateSection')
 		);
 	}
 
@@ -51,14 +53,14 @@ class SectionGridHandler extends SetupGridHandler {
 		$this->setTitle('section.sections');
 
 		// Elements to be displayed in the grid
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
-		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO');
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
+		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO'); /* @var $subEditorsDao SubEditorsDAO */
 		$sectionIterator = $sectionDao->getByJournalId($journal->getId());
 
 		$gridData = array();
 		while ($section = $sectionIterator->next()) {
 			// Get the section editors data for the row
-			$assignedSubEditors = $subEditorsDao->getBySectionId($section->getId(), $journal->getId());
+			$assignedSubEditors = $subEditorsDao->getBySubmissionGroupId($section->getId(), ASSOC_TYPE_SECTION, $journal->getId());
 			if(empty($assignedSubEditors)) {
 				$editorsString = __('common.none');
 			} else {
@@ -73,6 +75,7 @@ class SectionGridHandler extends SetupGridHandler {
 			$gridData[$sectionId] = array(
 				'title' => $section->getLocalizedTitle(),
 				'editors' => $editorsString,
+				'inactive' => $section->getIsInactive(),
 				'seq' => $section->getSequence()
 			);
 		}
@@ -98,14 +101,33 @@ class SectionGridHandler extends SetupGridHandler {
 			)
 		);
 
-		// Columns
+		//
+		// Grid columns.
+		//
+		import('controllers.grid.settings.sections.SectionGridCellProvider');
+		$sectionGridCellProvider = new SectionGridCellProvider();
+
+		// Section name
 		$this->addColumn(
 			new GridColumn(
 				'title',
 				'common.title'
 			)
 		);
+		// Section 'editors'
 		$this->addColumn(new GridColumn('editors', 'user.role.editors'));
+		//Section 'inactive'
+		$this->addColumn(
+			new GridColumn(
+				'inactive',
+				'common.inactive',
+				null,
+				'controllers/grid/common/cell/selectStatusCell.tpl',
+				$sectionGridCellProvider,
+				array('alignment' => COLUMN_ALIGNMENT_CENTER,
+						'width' => 20)
+			)
+		);
 	}
 
 	//
@@ -138,7 +160,7 @@ class SectionGridHandler extends SetupGridHandler {
 	 * @copydoc GridHandler::setDataElementSequence()
 	 */
 	function setDataElementSequence($request, $rowId, $gridDataElement, $newSequence) {
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
 		$journal = $request->getJournal();
 		$section = $sectionDao->getById($rowId, $journal->getId());
 		$section->setSequence($newSequence);
@@ -191,6 +213,8 @@ class SectionGridHandler extends SetupGridHandler {
 
 		if ($sectionForm->validate()) {
 			$sectionForm->execute();
+			$notificationManager = new NotificationManager();
+			$notificationManager->createTrivialNotification($request->getUser()->getId());
 			return DAO::getDataChangedEvent($sectionForm->getSectionId());
 		}
 		return new JSONMessage(false);
@@ -205,7 +229,7 @@ class SectionGridHandler extends SetupGridHandler {
 	function deleteSection($args, $request) {
 		$journal = $request->getJournal();
 
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
 		$section = $sectionDao->getById(
 			$request->getUserVar('sectionId'),
 			$journal->getId()
@@ -219,18 +243,112 @@ class SectionGridHandler extends SetupGridHandler {
 			return new JSONMessage(false, __('manager.setup.errorDeletingItem'));
 		}
 
+		// Validate if it can be deleted
 		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_MANAGER);
-		$submissionDao = DAORegistry::getDAO('SubmissionDAO');
-		$checkSubmissions = $submissionDao->retrieve('SELECT submission_id FROM submissions WHERE section_id = ? AND context_id = ?', array((int) $request->getUserVar('sectionId'), (int) $journal->getId()));
-
-		if ($checkSubmissions->numRows() > 0) {
+		$sectionEmpty = $sectionDao->sectionEmpty($request->getUserVar('sectionId'), $journal->getId());
+		if (!$sectionEmpty) {
 			return new JSONMessage(false, __('manager.sections.alertDelete'));
+		}
+
+		$sectionsIterator = $sectionDao->getByContextId($journal->getId(),null,false);
+		$activeSectionsCount = (!$section->getIsInactive()) ? -1 : 0;
+		while ($checkSection = $sectionsIterator->next()) {
+			if (!$checkSection->getIsInactive()) {
+				$activeSectionsCount++;
+			}
+		}
+
+		if ($activeSectionsCount < 1) {
+			return new JSONMessage(false, __('manager.sections.confirmDeactivateSection.error'));
+			return false;
 		}
 
 		$sectionDao->deleteObject($section);
 		return DAO::getDataChangedEvent($section->getId());
 
 	}
+
+	/**
+	 * Deactivate a section.
+	 * @param $args array
+	 * @param $request PKPRequest
+	 * @return JSONMessage JSON object
+	 */
+	function deactivateSection($args, $request) {
+		// Identify the current section
+		$sectionId = (int) $request->getUserVar('sectionKey');
+
+		// Identify the context id.
+		$context = $request->getContext();
+
+		// Get section object
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
+		// Validate if it can be inactive
+		$sectionsIterator = $sectionDao->getByContextId($context->getId(),null,false);
+		$activeSectionsCount = 0;
+		while ($section = $sectionsIterator->next()) {
+			if (!$section->getIsInactive()) {
+				$activeSectionsCount++;
+			}
+		}
+		if ($activeSectionsCount > 1) {
+			$section = $sectionDao->getById($sectionId, $context->getId());
+
+			if ($request->checkCSRF() && isset($section) && !$section->getIsInactive()) {
+				$section->setIsInactive(1);
+				$sectionDao->updateObject($section);
+
+				// Create the notification.
+				$notificationMgr = new NotificationManager();
+				$user = $request->getUser();
+				$notificationMgr->createTrivialNotification($user->getId());
+
+				return DAO::getDataChangedEvent($sectionId);
+			}
+		} else {
+			// Create the notification.
+			$notificationMgr = new NotificationManager();
+			$user = $request->getUser();
+			$notificationMgr->createTrivialNotification($user->getId(), NOTIFICATION_TYPE_ERROR, array('contents' => __('manager.sections.confirmDeactivateSection.error')));
+			return DAO::getDataChangedEvent($sectionId);
+		}
+
+		return new JSONMessage(false);
+	}
+
+	/**
+	 * Activate a section.
+	 * @param $args array
+	 * @param $request PKPRequest
+	 * @return JSONMessage JSON object
+	 */
+	function activateSection($args, $request) {
+
+		// Identify the current section
+		$sectionId = (int) $request->getUserVar('sectionKey');
+
+		// Identify the context id.
+		$context = $request->getContext();
+
+		// Get section object
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
+		$section = $sectionDao->getById($sectionId, $context->getId());
+
+		if ($request->checkCSRF() && isset($section) && $section->getIsInactive()) {
+			$section->setIsInactive(0);
+			$sectionDao->updateObject($section);
+
+			// Create the notification.
+			$notificationMgr = new NotificationManager();
+			$user = $request->getUser();
+			$notificationMgr->createTrivialNotification($user->getId());
+
+			return DAO::getDataChangedEvent($sectionId);
+		}
+
+		return new JSONMessage(false);
+	}
+
 }
 
 

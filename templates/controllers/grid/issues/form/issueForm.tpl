@@ -1,9 +1,9 @@
 {**
  * templates/controllers/grid/issues/form/issueData.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Form for creation and modification of an issue
  *}
@@ -102,6 +102,10 @@
 			{/if}
 		{/fbvFormSection}
 	{/fbvFormArea}
+
+	{fbvFormSection title="publication.urlPath"}
+		{fbvElement type="text" label="publication.urlPath.description" value=$urlPath id="urlPath" size=$fbvStyles.size.MEDIUM inline=true}
+	{/fbvFormSection}
 
 	{foreach from=$pubIdPlugins item=pubIdPlugin}
 		{assign var=pubIdMetadataFile value=$pubIdPlugin->getPubIdMetadataFile()}

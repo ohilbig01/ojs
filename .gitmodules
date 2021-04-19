@@ -10,9 +10,6 @@
 [submodule "plugins/generic/staticPages"]
 	path = plugins/generic/staticPages
 	url = https://github.com/pkp/staticPages.git
-[submodule "plugins/generic/translator"]
-	path = plugins/generic/translator
-	url = https://github.com/pkp/translator.git
 [submodule "plugins/generic/tinymce"]
 	path = plugins/generic/tinymce
 	url = https://github.com/pkp/tinymce.git
@@ -47,3 +44,12 @@
 [submodule "plugins/reports/counter/classes/COUNTER"]
 	path = plugins/reports/counter/classes/COUNTER
 	url = https://github.com/ulsdevteam/COUNTER.git
+[submodule "plugins/blocks/browse"]
+	path = plugins/blocks/browse
+	url = https://github.com/pkp/browse
+[submodule "plugins/generic/googleScholar"]
+	path = plugins/generic/googleScholar
+	url = https://github.com/pkp/googleScholar
+[submodule "plugins/importexport/crossref"]
+	path = plugins/importexport/crossref
+	url = https://github.com/pkp/crossref-ojs.git

@@ -3,9 +3,9 @@
 /**
  * @file classes/tasks/OpenAccessNotification.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OpenAccessNotification
  * @ingroup tasks
@@ -18,13 +18,19 @@ import('lib.pkp.classes.scheduledTask.ScheduledTask');
 class OpenAccessNotification extends ScheduledTask {
 
 	/**
-	 * @see ScheduledTask::getName()
+	 * @copydoc ScheduledTask::getName()
 	 */
-	function getName() {
+	public function getName() {
 		return __('admin.scheduledTask.openAccessNotification');
 	}
 
-	function sendNotification ($users, $journal, $issue) {
+	/**
+	 * Send a notification for the given users, journal, and issue.
+	 * @param $users array
+	 * @param $journal Journal
+	 * @param $issue Issue
+	 */
+	public function sendNotification ($users, $journal, $issue) {
 		if ($users->getCount() != 0) {
 
 			import('lib.pkp.classes.mail.MailTemplate');
@@ -32,18 +38,18 @@ class OpenAccessNotification extends ScheduledTask {
 
 			$email->setSubject($email->getSubject($journal->getPrimaryLocale()));
 			$email->setReplyTo(null);
+			$email->setFrom($journal->getData('contactEmail'), $journal->getData('contactName'));
 			$email->addRecipient($journal->getData('contactEmail'), $journal->getData('contactName'));
 
 			$request = Application::get()->getRequest();
 			$paramArray = array(
 				'journalName' => $journal->getLocalizedName(),
 				'journalUrl' => $request->url($journal->getPath()),
-				'editorialContactSignature' => $journal->getData('contactName') . "\n" . $journal->getLocalizedName()
+				'editorialContactSignature' => $journal->getData('contactName') . "\n" . $journal->getLocalizedName(),
 			);
 			$email->assignParams($paramArray);
 
-			$publishedSubmissionDao = DAORegistry::getDAO('PublishedSubmissionDAO');
-			$publishedSubmissions = $publishedSubmissionDao->getPublishedSubmissionsInSections($issue->getId());
+			$submissions = Services::get('submission')->getInSections($issue->getId());
 			$mimeBoundary = '==boundary_' . md5(microtime());
 
 			$templateMgr = TemplateManager::getManager();
@@ -52,7 +58,7 @@ class OpenAccessNotification extends ScheduledTask {
 				'templateSignature' => $journal->getData('emailSignature'),
 				'mimeBoundary' => $mimeBoundary,
 				'issue' => $issue,
-				'publishedSubmissions' => $publishedSubmissions,
+				'publishedSubmissions' => $submissions,
 			));
 
 			$email->addHeader('MIME-Version', '1.0');
@@ -62,13 +68,16 @@ class OpenAccessNotification extends ScheduledTask {
 			while ($user = $users->next()) {
 				$email->addBcc($user->getEmail(), $user->getFullName());
 			}
-
 			$email->send();
 		}
 	}
 
-	function sendNotifications ($journal, $curDate) {
-
+	/**
+	 * Send notifications for the specified journal based on the specified date.
+	 * @param $journal Journal
+	 * @param $curDate array
+	 */
+	public function sendNotifications ($journal, $curDate) {
 		// Only send notifications if subscriptions and open access notifications are enabled
 		if ($journal->getData('publishingMode') == PUBLISHING_MODE_SUBSCRIPTION && $journal->getData('enableOpenAccessNotification')) {
 
@@ -77,7 +86,7 @@ class OpenAccessNotification extends ScheduledTask {
 			$curDay = $curDate['day'];
 
 			// Check if the current date corresponds to the open access date of any issues
-			$issueDao = DAORegistry::getDAO('IssueDAO');
+			$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 			$issues = $issueDao->getPublishedIssues($journal->getId());
 
 			while ($issue = $issues->next()) {
@@ -86,7 +95,7 @@ class OpenAccessNotification extends ScheduledTask {
 
 				if ($accessStatus == ISSUE_ACCESS_SUBSCRIPTION && !empty($openAccessDate) && strtotime($openAccessDate) == mktime(0,0,0,$curMonth, $curDay, $curYear)) {
 					// Notify all users who have open access notification set for this journal
-					$userSettingsDao = DAORegistry::getDAO('UserSettingsDAO');
+					$userSettingsDao = DAORegistry::getDAO('UserSettingsDAO'); /* @var $userSettingsDao UserSettingsDAO */
 					$users = $userSettingsDao->getUsersBySetting('openAccessNotification', true, 'bool', $journal->getId());
 					$this->sendNotification($users, $journal, $issue);
 				}
@@ -95,10 +104,10 @@ class OpenAccessNotification extends ScheduledTask {
 	}
 
 	/**
-	 * @see ScheduledTask::executeActions()
+	 * @copydoc ScheduledTask::executeActions()
 	 */
 	protected function executeActions() {
-		$journalDao = DAORegistry::getDAO('JournalDAO');
+		$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
 		$journals = $journalDao->getAll(true);
 
 		$todayDate = array(
@@ -115,14 +124,15 @@ class OpenAccessNotification extends ScheduledTask {
 		// If it is the first day of a month but previous month had only
 		// 30 days then simulate 31st day for open access dates that end on
 		// that day.
-		$shortMonths = array(2,4,6,8,10,12);
+		$shortMonths = array(2,4,6,9,11);
 
 		if (($todayDate['day'] == 1) && in_array(($todayDate['month'] - 1), $shortMonths)) {
 
 			$curDate['day'] = 31;
 			$curDate['month'] = $todayDate['month'] - 1;
 
-			if ($curDate['month'] == 12) {
+			if ($curDate['month'] == 0) {
+				$curDate['month'] = 12;
 				$curDate['year'] = $todayDate['year'] - 1;
 			} else {
 				$curDate['year'] = $todayDate['year'];
@@ -161,6 +171,7 @@ class OpenAccessNotification extends ScheduledTask {
 				}
 			}
 		}
+		return true;
 	}
 }
 

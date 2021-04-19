@@ -3,9 +3,9 @@
 /**
  * @file tests/classes/search/ArticleSearchIndexTest.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArticleSearchIndexTest
  * @ingroup tests_classes_search
@@ -14,10 +14,13 @@
  * @brief Test class for the ArticleSearchIndex class
  */
 
+import('classes.i18n.AppLocale'); // Causes mocked AppLocale class to be loaded
 
 import('lib.pkp.tests.PKPTestCase');
-import('classes.article.Submission');
-import('lib.pkp.classes.core.ArrayItemIterator');
+import('classes.submission.Submission');
+
+use \PKP\db\DAORegistry;
+use \PKP\core\ArrayItemIterator;
 
 class ArticleSearchIndexTest extends PKPTestCase {
 
@@ -39,7 +42,7 @@ class ArticleSearchIndexTest extends PKPTestCase {
 	/**
 	 * @see PKPTestCase::setUp()
 	 */
-	protected function setUp() {
+	protected function setUp() : void {
 		parent::setUp();
 		HookRegistry::rememberCalledHooks();
 	}
@@ -47,7 +50,7 @@ class ArticleSearchIndexTest extends PKPTestCase {
 	/**
 	 * @see PKPTestCase::tearDown()
 	 */
-	protected function tearDown() {
+	protected function tearDown() : void {
 		HookRegistry::resetCalledHooks();
 		parent::tearDown();
 	}
@@ -64,8 +67,11 @@ class ArticleSearchIndexTest extends PKPTestCase {
 		HookRegistry::register('ArticleSearchIndex::submissionFileChanged', array($this, 'callbackUpdateFileIndex'));
 
 		// Simulate updating an article file via hook.
+		import('lib.pkp.classes.submission.SubmissionFile');
+		$submissionFile = new SubmissionFile();
+		$submissionFile->setId(2);
 		$articleSearchIndex = Application::getSubmissionSearchIndex();
-		$articleSearchIndex->submissionFileChanged(0, 1, 2);
+		$articleSearchIndex->submissionFileChanged(0, 1, $submissionFile);
 
 		// Test whether the hook was called.
 		$calledHooks = HookRegistry::getCalledHooks();
@@ -247,10 +253,10 @@ class ArticleSearchIndexTest extends PKPTestCase {
 	public function callbackUpdateFileIndex($hook, $params) {
 		self::assertEquals('ArticleSearchIndex::submissionFileChanged', $hook);
 
-		list($articleId, $type, $fileId) = $params;
+		list($articleId, $type, $submissionFileId) = $params;
 		self::assertEquals(0, $articleId);
 		self::assertEquals(1, $type);
-		self::assertEquals(2, $fileId);
+		self::assertEquals(2, $submissionFileId);
 
 		// Returning "true" is required so that the default submissionMetadataChanged()
 		// code won't run.

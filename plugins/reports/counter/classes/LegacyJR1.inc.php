@@ -15,16 +15,16 @@
 class LegacyJR1 {
 
 	/**
-	 * @var string $_templatePath The location of the reportxml template
-	*/
-	var $_templatePath;
+	 * @var Plugin The COUNTER report plugin.
+	 */
+	var $_plugin;
 
 	/**
 	 * Constructor
-	 * @param string $templatePath
+	 * @param Plugin $plugin
 	 */
-	function LegacyJR1($templatePath) {
-		$this->_templatePath = $templatePath;
+	function LegacyJR1($plugin) {
+		$this->_plugin = $plugin;
 	}
 
 	/**
@@ -96,7 +96,7 @@ class LegacyJR1 {
 		fputcsv($fp, $cols);
 
 		// Get statistics from the log.
-		$journalDao = DAORegistry::getDAO('JournalDAO');
+		$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
 		$journalIds = $this->_getJournalIds($useLegacyStats);
 		foreach ($journalIds as $journalId) {
 			$journal = $journalDao->getById($journalId);
@@ -105,7 +105,7 @@ class LegacyJR1 {
 			$cols = array(
 				$journal->getLocalizedName(),
 				$journal->getData('publisherInstitution'),
-				__('common.openJournalSystems'), // Platform
+				__('common.software'), // Platform
 				$journal->getData('printIssn'),
 				$journal->getData('onlineIssn')
 			);
@@ -161,12 +161,13 @@ class LegacyJR1 {
 	function _assignTemplateCounterXML($request, $templateManager, $begin, $end='', $useLegacyStats) {
 		$journal = $request->getContext();
 
-		$journalDao = DAORegistry::getDAO('JournalDAO');
+		$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
 		$journalIds = $this->_getJournalIds($useLegacyStats);
 
 		$site = $request->getSite();
 		$availableContexts = $journalDao->getAvailable();
-		if ($availableContexts->getCount() > 1) {
+		list($firstContext, $secondContext) = [$availableContexts->next(), $availableContexts->next()];
+		if ($secondContext) { // Multiple contexts
 			$vendorName = $site->getLocalizedTitle();
 		} else {
 			$vendorName =  $journal->getData('publisherInstitution');
@@ -352,7 +353,9 @@ class LegacyJR1 {
 		list($begin, $end) = $this->_getLimitDates($year);
 
 		$this->_assignTemplateCounterXML($request, $templateManager, $begin, $end, $useLegacyStats);
-		$templateManager->display($this->_templatePath . 'reportxml.tpl', 'text/xml');
+		$reportContents = $templateManager->fetch($this->_plugin->getTemplateResource('reportxml.tpl'));
+		header('Content-type: text/xml');
+		echo $reportContents;
 	}
 
 }

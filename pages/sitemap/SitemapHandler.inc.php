@@ -3,9 +3,9 @@
 /**
  * @file pages/sitemap/SitemapHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SitemapHandler
  * @ingroup pages_sitemap
@@ -30,9 +30,8 @@ class SitemapHandler extends PKPSitemapHandler {
 		// Search
 		$root->appendChild($this->_createUrlTree($doc, $request->url($journal->getPath(), 'search')));
 		// Issues
-		$issueDao = DAORegistry::getDAO('IssueDAO');
-		$publishedSubmissionDao = DAORegistry::getDAO('PublishedSubmissionDAO');
-		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
+		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO'); /* @var $galleyDao ArticleGalleyDAO */
 		if ($journal->getData('publishingMode') != PUBLISHING_MODE_NONE) {
 			$root->appendChild($this->_createUrlTree($doc, $request->url($journal->getPath(), 'issue', 'current')));
 			$root->appendChild($this->_createUrlTree($doc, $request->url($journal->getPath(), 'issue', 'archive')));
@@ -40,14 +39,18 @@ class SitemapHandler extends PKPSitemapHandler {
 			while ($issue = $publishedIssues->next()) {
 				$root->appendChild($this->_createUrlTree($doc, $request->url($journal->getPath(), 'issue', 'view', $issue->getId())));
 				// Articles for issue
-				$articles = $publishedSubmissionDao->getPublishedSubmissions($issue->getId());
-				foreach($articles as $article) {
+				$submissionsIterator = Services::get('submission')->getMany([
+					'issueIds' => [$issue->getId()],
+					'contextId' => $journal->getId(),
+					'status' => STATUS_PUBLISHED,
+				]);
+				foreach($submissionsIterator as $submission) {
 					// Abstract
-					$root->appendChild($this->_createUrlTree($doc, $request->url($journal->getPath(), 'article', 'view', array($article->getBestArticleId()))));
+					$root->appendChild($this->_createUrlTree($doc, $request->url($journal->getPath(), 'article', 'view', array($submission->getBestId()))));
 					// Galley files
-					$galleys = $galleyDao->getBySubmissionId($article->getId());
+					$galleys = $galleyDao->getByPublicationId($submission->getCurrentPublication()->getId());
 					while ($galley = $galleys->next()) {
-						$root->appendChild($this->_createUrlTree($doc, $request->url($journal->getPath(), 'article', 'view', array($article->getBestArticleId(), $galley->getBestGalleyId()))));
+						$root->appendChild($this->_createUrlTree($doc, $request->url($journal->getPath(), 'article', 'view', array($submission->getBestId(), $galley->getBestGalleyId()))));
 					}
 				}
 			}

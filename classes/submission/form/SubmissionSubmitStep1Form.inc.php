@@ -3,9 +3,9 @@
 /**
  * @file classes/submission/form/SubmissionSubmitStep1Form.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionSubmitStep1Form
  * @ingroup submission_form
@@ -28,14 +28,22 @@ class SubmissionSubmitStep1Form extends PKPSubmissionSubmitStep1Form {
 	 * @copydoc SubmissionSubmitForm::fetch
 	 */
 	function fetch($request, $template = null, $display = false) {
-		$roleDao = DAORegistry::getDAO('RoleDAO');
+		$roleDao = DAORegistry::getDAO('RoleDAO'); /* @var $roleDao RoleDAO */
 		$user = $request->getUser();
 		$canSubmitAll = $roleDao->userHasRole($this->context->getId(), $user->getId(), ROLE_ID_MANAGER) ||
 			$roleDao->userHasRole($this->context->getId(), $user->getId(), ROLE_ID_SUB_EDITOR);
 
 		// Get section options for this context
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
-		$sectionOptions = array('0' => '') + $sectionDao->getTitlesByContextId($this->context->getId(), !$canSubmitAll);
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
+		$sections = array();
+		$sectionsIterator = $sectionDao->getByContextId($this->context->getId(), null, !$canSubmitAll);
+		while ($section = $sectionsIterator->next()) {
+			if (!$section->getIsInactive()) {
+				$sections[$section->getId()] = $section->getLocalizedTitle();
+			}
+		} 
+		$sectionOptions = array('0' => '') + $sections;
+
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign('sectionOptions', $sectionOptions);
 		$templateMgr->assign('sectionId', $request->getUserVar('sectionId'));
@@ -58,8 +66,7 @@ class SubmissionSubmitStep1Form extends PKPSubmissionSubmitStep1Form {
 	/**
 	 * Checks whether a section policy contains any text (plain / readable).
 	 */
-	private function doesSectionPolicyContainAnyText($sectionPolicy)
-	{
+	private function doesSectionPolicyContainAnyText($sectionPolicy) {
 		$sectionPolicyPlainText = trim(PKPString::html2text($sectionPolicy));
 		return strlen($sectionPolicyPlainText) > 0;
 	}
@@ -70,7 +77,7 @@ class SubmissionSubmitStep1Form extends PKPSubmissionSubmitStep1Form {
 	function initData($data = array()) {
 		if (isset($this->submission)) {
 			parent::initData(array(
-				'sectionId' => $this->submission->getSectionId(),
+				'sectionId' => $this->submission->getCurrentPublication()->getData('sectionId'),
 			));
 		} else {
 			parent::initData();
@@ -94,23 +101,30 @@ class SubmissionSubmitStep1Form extends PKPSubmissionSubmitStep1Form {
 	function validate($callHooks = true) {
 		if (!parent::validate($callHooks)) return false;
 
-		// Validate that the section ID is attached to this journal.
 		$request = Application::get()->getRequest();
 		$context = $request->getContext();
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
 		$section = $sectionDao->getById($this->getData('sectionId'), $context->getId());
+
+		// Validate that the section ID is attached to this journal.
 		if (!$section) return false;
+
+		// Ensure that submissions are enabled and the assigned section is activated
+		if ($context->getData('disableSubmissions') || $section->getIsInactive()) {
+			return false;
+		}
 
 		return true;
 	}
 
 	/**
-	 * Set the submission data from the form.
-	 * @param $submission Submission
+	 * Set the publication data from the form.
+	 * @param Publication $publication
+	 * @param Submission $submission
 	 */
-	function setSubmissionData($submission) {
-		$submission->setSectionId($this->getData('sectionId'));
-		parent::setSubmissionData($submission);
+	function setPublicationData($publication, $submission) {
+		$publication->setData('sectionId', $this->getData('sectionId'));
+		parent::setPublicationData($publication, $submission);
 	}
 }
 

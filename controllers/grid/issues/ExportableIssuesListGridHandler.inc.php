@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/issues/IssueGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ExportableIssuesListGridHandler
  * @ingroup controllers_grid_issues
@@ -39,7 +39,7 @@ class ExportableIssuesListGridHandler extends IssueGridHandler {
 	 */
 	protected function loadData($request, $filter) {
 		$journal = $request->getJournal();
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		return $issueDao->getIssues($journal->getId(), $this->getGridRangeInfo($request, $this->getId()));
 	}
 

@@ -3,9 +3,9 @@
 /**
  * @file classes/core/Application.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Application
  * @ingroup core
@@ -15,13 +15,15 @@
  *
  */
 
-import('lib.pkp.classes.core.PKPApplication');
+namespace APP\core;
 
-define('PHP_REQUIRED_VERSION', '7.1.0');
+use \PKP\core\PKPApplication;
+use \PKP\db\DAORegistry;
+
 define('REQUIRES_XSL', false);
 
-define('ASSOC_TYPE_ARTICLE',		ASSOC_TYPE_SUBMISSION); // DEPRECATED but needed by filter framework
-define('ASSOC_TYPE_GALLEY',		ASSOC_TYPE_REPRESENTATION);
+define('ASSOC_TYPE_ARTICLE', PKPApplication::ASSOC_TYPE_SUBMISSION); // DEPRECATED but needed by filter framework
+define('ASSOC_TYPE_GALLEY', PKPApplication::ASSOC_TYPE_REPRESENTATION);
 
 define('ASSOC_TYPE_JOURNAL',		0x0000100);
 define('ASSOC_TYPE_ISSUE',		0x0000103);
@@ -35,6 +37,16 @@ define('LANGUAGE_PACK_TAR_URL', 'http://pkp.sfu.ca/ojs/xml/%s/%s.tar.gz');
 define('METRIC_TYPE_COUNTER', 'ojs::counter');
 
 class Application extends PKPApplication {
+	/**
+	 * Constructor
+	 */
+	function __construct() {
+		parent::__construct();
+		if (!PKP_STRICT_MODE && !class_exists('\Application')) {
+			class_alias('\APP\core\Application', '\Application');
+		}
+	}
+
 	/**
 	 * Get the "context depth" of this application, i.e. the number of
 	 * parts of the URL after index.php that represent the context of
@@ -67,7 +79,7 @@ class Application extends PKPApplication {
 	 * @return string
 	 */
 	public function getNameKey() {
-		return('common.openJournalSystems');
+		return('common.software');
 	}
 
 	/**
@@ -85,7 +97,7 @@ class Application extends PKPApplication {
 	 */
 	public function getDAOMap() {
 		return array_merge(parent::getDAOMap(), array(
-			'SubmissionDAO' => 'classes.article.SubmissionDAO',
+			'SubmissionDAO' => 'classes.submission.SubmissionDAO',
 			'ArticleGalleyDAO' => 'classes.article.ArticleGalleyDAO',
 			'ArticleSearchDAO' => 'classes.search.ArticleSearchDAO',
 			'AuthorDAO' => 'classes.article.AuthorDAO',
@@ -99,7 +111,6 @@ class Application extends PKPApplication {
 			'MetricsDAO' => 'classes.statistics.MetricsDAO',
 			'OAIDAO' => 'classes.oai.ojs.OAIDAO',
 			'OJSCompletedPaymentDAO' => 'classes.payment.ojs.OJSCompletedPaymentDAO',
-			'PublishedSubmissionDAO' => 'classes.article.PublishedSubmissionDAO',
 			'ReviewerSubmissionDAO' => 'classes.submission.reviewer.ReviewerSubmissionDAO',
 			'SectionDAO' => 'classes.journal.SectionDAO',
 			'SubscriptionDAO' => 'classes.subscription.SubscriptionDAO',
@@ -141,26 +152,12 @@ class Application extends PKPApplication {
 	}
 
 	/**
-	 * Get the context settings DAO.
-	 * @return SettingsDAO
-	 */
-	public static function getContextSettingsDAO() {
-		return DAORegistry::getDAO('JournalSettingsDAO');
-	}
-
-	/**
 	 * Get the submission DAO.
+	 * @deprecated Just get the DAO directly.
 	 * @return SubmissionDAO
 	 */
 	public static function getSubmissionDAO() {
 		return DAORegistry::getDAO('SubmissionDAO');
-	}
-
-	/**
-	 * Get the published submission DAO.
-	 */
-	public static function getPublishedSubmissionDAO() {
-		return DAORegistry::getDAO('PublishedSubmissionDAO');
 	}
 
 	/**
@@ -184,39 +181,14 @@ class Application extends PKPApplication {
 	 */
 	public static function getSubmissionSearchIndex() {
 		import('classes.search.ArticleSearchIndex');
-		return new ArticleSearchIndex();
+		return new \ArticleSearchIndex();
 	}
 
 	/**
-	 * Returns the name of the context column in plugin_settings
-	 * @return string
+	 * Get a SubmissionSearchDAO instance.
 	 */
-	public static function getPluginSettingsContextColumnName() {
-		if (defined('SESSION_DISABLE_INIT')) {
-			$pluginSettingsDao = DAORegistry::getDAO('PluginSettingsDAO');
-			$driver = $pluginSettingsDao->getDriver();
-			switch ($driver) {
-				case 'mysql':
-				case 'mysqli':
-					$checkResult = $pluginSettingsDao->retrieve('SHOW COLUMNS FROM plugin_settings LIKE ?', array('context_id'));
-					if ($checkResult->NumRows() == 0) {
-						return 'journal_id';
-					}
-					break;
-				case 'postgres':
-				case 'postgres64':
-				case 'postgres7':
-				case 'postgres8':
-				case 'postgres9':
-					$checkResult = $pluginSettingsDao->retrieve('SELECT column_name FROM information_schema.columns WHERE table_name = ? AND column_name = ?', array('plugin_settings', 'context_id'));
-					if ($checkResult->NumRows() == 0) {
-						return 'journal_id';
-					}
-					break;
-				default: fatalError('Unknown database type!');
-			}
-		}
-		return 'context_id';
+	public static function getSubmissionSearchDAO() {
+		return DAORegistry::getDAO('ArticleSearchDAO');
 	}
 
 	/**
@@ -253,7 +225,7 @@ class Application extends PKPApplication {
 	 */
 	public static function getRoleNames($contextOnly = false, $roleIds = null) {
 		$roleNames = parent::getRoleNames($contextOnly, $roleIds);
-		if (!$roleIds || !in_array(ROLE_ID_SUBSCRIPTION_MANAGER, $roleIds)) {
+		if (!$roleIds || in_array(ROLE_ID_SUBSCRIPTION_MANAGER, $roleIds)) {
 			$roleNames[ROLE_ID_SUBSCRIPTION_MANAGER] = 'user.role.subscriptionManager';
 		}
 		return $roleNames;
@@ -266,6 +238,7 @@ class Application extends PKPApplication {
 	 */
 	public static function getPaymentManager($context) {
 		import('classes.payment.ojs.OJSPaymentManager');
-		return new OJSPaymentManager($context);
+		return new \OJSPaymentManager($context);
 	}
 }
+

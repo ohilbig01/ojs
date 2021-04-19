@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/announcementFeed/AnnouncementFeedGatewayPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AnnouncementFeedGatewayPlugin
  * @ingroup plugins_generic_announcementFeed
@@ -15,6 +15,8 @@
  */
 
 import('lib.pkp.classes.plugins.GatewayPlugin');
+
+use \PKP\db\DBResultRange;
 
 class AnnouncementFeedGatewayPlugin extends GatewayPlugin {
 	protected $_parentPlugin;
@@ -105,19 +107,18 @@ class AnnouncementFeedGatewayPlugin extends GatewayPlugin {
 		// Get limit setting, if any
 		$recentItems = (int) $this->_parentPlugin->getSetting($journal->getId(), 'recentItems');
 
-		$announcementDao = DAORegistry::getDAO('AnnouncementDAO');
+		$announcementDao = DAORegistry::getDAO('AnnouncementDAO'); /* @var $announcementDao AnnouncementDAO */
 		$journalId = $journal->getId();
 		if ($recentItems > 0) {
-			import('lib.pkp.classes.db.DBResultRange');
 			$rangeInfo = new DBResultRange($recentItems, 1);
-			$announcements = $announcementDao->getAnnouncementsNotExpiredByAssocId(ASSOC_TYPE_JOURNAL, $journalId, $rangeInfo);
+			$announcements = $announcementDao->getAnnouncementsNotExpiredByAssocId(ASSOC_TYPE_JOURNAL, $journalId, $rangeInfo)->toArray();
 		} else {
-			$announcements =  $announcementDao->getAnnouncementsNotExpiredByAssocId(ASSOC_TYPE_JOURNAL, $journalId);
+			$announcements =  $announcementDao->getAnnouncementsNotExpiredByAssocId(ASSOC_TYPE_JOURNAL, $journalId)->toArray();
 		}
 
 		// Get date of most recent announcement
 		$lastDateUpdated = $this->_parentPlugin->getSetting($journal->getId(), 'dateUpdated');
-		if ($announcements->wasEmpty()) {
+		if (empty($announcements)) {
 			if (empty($lastDateUpdated)) {
 				$dateUpdated = Core::getCurrentDate();
 				$this->_parentPlugin->updateSetting($journal->getId(), 'dateUpdated', $dateUpdated, 'string');
@@ -132,7 +133,7 @@ class AnnouncementFeedGatewayPlugin extends GatewayPlugin {
 			}
 		}
 
-		$versionDao = DAORegistry::getDAO('VersionDAO');
+		$versionDao = DAORegistry::getDAO('VersionDAO'); /* @var $versionDao VersionDAO */
 		$version = $versionDao->getCurrentVersion();
 
 		$templateMgr = TemplateManager::getManager($request);
@@ -140,7 +141,7 @@ class AnnouncementFeedGatewayPlugin extends GatewayPlugin {
 			'ojsVersion' => $version->getVersionString(),
 			'selfUrl' => $request->getCompleteUrl(),
 			'dateUpdated' => $dateUpdated,
-			'announcements' => $announcements->toArray(),
+			'announcements' => $announcements,
 			'journal' => $journal,
 		));
 

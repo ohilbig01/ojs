@@ -1,9 +1,9 @@
 {**
  * plugins/importexport/datacite/templates/settingsForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Datacite plugin settings
  *
@@ -14,7 +14,7 @@
 		$('#dataciteSettingsForm').pkpHandler('$.pkp.controllers.form.AjaxFormHandler');
 	{rdelim});
 </script>
-<form class="pkp_form" id="dataciteSettingsForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="manage" plugin="DataciteExportPlugin" category="importexport" verb="save"}">
+<form class="pkp_form" id="dataciteSettingsForm" method="post" action="{url router=PKPApplication::ROUTE_COMPONENT op="manage" plugin="DataciteExportPlugin" category="importexport" verb="save"}">
 	{if $doiPluginSettingsLinkAction}
 		{fbvFormArea id="doiPluginSettingsLink"}
 			{fbvFormSection}
@@ -35,6 +35,10 @@
 		{/fbvFormSection}
 		{fbvFormSection list="true"}
 			{fbvElement type="checkbox" id="testMode" label="plugins.importexport.datacite.settings.form.testMode.description" checked=$testMode|compare:true}
+			{fbvElement type="text" id="testUsername" value=$testUsername label="plugins.importexport.datacite.settings.form.testUsername" maxlength="50" size=$fbvStyles.size.MEDIUM}
+			{fbvElement type="text" password="true" id="testPassword" value=$testPassword label="plugins.importexport.datacite.settings.form.testPassword" maxLength="50" size=$fbvStyles.size.MEDIUM}
+			<span class="instruct">{translate key="plugins.importexport.common.settings.form.password.description"}</span><br/>
+			{fbvElement type="text" id="testDOIPrefix" value=$testDOIPrefix label="plugins.importexport.datacite.settings.form.testDOIPrefix" maxlength="50" size=$fbvStyles.size.MEDIUM}
 		{/fbvFormSection}
 	{/fbvFormArea}
 	{fbvFormButtons submitText="common.save"}

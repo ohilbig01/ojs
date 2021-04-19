@@ -3,9 +3,9 @@
 /**
  * @file classes/journal/JournalDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class JournalDAO
  * @ingroup journal
@@ -14,8 +14,11 @@
  * @brief Operations for retrieving and modifying Journal objects.
  */
 
-import('lib.pkp.classes.context.ContextDAO');
-import('classes.journal.Journal');
+namespace APP\journal;
+
+use \PKP\context\ContextDAO;
+use \APP\journal\Journal;
+
 import('lib.pkp.classes.metadata.MetadataTypeDescription');
 
 define('JOURNAL_FIELD_TITLE', 1);
@@ -46,7 +49,7 @@ class JournalDAO extends ContextDAO {
 	/**
 	 * Create a new DataObject of the appropriate class
 	 *
-	 * @return DataObject
+	 * @return \PKP\core\DataObject
 	 */
 	public function newDataObject() {
 		return new Journal();
@@ -73,14 +76,14 @@ class JournalDAO extends ContextDAO {
 	 * (see <http://dtd.nlm.nih.gov/publishing/tag-library/n-4zh0.html>).
 	 */
 	function deleteAllPubIds($journalId, $pubIdType) {
-		$pubObjectDaos = array('IssueDAO', 'SubmissionDAO', 'ArticleGalleyDAO');
+		$pubObjectDaos = array('IssueDAO', 'PublicationDAO', 'ArticleGalleyDAO');
 		foreach($pubObjectDaos as $daoName) {
 			$dao = DAORegistry::getDAO($daoName);
 			$dao->deleteAllPubIds($journalId, $pubIdType);
 		}
-		import('lib.pkp.classes.submission.SubmissionFileDAODelegate');
-		$submissionFileDaoDelegate = new SubmissionFileDAODelegate();
-		$submissionFileDaoDelegate->deleteAllPubIds($journalId, $pubIdType);
+		import('classes.submission.SubmissionFileDAO');
+		$submissionFileDao = new SubmissionFileDAO();
+		$submissionFileDao->deleteAllPubIds($journalId, $pubIdType);
 
 	}
 
@@ -103,7 +106,7 @@ class JournalDAO extends ContextDAO {
 
 		$pubObjectDaos = array(
 			ASSOC_TYPE_ISSUE => DAORegistry::getDAO('IssueDAO'),
-			ASSOC_TYPE_SUBMISSION => Application::getSubmissionDAO(),
+			ASSOC_TYPE_SUBMISSION => DAORegistry::getDAO('SubmissionDAO'),
 			ASSOC_TYPE_GALLEY => Application::getRepresentationDAO(),
 			ASSOC_TYPE_ISSUE_GALLEY => DAORegistry::getDAO('IssueGalleyDAO'),
 			ASSOC_TYPE_SUBMISSION_FILE => DAORegistry::getDAO('SubmissionFileDAO')
@@ -124,4 +127,8 @@ class JournalDAO extends ContextDAO {
 		}
 		return false;
 	}
+}
+
+if (!PKP_STRICT_MODE) {
+	class_alias('\APP\journal\JournalDAO', '\JournalDAO');
 }

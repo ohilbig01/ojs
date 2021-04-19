@@ -7,9 +7,9 @@
 ;
 ; config.TEMPLATE.inc.php
 ;
-; Copyright (c) 2014-2019 Simon Fraser University
-; Copyright (c) 2003-2019 John Willinsky
-; Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+; Copyright (c) 2014-2021 Simon Fraser University
+; Copyright (c) 2003-2021 John Willinsky
+; Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
 ;
 ; OJS Configuration settings.
 ; Rename config.TEMPLATE.inc.php to config.inc.php to use.
@@ -30,6 +30,10 @@ installed = Off
 
 ; The canonical URL to the OJS installation (excluding the trailing slash)
 base_url = "http://pkp.sfu.ca/ojs"
+
+; Enable strict mode. This will more aggressively cause errors/warnings when
+; deprecated behaviour exists in the codebase.
+strict = Off
 
 ; Session cookie name
 session_cookie_name = OJSSID
@@ -55,16 +59,15 @@ scheduled_tasks = Off
 time_zone = "UTC"
 
 ; Short and long date formats
-date_format_trunc = "%m-%d"
 date_format_short = "%Y-%m-%d"
 date_format_long = "%B %e, %Y"
 datetime_format_short = "%Y-%m-%d %I:%M %p"
 datetime_format_long = "%B %e, %Y - %I:%M %p"
 time_format = "%I:%M %p"
 
-; Use URL parameters instead of CGI PATH_INFO. This is useful for
-; broken server setups that don't support the PATH_INFO environment
-; variable.
+; Use URL parameters instead of CGI PATH_INFO. This is useful for broken server
+; setups that don't support the PATH_INFO environment variable.
+; WARNING: This option is DEPRECATED and will be removed in the future.
 disable_path_info = Off
 
 ; Use fopen(...) for URL-based reads. Modern versions of dspace
@@ -93,9 +96,6 @@ restful_urls = Off
 ; Set this to "On" if you are behind a reverse proxy and you control the X_FORWARDED_FOR
 ; Warning: This defaults to "On" if unset for backwards compatibility.
 trust_x_forwarded_for = Off
-
-; Allow javascript files to be served through a content delivery network (set to off to use local files)
-enable_cdn = On
 
 ; Set the maximum number of citation checking processes that may run in parallel.
 ; Too high a value can increase server load and lead to too many parallel outgoing
@@ -133,12 +133,13 @@ host = localhost
 username = ojs
 password = ojs
 name = ojs
+
 ; Set the non-standard port and/or socket, if used
 ; port = 3306
 ; unix_socket = /var/run/mysqld/mysqld.sock
 
-; Enable persistent connections
-persistent = Off
+; Database collation
+; collation = utf8_general_ci
 
 ; Enable database debug output (very verbose!)
 debug = Off
@@ -191,10 +192,7 @@ locale = en_US
 client_charset = utf-8
 
 ; Database connection character set
-; Must be set to "Off" if not supported by the database server
-; If enabled, must be the same character set as "client_charset"
-; (although the actual name may differ slightly depending on the server)
-connection_charset = Off
+connection_charset = utf8
 
 
 ;;;;;;;;;;;;;;;;;
@@ -213,6 +211,13 @@ files_dir = files
 ; should be relative to the base OJS directory)
 ; Windows users should use forward slashes
 public_files_dir = public
+
+; The maximum allowed size in kilobytes of each user's public files
+; directory. This is where user's can upload images through the
+; tinymce editor to their bio. Editors can upload images for
+; some of the settings.
+; Set this to 0 to disallow such uploads.
+public_user_dir_size = 5000
 
 ; Permissions mask for created files and directories
 umask = 0022
@@ -305,10 +310,26 @@ allowed_html = "a[href|target|title],em,strong,cite,code,ul,ol,li[class],dl,dt,d
 ; smtp_port = 25
 
 ; Enable SMTP authentication
-; Supported mechanisms: ssl, tls
+; Supported smtp_auth: ssl, tls (see PHPMailer SMTPSecure)
 ; smtp_auth = ssl
 ; smtp_username = username
 ; smtp_password = password
+;
+; Supported smtp_authtype: RAM-MD5, LOGIN, PLAIN, XOAUTH2 (see PHPMailer AuthType)
+; (Leave blank to try them in that order)
+; smtp_authtype =
+
+; The following are required for smtp_authtype = XOAUTH2 (e.g. GMail OAuth)
+; (See https://github.com/PHPMailer/PHPMailer/wiki/Using-Gmail-with-XOAUTH2)
+; smtp_oauth_provider = Google
+; smtp_oauth_email =
+; smtp_oauth_clientid =
+; smtp_oauth_clientsecret =
+; smtp_oauth_refreshtoken =
+
+; Enable suppressing verification of SMTP certificate in PHPMailer
+; Note: this is not recommended per PHPMailer documentation
+; smtp_suppress_cert_check = On
 
 ; Allow envelope sender to be specified
 ; (may not be possible with some server configurations)
@@ -366,9 +387,6 @@ min_word_length = 3
 ; The maximum number of search results fetched per keyword. These results
 ; are fetched and merged to provide results for searches with several keywords.
 results_per_keyword = 500
-
-; The number of hours for which keyword search results are cached.
-result_cache_hours = 1
 
 ; Paths to helper programs for indexing non-text files.
 ; Programs are assumed to output the converted text to stdout, and "%s" is
@@ -437,6 +455,9 @@ recaptcha_private_key = your_private_key
 ; Whether or not to use Captcha on user registration
 captcha_on_register = on
 
+; Whether or not to use Captcha on user login
+captcha_on_login = on
+
 ; Validate the hostname in the ReCaptcha response
 recaptcha_enforce_hostname = Off
 
@@ -450,9 +471,6 @@ recaptcha_enforce_hostname = Off
 ; certain plug-ins or advanced program features.
 
 ; Using full paths to the binaries is recommended.
-
-; perl (used in paracite citation parser)
-perl = /usr/bin/perl
 
 ; tar (used in backup plugin, translation packaging)
 tar = /bin/tar
@@ -471,14 +489,9 @@ xslt_command = ""
 
 [proxy]
 
-; Note that allow_url_fopen must be set to Off before these proxy settings
-; will take effect.
-
 ; The HTTP proxy configuration to use
-; http_host = localhost
-; http_port = 80
-; proxy_username = username
-; proxy_password = password
+; http_proxy = "http://username:password@192.168.1.1:8080"
+; https_proxy = "https://username:password@192.168.1.1:8080"
 
 
 ;;;;;;;;;;;;;;;;;;
@@ -500,3 +513,8 @@ deprecation_warnings = Off
 
 ; Log web service request information for debugging
 log_web_service_info = Off
+
+; declare a cainfo path if a certificate other than PHP's default should be used for curl calls.
+; This setting overrides the 'curl.cainfo' parameter of the php.ini configuration file.
+[curl]
+; cainfo = ""

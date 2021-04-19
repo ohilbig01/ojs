@@ -3,9 +3,9 @@
 /**
  * @file classes/user/UserAction.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class UserAction
  * @ingroup user
@@ -25,7 +25,7 @@ class UserAction extends PKPUserAction {
 
 		// Transfer old user's individual subscriptions for each journal if new user
 		// does not have a valid individual subscription for a given journal.
-		$individualSubscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO');
+		$individualSubscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO'); /* @var $individualSubscriptionDao IndividualSubscriptionDAO */
 		$oldUserSubscriptions = $individualSubscriptionDao->getByUserId($oldUserId);
 
 		while ($oldUserSubscription = $oldUserSubscriptions->next()) {
@@ -53,7 +53,7 @@ class UserAction extends PKPUserAction {
 
 		// Transfer all old user's institutional subscriptions for each journal to
 		// new user. New user now becomes the contact person for these.
-		$institutionalSubscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO');
+		$institutionalSubscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO'); /* @var $institutionalSubscriptionDao InstitutionalSubscriptionDAO */
 		$oldUserSubscriptions = $institutionalSubscriptionDao->getByUserId($oldUserId);
 
 		while ($oldUserSubscription = $oldUserSubscriptions->next()) {
@@ -62,9 +62,9 @@ class UserAction extends PKPUserAction {
 		}
 
 		// Transfer completed payments.
-		$paymentDao = DAORegistry::getDAO('OJSCompletedPaymentDAO');
+		$paymentDao = DAORegistry::getDAO('OJSCompletedPaymentDAO'); /* @var $paymentDao OJSCompletedPaymentDAO */
 		$paymentFactory = $paymentDao->getByUserId($oldUserId);
-		while ($payment = next($paymentFactory)) {
+		while ($payment = $paymentFactory->next()) {
 			$payment->setUserId($newUserId);
 			$paymentDao->updateObject($payment);
 		}

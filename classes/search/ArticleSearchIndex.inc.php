@@ -3,9 +3,9 @@
 /**
  * @file classes/search/ArticleSearchIndex.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArticleSearchIndex
  * @ingroup search
@@ -14,6 +14,8 @@
  */
 
 import('lib.pkp.classes.search.SubmissionSearchIndex');
+
+use \APP\i18n\AppLocale;
 
 class ArticleSearchIndex extends SubmissionSearchIndex {
 
@@ -27,44 +29,38 @@ class ArticleSearchIndex extends SubmissionSearchIndex {
 			array($submission)
 		);
 
-		// If no search plug-in is activated then fall back to the
-		// default database search implementation.
-		if ($hookResult === false || is_null($hookResult)) {
-			// Build author keywords
-			$authorText = array();
-			$authors = $submission->getAuthors();
-			for ($i=0, $count=count($authors); $i < $count; $i++) {
-				$author = $authors[$i];
-				$givenNames = $author->getGivenName(null);
-				if (is_array($givenNames)) foreach ($givenNames as $givenName) { // Localized
-					array_push($authorText, $givenName);
-				}
-				$familyNames = $author->getFamilyName(null);
-				if (is_array($familyNames)) foreach ($familyNames as $familyName) { // Localized
-					array_push($authorText, $familyName);
-				}
-				$affiliations = $author->getAffiliation(null);
-				if (is_array($affiliations)) foreach ($affiliations as $affiliation) { // Localized
-					array_push($authorText, $affiliation);
-				}
-				$bios = $author->getBiography(null);
-				if (is_array($bios)) foreach ($bios as $bio) { // Localized
-					array_push($authorText, strip_tags($bio));
-				}
-			}
-
-			// Update search index
-			$submissionId = $submission->getId();
-			$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_AUTHOR, $authorText);
-			$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_TITLE, $submission->getFullTitle(null));
-			$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_ABSTRACT, $submission->getAbstract(null));
-
-			$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_DISCIPLINE, (array) $submission->getDiscipline(null));
-			$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_SUBJECT, (array) $submission->getSubject(null));
-			$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_TYPE, $submission->getType(null));
-			$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_COVERAGE, (array) $submission->getCoverage(null));
-			// FIXME Index sponsors too?
+		if (!empty($hookResult)) {
+			return;
 		}
+
+		$publication = $submission->getCurrentPublication();
+
+		// Build author keywords
+		$authorText = [];
+		foreach ($publication->getData('authors') as $author) {
+			$authorText = array_merge(
+				$authorText,
+				array_values((array) $author->getData('givenName')),
+				array_values((array) $author->getData('familyName')),
+				array_values((array) $author->getData('preferredPublicName')),
+				array_values(array_map('strip_tags', (array) $author->getData('affiliation'))),
+				array_values(array_map('strip_tags', (array) $author->getData('biography')))
+			);
+		}
+
+		// Update search index
+		import('classes.search.ArticleSearch');
+		$submissionId = $submission->getId();
+		$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_AUTHOR, $authorText);
+		$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_TITLE, $publication->getFullTitles());
+		$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_ABSTRACT, $publication->getData('abstract'));
+
+		$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_SUBJECT, (array) $this->_flattenLocalizedArray($publication->getData('subjects')));
+		$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_KEYWORD, (array) $this->_flattenLocalizedArray($publication->getData('keywords')));
+		$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_DISCIPLINE, (array) $this->_flattenLocalizedArray($publication->getData('disciplines')));
+		$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_TYPE, (array) $publication->getData('type'));
+		$this->_updateTextIndex($submissionId, SUBMISSION_SEARCH_COVERAGE, (array) $publication->getData('coverage'));
+		// FIXME Index sponsors too?
 	}
 
 	/**
@@ -82,7 +78,7 @@ class ArticleSearchIndex extends SubmissionSearchIndex {
 	 * @param $assocId int optional
 	 */
 	public function deleteTextIndex($articleId, $type = null, $assocId = null) {
-		$searchDao = DAORegistry::getDAO('ArticleSearchDAO');
+		$searchDao = DAORegistry::getDAO('ArticleSearchDAO'); /* @var $searchDao ArticleSearchDAO */
 		return $searchDao->deleteSubmissionKeywords($articleId, $type, $assocId);
 	}
 
@@ -94,27 +90,22 @@ class ArticleSearchIndex extends SubmissionSearchIndex {
 	 *
 	 * @param $articleId int
 	 * @param $type int
-	 * @param $fileId int
+	 * @param $submissionFile SubmissionFile
 	 */
-	public function submissionFileChanged($articleId, $type, $fileId) {
+	public function submissionFileChanged($articleId, $type, $submissionFile) {
 		// Check whether a search plug-in jumps in.
 		$hookResult = HookRegistry::call(
 			'ArticleSearchIndex::submissionFileChanged',
-			array($articleId, $type, $fileId)
+			array($articleId, $type, $submissionFile->getId())
 		);
 
 		// If no search plug-in is activated then fall back to the
 		// default database search implementation.
 		if ($hookResult === false || is_null($hookResult)) {
-			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-			$file = $submissionFileDao->getLatestRevision($fileId);
-			if (isset($file)) {
-				$parser = SearchFileParser::fromFile($file);
-			}
-
+			$parser = SearchFileParser::fromFile($submissionFile);
 			if (isset($parser) && $parser->open()) {
-				$searchDao = DAORegistry::getDAO('ArticleSearchDAO');
-				$objectId = $searchDao->insertObject($articleId, $type, $fileId);
+				$searchDao = DAORegistry::getDAO('ArticleSearchDAO'); /* @var $searchDao ArticleSearchDAO */
+				$objectId = $searchDao->insertObject($articleId, $type, $submissionFile->getId());
 
 				$position = 0;
 				while(($text = $parser->read()) !== false) {
@@ -123,6 +114,15 @@ class ArticleSearchIndex extends SubmissionSearchIndex {
 				$parser->close();
 			}
 		}
+	}
+
+	/**
+	 * Remove indexed file contents for a submission
+	 * @param $submission Submission
+	 */
+	public function clearSubmissionFiles($submission) {
+		$searchDao = DAORegistry::getDAO('ArticleSearchDAO'); /* @var $searchDao ArticleSearchDAO */
+		$searchDao->deleteSubmissionKeywords($submission->getId(), SUBMISSION_SEARCH_GALLEY_FILE);
 	}
 
 	/**
@@ -144,22 +144,22 @@ class ArticleSearchIndex extends SubmissionSearchIndex {
 		// If no search plug-in is activated then fall back to the
 		// default database search implementation.
 		if ($hookResult === false || is_null($hookResult)) {
-			$fileDao = DAORegistry::getDAO('SubmissionFileDAO');
 			import('lib.pkp.classes.submission.SubmissionFile'); // Constants
-			// Index galley files
-			$files = $fileDao->getLatestRevisions(
-				$article->getId(), SUBMISSION_FILE_PROOF
-			);
-			foreach ($files as $file) {
-				if ($file->getFileId()) {
-					$this->submissionFileChanged($article->getId(), SUBMISSION_SEARCH_GALLEY_FILE, $file->getFileId());
-					// Index dependent files associated with any galley files.
-					$dependentFiles = $fileDao->getLatestRevisionsByAssocId(ASSOC_TYPE_SUBMISSION_FILE, $file->getFileId(), $article->getId(), SUBMISSION_FILE_DEPENDENT);
-					foreach ($dependentFiles as $depFile) {
-						if ($depFile->getFileId()) {
-							$this->submissionFileChanged($article->getId(), SUBMISSION_SEARCH_SUPPLEMENTARY_FILE, $depFile->getFileId());
-						}
-					}
+			$submissionFilesIterator = Services::get('submissionFile')->getMany([
+				'submissionIds' => [$article->getId()],
+				'fileStages' => [SUBMISSION_FILE_PROOF],
+			]);
+			foreach ($submissionFilesIterator as $submissionFile) {
+				$this->submissionFileChanged($article->getId(), SUBMISSION_SEARCH_GALLEY_FILE, $submissionFile);
+				$dependentFilesIterator = Services::get('submissionFile')->getMany([
+					'assocTypes' => [ASSOC_TYPE_SUBMISSION_FILE],
+					'assocIds' => [$submissionFile->getId()],
+					'submissionIds' => [$article->getId()],
+					'fileStages' => [SUBMISSION_FILE_DEPENDENT],
+					'includeDependentFiles' => true,
+				]);
+				foreach ($dependentFilesIterator as $dependentFile) {
+					$this->submissionFileChanged($article->getId(), SUBMISSION_SEARCH_SUPPLEMENTARY_FILE, $dependentFile);
 				}
 			}
 		}
@@ -263,13 +263,12 @@ class ArticleSearchIndex extends SubmissionSearchIndex {
 
 			// Clear index
 			if ($log) echo __('search.cli.rebuildIndex.clearingIndex') . ' ... ';
-			$searchDao = DAORegistry::getDAO('ArticleSearchDAO');
+			$searchDao = DAORegistry::getDAO('ArticleSearchDAO'); /* @var $searchDao ArticleSearchDAO */
 			$searchDao->clearIndex();
 			if ($log) echo __('search.cli.rebuildIndex.done') . "\n";
 
 			// Build index
-			$journalDao = DAORegistry::getDAO('JournalDAO');
-			$submissionDao = DAORegistry::getDAO('SubmissionDAO');
+			$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
 
 			$journals = $journalDao->getAll();
 			while ($journal = $journals->next()) {
@@ -277,11 +276,11 @@ class ArticleSearchIndex extends SubmissionSearchIndex {
 
 				if ($log) echo __('search.cli.rebuildIndex.indexing', array('journalName' => $journal->getLocalizedName())) . ' ... ';
 
-				$articles = $submissionDao->getByContextId($journal->getId());
-				while ($article = $articles->next()) {
-					if ($article->getSubmissionProgress() == 0) { // Not incomplete
-						$this->submissionMetadataChanged($article);
-						$this->submissionFilesChanged($article);
+				$submissionsIterator = Services::get('submission')->getMany(['contextId' => $journal->getId()]);
+				foreach ($submissionsIterator as $submission) {
+					if ($submission->getSubmissionProgress() == 0) { // Not incomplete
+						$this->submissionMetadataChanged($submission);
+						$this->submissionFilesChanged($submission);
 						$numIndexed++;
 					}
 				}
@@ -303,7 +302,7 @@ class ArticleSearchIndex extends SubmissionSearchIndex {
 	 * @param $position int
 	 */
 	protected function _indexObjectKeywords($objectId, $text, &$position) {
-		$searchDao = DAORegistry::getDAO('ArticleSearchDAO');
+		$searchDao = DAORegistry::getDAO('ArticleSearchDAO'); /* @var $searchDao ArticleSearchDAO */
 		$keywords = $this->filterKeywords($text);
 		for ($i = 0, $count = count($keywords); $i < $count; $i++) {
 			if ($searchDao->insertObjectKeyword($objectId, $keywords[$i], $position) !== null) {
@@ -320,10 +319,27 @@ class ArticleSearchIndex extends SubmissionSearchIndex {
 	 * @param $assocId int optional
 	 */
 	protected function _updateTextIndex($articleId, $type, $text, $assocId = null) {
-		$searchDao = DAORegistry::getDAO('ArticleSearchDAO');
+		$searchDao = DAORegistry::getDAO('ArticleSearchDAO'); /* @var $searchDao ArticleSearchDAO */
 		$objectId = $searchDao->insertObject($articleId, $type, $assocId);
 		$position = 0;
 		$this->_indexObjectKeywords($objectId, $text, $position);
+	}
+
+	/**
+	 * Flattens array of localized fields to a single, non-associative array of items
+	 *
+	 * @param $arrayWithLocales array Array of localized fields
+	 * @return array
+	 */
+	protected function _flattenLocalizedArray($arrayWithLocales) {
+		$flattenedArray = array();
+		foreach ($arrayWithLocales as $localeArray) {
+			$flattenedArray = array_merge(
+				$flattenedArray,
+				$localeArray
+			);
+		}
+		return $flattenedArray;
 	}
 }
 

@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/pubIds/PubIdExportRepresentationsListGridCellProvider.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PubIdExportRepresentationssListGridCellProvider
  * @ingroup controllers_grid_pubIds
@@ -15,6 +15,7 @@
 
 import('lib.pkp.classes.controllers.grid.DataObjectGridCellProvider');
 
+use \APP\core\Services;
 
 class PubIdExportRepresentationsListGridCellProvider extends DataObjectGridCellProvider {
 	/** @var ImportExportPlugin */
@@ -40,44 +41,43 @@ class PubIdExportRepresentationsListGridCellProvider extends DataObjectGridCellP
 	 * @copydoc GridCellProvider::getCellActions()
 	 */
 	function getCellActions($request, $row, $column, $position = GRID_ACTION_POSITION_DEFAULT) {
-		$publishedSubmissionGalley = $row->getData();
+		$galley = $row->getData();
 		$columnId = $column->getId();
-		assert(is_a($publishedSubmissionGalley, 'ArticleGalley') && !empty($columnId));
+		assert(is_a($galley, 'ArticleGalley') && !empty($columnId));
 
-		$publishedSubmissionDao = DAORegistry::getDAO('PublishedSubmissionDAO');
-		$publishedSubmission = $publishedSubmissionDao->getBySubmissionId($publishedSubmissionGalley->getSubmissionId());
+		$publication = Services::get('publication')->get($galley->getData('publicationId'));
+		$submission = Services::get('submission')->get($publication->getData('submissionId'));
 		import('lib.pkp.classes.linkAction.request.RedirectAction');
 		switch ($columnId) {
 			case 'title':
 				$this->_titleColumn = $column;
-				$title = $publishedSubmission->getLocalizedTitle();
+				$title = $submission->getLocalizedTitle();
 				if (empty($title)) $title = __('common.untitled');
-				$authorsInTitle = $publishedSubmission->getShortAuthorString();
+				$authorsInTitle = $submission->getShortAuthorString();
 				$title = $authorsInTitle . '; ' . $title;
-				import('classes.core.Services');
 				return array(
 					new LinkAction(
 						'itemWorkflow',
 						new RedirectAction(
-							Services::get('submission')->getWorkflowUrlByUserRoles($publishedSubmission)
+							Services::get('submission')->getWorkflowUrlByUserRoles($submission)
 						),
 						htmlspecialchars($title)
 					)
 				);
 			case 'issue':
-				$contextId = $publishedSubmission->getContextId();
-				$issueId = $publishedSubmission->getIssueId();
-				$issueDao = DAORegistry::getDAO('IssueDAO');
+				$contextId = $submission->getContextId();
+				$issueId = $submission->getCurrentPublication()->getData('issueId');
+				$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 				$issue = $issueDao->getById($issueId, $contextId);
 				// Link to the issue edit modal
-				$application = Application::getApplication();
+				$application = Application::get();
 				$dispatcher = $application->getDispatcher();
 				import('lib.pkp.classes.linkAction.request.AjaxModal');
 				return array(
 					new LinkAction(
 						'edit',
 						new AjaxModal(
-							$dispatcher->url($request, ROUTE_COMPONENT, null, 'grid.issues.BackIssueGridHandler', 'editIssue', null, array('issueId' => $issue->getId())),
+							$dispatcher->url($request, PKPApplication::ROUTE_COMPONENT, null, 'grid.issues.BackIssueGridHandler', 'editIssue', null, array('issueId' => $issue->getId())),
 							__('plugins.importexport.common.settings.DOIPluginSettings')
 						),
 						htmlspecialchars($issue->getIssueIdentification()),
@@ -85,9 +85,9 @@ class PubIdExportRepresentationsListGridCellProvider extends DataObjectGridCellP
 					)
 				);
 			case 'status':
-				$status = $publishedSubmissionGalley->getData($this->_plugin->getDepositStatusSettingName());
+				$status = $galley->getData($this->_plugin->getDepositStatusSettingName());
 				$statusNames = $this->_plugin->getStatusNames();
-				$statusActions = $this->_plugin->getStatusActions($publishedSubmission);
+				$statusActions = $this->_plugin->getStatusActions($submission);
 				if ($status && array_key_exists($status, $statusActions)) {
 					assert(array_key_exists($status, $statusNames));
 					return array(
@@ -112,25 +112,25 @@ class PubIdExportRepresentationsListGridCellProvider extends DataObjectGridCellP
 	 * @copydoc DataObjectGridCellProvider::getTemplateVarsFromRowColumn()
 	 */
 	function getTemplateVarsFromRowColumn($row, $column) {
-		$publishedSubmissionGalley = $row->getData();
+		$submissionGalley = $row->getData();
 		$columnId = $column->getId();
-		assert(is_a($publishedSubmissionGalley, 'ArticleGAlley') && !empty($columnId));
+		assert(is_a($submissionGalley, 'ArticleGAlley') && !empty($columnId));
 
 		switch ($columnId) {
 			case 'id':
-				return array('label' => $publishedSubmissionGalley->getId());
+				return array('label' => $submissionGalley->getId());
 			case 'title':
 				return array('label' => '');
 			case 'issue':
 				return array('label' => '');
 			case 'galley':
-				return array('label' => $publishedSubmissionGalley->getGalleyLabel());
+				return array('label' => $submissionGalley->getGalleyLabel());
 			case 'pubId':
-				return array('label' => $publishedSubmissionGalley->getStoredPubId($this->_plugin->getPubIdType()));
+				return array('label' => $submissionGalley->getStoredPubId($this->_plugin->getPubIdType()));
 			case 'status':
-				$status = $publishedSubmissionGalley->getData($this->_plugin->getDepositStatusSettingName());
+				$status = $submissionGalley->getData($this->_plugin->getDepositStatusSettingName());
 				$statusNames = $this->_plugin->getStatusNames();
-				$statusActions = $this->_plugin->getStatusActions($publishedSubmissionGalley);
+				$statusActions = $this->_plugin->getStatusActions($submissionGalley);
 				if ($status) {
 					if (array_key_exists($status, $statusActions)) {
 						$label = '';

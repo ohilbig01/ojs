@@ -2,9 +2,9 @@
 /**
  * @file classes/services/ContextService.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ContextService
  * @ingroup services
@@ -31,6 +31,7 @@ class ContextService extends \PKP\Services\PKPContextService {
 
 		\HookRegistry::register('Context::add', array($this, 'afterAddContext'));
 		\HookRegistry::register('Context::edit', array($this, 'afterEditContext'));
+		\HookRegistry::register('Context::delete::before', array($this, 'beforeDeleteContext'));
 		\HookRegistry::register('Context::delete', array($this, 'afterDeleteContext'));
 		\HookRegistry::register('Context::validate', array($this, 'validateContext'));
 	}
@@ -75,12 +76,13 @@ class ContextService extends \PKP\Services\PKPContextService {
 	 */
 	public function afterEditContext($hookName, $args) {
 		$newContext = $args[0];
+		$currentContext = $args[1];
 		$params = $args[2];
 		$request = $args[3];
 
 		// Move an uploaded journal thumbnail and set the updated data
 		if (!empty($params['journalThumbnail'])) {
-			$supportedLocales = $newContext->getSupportedLocales();
+			$supportedLocales = $newContext->getSupportedFormLocales();
 			foreach ($supportedLocales as $localeKey) {
 				if (!array_key_exists($localeKey, $params['journalThumbnail'])) {
 					continue;
@@ -96,6 +98,40 @@ class ContextService extends \PKP\Services\PKPContextService {
 				$newContext->setData('journalThumbnail', $localeValue, $localeKey);
 			}
 		}
+
+		// If the context is enabled or disabled, create or delete
+		// tombstones for all published submissions
+		if ($newContext->getData('enabled') !== $currentContext->getData('enabled')) {
+			import('classes.article.ArticleTombstoneManager');
+			$articleTombstoneManager = new \ArticleTombstoneManager();
+			if ($newContext->getData('enabled')) {
+				$articleTombstoneManager->deleteTombstonesByContextId($newContext->getId());
+			} else {
+				$articleTombstoneManager->insertTombstonesByContext($newContext);
+			}
+		}
+	}
+
+	/**
+	 * Perform actions before a context has been deleted
+	 *
+	 * This should only be used in cases where you need the context to still exist
+	 * in the database to complete the actions. Otherwise, use
+	 * ContextService::afterDeleteContext().
+	 *
+	 * @param $hookName string
+	 * @param $args array [
+	 *		@option Context The new context
+	 *		@option Request
+	 * ]
+	 */
+	public function beforeDeleteContext($hookName, $args) {
+		$context = $args[0];
+
+		// Create tombstones for all published submissions
+		import('classes.article.ArticleTombstoneManager');
+		$articleTombstoneManager = new \ArticleTombstoneManager();
+		$articleTombstoneManager->insertTombstonesByContext($context);
 	}
 
 	/**
@@ -165,7 +201,7 @@ class ContextService extends \PKP\Services\PKPContextService {
 					if (!is_array($errors['journalThumbnail'])) {
 						$errors['journalThumbnail'] = [];
 					}
-					$errors['journalThumbnail'][$localeKey] = [__('manager.setup.noTemporaryFile')];
+					$errors['journalThumbnail'][$localeKey] = [__('common.noTemporaryFile')];
 				}
 			}
 		}

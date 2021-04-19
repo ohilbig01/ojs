@@ -3,9 +3,9 @@
 /**
  * @file pages/submission/SubmissionHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionHandler
  * @ingroup pages_submission
@@ -14,8 +14,9 @@
  */
 
 import('classes.handler.Handler');
-import('lib.pkp.classes.core.JSONMessage');
 import('lib.pkp.pages.submission.PKPSubmissionHandler');
+
+use \PKP\core\JSONMessage;
 
 class SubmissionHandler extends PKPSubmissionHandler {
 	/**
@@ -38,18 +39,23 @@ class SubmissionHandler extends PKPSubmissionHandler {
 	 */
 	function fetchChoices($args, $request) {
 		$term = $request->getUserVar('term');
+		$locale = $request->getUserVar('locale');
+		if (!$locale) {
+			$locale = AppLocale::getLocale();
+		}
 		switch ($request->getUserVar('list')) {
 			case 'languages':
-				$languageDao = DAORegistry::getDAO('LanguageDAO');
-				$languages = $languageDao->getLanguages(AppLocale::getLocale());
+				$isoCodes = new \Sokil\IsoCodes\IsoCodesFactory(\Sokil\IsoCodes\IsoCodesFactory::OPTIMISATION_IO);
 				$matches = array();
-				foreach ($languages as $language) {
-					if (stristr($language->getName(), $term)) $matches[$language->getCode()] = $language->getName();
-				}
+				foreach ($isoCodes->getLanguages() as $language) {
+					if (!$language->getAlpha2() || $language->getType() != 'L' || $language->getScope() != 'I') continue;
+					if (stristr($language->getLocalName(), $term)) $matches[$language->getAlpha3()] = $language->getLocalName();
+				};
 				header('Content-Type: text/json');
 				echo json_encode($matches);
+			default:
+				assert(false);
 		}
-		assert(false);
 	}
 
 

@@ -3,9 +3,9 @@
 /**
  * @file plugins/gateways/resolver/ResolverPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ResolverPlugin
  * @ingroup plugins_gateways_resolver
@@ -63,11 +63,10 @@ class ResolverPlugin extends GatewayPlugin {
 		switch ($scheme) {
 			case 'doi':
 				$doi = implode('/', $args);
-				$journal = $request->getJournal();
-				$publishedSubmissionDao = DAORegistry::getDAO('PublishedSubmissionDAO'); /* @var $publishedSubmissionDao PublishedSubmissionDAO */
-				$article = $publishedSubmissionDao->getPublishedSubmissionByPubId('doi', $doi, $journal?$journal->getId():null);
-				if(is_a($article, 'PublishedSubmission')) {
-					$request->redirect(null, 'article', 'view', $article->getBestArticleId());
+				$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+				$article = $submissionDao->getByPubId('doi', $doi, $request->getJournal());
+				if($article) {
+					$request->redirect(null, 'article', 'view', $article->getBestId());
 				}
 				break;
 			case 'vnp': // Volume, number, page
@@ -88,7 +87,7 @@ class ResolverPlugin extends GatewayPlugin {
 				$number = array_shift($args);
 				$page = (int) array_shift($args);
 
-				$issueDao = DAORegistry::getDAO('IssueDAO');
+				$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 				$issues = $issueDao->getPublishedIssuesByNumber($journal->getId(), $volume, $number, $year);
 
 				// Ensure only one issue matched, and fetch it.
@@ -96,21 +95,22 @@ class ResolverPlugin extends GatewayPlugin {
 				if (!$issue || $issues->next()) break;
 				unset($issues);
 
-				$publishedSubmissionDao = DAORegistry::getDAO('PublishedSubmissionDAO');
-				$articles = $publishedSubmissionDao->getPublishedSubmissions($issue->getId());
-				foreach ($articles as $article) {
+				$submissionsIterator = Services::get('submission')->getMany([
+					'issueIds' => $issue->getId(),
+				]);
+				foreach ($submissionsIterator as $submission) {
 					// Look for the correct page in the list of articles.
 					$matches = null;
-					if (PKPString::regexp_match_get('/^[Pp][Pp]?[.]?[ ]?(\d+)$/', $article->getPages(), $matches)) {
+					if (PKPString::regexp_match_get('/^[Pp][Pp]?[.]?[ ]?(\d+)$/', $submission->getPages(), $matches)) {
 						$matchedPage = $matches[1];
-						if ($page == $matchedPage) $request->redirect(null, 'article', 'view', $article->getBestArticleId());
+						if ($page == $matchedPage) $request->redirect(null, 'article', 'view', $submission->getBestId());
 					}
-					if (PKPString::regexp_match_get('/^[Pp][Pp]?[.]?[ ]?(\d+)[ ]?-[ ]?([Pp][Pp]?[.]?[ ]?)?(\d+)$/', $article->getPages(), $matches)) {
+					if (PKPString::regexp_match_get('/^[Pp][Pp]?[.]?[ ]?(\d+)[ ]?-[ ]?([Pp][Pp]?[.]?[ ]?)?(\d+)$/', $submission->getPages(), $matches)) {
 						$matchedPageFrom = $matches[1];
 						$matchedPageTo = $matches[3];
-						if ($page >= $matchedPageFrom && ($page < $matchedPageTo || ($page == $matchedPageTo && $matchedPageFrom = $matchedPageTo))) $request->redirect(null, 'article', 'view', $article->getBestArticleId());
+						if ($page >= $matchedPageFrom && ($page < $matchedPageTo || ($page == $matchedPageTo && $matchedPageFrom = $matchedPageTo))) $request->redirect(null, 'article', 'view', $submission->getBestId());
 					}
-					unset($article);
+					unset($submission);
 				}
 				break;
 		}
@@ -129,8 +129,8 @@ class ResolverPlugin extends GatewayPlugin {
 	}
 
 	function exportHoldings() {
-		$journalDao = DAORegistry::getDAO('JournalDAO');
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		$journals = $journalDao->getAll(true);
 		$request = Application::get()->getRequest();
 		header('content-type: text/plain');

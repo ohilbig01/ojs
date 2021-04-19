@@ -1,9 +1,9 @@
 {**
  * templates/payments/individualSubscriptionForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Individual subscription form under journal management.
  *
@@ -22,7 +22,7 @@
 
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="individualSubscriptionNotification"}
 
-	{capture assign=subscriberSelectGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.users.subscriberSelect.SubscriberSelectGridHandler" op="fetchGrid" escape=false userId=$userId}{/capture}
+	{capture assign=subscriberSelectGridUrl}{url router=PKPApplication::ROUTE_COMPONENT component="grid.users.subscriberSelect.SubscriberSelectGridHandler" op="fetchGrid" escape=false userId=$userId}{/capture}
 	{load_url_in_div id='subscriberSelectGridContainer' url=$subscriberSelectGridUrl}
 
 	{fbvFormArea id="individualSubscriptionFormArea"}
@@ -34,12 +34,10 @@
 			{fbvElement type="text" name="dateStart" id="dateStart" value=$dateStart label="manager.subscriptions.form.dateStart" size=$fbvStyles.size.SMALL inline=true class="datepicker"}
 			{fbvElement type="text" name="dateEnd" id="dateEnd" value=$dateEnd label="manager.subscriptions.form.dateEnd" size=$fbvStyles.size.SMALL inline=true class="datepicker"}
 		{/fbvFormSection}
-		{fbvFormSection label="manager.subscriptions.form.membership"}
-			{fbvElement type="text" name="membership" id="membership" value=$membership size=$fbvStyles.size.MEDIUM inline=true}
-		{/fbvFormSection}
-		{fbvFormSection label="manager.subscriptions.form.referenceNumber"}
-			{fbvElement type="text" name="referenceNumber" id="referenceNumber" value=$referenceNumber size=$fbvStyles.size.MEDIUM inline=true}
-		{/fbvFormSection}
+
+		{fbvElement type="text" label="manager.subscriptions.form.membership" name="membership" id="membership" value=$membership size=$fbvStyles.size.MEDIUM inline=true}
+		{fbvElement type="text" label="manager.subscriptions.form.referenceNumber" name="referenceNumber" id="referenceNumber" value=$referenceNumber size=$fbvStyles.size.MEDIUM inline=true}
+
 		{fbvFormSection label="manager.subscriptions.form.notes"}
 			{fbvElement type="textarea" name="notes" id="notes" value=$notes rich=true}
 		{/fbvFormSection}

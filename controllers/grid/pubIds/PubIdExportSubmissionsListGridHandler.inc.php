@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/pubIds/PubIdExportSubmissionsListGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PubIdExportSubmissionsListGridHandler
  * @ingroup controllers_grid_pubIds
@@ -21,7 +21,6 @@ class PubIdExportSubmissionsListGridHandler extends ExportPublishedSubmissionsLi
 	 * @copydoc GridHandler::loadData()
 	 */
 	protected function loadData($request, $filter) {
-		$publishedSubmissionDao = DAORegistry::getDAO('PublishedSubmissionDAO');
 		$context = $request->getContext();
 		list($search, $column, $issueId, $statusId) = $this->getFilterValues($filter);
 		$title = $author = null;
@@ -34,7 +33,8 @@ class PubIdExportSubmissionsListGridHandler extends ExportPublishedSubmissionsLi
 		if ($statusId) {
 			$pubIdStatusSettingName = $this->_plugin->getDepositStatusSettingName();
 		}
-		return $publishedSubmissionDao->getExportable(
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /** @var $submissionDao SubmissionDAO */
+		return $submissionDao->getExportable(
 			$context->getId(),
 			$this->_plugin->getPubIdType(),
 			$title,

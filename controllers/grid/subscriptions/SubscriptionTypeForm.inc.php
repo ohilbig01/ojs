@@ -3,9 +3,9 @@
 /**
  * @file classes/subscription/form/SubscriptionTypeForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubscriptionTypeForm
  * @ingroup manager_form
@@ -43,12 +43,12 @@ class SubscriptionTypeForm extends Form {
 			SUBSCRIPTION_TYPE_FORMAT_PRINT_ONLINE => __('subscriptionTypes.format.printOnline')
 		);
 
-		$currencyDao = DAORegistry::getDAO('CurrencyDAO');
-		$currencies = $currencyDao->getCurrencies();
+		$isoCodes = new \Sokil\IsoCodes\IsoCodesFactory();
 		$this->validCurrencies = array();
-		while (list(, $currency) = each($currencies)) {
-			$this->validCurrencies[$currency->getCodeAlpha()] = $currency->getName() . ' (' . $currency->getCodeAlpha() . ')';
+		foreach ($isoCodes->getCurrencies() as $currency) {
+			$this->validCurrencies[$currency->getLetterCode()] = $currency->getLocalName() . ' (' . $currency->getLetterCode() . ')';
 		}
+		asort($this->validCurrencies);
 
 		$this->typeId = isset($typeId) ? (int) $typeId : null;
 
@@ -83,22 +83,21 @@ class SubscriptionTypeForm extends Form {
 	 * @return array
 	 */
 	function getLocaleFieldNames() {
-		$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO');
+		$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO'); /* @var $subscriptionTypeDao SubscriptionTypeDAO */
 		return $subscriptionTypeDao->getLocaleFieldNames();
 	}
 
 	/**
-	 * Fetch the form.
-	 * @param $request PKPRequest
+	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign(array(
 			'typeId' =>$this->typeId,
 			'validCurrencies' => $this->validCurrencies,
 			'validFormats' => $this->validFormats,
 		));
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -106,7 +105,7 @@ class SubscriptionTypeForm extends Form {
 	 */
 	function initData() {
 		if (isset($this->typeId)) {
-			$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO');
+			$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO'); /* @var $subscriptionTypeDao SubscriptionTypeDAO */
 			$subscriptionType = $subscriptionTypeDao->getById($this->typeId, $this->journalId);
 
 			if ($subscriptionType != null) {
@@ -140,10 +139,10 @@ class SubscriptionTypeForm extends Form {
 	}
 
 	/**
-	 * Save subscription type.
+	 * @copydoc Form::execute()
 	 */
-	function execute() {
-		$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO');
+	function execute(...$functionArgs) {
+		$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO'); /* @var $subscriptionTypeDao SubscriptionTypeDAO */
 
 		if (isset($this->typeId)) {
 			$subscriptionType = $subscriptionTypeDao->getById($this->typeId, $this->journalId);
@@ -165,6 +164,8 @@ class SubscriptionTypeForm extends Form {
 		$subscriptionType->setFormat($this->getData('format'));
 		$subscriptionType->setMembership((int) $this->getData('membership'));
 		$subscriptionType->setDisablePublicDisplay((int) $this->getData('disable_public_display'));
+
+		parent::execute(...$functionArgs);
 
 		// Update or insert subscription type
 		if ($subscriptionType->getId() != null) {

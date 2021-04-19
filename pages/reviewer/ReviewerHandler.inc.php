@@ -3,9 +3,9 @@
 /**
  * @file pages/reviewer/ReviewerHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewerHandler
  * @ingroup pages_reviewer
@@ -57,19 +57,20 @@ class ReviewerHandler extends PKPReviewerHandler {
 	 * @param $request PKPRequest
 	 * @return void
 	 */
-	function _validateAccessKey($request) {
+	protected function _validateAccessKey($request) {
 		$accessKeyCode = $request->getUserVar('key');
 		$reviewId = $request->getUserVar('reviewId');
-		if (!($accessKeyCode && $reviewId)) { return false; }
+		if (!($accessKeyCode && $reviewId)) return;
 
 		// Check if the user is already logged in
 		$sessionManager = SessionManager::getManager();
 		$session = $sessionManager->getUserSession();
-		if ($session->getUserId()) { return false; }
+		if ($session->getUserId()) return;
 
 		import('lib.pkp.classes.security.AccessKeyManager');
-		$reviewerSubmissionDao = DAORegistry::getDAO('ReviewerSubmissionDAO');
+		$reviewerSubmissionDao = DAORegistry::getDAO('ReviewerSubmissionDAO'); /* @var $reviewerSubmissionDao ReviewerSubmissionDAO */
 		$reviewerSubmission = $reviewerSubmissionDao->getReviewerSubmission($reviewId);
+		if (!$reviewerSubmission) return; // e.g. deleted review assignment
 
 		// Validate the access key
 		$context = $request->getContext();
@@ -80,12 +81,12 @@ class ReviewerHandler extends PKPReviewerHandler {
 			$reviewerSubmission->getReviewerId(),
 			$accessKeyHash
 		);
-		if (!$accessKey) { return false; }
+		if (!$accessKey) return;
 
 		// Get the reviewer user object
-		$userDao = DAORegistry::getDAO('UserDAO');
+		$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 		$user = $userDao->getById($accessKey->getUserId());
-		if (!$user) { return false; }
+		if (!$user) return;
 
 		// Register the user object in the session
 		import('lib.pkp.classes.security.Validation');
@@ -95,6 +96,19 @@ class ReviewerHandler extends PKPReviewerHandler {
 			$this->user = $user;
 		}
 	}
+
+	/**
+	 * @copydoc PKPReviewerHandler::getReviewForm()
+	 */
+	public function getReviewForm($step, $request, $reviewerSubmission, $reviewAssignment) {
+	    switch ($step) {
+		case 3:
+			import('classes.submission.reviewer.form.ReviewerReviewStep3Form');
+			return new ReviewerReviewStep3Form($request, $reviewerSubmission, $reviewAssignment);
+	    }
+	    return parent::getReviewForm($step, $request, $reviewerSubmission, $reviewAssignment);
+	}
+
 }
 
 

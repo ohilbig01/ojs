@@ -1,9 +1,9 @@
 {**
  * templates/frontend/pages/userSubscriptions.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Page where users can view and manage their subscriptions.
  *
@@ -19,6 +19,9 @@
 
 <div class="page page_user_subscriptions">
 	{include file="frontend/components/breadcrumbs.tpl" currentTitleKey="user.subscriptions.mySubscriptions"}
+	<h1>
+		{translate key="user.subscriptions.mySubscriptions"}
+	</h1>
 	{include file="frontend/components/subscriptionContact.tpl"}
 
 	{if $paymentsEnabled}

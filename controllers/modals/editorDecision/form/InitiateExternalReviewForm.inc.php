@@ -3,9 +3,9 @@
 /**
  * @file controllers/modals/editorDecision/form/InitiateExternalReviewForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class InitiateReviewForm
  * @ingroup controllers_modal_editorDecision_form
@@ -35,7 +35,9 @@ class InitiateExternalReviewForm extends EditorDecisionForm {
 	/**
 	 * Execute the form.
 	 */
-	function execute() {
+	function execute(...$formParams) {
+		parent::execute(...$formParams);
+
 		$request = Application::get()->getRequest();
 
 		// Retrieve the submission.
@@ -43,7 +45,7 @@ class InitiateExternalReviewForm extends EditorDecisionForm {
 
 		// Record the decision.
 		import('classes.workflow.EditorDecisionActionsManager');
-		$actionLabels = (new EditorDecisionActionsManager())->getActionLabels($request->getContext(), $this->getStageId(), array($this->_decision));
+		$actionLabels = (new EditorDecisionActionsManager())->getActionLabels($request->getContext(), $submission, $this->getStageId(), array($this->_decision));
 
 		import('lib.pkp.classes.submission.action.EditorAction');
 		$editorAction = new EditorAction();

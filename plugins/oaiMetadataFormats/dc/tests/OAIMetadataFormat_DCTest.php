@@ -7,9 +7,9 @@
 /**
  * @file plugins/oaiMetadataFormats/dc/tests/OAIMetadataFormat_DCTest.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OAIMetadataFormat_DCTest
  * @ingroup plugins_oaiMetadataFormats_dc_tests
@@ -27,13 +27,15 @@ import('lib.pkp.classes.oai.OAIUtils');
 import('plugins.oaiMetadataFormats.dc.OAIMetadataFormat_DC');
 import('plugins.oaiMetadataFormats.dc.OAIMetadataFormatPlugin_DC');
 
+import('lib.pkp.classes.services.PKPSchemaService'); // Constants
+
 class OAIMetadataFormat_DCTest extends PKPTestCase {
 
 	/**
 	 * @see PKPTestCase::getMockedDAOs()
 	 */
 	protected function getMockedDAOs() {
-		return array('AuthorDAO', 'OAIDAO', 'ArticleGalleyDAO', 'PublishedSubmissionDAO');
+		return array('AuthorDAO', 'OAIDAO', 'ArticleGalleyDAO');
 	}
 
 	/**
@@ -59,7 +61,7 @@ class OAIMetadataFormat_DCTest extends PKPTestCase {
 		$pluginSettingsDao = DAORegistry::getDAO('PluginSettingsDAO'); /* @var $pluginSettingsDao PluginSettingsDAO */
 		$pluginSettingsDao->updateSetting($journalId, 'doipubidplugin', 'enabled', 1);
 		$pluginSettingsDao->updateSetting($journalId, 'doipubidplugin', 'enableIssueDoi', 1);
-		$pluginSettingsDao->updateSetting($journalId, 'doipubidplugin', 'enableSubmissionDoi', 1);
+		$pluginSettingsDao->updateSetting($journalId, 'doipubidplugin', 'enablePublicationDoi', 1);
 		$pluginSettingsDao->updateSetting($journalId, 'doipubidplugin', 'enableRepresentationyDoi', 1);
 
 		// Author
@@ -71,12 +73,12 @@ class OAIMetadataFormat_DCTest extends PKPTestCase {
 		$author->setEmail('someone@example.com');
 
 		// Article
-		import('classes.article.PublishedSubmission');
-		$article = $this->getMockBuilder(PublishedSubmission::class)
-			->setMethods(array('getBestArticleId'))
+		import('classes.submission.Submission');
+		$article = $this->getMockBuilder(Submission::class)
+			->setMethods(array('getBestId'))
 			->getMock();
 		$article->expects($this->any())
-		        ->method('getBestArticleId')
+		        ->method('getBestId')
 		        ->will($this->returnValue(9));
 		$article->setId(9);
 		$article->setJournalId($journalId);
@@ -139,7 +141,7 @@ class OAIMetadataFormat_DCTest extends PKPTestCase {
 		$router = $this->getMockBuilder(PKPRouter::class)
 			->setMethods(array('url'))
 			->getMock();
-		$application = Application::getApplication();
+		$application = Application::get();
 		$router->setApplication($application);
 		$router->expects($this->any())
 		       ->method('url')
@@ -196,16 +198,6 @@ class OAIMetadataFormat_DCTest extends PKPTestCase {
 		                 ->will($this->returnValue($galleys));
 		DAORegistry::registerDAO('ArticleGalleyDAO', $articleGalleyDao);
 		// FIXME: ArticleGalleyDAO::getBySubmissionId returns iterator; array expected here. Fix expectations.
-
-		// Create a mocked PublishedSubmissionDAO that returns our test article.
-		import('classes.article.PublishedSubmissionDAO');
-		$submissionDao = $this->getMockBuilder(PublishedSubmissionDAO::class)
-			->getMethods(array('getBySubmissionId'))
-			->getMock();
-		$submissionDao->expects($this->any())
-		            ->method('getBySubmissionId')
-		            ->will($this->returnValue($article));
-		DAORegistry::registerDAO('PublishedSubmissionDAO', $submissionDao);
 
 		//
 		// Test

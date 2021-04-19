@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/datacite/filter/DataciteXmlFilter.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DataciteXmlFilter
  * @ingroup plugins_importexport_datacite
@@ -72,7 +72,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 	//
 	/**
 	 * @see Filter::process()
-	 * @param $pubObject Issue|PublishedSubmission|ArticleGalley
+	 * @param $pubObject Issue|Submission|ArticleGalley
 	 * @return DOMDocument
 	 */
 	function &process(&$pubObject) {
@@ -92,7 +92,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 			if (!$cache->isCached('issues', $issue->getId())) {
 				$cache->add($issue, null);
 			}
-		} elseif (is_a($pubObject, 'PublishedSubmission')) {
+		} elseif (is_a($pubObject, 'Submission')) {
 			$article = $pubObject;
 			if (!$cache->isCached('articles', $article->getId())) {
 				$cache->add($article, null);
@@ -100,17 +100,22 @@ class DataciteXmlFilter extends NativeExportFilter {
 		} elseif (is_a($pubObject, 'ArticleGalley')) {
 			$galley = $pubObject;
 			$galleyFile = $galley->getFile();
-			$articleId = $galley->getSubmissionId();
-			if ($cache->isCached('articles', $articleId)) {
-				$article = $cache->get('articles', $articleId);
+			$publication = Services::get('publication')->get($galley->getData('publicationId'));
+			if ($cache->isCached('articles', $publication->getData('submissionId'))) {
+				$article = $cache->get('articles', $publication->getData('submissionId'));
 			} else {
-				$submissionDao = DAORegistry::getDAO('PublishedSubmissionDAO'); /* @var $submissionDao PublishedSubmissionDAO */
-				$article = $submissionDao->getBySubmissionId($pubObject->getSubmissionId(), $context->getId());
+				$article = Services::get('submission')->get($publication->getData('submissionId'));
 				if ($article) $cache->add($article, null);
+			}
+			if ($cache->isCached('genres', $galleyFile->getData('genreId'))) {
+				$genre = $cache->get('genres', $galleyFile->getData('genreId'));
+			} else {
+				$genre = DAORegistry::getDAO('GenreDAO')->getById($galleyFile->getData('genreId'));
+				if ($genre) $cache->add($genre, null);
 			}
 		}
 		if (!$issue) {
-			$issueId = $article->getIssueId();
+			$issueId = $article->getCurrentPublication()->getData('issueId');
 			if ($cache->isCached('issues', $issueId)) {
 				$issue = $cache->get('issues', $issueId);
 			} else {
@@ -120,14 +125,19 @@ class DataciteXmlFilter extends NativeExportFilter {
 			}
 		}
 
+		// Get the most recently published version
+		$publication = $article ? $article->getCurrentPublication() : null;
+
 		// Identify the object locale.
-		$objectLocalePrecedence = $this->getObjectLocalePrecedence($context, $article, $galley);
+		$objectLocalePrecedence = $this->getObjectLocalePrecedence($context, $article, $publication, $galley);
 		// The publisher is required.
 		// Use the journal title as DataCite recommends for now.
-		$publisher = $this->getPrimaryTranslation($context->getName(null), $objectLocalePrecedence);
+		$publisher = $this->getPrimaryTranslation($context->getData('name'), $objectLocalePrecedence);
 		assert(!empty($publisher));
 		// The publication date is required.
-		$publicationDate = (isset($article) ? $article->getDatePublished() : null);
+		if ($publication) {
+			$publicationDate = $publication->getData('datePublished');
+		}
 		if (empty($publicationDate)) {
 			$publicationDate = $issue->getDatePublished();
 		}
@@ -139,24 +149,26 @@ class DataciteXmlFilter extends NativeExportFilter {
 		// DOI (mandatory)
 		$doi = $pubObject->getStoredPubId('doi');
 		if ($plugin->isTestMode($context)) {
-			$doi = PKPString::regexp_replace('#^[^/]+/#', DATACITE_API_TESTPREFIX . '/', $doi);
+			$testDOIPrefix = $plugin->getSetting($context->getId(), 'testDOIPrefix');
+			assert(!empty($testDOIPrefix));
+			$doi = PKPString::regexp_replace('#^[^/]+/#', $testDOIPrefix . '/', $doi);
 		}
 		$rootNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'identifier', htmlspecialchars($doi, ENT_COMPAT, 'UTF-8')));
 		$node->setAttribute('identifierType', DATACITE_IDTYPE_DOI);
 		// Creators (mandatory)
-		$rootNode->appendChild($this->createCreatorsNode($doc, $issue, $article, $galley, $galleyFile, $publisher, $objectLocalePrecedence));
+		$rootNode->appendChild($this->createCreatorsNode($doc, $issue, $publication, $galley, $galleyFile, $publisher, $objectLocalePrecedence));
 		// Title (mandatory)
-		$rootNode->appendChild($this->createTitlesNode($doc, $issue, $article, $galley, $galleyFile, $objectLocalePrecedence));
+		$rootNode->appendChild($this->createTitlesNode($doc, $issue, $publication, $galley, $galleyFile, $objectLocalePrecedence));
 		// Publisher (mandatory)
 		$rootNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'publisher', htmlspecialchars($publisher, ENT_COMPAT, 'UTF-8')));
 		// Publication Year (mandatory)
 		$rootNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'publicationYear', date('Y', strtotime($publicationDate))));
 		// Subjects
 		$subject = null;
-		if (!empty($galleyFile) && is_a($galleyFile, 'SupplementaryFile')) {
+		if (!empty($galleyFile) && !empty($genre) && $genre->getSupplementary()) {
 			$subject = $this->getPrimaryTranslation($galleyFile->getSubject(null), $objectLocalePrecedence);
-		} elseif (!empty($article)) {
-			$subject = $this->getPrimaryTranslation($article->getSubject(null), $objectLocalePrecedence);
+		} elseif (!empty($article) && !empty($publication)) {
+			$subject = $this->getPrimaryTranslation($publication->getData('subjects'), $objectLocalePrecedence);
 		}
 		if (!empty($subject)) {
 			$subjectsNode = $doc->createElementNS($deployment->getNamespace(), 'subjects');
@@ -164,7 +176,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 			$rootNode->appendChild($subjectsNode);
 		}
 		// Dates
-		$rootNode->appendChild($this->createDatesNode($doc, $issue, $article, $galley, $galleyFile, $publicationDate));
+		$rootNode->appendChild($this->createDatesNode($doc, $issue, $article, $publication, $galley, $galleyFile, $publicationDate));
 		// Language
 		$rootNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'language', AppLocale::getIso1FromLocale($objectLocalePrecedence[0])));
 		// Resource Type
@@ -173,14 +185,14 @@ class DataciteXmlFilter extends NativeExportFilter {
 		// Alternate Identifiers
 		$rootNode->appendChild($this->createAlternateIdentifiersNode($doc, $issue, $article, $galley));
 		// Related Identifiers
-		$relatedIdentifiersNode = $this->createRelatedIdentifiersNode($doc, $issue, $article, $galley);
+		$relatedIdentifiersNode = $this->createRelatedIdentifiersNode($doc, $issue, $article, $publication, $galley);
 		if ($relatedIdentifiersNode) $rootNode->appendChild($relatedIdentifiersNode);
 		// Sizes
-		$sizesNode = $this->createSizesNode($doc, $issue, $article, $galley, $galleyFile);
+		$sizesNode = $this->createSizesNode($doc, $issue, $article, $publication, $galley, $galleyFile);
 		if ($sizesNode) $rootNode->appendChild($sizesNode);
 		// Formats
 		if (!empty($galleyFile)) {
-			$format = $galleyFile->getFileType();
+			$format = $galleyFile->getData('mimetype');
 			if (!empty($format)) {
 				$formatsNode = $doc->createElementNS($deployment->getNamespace(), 'formats');
 				$formatsNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'format', htmlspecialchars($format, ENT_COMPAT, 'UTF-8')));
@@ -188,15 +200,15 @@ class DataciteXmlFilter extends NativeExportFilter {
 			}
 		}
 		// Rights
-		$rightsURL = $article ? $article->getLicenseURL() : $context->getData('licenseURL');
+		$rightsURL = $publication ? $publication->getData('licenseUrl') : $context->getData('licenseUrl');
 		if(!empty($rightsURL)) {
 			$rightsNode = $doc->createElementNS($deployment->getNamespace(), 'rightsList');
-			$rightsNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'rights', htmlspecialchars(strip_tags(Application::getCCLicenseBadge($rightsURL)), ENT_COMPAT, 'UTF-8')));
+			$rightsNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'rights', htmlspecialchars(strip_tags(Application::get()->getCCLicenseBadge($rightsURL)), ENT_COMPAT, 'UTF-8')));
 			$node->setAttribute('rightsURI', $rightsURL);
 			$rootNode->appendChild($rightsNode);
 		}
 		// Descriptions
-		$descriptionsNode = $this->createDescriptionsNode($doc, $issue, $article, $galley, $galleyFile, $objectLocalePrecedence);
+		$descriptionsNode = $this->createDescriptionsNode($doc, $issue, $article, $publication, $galley, $galleyFile, $objectLocalePrecedence);
 		if ($descriptionsNode) $rootNode->appendChild($descriptionsNode);
 
 		return $doc;
@@ -222,29 +234,29 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 * Create creators node.
 	 * @param $doc DOMDocument
 	 * @param $issue Issue
-	 * @param $article PublishedSubmission
+	 * @param $publication Publication
 	 * @param $galley ArticleGalley
 	 * @param $galleyFile SubmissionFile
 	 * @param $publisher string
 	 * @param $objectLocalePrecedence array
 	 * @return DOMElement
 	 */
-	function createCreatorsNode($doc, $issue, $article, $galley, $galleyFile, $publisher, $objectLocalePrecedence) {
+	function createCreatorsNode($doc, $issue, $publication, $galley, $galleyFile, $publisher, $objectLocalePrecedence) {
 		$deployment = $this->getDeployment();
 		$creators = array();
 		switch (true) {
-			case (isset($galleyFile) && is_a($galleyFile, 'SupplementaryFile')):
+			case (isset($galleyFile) && ($genre = $this->getDeployment()->getPlugin()->getCache()->get('genres', $galleyFile->getData('genreId'))) && $genre->getSupplementary()):
 				// Check whether we have a supp file creator set...
 				$creator = $this->getPrimaryTranslation($galleyFile->getCreator(null), $objectLocalePrecedence);
 				if (!empty($creator)) {
 					$creators[] = $creator;
 					break;
 				}
-				// ...if not then go on by retrieving the article
+				// ...if not then go on by retrieving the publication
 				// authors.
-			case isset($article):
-				// Retrieve the article authors.
-				$authors = $article->getAuthors();
+			case isset($publication):
+				// Retrieve the publication authors.
+				$authors = $publication->getData('authors');
 				assert(!empty($authors));
 				foreach ($authors as $author) { /* @var $author Author */
 					$creators[] = $author->getFullName(false, true);
@@ -268,22 +280,22 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 * Create titles node.
 	 * @param $doc DOMDocument
 	 * @param $issue Issue
-	 * @param $article PublishedSubmission
+	 * @param $publication Publication
 	 * @param $galley ArticleGalley
 	 * @param $galleyFile SubmissionFile
 	 * @param $objectLocalePrecedence array
 	 * @return DOMElement
 	 */
-	function createTitlesNode($doc, $issue, $article, $galley, $galleyFile, $objectLocalePrecedence) {
+	function createTitlesNode($doc, $issue, $publication, $galley, $galleyFile, $objectLocalePrecedence) {
 		$deployment = $this->getDeployment();
 		// Get an array of localized titles.
 		$alternativeTitle = null;
 		switch (true) {
-			case (isset($galleyFile) && is_a($galleyFile, 'SupplementaryFile')):
-				$titles = $galleyFile->getName(null);
+			case (isset($galleyFile) && ($genre = $this->getDeployment()->getPlugin()->getCache()->get('genres', $galleyFile->getData('genreId'))) && $genre->getSupplementary()):
+				$titles = $galleyFile->getData('name');
 				break;
-			case isset($article):
-				$titles = $article->getTitle(null);
+			case isset($publication):
+				$titles = $publication->getData('title');
 				break;
 			case isset($issue):
 				$titles = $this->getIssueInformation($issue);
@@ -315,18 +327,20 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 * Create a date node list.
 	 * @param $doc DOMDocument
 	 * @param $issue Issue
-	 * @param $article PublishedSubmission
+	 * @param $article Submission
+	 * @param $publication Publication
 	 * @param $galley ArticleGalley
 	 * @param $galleyFile SubmissionFile
 	 * @param $publicationDate string
 	 * @return DOMElement
 	 */
-	function createDatesNode($doc, $issue, $article, $galley, $galleyFile, $publicationDate) {
+	function createDatesNode($doc, $issue, $article, $publication, $galley, $galleyFile, $publicationDate) {
 		$deployment = $this->getDeployment();
 		$dates = array();
 		switch (true) {
 			case isset($galleyFile):
-				if (is_a($galleyFile, 'SupplementaryFile')) {
+				$genre = $this->getDeployment()->getPlugin()->getCache()->get('genres', $galleyFile->getData('genreId'));
+				if ($genre->getSupplementary()) {
 					// Created date (for supp files only): supp file date created.
 					$createdDate = $galleyFile->getDateCreated();
 					if (!empty($createdDate)) {
@@ -334,32 +348,32 @@ class DataciteXmlFilter extends NativeExportFilter {
 					}
 				}
 				// Accepted date (for galleys files): file uploaded.
-				$acceptedDate = $galleyFile->getDateUploaded();
+				$acceptedDate = $galleyFile->getData('createdAt');
 				if (!empty($acceptedDate)) {
 					$dates[DATACITE_DATE_ACCEPTED] = $acceptedDate;
 				}
 				// Last modified date (for galley files): file modified date.
-				$lastModified = $galleyFile->getDateModified();
+				$lastModified = $galleyFile->getData('updatedAt');
 				if (!empty($lastModified)) {
 					$dates[DATACITE_DATE_UPDATED] = $lastModified;
 				}
 				break;
 			case isset($article):
 				// Submitted date (for articles): article date submitted.
-				$submittedDate = $article->getDateSubmitted();
+				$submittedDate = $article->getData('dateSubmitted');
 				if (!empty($submittedDate)) {
 					$dates[DATACITE_DATE_SUBMITTED] = $submittedDate;
 				}
 				// Accepted date: the last editor accept decision date
-				$editDecisionDao = DAORegistry::getDAO('EditDecisionDAO');
+				$editDecisionDao = DAORegistry::getDAO('EditDecisionDAO'); /* @var $editDecisionDao EditDecisionDAO */
 				$editDecisions = $editDecisionDao->getEditorDecisions($article->getId());
 				foreach (array_reverse($editDecisions) as $editDecision) {
 					if ($editDecision['decision'] == SUBMISSION_EDITOR_DECISION_ACCEPT) {
 						$dates[DATACITE_DATE_ACCEPTED] = $editDecision['dateDecided'];
 					}
 				}
-				// Last modified date (for articles): last$lastModifiede.
-				$lastModified = $article->getLastModified();
+				// Last modified date (for articles): last modified date.
+				$lastModified = $publication->getData('lastModified');
 				if (!empty($lastModified)) {
 					$dates[DATACITE_DATE_UPDATED] = $lastModified;
 				}
@@ -394,10 +408,10 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 * Create a resource type node.
 	 * @param $doc DOMDocument
 	 * @param $issue Issue
-	 * @param $article PublishedSubmission
+	 * @param $article Submission
 	 * @param $galley ArticleGalley
 	 * @param $galleyFile SubmissionFile
-	 * @return DOMElement.
+	 * @return DOMElement
 	 */
 	function createResourceTypeNode($doc, $issue, $article, $galley, $galleyFile) {
 		$deployment = $this->getDeployment();
@@ -405,8 +419,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 		switch (true) {
 			case isset($galley):
 				if (!$galley->getRemoteURL()) {
-					$genreDao = DAORegistry::getDAO('GenreDAO'); /* @var $genreDao GenreDAO */
-					$genre = $genreDao->getById($galleyFile->getGenreId());
+					$genre = $this->getDeployment()->getPlugin()->getCache()->get('genres', $galleyFile->getData('genreId'));
 					if ($genre->getCategory() == GENRE_CATEGORY_DOCUMENT && !$genre->getSupplementary() && !$genre->getDependent()) {
 						$resourceType = 'Article';
 					}
@@ -439,7 +452,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 * Generate alternate identifiers node list.
 	 * @param $doc DOMDocument
 	 * @param $issue Issue
-	 * @param $article PublishedSubmission
+	 * @param $article Submission
 	 * @param $galley ArticleGalley
 	 * @return DOMElement
 	 */
@@ -474,11 +487,12 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 * Generate related identifiers node list.
 	 * @param $doc DOMDocument
 	 * @param $issue Issue
-	 * @param $article PublishedSubmission
+	 * @param $article Submission
+	 * @param $publication Publication
 	 * @param $galley ArticleGalley
 	 * @return DOMElement|null
 	 */
-	function createRelatedIdentifiersNode($doc, $issue, $article, $galley) {
+	function createRelatedIdentifiersNode($doc, $issue, $article, $publication, $galley) {
 		$deployment = $this->getDeployment();
 		$relatedIdentifiersNode = $doc->createElementNS($deployment->getNamespace(), 'relatedIdentifiers');
 		switch (true) {
@@ -503,8 +517,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 				}
 				unset($doi);
 				// Parts: galleys.
-				$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO'); /* @var $galleyDao ArticleGalleyDAO */
-				$galleysByArticle = $galleyDao->getBySubmissionId($article->getId())->toArray();
+				$galleysByArticle = $publication->getData('galleys');
 				foreach ($galleysByArticle as $relatedGalley) {
 					$doi = $relatedGalley->getStoredPubId('doi');
 					if (!empty($doi)) {
@@ -517,9 +530,11 @@ class DataciteXmlFilter extends NativeExportFilter {
 				break;
 			case isset($issue):
 				// Parts: articles in this issue.
-				$submissionDao = DAORegistry::getDAO('PublishedSubmissionDAO'); /* @var $submissionDao PublishedSubmissionDAO */
-				$articlesByIssue = $submissionDao->getPublishedSubmissions($issue->getId());
-				foreach ($articlesByIssue as $relatedArticle) {
+				$submissionsIterator = Services::get('submission')->getMany([
+					'contextId' => $issue->getJournalId(),
+					'issueIds' => $issue->getId(),
+				]);
+				foreach ($submissionsIterator as $relatedArticle) {
 					$doi = $relatedArticle->getStoredPubId('doi');
 					if (!empty($doi)) {
 						$relatedIdentifiersNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'relatedIdentifier', htmlspecialchars($doi, ENT_COMPAT, 'UTF-8')));
@@ -538,41 +553,42 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 * Create a sizes node list.
 	 * @param $doc DOMDocument
 	 * @param $issue Issue
-	 * @param $article PublishedSubmission
+	 * @param $article Submission
+	 * @param $publication Publication
 	 * @param $galley ArticleGalley
 	 * @param $galleyFile SubmissionFile
 	 * @return DOMElement|null Can be null if a size
 	 *  cannot be identified for the given object.
 	 */
-	function createSizesNode($doc, $issue, $article, $galley, $galleyFile) {
+	function createSizesNode($doc, $issue, $article, $publication, $galley, $galleyFile) {
 		$deployment = $this->getDeployment();
+		$sizes = [];
 		switch (true) {
 			case isset($galley):
 				// The galley represents the article.
-				$pages = $article->getPages();
-				$files = array($galleyFile);
+				$pages = $publication->getData('pages');
+				$path = $galleyFile->getData('path');
+				$size = Services::get('file')->fs->getSize($path);
+				$sizes[] = Services::get('file')->getNiceFileSize($size);
 				break;
 			case isset($article):
-				$pages = $article->getPages();
-				$files = array();
+				$pages = $publication->getData('pages');
 				break;
 			case isset($issue):
 				$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO'); /* @var $issueGalleyDao IssueGalleyDAO */
-				$files = $issueGalleyDao->getByIssueId($issue->getId());
+				$issueGalleyFiles = $issueGalleyDao->getByIssueId($issue->getId());
+				foreach($issueGalleyFiles as $issueGalleyFile) {
+					if ($issueGalleyFile) {
+						$sizes[] = $issueGalleyFile->getNiceFileSize();
+					}
+				}
 				break;
 			default:
 				assert(false);
 		}
-		$sizes = array();
 		if (!empty($pages)) {
 			AppLocale::requireComponents(array(LOCALE_COMPONENT_APP_EDITOR));
 			$sizes[] = $pages . ' ' . __('editor.issues.pages');
-		}
-		foreach($files as $file) { /* @var $file PKPFile */
-			if ($file) {
-				$sizes[] = $file->getNiceFileSize();
-			}
-			unset($file);
 		}
 		$sizesNode = null;
 		if (!empty($sizes)) {
@@ -588,25 +604,27 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 * Create descriptions node list.
 	 * @param $doc DOMDocument
 	 * @param $issue Issue
-	 * @param $article PublishedSubmission
+	 * @param $article Submission
+	 * @param $publication Publication
 	 * @param $galley Alley
 	 * @param $galleyFile SubmissionFile
 	 * @param $objectLocalePrecedence array
 	 * @return DOMElement|null Can be null if a size
 	 *  cannot be identified for the given object.
 	 */
-	function createDescriptionsNode($doc, $issue, $article, $galley, $galleyFile, $objectLocalePrecedence) {
+	function createDescriptionsNode($doc, $issue, $article, $publication, $galley, $galleyFile, $objectLocalePrecedence) {
 		$deployment = $this->getDeployment();
 		$descriptions = array();
 		switch (true) {
 			case isset($galley):
-				if (is_a($galleyFile, 'SupplementaryFile')) {
+				$genre = $this->getDeployment()->getPlugin()->getCache()->get('genres', $galleyFile->getData('genreId'));
+				if ($genre->getSupplementary()) {
 					$suppFileDesc = $this->getPrimaryTranslation($galleyFile->getDescription(null), $objectLocalePrecedence);
 					if (!empty($suppFileDesc)) $descriptions[DATACITE_DESCTYPE_OTHER] = $suppFileDesc;
 				}
 				break;
 			case isset($article):
-				$articleAbstract = $this->getPrimaryTranslation($article->getAbstract(null), $objectLocalePrecedence);
+				$articleAbstract = $this->getPrimaryTranslation($publication->getData('abstract'), $objectLocalePrecedence);
 				if (!empty($articleAbstract)) $descriptions[DATACITE_DESCTYPE_ABSTRACT] = $articleAbstract;
 				break;
 			case isset($issue):
@@ -639,28 +657,20 @@ class DataciteXmlFilter extends NativeExportFilter {
 	/**
 	 * Identify the locale precedence for this export.
 	 * @param $context Context
-	 * @param $article PublishedSubmission
+	 * @param $article Submission
+	 * @param $publication Publication
 	 * @param $galley ArticleGalley
 	 * @return array A list of valid PKP locales in descending
 	 *  order of priority.
 	 */
-	function getObjectLocalePrecedence($context, $article, $galley) {
+	function getObjectLocalePrecedence($context, $article, $publication, $galley) {
 		$locales = array();
 		if (is_a($galley, 'ArticleGalley') && AppLocale::isLocaleValid($galley->getLocale())) {
 			$locales[] = $galley->getLocale();
 		}
 		if (is_a($article, 'Submission')) {
-			// First try to translate the article language into a locale.
-			$articleLocale = $this->translateLanguageToLocale($article->getLanguage());
-			if (!is_null($articleLocale)) {
-				$locales[] = $articleLocale;
-			}
-
-			// Use the article locale as fallback only
-			// as this is the primary locale of article meta-data, not
-			// necessarily of the article itself.
-			if(AppLocale::isLocaleValid($article->getLocale())) {
-				$locales[] = $article->getLocale();
+			if (!is_null($publication->getData('locale'))) {
+				$locales[] = $publication->getData('locale');
 			}
 		}
 		// Use the journal locale as fallback.
@@ -791,19 +801,20 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 * @return string
 	 */
 	function getIssueToc($issue, $objectLocalePrecedence) {
-		$submissionDao = DAORegistry::getDAO('PublishedSubmissionDAO'); /* @var $submissionDao PublishedSubmissionDAO */
-		$articlesByIssue = $submissionDao->getPublishedSubmissions($issue->getId());
-		assert(is_array($articlesByIssue));
+		$submissionsIterator = Services::get('submission')->getMany([
+			'contextId' => $issue->getJournalId(),
+			'issueIds' => $issue->getId(),
+		]);
 		$toc = '';
-		foreach ($articlesByIssue as $articleInIssue) {
-			$currentEntry = $this->getPrimaryTranslation($articleInIssue->getTitle(null), $objectLocalePrecedence);
+		foreach ($submissionsIterator as $submissionInIssue) {
+			$currentEntry = $this->getPrimaryTranslation($submissionInIssue->getTitle(null), $objectLocalePrecedence);
 			assert(!empty($currentEntry));
-			$pages = $articleInIssue->getPages();
+			$pages = $submissionInIssue->getPages();
 			if (!empty($pages)) {
 				$currentEntry .= '...' . $pages;
 			}
 			$toc .= $currentEntry . "<br />";
-			unset($articleInIssue);
+			unset($submissionInIssue);
 		}
 		return $toc;
 	}

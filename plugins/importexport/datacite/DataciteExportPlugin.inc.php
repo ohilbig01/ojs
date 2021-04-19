@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/datacite/DataciteExportPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DataciteExportPlugin
  * @ingroup plugins_importexport_datacite
@@ -18,9 +18,7 @@ import('classes.plugins.DOIPubIdExportPlugin');
 // DataCite API
 define('DATACITE_API_RESPONSE_OK', 201);
 define('DATACITE_API_URL', 'https://mds.datacite.org/');
-
-// Test DOI prefix
-define('DATACITE_API_TESTPREFIX', '10.5072');
+define('DATACITE_API_URL_TEST', 'https://mds.test.datacite.org/');
 
 // Export file types.
 define('DATACITE_EXPORT_FILE_XML', 0x01);
@@ -201,68 +199,63 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 		// Get the DOI and the URL for the object.
 		$doi = $object->getStoredPubId('doi');
 		assert(!empty($doi));
+		$testDOIPrefix = null;
 		if ($this->isTestMode($context)) {
-			$doi = PKPString::regexp_replace('#^[^/]+/#', DATACITE_API_TESTPREFIX . '/', $doi);
+			$testDOIPrefix = $this->getSetting($context->getId(), 'testDOIPrefix');
+			assert(!empty($testDOIPrefix));
+			$doi = PKPString::regexp_replace('#^[^/]+/#', $testDOIPrefix . '/', $doi);
 		}
 		$url = $this->_getObjectUrl($request, $context, $object);
 		assert(!empty($url));
-		// Prepare HTTP session.
-		$curlCh = curl_init();
-		if ($httpProxyHost = Config::getVar('proxy', 'http_host')) {
-			curl_setopt($curlCh, CURLOPT_PROXY, $httpProxyHost);
-			curl_setopt($curlCh, CURLOPT_PROXYPORT, Config::getVar('proxy', 'http_port', '80'));
-			if ($username = Config::getVar('proxy', 'username')) {
-				curl_setopt($curlCh, CURLOPT_PROXYUSERPWD, $username . ':' . Config::getVar('proxy', 'password'));
-			}
-		}
-		curl_setopt($curlCh, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curlCh, CURLOPT_POST, true);
-		// Set up basic authentication.
+
+		$dataCiteAPIUrl = DATACITE_API_URL;
 		$username = $this->getSetting($context->getId(), 'username');
 		$password = $this->getSetting($context->getId(), 'password');
-		curl_setopt($curlCh, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		curl_setopt($curlCh, CURLOPT_USERPWD, "$username:$password");
-		// Set up SSL.
-		curl_setopt($curlCh, CURLOPT_SSL_VERIFYPEER, false);
-		// Transmit meta-data.
+		if ($this->isTestMode($context)) {
+			$dataCiteAPIUrl = DATACITE_API_URL_TEST;
+			$username = $this->getSetting($context->getId(), 'testUsername');
+			$password = $this->getSetting($context->getId(), 'testPassword');
+		}
+
+		// Prepare HTTP session.
 		assert(is_readable($filename));
-		$payload = file_get_contents($filename);
-		assert($payload !== false && !empty($payload));
-		curl_setopt($curlCh, CURLOPT_URL, DATACITE_API_URL . 'metadata');
-		curl_setopt($curlCh, CURLOPT_HTTPHEADER, array('Content-Type: application/xml;charset=UTF-8'));
-		curl_setopt($curlCh, CURLOPT_POSTFIELDS, $payload);
-		$result = true;
-		$response = curl_exec($curlCh);
-		if ($response === false) {
-			$result = array(array('plugins.importexport.common.register.error.mdsError', "Registering DOI $doi: No response from server."));
-		} else {
-			$status = curl_getinfo($curlCh, CURLINFO_HTTP_CODE);
-			if ($status != DATACITE_API_RESPONSE_OK) {
-				$result = array(array('plugins.importexport.common.register.error.mdsError', "Registering DOI $doi: $status - $response"));
+		$httpClient = Application::get()->getHttpClient();
+		try {
+			$response = $httpClient->request('POST', $dataCiteAPIUrl . 'metadata', [
+				'auth' => [$username, $password],
+				'body' => fopen($filename, 'r'),
+				'headers' => [
+					'Content-Type' => 'application/xml;charset=UTF-8',
+				],
+			]);
+		} catch (GuzzleHttp\Exception\RequestException $e) {
+			$returnMessage = $e->getMessage();
+			if ($e->hasResponse()) {
+				$returnMessage = $e->getResponse()->getBody(true) . ' (' .$e->getResponse()->getStatusCode() . ' ' . $e->getResponse()->getReasonPhrase() . ')';
 			}
+			return [['plugins.importexport.common.register.error.mdsError', "Registering DOI $doi: $returnMessage"]];
 		}
+
 		// Mint a DOI.
-		if ($result === true) {
-			$payload = "doi=$doi\nurl=$url";
-			curl_setopt($curlCh, CURLOPT_URL, DATACITE_API_URL . 'doi');
-			curl_setopt($curlCh, CURLOPT_HTTPHEADER, array('Content-Type: text/plain;charset=UTF-8'));
-			curl_setopt($curlCh, CURLOPT_POSTFIELDS, $payload);
-			$response = curl_exec($curlCh);
-			if ($response === false) {
-				$result = array(array('plugins.importexport.common.register.error.mdsError', 'Registering DOI $doi: No response from server.'));
-			} else {
-				$status = curl_getinfo($curlCh, CURLINFO_HTTP_CODE);
-				if ($status != DATACITE_API_RESPONSE_OK) {
-					$result = array(array('plugins.importexport.common.register.error.mdsError', "Registering DOI $doi: $status - $response"));
-				}
+		$httpClient = Application::get()->getHttpClient();
+		try {
+			$response = $httpClient->request('POST', $dataCiteAPIUrl . 'doi', [
+				'auth' => [$username, $password],
+				'headers' => [
+					'Content-Type' => 'text/plain;charset=UTF-8',
+				],
+				'body' => "doi=$doi\nurl=$url",
+			]);
+		} catch (GuzzleHttp\Exception\RequestException $e) {
+			$returnMessage = $e->getMessage();
+			if ($e->hasResponse()) {
+				$returnMessage = $e->getResponse()->getBody(true) . ' (' .$e->getResponse()->getStatusCode() . ' ' . $e->getResponse()->getReasonPhrase() . ')';
 			}
+			return [['plugins.importexport.common.register.error.mdsError', "Registering DOI $doi: $returnMessage"]];
 		}
-		curl_close($curlCh);
-		if ($result === true) {
-			$object->setData($this->getDepositStatusSettingName(), EXPORT_STATUS_REGISTERED);
-			$this->saveRegisteredDoi($context, $object, DATACITE_API_TESTPREFIX);
-		}
-		return $result;
+		$object->setData($this->getDepositStatusSettingName(), EXPORT_STATUS_REGISTERED);
+		$this->saveRegisteredDoi($context, $object, $testDOIPrefix);
+		return true;
 	}
 
 	/**
@@ -395,32 +388,32 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 	 * Get the canonical URL of an object.
 	 * @param $request Request
 	 * @param $context Context
-	 * @param $object Issue|PublishedSubmission|ArticleGalley
+	 * @param $object Issue|Submission|ArticleGalley
 	 */
 	function _getObjectUrl($request, $context, $object) {
 		$router = $request->getRouter();
 		// Retrieve the article of article files.
 		if (is_a($object, 'ArticleGalley')) {
-			$articleId = $object->getSubmissionId();
+			$publication = Services::get('publication')->get($object->getData('publicationId'));
+			$articleId = $publication->getData('submissionId');
 			$cache = $this->getCache();
 			if ($cache->isCached('articles', $articleId)) {
 				$article = $cache->get('articles', $articleId);
 			} else {
-				$submissionDao = DAORegistry::getDAO('PublishedSubmissionDAO'); /* @var $submissionDao PublishedSubmissionDAO */
-				$article = $submissionDao->getBySubmissionId($articleId, $context->getId(), true);
+				$article = Services::get('submission')->get($articleId);
 			}
-			assert(is_a($article, 'PublishedSubmission'));
+			assert(is_a($article, 'Submission'));
 		}
 		$url = null;
 		switch (true) {
 			case is_a($object, 'Issue'):
 				$url = $router->url($request, $context->getPath(), 'issue', 'view', $object->getBestIssueId(), null, null, true);
 				break;
-			case is_a($object, 'PublishedSubmission'):
-				$url = $router->url($request, $context->getPath(), 'article', 'view', $object->getBestArticleId(), null, null, true);
+			case is_a($object, 'Submission'):
+				$url = $router->url($request, $context->getPath(), 'article', 'view', $object->getBestId(), null, null, true);
 				break;
 			case is_a($object, 'ArticleGalley'):
-				$url = $router->url($request, $context->getPath(), 'article', 'view', array($article->getBestArticleId(), $object->getBestGalleyId()), null, null, true);
+				$url = $router->url($request, $context->getPath(), 'article', 'view', array($article->getBestId(), $object->getBestGalleyId()), null, null, true);
 				break;
 		}
 		if ($this->isTestMode($context)) {

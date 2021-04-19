@@ -3,9 +3,9 @@
 /**
  * @file classes/core/Services.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Services
  * @ingroup core
@@ -14,15 +14,19 @@
  * @brief Pimple Dependency Injection Container.
  */
 
-import('lib.pkp.classes.core.PKPServices');
+namespace APP\core;
 
-class Services extends PKPServices  {
+class Services extends \PKP\core\PKPServices  {
 
 	/**
 	 * container initialization
 	 */
 	protected function init() {
-		$this->container->register(new APP\Services\OJSServiceProvider());
+		$this->container->register(new \APP\Services\OJSServiceProvider());
 	}
 
+}
+
+if (!PKP_STRICT_MODE) {
+	class_alias('\APP\core\Services', '\Services');
 }

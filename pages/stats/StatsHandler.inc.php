@@ -3,9 +3,9 @@
 /**
  * @file pages/stats/StatsHandler.inc.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class StatsHandler
  * @ingroup pages_stats
@@ -21,7 +21,7 @@ class StatsHandler extends PKPStatsHandler {
 	 */
 	public function __construct() {
 		parent::__construct();
-		HookRegistry::register ('TemplateManager::display', array($this, 'addArticleStatsData'));
+		HookRegistry::register ('TemplateManager::display', array($this, 'addSectionFilters'));
 	}
 
 	/**
@@ -32,20 +32,67 @@ class StatsHandler extends PKPStatsHandler {
 	 * @param string $hookname
 	 * @param array $args [$templateMgr, $template, $sendContentType, $charset, $output]
 	 */
-	public function addArticleStatsData($hookName, $args) {
+	public function addSectionFilters($hookName, $args) {
 		$templateMgr = $args[0];
 		$template = $args[1];
 
-		if ($template !== 'stats/publications.tpl') {
+		if (!in_array($template, ['stats/publications.tpl', 'stats/editorial.tpl'])) {
 			return;
 		}
 
-		$statsComponent = $templateMgr->getTemplateVars('statsComponent');
-		$statsComponent->filters = [
-			[
-				'heading' => __('section.sections'),
-				'filters' => APP\components\listPanels\SubmissionsListPanel::getSectionFilters(),
-			],
+		$context = Application::get()->getRequest()->getContext();
+
+		$filters = $templateMgr->getState('filters');
+		if (is_null($filters)) {
+			$filters = [];
+		}
+		$sections = \Services::get('section')->getSectionList($context->getId());
+		$filters[] = [
+			'heading' => __('section.sections'),
+			'filters' => array_map(function($section) {
+				return [
+					'param' => 'sectionIds',
+					'value' => (int) $section['id'],
+					'title' => $section['title'],
+				];
+			}, $sections),
 		];
+		$templateMgr->setState([
+			'filters' => $filters
+		]);
+	}
+
+	/**
+	 * @copydoc PKPStatsHandler::getReportRowValue()
+	 */
+	protected function getReportRowValue($key, $record) {
+		$returnValue = parent::getReportRowValue($key, $record);
+
+		if (!$returnValue && $key == STATISTICS_DIMENSION_ISSUE_ID) {
+			$assocId = $record[STATISTICS_DIMENSION_ISSUE_ID];
+			$assocType = ASSOC_TYPE_ISSUE;
+			$returnValue = $this->getObjectTitle($assocId, $assocType);
+		}
+
+		return $returnValue;
+	}
+
+	/**
+	 * @copydoc PKPStatsHandler::getObjectTitle()
+	 */
+	protected function getObjectTitle($assocId, $assocType) {
+		$objectTitle = parent::getObjectTitle($assocId, $assocType);
+
+		switch ($assocType) {
+			case ASSOC_TYPE_ISSUE:
+				$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
+				$issue = $issueDao->getById($assocId);
+				if ($issue) {
+					$objectTitle = $issue->getIssueIdentification();
+				}
+				break;
+		}
+
+		return $objectTitle;
 	}
 }

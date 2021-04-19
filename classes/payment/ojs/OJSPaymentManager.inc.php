@@ -3,9 +3,9 @@
 /**
  * @file classes/payment/ojs/OJSPaymentManager.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OJSPaymentManager
  * @ingroup payment
@@ -43,13 +43,12 @@ class OJSPaymentManager extends PaymentManager {
 	 * @param $type int PAYMENT_TYPE_...
 	 * @param $userId int ID of user responsible for payment
 	 * @param $assocId int ID of associated entity
-	 * @param $amount numeric Amount of currency $currencyCode
+	 * @param $amount float Amount of currency $currencyCode
 	 * @param $currencyCode string optional ISO 4217 currency code
 	 * @return QueuedPayment
 	 */
 	function createQueuedPayment($request, $type, $userId, $assocId, $amount, $currencyCode = null) {
-		$journalSettingsDao = DAORegistry::getDAO('JournalSettingsDAO');
-		if (is_null($currencyCode)) $currencyCode = $journalSettingsDao->getSetting($this->_context->getId(), 'currency');
+		if (is_null($currencyCode)) $currencyCode = $this->_context->getData('currency');
 		$payment = new QueuedPayment($amount, $currencyCode, $userId, $assocId);
 		$payment->setContextId($this->_context->getId());
 		$payment->setType($type);
@@ -58,23 +57,24 @@ class OJSPaymentManager extends PaymentManager {
 
 		switch ($type) {
 			case PAYMENT_TYPE_PURCHASE_ARTICLE:
-				$payment->setRequestUrl($dispatcher->url($request, ROUTE_PAGE, null, 'article', 'view', $assocId));
+				$payment->setRequestUrl($dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'article', 'view', $assocId));
 				break;
 			case PAYMENT_TYPE_PURCHASE_ISSUE:
-				$payment->setRequestUrl($dispatcher->url($request, ROUTE_PAGE, null, 'issue', 'view', $assocId));
+				$payment->setRequestUrl($dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'issue', 'view', $assocId));
 				break;
 			case PAYMENT_TYPE_PURCHASE_SUBSCRIPTION:
-				$payment->setRequestUrl($dispatcher->url($request, ROUTE_PAGE, null, 'issue', 'current'));
+				$payment->setRequestUrl($dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'issue', 'current'));
+				break;
 			case PAYMENT_TYPE_RENEW_SUBSCRIPTION:
-				$payment->setRequestUrl($dispatcher->url($request, ROUTE_PAGE, null, 'user', 'subscriptions'));
+				$payment->setRequestUrl($dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'user', 'subscriptions'));
 				break;
 			case PAYMENT_TYPE_PUBLICATION:
-				$submissionDao = Application::getSubmissionDAO();
+				$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 				$submission = $submissionDao->getById($assocId);
 				if ($submission->getSubmissionProgress()!=0) {
-					$payment->setRequestUrl($dispatcher->url($request, ROUTE_PAGE, null, 'submission', 'wizard', $submission->getSubmissionProgress(), array('submissionId' => $assocId)));
+					$payment->setRequestUrl($dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'submission', 'wizard', $submission->getSubmissionProgress(), array('submissionId' => $assocId)));
 				} else {
-					$payment->setRequestUrl($dispatcher->url($request, ROUTE_PAGE, null, 'authorDashboard', 'submission', $submission->getId()));
+					$payment->setRequestUrl($dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'authorDashboard', 'submission', $submission->getId()));
 				}
 				break;
 			case PAYMENT_TYPE_MEMBERSHIP: // Deprecated
@@ -157,7 +157,7 @@ class OJSPaymentManager extends PaymentManager {
 
 	/**
 	 * Get the payment plugin.
-	 * @return PaymentPlugin
+	 * @return PaymethodPlugin
 	 */
 	function getPaymentPlugin() {
 		$paymentMethodPluginName = $this->_context->getData('paymentPluginName');
@@ -178,9 +178,10 @@ class OJSPaymentManager extends PaymentManager {
 	 */
 	function fulfillQueuedPayment($request, $queuedPayment, $payMethodPluginName = null) {
 		$returner = false;
+		$journal = $request->getContext();
 		if ($queuedPayment) switch ($queuedPayment->getType()) {
 			case PAYMENT_TYPE_MEMBERSHIP:
-				$userDao = DAORegistry::getDAO('UserDAO');
+				$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 				$user = $userDao->getById($queuedPayment->getUserId());
 				$dateEnd = $user->getSetting('dateEndMembership', 0);
 				if (!$dateEnd) $dateEnd = 0;
@@ -195,8 +196,8 @@ class OJSPaymentManager extends PaymentManager {
 				break;
 			case PAYMENT_TYPE_PURCHASE_SUBSCRIPTION:
 				$subscriptionId = $queuedPayment->getAssocId();
-				$institutionalSubscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO');
-				$individualSubscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO');
+				$institutionalSubscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO'); /* @var $institutionalSubscriptionDao InstitutionalSubscriptionDAO */
+				$individualSubscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO'); /* @var $individualSubscriptionDao IndividualSubscriptionDAO */
 				if ($institutionalSubscriptionDao->subscriptionExists($subscriptionId)) {
 					$subscription = $institutionalSubscriptionDao->getById($subscriptionId);
 					$institutional = true;
@@ -220,8 +221,7 @@ class OJSPaymentManager extends PaymentManager {
 					}
 
 					// Notify JM/SM of completed online purchase
-					$journalSettingsDao = DAORegistry::getDAO('JournalSettingsDAO');
-					if ($journalSettingsDao->getSetting($subscription->getJournalId(), 'enableSubscriptionOnlinePaymentNotificationPurchaseInstitutional')) {
+					if ($journal->getData('enableSubscriptionOnlinePaymentNotificationPurchaseInstitutional')) {
 						import('classes.subscription.SubscriptionAction');
 						SubscriptionAction::sendOnlinePaymentNotificationEmail($request, $subscription, 'SUBSCRIPTION_PURCHASE_INSTL');
 					}
@@ -234,8 +234,7 @@ class OJSPaymentManager extends PaymentManager {
 						$individualSubscriptionDao->renewSubscription($subscription);
 					}
 					// Notify JM/SM of completed online purchase
-					$journalSettingsDao = DAORegistry::getDAO('JournalSettingsDAO');
-					if ($journalSettingsDao->getSetting($subscription->getJournalId(), 'enableSubscriptionOnlinePaymentNotificationPurchaseIndividual')) {
+					if ($journal->getData('enableSubscriptionOnlinePaymentNotificationPurchaseIndividual')) {
 						import('classes.subscription.SubscriptionAction');
 						SubscriptionAction::sendOnlinePaymentNotificationEmail($request, $subscription, 'SUBSCRIPTION_PURCHASE_INDL');
 					}
@@ -244,8 +243,8 @@ class OJSPaymentManager extends PaymentManager {
 				break;
 			case PAYMENT_TYPE_RENEW_SUBSCRIPTION:
 				$subscriptionId = $queuedPayment->getAssocId();
-				$institutionalSubscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO');
-				$individualSubscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO');
+				$institutionalSubscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO'); /* @var $institutionalSubscriptionDao InstitutionalSubscriptionDAO */
+				$individualSubscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO'); /* @var $individualSubscriptionDao IndividualSubscriptionDAO */
 				if ($institutionalSubscriptionDao->subscriptionExists($subscriptionId)) {
 					$subscription = $institutionalSubscriptionDao->getById($subscriptionId);
 					$institutional = true;
@@ -254,16 +253,13 @@ class OJSPaymentManager extends PaymentManager {
 					$institutional = false;
 				}
 				if (!$subscription || $subscription->getUserId() != $queuedPayment->getUserId() || $subscription->getJournalId() != $queuedPayment->getContextId()) {
-					// FIXME: Is this supposed to be here?
-					error_log(print_r($subscription, true));
 					return false;
 				}
 				if ($institutional) {
 					$institutionalSubscriptionDao->renewSubscription($subscription);
 
 					// Notify JM/SM of completed online purchase
-					$journalSettingsDao = DAORegistry::getDAO('JournalSettingsDAO');
-					if ($journalSettingsDao->getSetting($subscription->getJournalId(), 'enableSubscriptionOnlinePaymentNotificationRenewInstitutional')) {
+					if ($journal->getData('enableSubscriptionOnlinePaymentNotificationRenewInstitutional')) {
 						import('classes.subscription.SubscriptionAction');
 						SubscriptionAction::sendOnlinePaymentNotificationEmail($request, $subscription, 'SUBSCRIPTION_RENEW_INSTL');
 					}
@@ -271,8 +267,7 @@ class OJSPaymentManager extends PaymentManager {
 					$individualSubscriptionDao->renewSubscription($subscription);
 
 					// Notify JM/SM of completed online purchase
-					$journalSettingsDao = DAORegistry::getDAO('JournalSettingsDAO');
-					if ($journalSettingsDao->getSetting($subscription->getJournalId(), 'enableSubscriptionOnlinePaymentNotificationRenewIndividual')) {
+					if ($journal->getData('enableSubscriptionOnlinePaymentNotificationRenewIndividual')) {
 						import('classes.subscription.SubscriptionAction');
 						SubscriptionAction::sendOnlinePaymentNotificationEmail($request, $subscription, 'SUBSCRIPTION_RENEW_INDL');
 					}
@@ -293,11 +288,11 @@ class OJSPaymentManager extends PaymentManager {
 				// Invalid payment type
 				assert(false);
 		}
-		$completedPaymentDao = DAORegistry::getDAO('OJSCompletedPaymentDAO');
+		$completedPaymentDao = DAORegistry::getDAO('OJSCompletedPaymentDAO'); /* @var $completedPaymentDao OJSCompletedPaymentDAO */
 		$completedPayment = $this->createCompletedPayment($queuedPayment, $payMethodPluginName, $request->getUser()->getId());
 		$completedPaymentDao->insertObject($completedPayment);
 
-		$queuedPaymentDao = DAORegistry::getDAO('QueuedPaymentDAO');
+		$queuedPaymentDao = DAORegistry::getDAO('QueuedPaymentDAO'); /* @var $queuedPaymentDao QueuedPaymentDAO */
 		$queuedPaymentDao->deleteById($queuedPayment->getId());
 
 		return $returner;
@@ -311,17 +306,17 @@ class OJSPaymentManager extends PaymentManager {
 		switch ($payment->getType()) {
 			case PAYMENT_TYPE_PURCHASE_SUBSCRIPTION:
 			case PAYMENT_TYPE_RENEW_SUBSCRIPTION:
-				$institutionalSubscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO');
+				$institutionalSubscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO'); /* @var $institutionalSubscriptionDao InstitutionalSubscriptionDAO */
 
 				if ($institutionalSubscriptionDao->subscriptionExists($payment->getAssocId())) {
 					$subscription = $institutionalSubscriptionDao->getById($payment->getAssocId());
 				} else {
-					$individualSubscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO');
+					$individualSubscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO'); /* @var $individualSubscriptionDao IndividualSubscriptionDAO */
 					$subscription = $individualSubscriptionDao->getById($payment->getAssocId());
 				}
 				if (!$subscription) return __('payment.type.subscription');
 
-				$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO');
+				$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO'); /* @var $subscriptionTypeDao SubscriptionTypeDAO */
 				$subscriptionType = $subscriptionTypeDao->getById($subscription->getTypeId());
 
 				return __('payment.type.subscription') . ' (' . $subscriptionType->getLocalizedName() . ')';

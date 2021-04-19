@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/subscriptions/InstitutionalSubscriptionsGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class InstitutionalSubscriptionsGridHandler
  * @ingroup controllers_grid_subscriptions
@@ -16,6 +16,8 @@
 import('controllers.grid.subscriptions.SubscriptionsGridHandler');
 
 import('controllers.grid.subscriptions.InstitutionalSubscriptionForm');
+
+use \PKP\core\JSONMessage;
 
 class InstitutionalSubscriptionsGridHandler extends SubscriptionsGridHandler {
 	/**
@@ -95,34 +97,29 @@ class InstitutionalSubscriptionsGridHandler extends SubscriptionsGridHandler {
 	/**
 	 * @copydoc GridHandler::renderFilter()
 	 */
-	function renderFilter($request) {
-		$context = $request->getContext();
-
+	function renderFilter($request, $filterData = []) {
 		// Import field constants.
 		import('lib.pkp.classes.user.UserDAO');
 		import('classes.subscription.InstitutionalSubscriptionDAO');
-		$fieldOptions = array(
-			IDENTITY_SETTING_GIVENNAME => 'user.givenName',
-			IDENTITY_SETTING_FAMILYNAME => 'user.familyName',
-			USER_FIELD_USERNAME => 'user.username',
-			USER_FIELD_EMAIL => 'user.email',
-			SUBSCRIPTION_MEMBERSHIP => 'user.subscriptions.form.membership',
-			SUBSCRIPTION_REFERENCE_NUMBER => 'manager.subscriptions.form.referenceNumber',
-			SUBSCRIPTION_NOTES => 'manager.subscriptions.form.notes',
-			SUBSCRIPTION_INSTITUTION_NAME => 'manager.subscriptions.form.institutionName',
-			SUBSCRIPTION_DOMAIN => 'manager.subscriptions.form.domain',
-			SUBSCRIPTION_IP_RANGE => 'manager.subscriptions.form.ipRange',
-		);
 
-		$matchOptions = array(
-			'contains' => 'form.contains',
-			'is' => 'form.is'
-		);
-
-		$filterData = array(
-			'fieldOptions' => $fieldOptions,
-			'matchOptions' => $matchOptions
-		);
+		$filterData = array_merge($filterData, [
+			'fieldOptions' => [
+				IDENTITY_SETTING_GIVENNAME => 'user.givenName',
+				IDENTITY_SETTING_FAMILYNAME => 'user.familyName',
+				USER_FIELD_USERNAME => 'user.username',
+				USER_FIELD_EMAIL => 'user.email',
+				SUBSCRIPTION_MEMBERSHIP => 'user.subscriptions.form.membership',
+				SUBSCRIPTION_REFERENCE_NUMBER => 'manager.subscriptions.form.referenceNumber',
+				SUBSCRIPTION_NOTES => 'manager.subscriptions.form.notes',
+				SUBSCRIPTION_INSTITUTION_NAME => 'manager.subscriptions.form.institutionName',
+				SUBSCRIPTION_DOMAIN => 'manager.subscriptions.form.domain',
+				SUBSCRIPTION_IP_RANGE => 'manager.subscriptions.form.ipRange',
+			],
+			'matchOptions' => [
+				'contains' => 'form.contains',
+				'is' => 'form.is'
+			],
+		]);
 
 		return parent::renderFilter($request, $filterData);
 	}
@@ -134,7 +131,7 @@ class InstitutionalSubscriptionsGridHandler extends SubscriptionsGridHandler {
 		// Get the context.
 		$journal = $request->getContext();
 
-		$subscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO');
+		$subscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO'); /* @var $subscriptionDao InstitutionalSubscriptionDAO */
 		$rangeInfo = $this->getGridRangeInfo($request, $this->getId());
 		return $subscriptionDao->getByJournalId($journal->getId(), null, $filter['searchField'], $filter['searchMatch'], $filter['search']?$filter['search']:null, null, null, null, $rangeInfo);
 	}
@@ -194,7 +191,7 @@ class InstitutionalSubscriptionsGridHandler extends SubscriptionsGridHandler {
 
 		// Identify the subscription ID.
 		$subscriptionId = $request->getUserVar('rowId');
-		$subscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO');
+		$subscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO'); /* @var $subscriptionDao InstitutionalSubscriptionDAO */
 		$subscriptionDao->deleteById($subscriptionId, $context->getId());
 		return DAO::getDataChangedEvent();
 	}

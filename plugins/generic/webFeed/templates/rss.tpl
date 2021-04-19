@@ -1,9 +1,9 @@
 {**
  * plugins/generic/webFeed/templates/rss.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * RSS feed template
  *
@@ -59,7 +59,7 @@
 			<rdf:Seq>
 			{foreach name=sections from=$publishedSubmissions item=section key=sectionId}
 				{foreach from=$section.articles item=article}
-					<rdf:li rdf:resource="{url page="article" op="view" path=$article->getBestArticleId()}"/>
+					<rdf:li rdf:resource="{url page="article" op="view" path=$article->getBestId()}"/>
 				{/foreach}{* articles *}
 			{/foreach}{* sections *}
 			</rdf:Seq>
@@ -68,11 +68,12 @@
 
 {foreach name=sections from=$publishedSubmissions item=section key=sectionId}
 	{foreach from=$section.articles item=article}
-		<item rdf:about="{url page="article" op="view" path=$article->getBestArticleId()}">
+		{assign var=publication value=$article->getCurrentPublication()}
+		<item rdf:about="{url page="article" op="view" path=$article->getBestId()}">
 
 			{* required elements *}
 			<title>{$article->getLocalizedTitle()|strip|escape:"html"}</title>
-			<link>{url page="article" op="view" path=$article->getBestArticleId()}</link>
+			<link>{url page="article" op="view" path=$article->getBestId()}</link>
 
 			{* optional elements *}
 			{if $article->getLocalizedAbstract()}
@@ -87,7 +88,7 @@
 				{translate|escape key="submission.copyrightStatement" copyrightYear=$article->getCopyrightYear() copyrightHolder=$article->getLocalizedCopyrightHolder()}
 				{$article->getLicenseURL()|escape}
 			</dc:rights>
-			{if ($article->getAccessStatus() == $smarty.const.ARTICLE_ACCESS_OPEN || ($article->getAccessStatus() == $smarty.const.ARTICLE_ACCESS_ISSUE_DEFAULT && $issue->getAccessStatus() == $smarty.const.ISSUE_ACCESS_OPEN)) && $article->isCCLicense()}
+			{if ($publication->getData('accessStatus') == $smarty.const.ARTICLE_ACCESS_OPEN || ($publication->getData('accessStatus') == $smarty.const.ARTICLE_ACCESS_ISSUE_DEFAULT && $issue->getAccessStatus() == $smarty.const.ISSUE_ACCESS_OPEN)) && $article->isCCLicense()}
 				<cc:license rdf:resource="{$article->getLicenseURL()|escape}" />
 			{else}
 				<cc:license></cc:license>

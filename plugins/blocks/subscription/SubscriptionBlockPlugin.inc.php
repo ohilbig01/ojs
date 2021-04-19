@@ -3,9 +3,9 @@
 /**
  * @file plugins/blocks/subscription/SubscriptionBlockPlugin.inc.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubscriptionBlockPlugin
  * @ingroup plugins_blocks_subscription
@@ -58,7 +58,7 @@ class SubscriptionBlockPlugin extends BlockPlugin {
 		$templateMgr->assign('userLoggedIn', isset($userId) ? true : false);
 
 		if (isset($userId)) {
-			$subscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO');
+			$subscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO'); /* @var $subscriptionDao IndividualSubscriptionDAO */
 			$individualSubscription = $subscriptionDao->getByUserIdForJournal($userId, $journal->getId());
 			$templateMgr->assign('individualSubscription', $individualSubscription);
 		}
@@ -67,7 +67,7 @@ class SubscriptionBlockPlugin extends BlockPlugin {
 		if (!isset($individualSubscription) || !$individualSubscription->isValid()) {
 			$ip = $request->getRemoteAddr();
 			$domain = $request->getRemoteDomain();
-			$subscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO');
+			$subscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO'); /* @var $subscriptionDao InstitutionalSubscriptionDAO */
 			$subscriptionId = $subscriptionDao->isValidInstitutionalSubscription($domain, $ip, $journal->getId());
 			if ($subscriptionId) {
 				$institutionalSubscription = $subscriptionDao->getById($subscriptionId);

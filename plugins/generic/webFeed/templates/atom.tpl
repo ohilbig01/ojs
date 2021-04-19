@@ -1,9 +1,9 @@
 {**
  * plugins/generic/webFeed/templates/atom.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Atom feed template
  *
@@ -56,7 +56,7 @@
 		{foreach from=$section.articles item=article}
 			<entry>
 				{* required elements *}
-				<id>{url page="article" op="view" path=$article->getBestArticleId()}</id>
+				<id>{url page="article" op="view" path=$article->getBestId()}</id>
 				<title>{$article->getLocalizedTitle()|strip|escape:"html"}</title>
 				<updated>{$article->getLastModified()|date_format:"%Y-%m-%dT%T%z"|regex_replace:"/00$/":":00"}</updated>
 
@@ -71,10 +71,10 @@
 					</author>
 				{/foreach}{* authors *}
 
-				<link rel="alternate" href="{url page="article" op="view" path=$article->getBestArticleId()}" />
+				<link rel="alternate" href="{url page="article" op="view" path=$article->getBestId()}" />
 
 				{if $article->getLocalizedAbstract()}
-					<summary type="html" xml:base="{url page="article" op="view" path=$article->getBestArticleId()}">{$article->getLocalizedAbstract()|strip|escape:"html"}</summary>
+					<summary type="html" xml:base="{url page="article" op="view" path=$article->getBestId()}">{$article->getLocalizedAbstract()|strip|escape:"html"}</summary>
 				{/if}
 
 				{* optional elements *}

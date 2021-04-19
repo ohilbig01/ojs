@@ -1,9 +1,9 @@
 {**
  * templates/frontend/objects/article_summary.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief View of an Article summary which is shown within a list of articles.
  *
@@ -13,24 +13,33 @@
  * @uses $showDatePublished bool Show the date this article was published?
  * @uses $hideGalleys bool Hide the article galleys for this article?
  * @uses $primaryGenreIds array List of file genre ids for primary file types
+ * @uses $heading string HTML heading element, default: h2
  *}
-{assign var=articlePath value=$article->getBestArticleId()}
+{assign var=articlePath value=$article->getBestId()}
+{if !$heading}
+	{assign var="heading" value="h2"}
+{/if}
 
 {if (!$section.hideAuthor && $article->getHideAuthor() == $smarty.const.AUTHOR_TOC_DEFAULT) || $article->getHideAuthor() == $smarty.const.AUTHOR_TOC_SHOW}
 	{assign var="showAuthor" value=true}
 {/if}
 
+{assign var=publication value=$article->getCurrentPublication()}
 <div class="obj_article_summary">
-	{if $article->getLocalizedCoverImage()}
+	{if $publication->getLocalizedData('coverImage')}
 		<div class="cover">
 			<a {if $journal}href="{url journal=$journal->getPath() page="article" op="view" path=$articlePath}"{else}href="{url page="article" op="view" path=$articlePath}"{/if} class="file">
-				<img src="{$article->getLocalizedCoverImageUrl()|escape}" alt="{$article->getLocalizedCoverImageAltText()|escape|default:'null'}">
+				{assign var="coverImage" value=$article->getCurrentPublication()->getLocalizedData('coverImage')}
+				<img
+					src="{$article->getCurrentPublication()->getLocalizedCoverImageUrl($article->getData('contextId'))|escape}"
+					alt="{$coverImage.altText|escape|default:''}"
+				>
 			</a>
 		</div>
 	{/if}
 
-	<div class="title">
-		<a {if $journal}href="{url journal=$journal->getPath() page="article" op="view" path=$articlePath}"{else}href="{url page="article" op="view" path=$articlePath}"{/if}>
+	<{$heading} class="title">
+		<a id="article-{$article->getId()}" {if $journal}href="{url journal=$journal->getPath() page="article" op="view" path=$articlePath}"{else}href="{url page="article" op="view" path=$articlePath}"{/if}>
 			{$article->getLocalizedTitle()|strip_unsafe_html}
 			{if $article->getLocalizedSubtitle()}
 				<span class="subtitle">
@@ -38,7 +47,7 @@
 				</span>
 			{/if}
 		</a>
-	</div>
+	</{$heading}>
 
 	{if $showAuthor || $article->getPages() || ($article->getDatePublished() && $showDatePublished)}
 	<div class="meta">
@@ -75,10 +84,11 @@
 				{/if}
 				<li>
 					{assign var="hasArticleAccess" value=$hasAccess}
-					{if $currentContext->getSetting('publishingMode') == $smarty.const.PUBLISHING_MODE_OPEN || $article->getAccessStatus() == $smarty.const.ARTICLE_ACCESS_OPEN}
+					{if $currentContext->getSetting('publishingMode') == $smarty.const.PUBLISHING_MODE_OPEN || $publication->getData('accessStatus') == $smarty.const.ARTICLE_ACCESS_OPEN}
 						{assign var="hasArticleAccess" value=1}
 					{/if}
-					{include file="frontend/objects/galley_link.tpl" parent=$article hasAccess=$hasArticleAccess purchaseFee=$currentJournal->getData('purchaseArticleFee') purchaseCurrency=$currentJournal->getData('currency')}
+					{assign var="id" value="article-{$article->getId()}-galley-{$galley->getId()}"}
+					{include file="frontend/objects/galley_link.tpl" parent=$article id=$id labelledBy="{$id} article-{$article->getId()}" hasAccess=$hasArticleAccess purchaseFee=$currentJournal->getData('purchaseArticleFee') purchaseCurrency=$currentJournal->getData('currency')}
 				</li>
 			{/foreach}
 		</ul>

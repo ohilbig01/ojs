@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/webFeed/WebFeedBlockPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class WebFeedBlockPlugin
  * @ingroup plugins_generic_webFeed
@@ -59,14 +59,6 @@ class WebFeedBlockPlugin extends BlockPlugin {
 	}
 
 	/**
-	 * Get the supported contexts (e.g. BLOCK_CONTEXT_...) for this block.
-	 * @return array
-	 */
-	public function getSupportedContexts() {
-		return array(BLOCK_CONTEXT_SIDEBAR);
-	}
-
-	/**
 	 * Override the builtin to get the correct plugin path.
 	 * @return string
 	 */
@@ -89,7 +81,7 @@ class WebFeedBlockPlugin extends BlockPlugin {
 	 */
 	public function getContents($templateMgr, $request = null) {
 		$journal = $request->getJournal();
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		if ($issueDao->getCurrent($journal->getId(), true)) {
 			return parent::getContents($templateMgr, $request);
 		}

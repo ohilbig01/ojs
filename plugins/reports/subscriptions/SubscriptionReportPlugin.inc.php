@@ -3,9 +3,9 @@
 /**
  * @file plugins/reports/subscriptions/SubscriptionReportPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubscriptionReportPlugin
  * @ingroup plugins_reports_subscription
@@ -56,11 +56,12 @@ class SubscriptionReportPlugin extends ReportPlugin {
 	function display($args, $request) {
 		$journal = $request->getJournal();
 		$journalId = $journal->getId();
-		$userDao = DAORegistry::getDAO('UserDAO');
-		$countryDao = DAORegistry::getDAO('CountryDAO');
-		$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO');
-		$individualSubscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO');
-		$institutionalSubscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO');
+		$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
+		$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO'); /* @var $subscriptionTypeDao SubscriptionTypeDAO */
+		$individualSubscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO'); /* @var $individualSubscriptionDao IndividualSubscriptionDAO */
+		$institutionalSubscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO'); /* @var $institutionalSubscriptionDao InstitutionalSubscriptionDAO */
+		$isoCodes = new \Sokil\IsoCodes\IsoCodesFactory();
+		$countries = $isoCodes->getCountries();
 
 		header('content-type: text/comma-separated-values');
 		header('content-disposition: attachment; filename=subscriptions-' . date('Ymd') . '.csv');
@@ -139,7 +140,8 @@ class SubscriptionReportPlugin extends ReportPlugin {
 						$columns[$index] = PKPString::html2text($user->getMailingAddress());
 						break;
 					case 'country':
-						$columns[$index] = $countryDao->getCountry($user->getCountry());
+						$country = $countries->getByAlpha2($user->getCountry());
+						$columns[$index] = $country?$country->getLocalName():'';
 						break;
 					case 'email':
 						$columns[$index] = $user->getEmail();
@@ -233,7 +235,8 @@ class SubscriptionReportPlugin extends ReportPlugin {
 						$columns[$index] = PKPString::html2text($user->getMailingAddress());
 						break;
 					case 'country':
-						$columns[$index] = $countryDao->getCountry($user->getCountry());
+						$country = $countries->getByAlpha2($user->getCountry());
+						$columns[$index] = $country?$country->getLocalName():'';
 						break;
 					case 'email':
 						$columns[$index] = $user->getEmail();

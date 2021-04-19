@@ -3,9 +3,9 @@
 /**
  * @file classes/notification/NotificationManager.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPNotificationManager
  * @ingroup notification
@@ -35,7 +35,7 @@ class NotificationManager extends PKPNotificationManager {
 
 		switch ($notification->getType()) {
 			case NOTIFICATION_TYPE_PUBLISHED_ISSUE:
-				return $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'issue', 'current');
+				return $dispatcher->url($request, PKPApplication::ROUTE_PAGE, $context->getPath(), 'issue', 'current');
 			default:
 				return parent::getNotificationUrl($request, $notification);
 		}
@@ -153,13 +153,22 @@ class NotificationManager extends PKPNotificationManager {
 				assert($assocType == ASSOC_TYPE_SUBMISSION && is_numeric($assocId));
 				import('classes.notification.managerDelegate.ApproveSubmissionNotificationManager');
 				return new ApproveSubmissionNotificationManager($notificationType);
-			case NOTIFICATION_TYPE_PUBLICATION_SCHEDULED:
-				assert($assocType == ASSOC_TYPE_SUBMISSION && is_numeric($assocId));
-				import('classes.notification.managerDelegate.EditingProductionStatusNotificationManager');
-				return new EditingProductionStatusNotificationManager($notificationType);
 		}
 		// Otherwise, fall back on parent class
 		return parent::getMgrDelegate($notificationType, $assocType, $assocId);
+	}
+
+	/**
+	 * @copydoc PKPNotificationManager::getNotificationSettingsMap()
+	 */
+	public function getNotificationSettingsMap() {
+		$settingsMap = parent::getNotificationSettingsMap();
+		$settingsMap[NOTIFICATION_TYPE_PUBLISHED_ISSUE] = [
+			'settingName' => 'notificationPublishedIssue',
+			'emailSettingName' => 'emailNotificationPublishedIssue',
+			'settingKey' => 'notification.type.issuePublished',
+		];
+		return $settingsMap;
 	}
 
 }

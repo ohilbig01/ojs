@@ -3,9 +3,9 @@
 /**
  * @file classes/services/SubmissionService.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionService
  * @ingroup services
@@ -16,63 +16,49 @@
 
 namespace APP\Services;
 
-class SubmissionService extends \PKP\Services\PKPSubmissionService {
+use \Application;
+use \DAORegistry;
+use \PKP\Services\PKPSubmissionService;
+use \Services;
+use \Submission;
+
+class SubmissionService extends PKPSubmissionService {
 
 	/**
 	 * Initialize hooks for extending PKPSubmissionService
 	 */
 	public function __construct() {
-		\HookRegistry::register('Submission::isPublic', array($this, 'modifyIsPublic'));
 		\HookRegistry::register('API::submissions::params', array($this, 'modifyAPISubmissionsParams'));
 		\HookRegistry::register('Submission::getMany::queryBuilder', array($this, 'modifySubmissionQueryBuilder'));
 		\HookRegistry::register('Submission::getMany::queryObject', array($this, 'modifySubmissionListQueryObject'));
-		\HookRegistry::register('Submission::getProperties::summaryProperties', array($this, 'modifyProperties'));
-		\HookRegistry::register('Submission::getProperties::fullProperties', array($this, 'modifyProperties'));
 		\HookRegistry::register('Submission::getProperties::values', array($this, 'modifyPropertyValues'));
 	}
 
 	/**
-	 * Modify the isPublic check on a submission, based on whether it is scheduled
-	 * for publication in an issue and that issue is published.
-	 *
-	 * @param $hookName string
-	 * @param $args array [
-	 *		@option boolean Is it public?
-	 *		@option Submission
- 	 * ]
+	 * @copydoc PKPSubmissionService::updateStatus()
 	 */
-	public function modifyIsPublic($hookName, $args) {
-		$isPublic =& $args[0];
-		$submission = $args[1];
+	public function updateStatus($submission) {
+		$oldStatus = $submission->getData('status');
+		$submission = parent::updateStatus($submission);
+		$newStatus = $submission->getData('status');
 
-		if (is_a($submission, 'PublishedSubmission')) {
-			$publishedSubmission = $submission;
-		} else {
-			$publishedSubmissionDao = \DAORegistry::getDAO('PublishedSubmissionDAO');
-			$publishedSubmission = $publishedSubmissionDao->getPublishedSubmissionByBestSubmissionId(
-				$submission->getContextId(),
-				$submission->getId(),
-				true
-			);
+		// Add or remove tombstones when submission is published or unpublished
+		if ($newStatus === STATUS_PUBLISHED && $newStatus !== $oldStatus) {
+			$tombstoneDao = DAORegistry::getDAO('DataObjectTombstoneDAO'); /* @var $tombstoneDao DataObjectTombstoneDAO */
+			$tombstoneDao->deleteByDataObjectId($submission->getId());
+		} elseif ($oldStatus === STATUS_PUBLISHED && $newStatus !== $oldStatus) {
+			$requestContext = Application::get()->getRequest()->getContext();
+			if ($requestContext && $requestContext->getId() === $submission->getData('contextId')) {
+				$context = $requestContext;
+			} else {
+				$context = Services::get('context')->get($submission->getData('contextId'));
+			}
+			import('classes.article.ArticleTombstoneManager');
+			$articleTombstoneManager = new \ArticleTombstoneManager();
+			$articleTombstoneManager->insertArticleTombstone($submission, $context);
 		}
 
-		if (empty($publishedSubmission)) {
-			return;
-		}
-
-		$issueId = $publishedSubmission->getIssueId();
-		$issueDao = \DAORegistry::getDAO('IssueDAO');
-		$issue = $issueDao->getById(
-			$publishedSubmission->getIssueId(),
-			$publishedSubmission->getJournalId(),
-			true
-		);
-
-		if (!$issue || !$issue->getPublished()) {
-			return;
-		}
-
-		$isPublic = true;
+		return $submission;
 	}
 
 	/**
@@ -80,8 +66,8 @@ class SubmissionService extends \PKP\Services\PKPSubmissionService {
 	 *
 	 * @param $hookName string
 	 * @param $args array [
-	 *		@option array $returnParams
-	 *		@option SlimRequest $slimRequest
+	 *      @option array $returnParams
+	 *      @option SlimRequest $slimRequest
 	 * ]
 	 *
 	 * @return array
@@ -91,14 +77,17 @@ class SubmissionService extends \PKP\Services\PKPSubmissionService {
 		$slimRequest = $args[1];
 		$requestParams = $slimRequest->getQueryParams();
 
-		if (!empty($requestParams['sectionIds'])) {
-			$sectionIds = $requestParams['sectionIds'];
-			if (is_string($sectionIds) && strpos($sectionIds, ',') > -1) {
-				$sectionIds = explode(',', $sectionIds);
-			} elseif (!is_array($sectionIds)) {
-				$sectionIds = array($sectionIds);
+		foreach ($requestParams as $param => $value) {
+			switch ($param) {
+				case 'issueIds':
+				case 'sectionIds':
+					if (is_string($value) && strpos($value, ',') > -1) {
+						$value = explode(',', $value);
+					} elseif (!is_array($value)) {
+						$value = array($value);
+					}
+					$returnParams[$param] = array_map('intval', $value);
 			}
-			$returnParams['sectionIds'] = array_map('intval', $sectionIds);
 		}
 	}
 
@@ -107,9 +96,9 @@ class SubmissionService extends \PKP\Services\PKPSubmissionService {
 	 *
 	 * @param $hookName string
 	 * @param $args array [
-	 *		@option \APP\Services\QueryBuilders\SubmissionQueryBuilder
-	 *		@option int Context ID
-	 *		@option array Request args
+	 *      @option \APP\Services\QueryBuilders\SubmissionQueryBuilder
+	 *      @option int Context ID
+	 *      @option array Request args
 	 * ]
 	 *
 	 * @return \APP\Services\QueryBuilders\SubmissionQueryBuilder
@@ -121,6 +110,10 @@ class SubmissionService extends \PKP\Services\PKPSubmissionService {
 		if (!empty($requestArgs['sectionIds'])) {
 			$submissionQB->filterBySections($requestArgs['sectionIds']);
 		}
+
+		if (!empty($requestArgs['issueIds'])) {
+			$submissionQB->filterByIssues($requestArgs['issueIds']);
+		}
 	}
 
 	/**
@@ -128,8 +121,8 @@ class SubmissionService extends \PKP\Services\PKPSubmissionService {
 	 *
 	 * @param $hookName string
 	 * @param $args array [
-	 *		@option object $queryObject
-	 *		@option \APP\Services\QueryBuilders\SubmissionQueryBuilder $queryBuilder
+	 *      @option object $queryObject
+	 *      @option \APP\Services\QueryBuilders\SubmissionQueryBuilder $queryBuilder
 	 * ]
 	 *
 	 * @return object
@@ -142,38 +135,14 @@ class SubmissionService extends \PKP\Services\PKPSubmissionService {
 	}
 
 	/**
-	 * Add app-specific properties to submissions
-	 *
-	 * @param $hookName string Submission::getProperties::summaryProperties or
-	 *  Submission::getProperties::fullProperties
-	 * @param $args array [
-	 * 		@option $props array Existing properties
-	 * 		@option $submission Submission The associated submission
-	 * 		@option $args array Request args
-	 * ]
-	 *
-	 * @return array
-	 */
-	public function modifyProperties($hookName, $args) {
-		$props =& $args[0];
-
-		$props[] = 'issueSummary';
-		$props[] = 'sectionSummary';
-		$props[] = 'coverImageUrl';
-		$props[] = 'coverImageAltText';
-
-		return $props;
-	}
-
-	/**
 	 * Add app-specific property values to a submission
 	 *
 	 * @param $hookName string Submission::getProperties::values
 	 * @param $args array [
 	 *    @option $values array Key/value store of property values
-	 * 		@option $submission Submission The associated submission
-	 * 		@option $props array Requested properties
-	 * 		@option $args array Request args
+	 *      @option $submission Submission The associated submission
+	 *      @option $props array Requested properties
+	 *      @option $args array Request args
 	 * ]
 	 *
 	 * @return array
@@ -182,89 +151,61 @@ class SubmissionService extends \PKP\Services\PKPSubmissionService {
 		$values =& $args[0];
 		$submission = $args[1];
 		$props = $args[2];
-		$propertyArgs = $args[3];
 		$request = $args[3]['request'];
 		$context = $request->getContext();
 		$dispatcher = $request->getDispatcher();
-
-		$publishedSubmission = null;
-		if ($context) {
-			$publishedSubmissionDao = \DAORegistry::getDAO('PublishedSubmissionDAO');
-			$publishedSubmission = $publishedSubmissionDao->getPublishedSubmissionByBestSubmissionId(
-				(int) $context->getId(),
-				$submission->getId(),
-				true
-			);
-		}
-
-		$issue = null;
-		if ($publishedSubmission) {
-			$issueDao = \DAORegistry::getDAO('IssueDAO');
-			$issue = $issueDao->getById(
-				$publishedSubmission->getIssueId(),
-				$publishedSubmission->getJournalId(),
-				true
-			);
-		}
 
 		foreach ($props as $prop) {
 			switch ($prop) {
 				case 'urlPublished':
 					$values[$prop] = $dispatcher->url(
 						$request,
-						ROUTE_PAGE,
+						\PKPApplication::ROUTE_PAGE,
 						$context->getPath(),
 						'article',
 						'view',
-						$submission->getBestArticleId()
+						$submission->getBestId()
 					);
-					break;
-				case 'coverImageUrl':
-					$values[$prop] = $submission->getCoverImageUrls(null);
-					break;
-				case 'coverImageAltText':
-					$values[$prop] = $submission->getCoverImageAltText(null);
-					break;
-				case 'issue':
-				case 'issueSummary':
-					$values['issue'] = null;
-					if ($issue) {
-						$issueService = \Services::get('issue');
-						$values['issue'] = ($prop === 'issue')
-						? $issueService->getFullProperties($issue, $propertyArgs)
-						: $issueService->getSummaryProperties($issue, $propertyArgs);
-					}
-					break;
-				case 'section':
-				case 'sectionSummary':
-					$values['section'] = array();
-					if ($context) {
-						$sectionDao = \DAORegistry::getDAO('SectionDAO');
-						$section = $sectionDao->getById($submission->getSectionId(), $context->getId());
-						if (!empty($section)) {
-							$sectionService = \Services::get('section');
-							$values['section'] = ($prop === 'section')
-								? $sectionService->getSummaryProperties($section, $propertyArgs)
-								: $sectionService->getFullProperties($section, $propertyArgs);
-						}
-					}
-					break;
-				case 'galleys':
-				case 'galleysSummary';
-					$values['galleys'] = null;
-					if ($publishedSubmission) {
-						$values['galleys'] = [];
-						$galleyService = \Services::get('galley');
-						$galleyArgs = array_merge($propertyArgs, array('parent' => $publishedSubmission));
-						$galleys = $publishedSubmission->getGalleys();
-						foreach ($galleys as $galley) {
-							$values['galleys'][] = ($prop === 'galleys')
-								? $galleyService->getFullProperties($galley, $galleyArgs)
-								: $galleyService->getSummaryProperties($galley, $galleyArgs);
-						}
-					}
 					break;
 			}
 		}
+	}
+
+	/**
+	 * Get submissions ordered by section id
+	 *
+	 * This method replaces PublishedSubmissionDAO::getPublishedSubmissionsInSections()
+	 * which was removed with v3.2.
+	 *
+	 * @param int $issueId
+	 * @param int $contextId
+	 * @return array submissions keyed to a section with some section details
+	 */
+	public function getInSections($issueId, $contextId) {
+		import('lib.pkp.classes.submission.PKPSubmission'); // STATUS_...
+		$submissions = $this->getMany([
+			'contextId' => $contextId,
+			'issueIds' => $issueId,
+			'status' => [STATUS_PUBLISHED, STATUS_SCHEDULED],
+			'orderBy' => 'seq',
+			'orderDirection' => 'ASC',
+		]);
+		$bySections = [];
+
+		foreach ($submissions as $submission) {
+			$sectionId = $submission->getCurrentPublication()->getData('sectionId');
+			if (empty($bySections[$sectionId])) {
+				$section = \Application::get()->getSectionDao()->getById($sectionId);
+				$bySections[$sectionId] = [
+					'articles' => [],
+					'title' => $section->getData('hideTitle') ? '' : $section->getLocalizedData('title'),
+					'abstractsNotRequired' => $section->getData('abstractsNotRequired'),
+					'hideAuthor' => $section->getData('hideAuthor'),
+				];
+			}
+			$bySections[$sectionId]['articles'][] = $submission;
+		}
+
+		return $bySections;
 	}
 }

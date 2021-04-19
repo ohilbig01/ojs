@@ -3,9 +3,9 @@
 /**
  * @file classes/services/OJSServiceProvider.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OJSServiceProvider
  * @ingroup services
@@ -16,29 +16,49 @@
 namespace APP\Services;
 
 use \Pimple\Container;
+use \APP\Services\PublicationService;
+use \APP\Services\StatsEditorialService;
+use \APP\Services\StatsService;
+use \APP\Services\SubmissionFileService;
+use \PKP\Services\PKPAnnouncementService;
 use \PKP\Services\PKPAuthorService;
 use \PKP\Services\PKPEmailTemplateService;
+use \PKP\Services\PKPFileService;
 use \PKP\Services\PKPSchemaService;
 use \PKP\Services\PKPSiteService;
-use \APP\Services\StatsService;
-use \APP\Services\UserService;
+use \PKP\Services\PKPUserService;
 
 class OJSServiceProvider implements \Pimple\ServiceProviderInterface {
 
 	/**
 	 * Registers services
-	 * @param Pimple\Container $pimple
+	 * @param \Pimple\Container $pimple
 	 */
 	public function register(Container $pimple) {
+
+		// Announcement service
+		$pimple['announcement'] = function() {
+			return new PKPAnnouncementService();
+		};
 
 		// Author service
 		$pimple['author'] = function() {
 			return new PKPAuthorService();
 		};
 
+		// File service
+		$pimple['file'] = function() {
+			return new PKPFileService();
+		};
+
 		// Submission service
 		$pimple['submission'] = function() {
 			return new SubmissionService();
+		};
+
+		// Publication service
+		$pimple['publication'] = function() {
+			return new PublicationService();
 		};
 
 		// Issue service
@@ -63,7 +83,7 @@ class OJSServiceProvider implements \Pimple\ServiceProviderInterface {
 
 		// User service
 		$pimple['user'] = function() {
-			return new UserService();
+			return new PKPUserService();
 		};
 
 		// Context service
@@ -74,6 +94,11 @@ class OJSServiceProvider implements \Pimple\ServiceProviderInterface {
 		// Site service
 		$pimple['site'] = function() {
 			return new PKPSiteService();
+		};
+
+		// Submission file service
+		$pimple['submissionFile'] = function() {
+			return new SubmissionFileService();
 		};
 
 		// Email Templates service
@@ -89,6 +114,11 @@ class OJSServiceProvider implements \Pimple\ServiceProviderInterface {
 		// Publication statistics service
 		$pimple['stats'] = function() {
 			return new StatsService();
+		};
+
+		// Editorial statistics service
+		$pimple['editorialStats'] = function() {
+			return new StatsEditorialService();
 		};
 	}
 }

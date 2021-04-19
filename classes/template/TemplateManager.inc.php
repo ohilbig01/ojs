@@ -3,9 +3,9 @@
 /**
  * @file classes/template/TemplateManager.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class TemplateManager
  * @ingroup template
@@ -27,6 +27,11 @@ class TemplateManager extends PKPTemplateManager {
 	function initialize($request) {
 		parent::initialize($request);
 
+		// Pass app-specific details to template
+		$this->assign([
+			'brandImage' => 'templates/images/ojs_brand.png',
+		]);
+
 		if (!defined('SESSION_DISABLE_INIT')) {
 			/**
 			 * Kludge to make sure no code that tries to connect to
@@ -45,83 +50,103 @@ class TemplateManager extends PKPTemplateManager {
 			if ($site->getData('styleSheet')) {
 				$this->addStyleSheet(
 					'siteStylesheet',
-					$request->getBaseUrl() . '/' . $publicFileManager->getSiteFilesPath() . '/' . $site->getData('styleSheet'),
-					array(
-						'priority' => STYLE_SEQUENCE_LATE
-					)
+					$request->getBaseUrl() . '/' . $publicFileManager->getSiteFilesPath() . '/' . $site->getData('styleSheet')['uploadName'],
+					['priority' => STYLE_SEQUENCE_LATE]
 				);
 			}
-
-			// Pass app-specific details to template
-			$this->assign(array(
-				'brandImage' => 'templates/images/ojs_brand.png',
-				'packageKey' => 'common.openJournalSystems',
-			));
-
-			// Get a count of unread tasks.
-			if ($user = $request->getUser()) {
-				$notificationDao = DAORegistry::getDAO('NotificationDAO');
-				// Exclude certain tasks, defined in the notifications grid handler
-				import('lib.pkp.controllers.grid.notifications.TaskNotificationsGridHandler');
-				$this->assign('unreadNotificationCount', $notificationDao->getNotificationCount(false, $user->getId(), null, NOTIFICATION_LEVEL_TASK));
-			}
 			if (isset($context)) {
-
-				$this->assign(array(
+				$this->assign([
 					'currentJournal' => $context,
 					'siteTitle' => $context->getLocalizedName(),
 					'publicFilesDir' => $request->getBaseUrl() . '/' . $publicFileManager->getContextFilesPath($context->getId()),
 					'primaryLocale' => $context->getPrimaryLocale(),
 					'supportedLocales' => $context->getSupportedLocaleNames(),
-					'displayPageHeaderTitle' => $context->getLocalizedPageHeaderTitle(),
-					'displayPageHeaderLogo' => $context->getLocalizedPageHeaderLogo(),
-					'displayPageHeaderLogoAltText' => $context->getLocalizedData('pageHeaderLogoImageAltText'),
 					'numPageLinks' => $context->getData('numPageLinks'),
 					'itemsPerPage' => $context->getData('itemsPerPage'),
 					'enableAnnouncements' => $context->getData('enableAnnouncements'),
 					'disableUserReg' => $context->getData('disableUserReg'),
-				));
-
-				// Assign meta tags
-				$favicon = $context->getLocalizedFavicon();
-				if (!empty($favicon)) {
-					$faviconDir = $request->getBaseUrl() . '/' . $publicFileManager->getContextFilesPath($context->getId());
-					$this->addHeader('favicon', '<link rel="icon" href="' . $faviconDir . '/' . $favicon['uploadName'] . '">');
-				}
-
-				// Get a link to the settings page for the current context.
-				// This allows us to reduce template duplication by using this
-				// variable in templates/common/header.tpl, instead of
-				// reproducing a lot of OMP/OJS-specific logic there.
-				$dispatcher = $request->getDispatcher();
-				$this->assign( 'contextSettingsUrl', $dispatcher->url($request, ROUTE_PAGE, null, 'management', 'settings', 'context') );
-
-				$paymentManager = Application::getPaymentManager($context);
-				$this->assign('pageFooter', $context->getLocalizedData('pageFooter'));
+					'pageFooter' => $context->getLocalizedData('pageFooter'),
+				]);
 			} else {
 				// Check if registration is open for any contexts
 				$contextDao = Application::getContextDAO();
 				$contexts = $contextDao->getAll(true)->toArray();
-				$contextsForRegistration = array();
+				$contextsForRegistration = [];
 				foreach($contexts as $context) {
 					if (!$context->getData('disableUserReg')) {
 						$contextsForRegistration[] = $context;
 					}
 				}
 
-				$this->assign(array(
+				$this->assign([
 					'contexts' => $contextsForRegistration,
 					'disableUserReg' => empty($contextsForRegistration),
-					'displayPageHeaderTitle' => $site->getLocalizedPageHeaderTitle(),
-					'displayPageHeaderLogo' => $site->getLocalizedData('pageHeaderTitleImage'),
 					'siteTitle' => $site->getLocalizedTitle(),
 					'primaryLocale' => $site->getPrimaryLocale(),
 					'supportedLocales' => $site->getSupportedLocaleNames(),
 					'pageFooter' => $site->getLocalizedData('pageFooter'),
-				));
+				]);
 
 			}
 		}
+	}
+
+	/**
+	 * @copydoc PKPTemplateManager::setupBackendPage()
+	 */
+	function setupBackendPage() {
+		parent::setupBackendPage();
+
+		$request = Application::get()->getRequest();
+		if (defined('SESSION_DISABLE_INIT')
+				|| !$request->getContext()
+				|| !$request->getUser()) {
+			return;
+		}
+
+		$router = $request->getRouter();
+		$handler = $router->getHandler();
+		$userRoles = (array) $handler->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
+
+		$menu = (array) $this->getState('menu');
+
+		// Add issues after submissions items
+		if (in_array(ROLE_ID_MANAGER, $userRoles)) {
+			$issuesLink = [
+				'name' => __('editor.navigation.issues'),
+				'url' => $router->url($request, null, 'manageIssues'),
+				'isCurrent' => $request->getRequestedPage() === 'manageIssues',
+			];
+
+			$index = array_search('submissions', array_keys($menu));
+			if ($index === false || count($menu) <= ($index + 1)) {
+				$menu['issues'] = $issuesLink;
+			} else {
+				$menu = array_slice($menu, 0, $index + 1, true) +
+						['issues' => $issuesLink] +
+						array_slice($menu, $index + 1, null, true);
+			}
+		}
+
+		// Add payments link before settings
+		if ($request->getContext()->getData('paymentsEnabled') && array_intersect([ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUBSCRIPTION_MANAGER], $userRoles)) {
+			$paymentsLink = [
+				'name' => __('common.payments'),
+				'url' => $router->url($request, null, 'payments'),
+				'isCurrent' => $request->getRequestedPage() === 'payments',
+			];
+
+			$index = array_search('settings', array_keys($menu));
+			if ($index === false || count($menu) === $index) {
+				$menu['payments'] = $paymentsLink;
+			} else {
+				$menu = array_slice($menu, 0, $index, true) +
+						['payments' => $paymentsLink] +
+						array_slice($menu, $index, null, true);
+			}
+		}
+
+		$this->setState(['menu' => $menu]);
 	}
 }
 

@@ -3,9 +3,9 @@
 /**
  * @file tests/plugins/importexport/PubObjectCacheTest.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PubObjectCacheTest
  * @ingroup tests_plugins_importexport
@@ -19,7 +19,7 @@
 
 import('lib.pkp.tests.PKPTestCase');
 import('classes/issue/Issue');
-import('classes/article/PublishedSubmission');
+import('classes/article/Submission');
 import('classes/article/ArticleGalley');
 import('plugins.importexport.medra.classes.PubObjectCache');
 
@@ -49,17 +49,17 @@ class PubObjectCacheTest extends PKPTestCase {
 		$nullVar = null;
 		$cache = new PubObjectCache();
 
-		$article = new PublishedSubmission();
+		$article = new Submission();
 		$article->setId('2');
 		$article->setIssueId('1');
 
 		self::assertFalse($cache->isCached('articles', $article->getId()));
-		self::assertFalse($cache->isCached('articlesByIssue', $article->getIssueId()));
-		self::assertFalse($cache->isCached('articlesByIssue', $article->getIssueId(), $article->getId()));
+		self::assertFalse($cache->isCached('articlesByIssue', $article->getCurrentPublication()->getData('issueId')));
+		self::assertFalse($cache->isCached('articlesByIssue', $article->getCurrentPublication()->getData('issueId'), $article->getId()));
 		$cache->add($article, $nullVar);
 		self::assertTrue($cache->isCached('articles', $article->getId()));
-		self::assertFalse($cache->isCached('articlesByIssue', $article->getIssueId()));
-		self::assertTrue($cache->isCached('articlesByIssue', $article->getIssueId(), $article->getId()));
+		self::assertFalse($cache->isCached('articlesByIssue', $article->getCurrentPublication()->getData('issueId')));
+		self::assertTrue($cache->isCached('articlesByIssue', $article->getCurrentPublication()->getData('issueId'), $article->getId()));
 
 		$retrievedArticle = $cache->get('articles', $article->getId());
 		self::assertEquals($article, $retrievedArticle);
@@ -73,7 +73,7 @@ class PubObjectCacheTest extends PKPTestCase {
 		$nullVar = null;
 		$cache = new PubObjectCache();
 
-		$article = new PublishedSubmission();
+		$article = new Submission();
 		$article->setId('2');
 		$article->setIssueId('1');
 
@@ -84,24 +84,24 @@ class PubObjectCacheTest extends PKPTestCase {
 		self::assertFalse($cache->isCached('galleys', $articleGalley->getId()));
 		self::assertFalse($cache->isCached('galleysByArticle', $article->getId()));
 		self::assertFalse($cache->isCached('galleysByArticle', $article->getId(), $articleGalley->getId()));
-		self::assertFalse($cache->isCached('galleysByIssue', $article->getIssueId()));
-		self::assertFalse($cache->isCached('galleysByIssue', $article->getIssueId(), $articleGalley->getId()));
+		self::assertFalse($cache->isCached('galleysByIssue', $article->getCurrentPublication()->getData('issueId')));
+		self::assertFalse($cache->isCached('galleysByIssue', $article->getCurrentPublication()->getData('issueId'), $articleGalley->getId()));
 		$cache->add($articleGalley, $article);
 		self::assertTrue($cache->isCached('galleys', $articleGalley->getId()));
 		self::assertFalse($cache->isCached('galleysByArticle', $article->getId()));
 		self::assertTrue($cache->isCached('galleysByArticle', $article->getId(), $articleGalley->getId()));
-		self::assertFalse($cache->isCached('galleysByIssue', $article->getIssueId()));
-		self::assertTrue($cache->isCached('galleysByIssue', $article->getIssueId(), $articleGalley->getId()));
+		self::assertFalse($cache->isCached('galleysByIssue', $article->getCurrentPublication()->getData('issueId')));
+		self::assertTrue($cache->isCached('galleysByIssue', $article->getCurrentPublication()->getData('issueId'), $articleGalley->getId()));
 
 		$retrievedArticleGalley1 = $cache->get('galleys', $articleGalley->getId());
 		self::assertEquals($articleGalley, $retrievedArticleGalley1);
 
-		$retrievedArticleGalley2 = $cache->get('galleysByIssue', $article->getIssueId(), $articleGalley->getId());
+		$retrievedArticleGalley2 = $cache->get('galleysByIssue', $article->getCurrentPublication()->getData('issueId'), $articleGalley->getId());
 		self::assertEquals($retrievedArticleGalley1, $retrievedArticleGalley2);
 
 		$cache->markComplete('galleysByArticle', $article->getId());
 		self::assertTrue($cache->isCached('galleysByArticle', $article->getId()));
-		self::assertFalse($cache->isCached('galleysByIssue', $article->getIssueId()));
+		self::assertFalse($cache->isCached('galleysByIssue', $article->getCurrentPublication()->getData('issueId')));
 	}
 
 	/**
@@ -111,7 +111,7 @@ class PubObjectCacheTest extends PKPTestCase {
 		$nullVar = null;
 		$cache = new PubObjectCache();
 
-		$article = new PublishedSubmission();
+		$article = new Submission();
 		$article->setId('2');
 		$article->setIssueId('1');
 

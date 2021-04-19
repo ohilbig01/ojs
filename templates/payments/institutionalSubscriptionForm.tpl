@@ -1,9 +1,9 @@
 {**
  * templates/payments/institutionalSubscriptionForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Individual subscription form under journal management.
  *
@@ -22,7 +22,7 @@
 
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="institutionalSubscriptionNotification"}
 
-	{capture assign=subscriberSelectGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.users.subscriberSelect.SubscriberSelectGridHandler" op="fetchGrid" escape=false userId=$userId}{/capture}
+	{capture assign=subscriberSelectGridUrl}{url router=PKPApplication::ROUTE_COMPONENT component="grid.users.subscriberSelect.SubscriberSelectGridHandler" op="fetchGrid" escape=false userId=$userId}{/capture}
 	{load_url_in_div id='subscriberSelectGridContainer' url=$subscriberSelectGridUrl}
 
 	{fbvFormArea id="institutionalSubscriptionFormArea"}
@@ -31,24 +31,20 @@
 			{fbvElement type="select" required=true name="status" id="status" selected=$status from=$validStatus label="manager.subscriptions.form.status" size=$fbvStyles.size.SMALL inline=true}
 		{/fbvFormSection}
 		{fbvFormSection title="common.date"}
-			{fbvElement type="text" required=true name="dateStart" id="dateStart" value=$dateStart label="manager.subscriptions.form.dateStart" size=$fbvStyles.size.SMALL inline=true class="datepicker"}
-			{fbvElement type="text" required=true name="dateEnd" id="dateEnd" value=$dateEnd label="manager.subscriptions.form.dateEnd" size=$fbvStyles.size.SMALL inline=true class="datepicker"}
+			{fbvElement type="text" name="dateStart" id="dateStart" value=$dateStart label="manager.subscriptions.form.dateStart" size=$fbvStyles.size.SMALL inline=true class="datepicker"}
+			{fbvElement type="text" name="dateEnd" id="dateEnd" value=$dateEnd label="manager.subscriptions.form.dateEnd" size=$fbvStyles.size.SMALL inline=true class="datepicker"}
 		{/fbvFormSection}
-		{fbvFormSection label="manager.subscriptions.form.institutionName"}
-			{fbvElement type="text" required=true name="institutionName" id="institutionName" value=$institutionName size=$fbvStyles.size.MEDIUM}
-		{/fbvFormSection}
-		{fbvFormSection label="manager.subscriptions.form.institutionMailingAddress"}
-			{fbvElement type="textarea" name="institutionMailingAddress" id="institutionMailingAddress" value=$institutionMailingAddress}
-		{/fbvFormSection}
-		{fbvFormSection label="manager.subscriptions.form.domain"}
-			{fbvElement type="text" name="domain" id="domain" value=$domain label="manager.subscriptions.form.domainInstructions" size=$fbvStyles.size.MEDIUM}
-		{/fbvFormSection}
-		{fbvFormSection label="manager.subscriptions.form.ipRange"}
-			{fbvElement type="textarea" name="ipRanges" id="ipRanges" value=$ipRanges label="manager.subscriptions.form.ipRangeInstructions" size=$fbvStyles.size.MEDIUM}
-		{/fbvFormSection}
-		{fbvFormSection label="manager.subscriptions.form.referenceNumber"}
-			{fbvElement type="text" name="referenceNumber" id="referenceNumber" value=$referenceNumber size=$fbvStyles.size.MEDIUM inline=true}
-		{/fbvFormSection}
+		{fbvElement type="text" label="manager.subscriptions.form.institutionName" required=true name="institutionName" id="institutionName" value=$institutionName size=$fbvStyles.size.MEDIUM}
+		{fbvElement type="textarea" label="manager.subscriptions.form.institutionMailingAddress" name="institutionMailingAddress" id="institutionMailingAddress" value=$institutionMailingAddress}
+
+		<span class="instructions">{translate key="manager.subscriptions.form.domainInstructions"}</span>
+		{fbvElement type="text" label="manager.subscriptions.form.domain" name="domain" id="domain" value=$domain size=$fbvStyles.size.MEDIUM}
+
+		<span class="instructions">{translate key="manager.subscriptions.form.ipRangeInstructions"}</span>
+		{fbvElement type="textarea" label="manager.subscriptions.form.ipRange" name="ipRanges" id="ipRanges" value=$ipRanges size=$fbvStyles.size.MEDIUM}
+
+		{fbvElement type="text" label="manager.subscriptions.form.referenceNumber" name="referenceNumber" id="referenceNumber" value=$referenceNumber size=$fbvStyles.size.MEDIUM}
+
 		{fbvFormSection label="manager.subscriptions.form.notes"}
 			{fbvElement type="textarea" name="notes" id="notes" value=$notes rich=true}
 		{/fbvFormSection}

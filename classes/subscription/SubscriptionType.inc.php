@@ -3,9 +3,9 @@
 /**
  * @file classes/subscription/SubscriptionType.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Subscriptiontyoe
  * @ingroup subscription 
@@ -22,7 +22,7 @@ define('SUBSCRIPTION_TYPE_FORMAT_PRINT',		0x10);
 define('SUBSCRIPTION_TYPE_FORMAT_PRINT_ONLINE',	0x11);
 
 
-class SubscriptionType extends DataObject {
+class SubscriptionType extends \PKP\core\DataObject {
 	//
 	// Get/set methods
 	//
@@ -129,17 +129,12 @@ class SubscriptionType extends DataObject {
 
 	/**
 	 * Get subscription type currency string.
-	 * @return int
+	 * @return string
 	 */
-	function getCurrencyString() {
-		$currencyDao = DAORegistry::getDAO('CurrencyDAO');
-		$currency = $currencyDao->getCurrencyByAlphaCode($this->getData('currencyCodeAlpha'));
-
-		if ($currency != null) {
-			return $currency->getName();
-		} else {
-			return 'subscriptionTypes.currency';
-		}
+	public function getCurrencyString() {
+		$isoCodes = new \Sokil\IsoCodes\IsoCodesFactory();
+		$currency = $isoCodes->getCurrencies()->getByLetterCode($this->getData('currencyCodeAlpha'));
+		return $currency?$currency->getLocalName():'subscriptionTypes.currency';
 	}
 
 	/**
@@ -147,14 +142,9 @@ class SubscriptionType extends DataObject {
 	 * @return int
 	 */
 	function getCurrencyStringShort() {
-		$currencyDao = DAORegistry::getDAO('CurrencyDAO');
-		$currency = $currencyDao->getCurrencyByAlphaCode($this->getData('currencyCodeAlpha'));
-
-		if ($currency != null) {
-			return $currency->getCodeAlpha();
-		} else {
-			return 'subscriptionTypes.currency';
-		}
+		$isoCodes = new \Sokil\IsoCodes\IsoCodesFactory();
+		$currency = $isoCodes->getCurrencies()->getByLetterCode($this->getData('currencyCodeAlpha'));
+		return $currency?$currency->getLetterCode():'subscriptionTypes.currency';
 	}
 
 	/**
@@ -314,7 +304,7 @@ class SubscriptionType extends DataObject {
 	 * @return string
 	 */
 	function getSummaryString() {
-		$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO');
+		$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO'); /* @var $subscriptionTypeDao SubscriptionTypeDAO */
 		return $this->getLocalizedName() . ' - ' . $this->getDurationYearsMonths() . ' - ' . sprintf('%.2f', $this->getCost()) . ' ' . $this->getCurrencyStringShort();
 	}
 }

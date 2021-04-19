@@ -1,9 +1,9 @@
 /**
  * @file plugins/themes/default/styles/pages/submissions.less
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Styles applying to submissions page
  * @link templates/frontend/pages/submissions.tpl
@@ -17,18 +17,12 @@
 			padding: 0;
 			list-style: none;
 			font-size: @font-sml;
-			border: @bg-border;
-			border-bottom: none;
+			border: none;
 		}
 
 		li {
 			position: relative;
-			padding: @base;
-			border-bottom: @bg-border;
-
-			&:before {
-				.fa();
-			}
+			border-bottom: none;
 		}
 	}
 
@@ -42,45 +36,51 @@
 		}
 	}
 
-	@media(min-width: @screen-phone) {
+	.submission_checklist {
 
-		.submission_sections, .submission_checklist {
+		li {
+			padding: @double;
 
-			li {
-				padding: @double @double @double (@double * 2);
-
-				&:before {
-					position: absolute;
-					font-size: @font-lead;
-					color: @yes;
-				}
-			}
-		}
-
-		.submission_sections {
-			li {
-				&:before {
-					content: @fa-var-chevron-right;
-					top: 22px;
-					left: @double - 3;
-				}
-			}
-		}
-
-		.submission_checklist {
-			li {
-				&:before {
-					content: @fa-var-check;
-					top: 50%;
-					left: @double;
-					-webkit-transform: translate(-50%, -50%);
-					-moz-transform: translate(-50%, -50%);
-					-ms-transform: translate(-50%, -50%);
-					-o-transform: translate(-50%, -50%);
-					transform: translate(-50%, -50%);
-				}
+			.fa {
+				top: 50%;
+				left: @half;
+				-webkit-transform: translate(-50%, -50%);
+				-moz-transform: translate(-50%, -50%);
+				-ms-transform: translate(-50%, -50%);
+				-o-transform: translate(-50%, -50%);
+				transform: translate(-50%, -50%);
+				position: absolute;
+				font-size: @font-lead;
+				color: @yes;
 			}
 		}
 	}
 
+	@media(min-width: @screen-phone) {
+
+		.submission_sections {
+			li {
+				.fa {
+					top: 22px;
+					left: calc(~"@{double} - 3px");
+				}
+			}
+		}
+
+		.submission_sections, .submission_checklist {
+			ul {
+				border: @bg-border;
+				border-bottom: none;
+			}
+
+			li {
+				padding: @double @double @double @quadruple;
+				border-bottom: @bg-border;
+
+				.fa {
+					left: @double;
+				}
+			}
+		}
+	}
 }

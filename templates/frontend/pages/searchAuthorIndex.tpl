@@ -1,9 +1,9 @@
 {**
  * templates/frontend/pages/searchAuthorIndex.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Index of published submissions by author.
  *
@@ -46,7 +46,7 @@
 	{/strip}
 	<br/>
 {/iterate}
-{if !$authors->wasEmpty()}
+{if !empty($firstLetter)}{* If the author list wasn't empty *}
 	<br />
 	{page_info iterator=$authors}&nbsp;&nbsp;&nbsp;&nbsp;{page_links anchor="authors" iterator=$authors name="authors" searchInitial=$searchInitial}
 {else}

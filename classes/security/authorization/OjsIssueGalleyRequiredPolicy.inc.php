@@ -2,9 +2,9 @@
 /**
  * @file classes/security/authorization/OjsIssueGalleyRequiredPolicy.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OjsIssueGalleyRequiredPolicy
  * @ingroup security_authorization_internal
@@ -37,7 +37,7 @@ class OjsIssueGalleyRequiredPolicy extends DataObjectRequiredPolicy {
 
 		// Make sure the issue galley belongs to the journal.
 		$issue = $this->getAuthorizedContextObject(ASSOC_TYPE_ISSUE);
-		$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO');
+		$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO'); /* @var $issueGalleyDao IssueGalleyDAO */
 		$issueGalley = $issueGalleyDao->getById($issueGalleyId, $issue->getId());
 		if (!is_a($issueGalley, 'IssueGalley')) return AUTHORIZATION_DENY;
 

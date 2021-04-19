@@ -3,9 +3,9 @@
 /**
  * @file classes/services/GalleyService.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class GalleyService
  * @ingroup services
@@ -15,177 +15,155 @@
 
 namespace APP\Services;
 
-use \Services;
+use \PKP\db\DBResultRange;
+use \PKP\db\DAOResultFactory;
+use \PKP\db\DAORegistry;
 use \PKP\Services\interfaces\EntityPropertyInterface;
+use \PKP\Services\interfaces\EntityReadInterface;
+use \PKP\Services\interfaces\EntityWriteInterface;
+use \PKP\services\PKPSchemaService;
 
-class GalleyService implements EntityPropertyInterface {
+use \APP\Services\QueryBuilders\GalleyQueryBuilder;
+use \APP\core\Services;
+
+class GalleyService implements EntityReadInterface, EntityWriteInterface, EntityPropertyInterface {
+
+	/**
+	 * @copydoc \PKP\Services\interfaces\EntityReadInterface::get()
+	 */
+	public function get($galleyId) {
+		$articleGalleyDao = DAORegistry::getDAO('ArticleGalleyDAO'); /* @var $articleGalleyDao ArticleGalleyDAO */
+		return $articleGalleyDao->getById($galleyId);
+	}
+
+	/**
+	 * @copydoc \PKP\Services\interfaces\EntityReadInterface::getCount()
+	 */
+	public function getCount($args = []) {
+		return $this->getQueryBuilder($args)->getCount();
+	}
+
+	/**
+	 * @copydoc \PKP\Services\interfaces\EntityReadInterface::getIds()
+	 */
+	public function getIds($args = []) {
+		return $this->getQueryBuilder($args)->getIds();
+	}
+
+	/**
+	 * Get a collection of Galley objects limited, filtered
+	 * and sorted by $args
+	 *
+	 * @param array $args {
+	 *    @option int|array publicationIds
+	 * }
+	 * @return \Iterator
+	 */
+	public function getMany($args = []) {
+		$galleyQO = $this->getQueryBuilder($args)->getQuery();
+		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO'); /* @var $galleyDao ArticleGalleyDAO */
+		$result = $galleyDao->retrieveRange($galleyQO->toSql(), $galleyQO->getBindings());
+		$queryResults = new DAOResultFactory($result, $galleyDao, '_fromRow');
+
+		return $queryResults->toIterator();
+	}
+
+	/**
+	 * @copydoc \PKP\Services\interfaces\EntityReadInterface::getMax()
+	 */
+	public function getMax($args = []) {
+		// Count/offset is not supported so getMax is always
+		// the same as getCount
+		return $this->getCount();
+	}
+
+	/**
+	 * @copydoc \PKP\Services\interfaces\EntityReadInterface::getQueryBuilder()
+	 * @return GalleyQueryBuilder
+	 */
+	public function getQueryBuilder($args = []) {
+		$galleyQB = new GalleyQueryBuilder();
+		if (!empty($args['publicationIds'])) {
+			$galleyQB->filterByPublicationIds($args['publicationIds']);
+		}
+
+		\HookRegistry::call('Galley::getMany::queryBuilder', array(&$galleyQB, $args));
+
+		return $galleyQB;
+	}
 
 	/**
 	 * @copydoc \PKP\Services\interfaces\EntityPropertyInterface::getProperties()
 	 */
 	public function getProperties($galley, $props, $args = null) {
-		\PluginRegistry::loadCategory('pubIds', true);
 		$request = $args['request'];
-		$parent = $args['parent'];
 		$context = $request->getContext();
-		$isSubmissionGalley = is_a($galley, 'Representation');
-		$isIssueGalley = is_a($galley, 'IssueFile');
 		$dispatcher = $request->getDispatcher();
-		$router = $request->getRouter();
 
-		$values = array();
+		if (is_a($galley, 'ArticleGalley')) {
+			$publication = !empty($args['publication'])
+				? $args['publication']
+				: $args['publication'] = Services::get('publication')->get($galley->getData('publicationId'));
+
+			$submission = !empty($args['submission'])
+				? $args['submission']
+				: $args['submission'] = Services::get('submission')->get($publication->getData('submissionId'));
+		}
+
+
+		$values = [];
 
 		foreach ($props as $prop) {
 			switch ($prop) {
-				case 'id':
-					$values[$prop] = $galley->getId();
-					break;
-				case '_parent':
-					$values[$prop] = null;
-					if (!empty($args['slimRequest'])) {
-						$route = $args['slimRequest']->getAttribute('route');
-						$arguments = $route->getArguments();
-						$parentPath = null;
-						if ($isSubmissionGalley) {
-							$parentPath = 'submissions';
-							$parentId = $galley->getSubmissionId();
-						} elseif ($isIssueGalley) {
-							$parentPath = 'issues';
-							$parentId = $galley->getIssueId();
-						}
-						if ($parentPath) {
-							$values[$prop] = $dispatcher->url(
-								$args['request'],
-								ROUTE_API,
-								$context->getPath(),
-								$parentPath . '/' . $parentId
-							);
-						}
-					}
-					break;
-				case 'locale':
-					$values[$prop] = $galley->getLocale();
-					break;
-				case 'label':
-					$values[$prop] = $galley->getLabel(null);
-					break;
-				case 'urlRemote':
-					$values[$prop] = $isSubmissionGalley ? $galley->getRemoteURL() : '';
-					break;
 				case 'urlPublished':
-					$values[$prop] = '';
-					if ($isSubmissionGalley) {
-						$parentPath = 'article';
-						$parentId = $parent->getBestArticleId();
-					} elseif ($isIssueGalley) {
-						$parentPath = 'issue';
-						$parentId = $parent->getBestIssueId();
-					}
-					if ($context && $parentPath) {
+					if (is_a($galley, 'IssueGalley')) {
 						$values[$prop] = $dispatcher->url(
 							$request,
-							ROUTE_PAGE,
+							\PKPApplication::ROUTE_PAGE,
 							$context->getPath(),
-							$parentPath,
+							'issue',
 							'view',
-							array($parentId, $galley->getBestGalleyId())
+							[
+								$galley->getIssueId(),
+								$galley->getId()
+							]
+						);
+					} else {
+						$values[$prop] = $dispatcher->url(
+							$request,
+							\PKPApplication::ROUTE_PAGE,
+							$context->getPath(),
+							'article',
+							'view',
+							[
+								$submission->getBestId(),
+								'version',
+								$publication->getId(),
+								$galley->getBestGalleyId(),
+							]
 						);
 					}
-					break;
-				case 'seq':
-				case 'sequence':
-					$values[$prop] = $galley->getSequence();
 					break;
 				case 'file':
 					$values[$prop] = null;
-					$file = $galley->getFile();
-					if (!$file) {
-						break;
-					}
-					$values[$prop] = array(
-						'id' => $file->getFileId(),
-						'fileName' => $file->getOriginalFileName(),
-					);
-					if (is_a($file, 'SubmissionFile')) {
-						$values[$prop]['revision'] = $file->getRevision();
-						$values[$prop]['fileStage'] = $file->getFileStage();
-						$values[$prop]['genreId'] = $file->getGenreId();
-						$values[$prop]['fileName'] = $file->getClientFileName();
-					}
-					if (is_a($file, 'SupplementaryFile')) {
-						$values[$prop]['metadata'] = array(
-							'description' => $file->getDescription(null),
-							'creator' => $file->getCreator(null),
-							'publisher' => $file->getPublisher(null),
-							'source' => $file->getSource(null),
-							'subject' => $file->getSubject(null),
-							'sponsor' => $file->getSponsor(null),
-							'dateCreated' => $file->getDateCreated(),
-							'language' => $file->getLanguage(),
-						);
-					} elseif (is_a($file, 'SubmissionArtworkFile')) {
-						$values[$prop]['metadata'] = array(
-							'caption' => $file->getCaption(),
-							'credit' => $file->getCredit(),
-							'copyrightOwner' => $file->getCopyrightOwner(),
-							'terms' => $file->getPermissionTerms(),
-							'width' => $file->getWidth(),
-							'height' => $file->getHeight(),
-							'physicalWidth' => $file->getPhysicalWidth(300),
-							'physicalHeight' => $file->getPhysicalHeight(300),
-						);
-					}
-
-					// Look for dependent files
-					if (is_a($file, 'SubmissionFile')) {
-						$values['dependentFiles'] = null;
-						$submissionFileDao = \DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-						$dependentFiles = $submissionFileDao->getLatestRevisionsByAssocId(ASSOC_TYPE_SUBMISSION_FILE, $file->getFileId(), $parent->getId(), SUBMISSION_FILE_DEPENDENT);
-						if ($dependentFiles) {
-							$values['dependentFiles'] = array();
-							foreach ($dependentFiles as $dependentFile) {
-								$dependentFileProps = array(
-									'id' => $dependentFile->getFileId(),
-									'fileName' => $dependentFile->getOriginalFileName(),
-								);
-								if (is_a($dependentFile, 'SubmissionFile')) {
-									$dependentFileProps['revision'] = $dependentFile->getRevision();
-									$dependentFileProps['fileStage'] = $dependentFile->getFileStage();
-									$dependentFileProps['genreId'] = $dependentFile->getGenreId();
-									$dependentFileProps['fileName'] = $dependentFile->getClientFileName();
-								}
-								if (is_a($dependentFile, 'SupplementaryFile')) {
-									$dependentFileProps['metadata'] = array(
-										'description' => $dependentFile->getDescription(null),
-										'creator' => $dependentFile->getCreator(null),
-										'publisher' => $dependentFile->getPublisher(null),
-										'source' => $dependentFile->getSource(null),
-										'subject' => $dependentFile->getSubject(null),
-										'sponsor' => $dependentFile->getSponsor(null),
-										'dateCreated' => $dependentFile->getDateCreated(),
-										'language' => $dependentFile->getLanguage(),
-									);
-								} elseif (is_a($dependentFile, 'SubmissionArtworkFile')) {
-									$dependentFileProps['metadata'] = array(
-										'caption' => $dependentFile->getCaption(),
-										'credit' => $dependentFile->getCredit(),
-										'copyrightOwner' => $dependentFile->getCopyrightOwner(),
-										'terms' => $dependentFile->getPermissionTerms(),
-										'width' => $dependentFile->getWidth(),
-										'height' => $dependentFile->getHeight(),
-										'physicalWidth' => $dependentFile->getPhysicalWidth(300),
-										'physicalHeight' => $dependentFile->getPhysicalHeight(300),
-									);
-								}
-								$values['dependentFiles'][] = $dependentFileProps;
-							}
+					if (is_a($galley, 'ArticleGalley')) {
+						$submissionFile = Services::get('submissionFile')->get($galley->getData('submissionFileId'));
+						if (empty($submissionFile)) {
+							break;
 						}
+						$values[$prop] = Services::get('submissionFile')->getFullProperties($submissionFile, [
+							'request' => $request,
+							'submission' => $submission,
+						]);
 					}
+					break;
+				default:
+					$values[$prop] = $galley->getData($prop);
 					break;
 			}
 		}
 
-		$values = Services::get('schema')->addMissingMultilingualValues(SCHEMA_GALLEY, $values, $context->getSupportedLocales());
+		$values = Services::get('schema')->addMissingMultilingualValues(PKPSchemaService::SCHEMA_GALLEY, $values, $context->getSupportedSubmissionLocales());
 
 		\HookRegistry::call('Galley::getProperties::values', array(&$values, $galley, $props, $args));
 
@@ -195,44 +173,121 @@ class GalleyService implements EntityPropertyInterface {
 	}
 
 	/**
-	 * Returns summary properties for a galley
-	 * @param ArticleGalley|IssueGalley $galley
-	 * @param array extra arguments
-	 *		$args['request'] PKPRequest Required
-	 *		$args['parent'] Submission|Issue Required
-	 *		$args['slimRequest'] SlimRequest
-	 * @return array
+	 * @copydoc \PKP\Services\interfaces\EntityPropertyInterface::getSummaryProperties()
 	 */
 	public function getSummaryProperties($galley, $args = null) {
-		\PluginRegistry::loadCategory('pubIds', true);
-
-		$props = array (
-			'id','_parent','locale','label','seq','urlRemote','urlPublished'
-		);
-
-		\HookRegistry::call('Galley::getProperties::summaryProperties', array(&$props, $galley, $args));
+		$props = Services::get('schema')->getSummaryProps(PKPSchemaService::SCHEMA_GALLEY);
 
 		return $this->getProperties($galley, $props, $args);
 	}
 
 	/**
-	 * Returns full properties for a galley
-	 * @param ArticleGalley|IssueGalley $galley
-	 * @param array extra arguments
-	 *		$args['request'] PKPRequest Required
-	 *		$args['parent'] Submission|Issue Required
-	 *		$args['slimRequest'] SlimRequest
-	 * @return array
+	 * @copydoc \PKP\Services\interfaces\EntityPropertyInterface::getFullProperties()
 	 */
 	public function getFullProperties($galley, $args = null) {
-		\PluginRegistry::loadCategory('pubIds', true);
-
-		$props = array (
-			'id','_parent','locale','label','seq','urlRemote','urlPublished','file'
-		);
-
-		\HookRegistry::call('Galley::getProperties::fullProperties', array(&$props, $galley, $args));
+		$props = Services::get('schema')->getFullProps(PKPSchemaService::SCHEMA_GALLEY);
 
 		return $this->getProperties($galley, $props, $args);
+	}
+
+	/**
+	 * @copydoc \PKP\Services\EntityProperties\EntityWriteInterface::validate()
+	 */
+	public function validate($action, $props, $allowedLocales, $primaryLocale) {
+		$schemaService = Services::get('schema');
+
+		import('lib.pkp.classes.validation.ValidatorFactory');
+		$validator = \ValidatorFactory::make(
+			$props,
+			$schemaService->getValidationRules(PKPSchemaService::SCHEMA_GALLEY, $allowedLocales),
+			[
+				'locale.regex' => __('validator.localeKey'),
+				'urlPath.regex' => __('validator.alpha_dash'),
+			]
+		);
+
+		// Check required fields
+		\ValidatorFactory::required(
+			$validator,
+			$action,
+			$schemaService->getRequiredProps(PKPSchemaService::SCHEMA_GALLEY),
+			$schemaService->getMultilingualProps(PKPSchemaService::SCHEMA_GALLEY),
+			$allowedLocales,
+			$primaryLocale
+		);
+
+		// Check for input from disallowed locales
+		\ValidatorFactory::allowedLocales($validator, $schemaService->getMultilingualProps(PKPSchemaService::SCHEMA_GALLEY), $allowedLocales);
+
+		// The publicationId must match an existing publication that is not yet published
+		$validator->after(function($validator) use ($props) {
+			if (isset($props['publicationId']) && !$validator->errors()->get('publicationId')) {
+				$publication = Services::get('publication')->get($props['publicationId']);
+				if (!$publication) {
+					$validator->errors()->add('publicationId', __('galley.publicationNotFound'));
+				} else if (Services::get('publication')->isPublished($publication)) {
+					$validator->errors()->add('publicationId', __('galley.editPublishedDisabled'));
+				}
+			}
+		});
+
+		if ($validator->fails()) {
+			$errors = $schemaService->formatValidationErrors($validator->errors(), $schemaService->get(PKPSchemaService::SCHEMA_GALLEY), $allowedLocales);
+		}
+
+		\HookRegistry::call('Galley::validate', array(&$errors, $action, $props, $allowedLocales, $primaryLocale));
+
+		return $errors;
+	}
+
+	/**
+	 * @copydoc \PKP\Services\EntityProperties\EntityWriteInterface::add()
+	 */
+	public function add($galley, $request) {
+		$articleGalleyDao = DAORegistry::getDAO('ArticleGalleyDAO'); /* @var $articleGalleyDao ArticleGalleyDAO */
+		$galleyId = $articleGalleyDao->insertObject($galley);
+		$galley = $this->get($galleyId);
+
+		\HookRegistry::call('Galley::add', array(&$galley, $request));
+
+		return $galley;
+	}
+
+	/**
+	 * @copydoc \PKP\Services\EntityProperties\EntityWriteInterface::edit()
+	 */
+	public function edit($galley, $params, $request) {
+		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO'); /* @var $galleyDao ArticleGalleyDAO */
+
+		$newGalley = $galleyDao->newDataObject();
+		$newGalley->_data = array_merge($galley->_data, $params);
+
+		\HookRegistry::call('Galley::edit', array(&$newGalley, $galley, $params, $request));
+
+		$galleyDao->updateObject($newGalley);
+		$newGalley = $this->get($newGalley->getId());
+
+		return $newGalley;
+	}
+
+	/**
+	 * @copydoc \PKP\Services\EntityProperties\EntityWriteInterface::delete()
+	 */
+	public function delete($galley) {
+		\HookRegistry::call('Galley::delete::before', [&$galley]);
+
+		$articleGalleyDao = DAORegistry::getDAO('ArticleGalleyDAO'); /* @var $articleGalleyDao ArticleGalleyDAO */
+		$articleGalleyDao->deleteObject($galley);
+
+		// Delete related submission files
+		$submissionFilesIterator = Services::get('submissionFile')->getMany([
+			'assocTypes' => [ASSOC_TYPE_GALLEY],
+			'assocIds' => [$galley->getId()],
+		]);
+		foreach ($submissionFilesIterator as $submissionFile) {
+			Services::get('submissionFile')->delete($submissionFile);
+		}
+
+		\HookRegistry::call('Galley::delete', [&$galley]);
 	}
 }

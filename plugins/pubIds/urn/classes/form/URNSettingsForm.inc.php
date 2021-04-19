@@ -3,9 +3,9 @@
 /**
  * @file plugins/pubIds/urn/classes/form/URNSettingsForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class URNSettingsForm
  * @ingroup plugins_pubIds_urn
@@ -59,15 +59,15 @@ class URNSettingsForm extends Form {
 
 		$form = $this;
 		$this->addCheck(new FormValidatorCustom($this, 'urnObjects', 'required', 'plugins.pubIds.urn.manager.settings.urnObjectsRequired', function($enableIssueURN) use ($form) {
-			return $form->getData('enableIssueURN') || $form->getData('enableSubmissionURN') || $form->getData('enableRepresentationURN');
+			return $form->getData('enableIssueURN') || $form->getData('enablePublicationURN') || $form->getData('enableRepresentationURN');
 		}));
 		$this->addCheck(new FormValidatorRegExp($this, 'urnPrefix', 'required', 'plugins.pubIds.urn.manager.settings.form.urnPrefixPattern', '/^urn:[a-zA-Z0-9-]*:.*/'));
 		$this->addCheck(new FormValidatorCustom($this, 'urnIssueSuffixPattern', 'required', 'plugins.pubIds.urn.manager.settings.form.urnIssueSuffixPatternRequired', function($urnIssueSuffixPattern) use ($form) {
 			if ($form->getData('urnSuffix') == 'pattern' && $form->getData('enableIssueURN')) return $urnIssueSuffixPattern != '';
 			return true;
 		}));
-		$this->addCheck(new FormValidatorCustom($this, 'urnSubmissionSuffixPattern', 'required', 'plugins.pubIds.urn.manager.settings.form.urnSubmissionSuffixPatternRequired', function($urnSubmissionSuffixPattern) use ($form) {
-			if ($form->getData('urnSuffix') == 'pattern' && $form->getData('enableSubmissionURN')) return $urnSubmissionSuffixPattern != '';
+		$this->addCheck(new FormValidatorCustom($this, 'urnPublicationSuffixPattern', 'required', 'plugins.pubIds.urn.manager.settings.form.urnPublicationSuffixPatternRequired', function($urnPublicationSuffixPattern) use ($form) {
+			if ($form->getData('urnSuffix') == 'pattern' && $form->getData('enablePublicationURN')) return $urnPublicationSuffixPattern != '';
 			return true;
 		}));
 		$this->addCheck(new FormValidatorCustom($this, 'urnRepresentationSuffixPattern', 'required', 'plugins.pubIds.urn.manager.settings.form.urnRepresentationSuffixPatternRequired', function($urnRepresentationSuffixPattern) use ($form) {
@@ -109,6 +109,7 @@ class URNSettingsForm extends Form {
 			'urn:nbn:de' => 'urn:nbn:de',
 			'urn:nbn:at' => 'urn:nbn:at',
 			'urn:nbn:ch' => 'urn:nbn:ch',
+			'urn:nbn:fi' => 'urn:nbn:fi',
 			'urn:nbn' => 'urn:nbn',
 			'urn' => 'urn'
 		);
@@ -138,12 +139,13 @@ class URNSettingsForm extends Form {
 	/**
 	 * @copydoc Form::execute()
 	 */
-	function execute() {
+	function execute(...$functionArgs) {
 		$contextId = $this->_getContextId();
 		$plugin = $this->_getPlugin();
 		foreach($this->_getFormFields() as $fieldName => $fieldType) {
 			$plugin->updateSetting($contextId, $fieldName, $this->getData($fieldName), $fieldType);
 		}
+		parent::execute(...$functionArgs);
 	}
 
 	//
@@ -152,12 +154,12 @@ class URNSettingsForm extends Form {
 	function _getFormFields() {
 		return array(
 			'enableIssueURN' => 'bool',
-			'enableSubmissionURN' => 'bool',
+			'enablePublicationURN' => 'bool',
 			'enableRepresentationURN' => 'bool',
 			'urnPrefix' => 'string',
 			'urnSuffix' => 'string',
 			'urnIssueSuffixPattern' => 'string',
-			'urnSubmissionSuffixPattern' => 'string',
+			'urnPublicationSuffixPattern' => 'string',
 			'urnRepresentationSuffixPattern' => 'string',
 			'urnCheckNo' => 'bool',
 			'urnNamespace' => 'string',

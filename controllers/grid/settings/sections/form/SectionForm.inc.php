@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/settings/sections/form/SectionForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SectionForm
  * @ingroup controllers_grid_settings_section_form
@@ -44,17 +44,18 @@ class SectionForm extends PKPSectionForm {
 		$request = Application::get()->getRequest();
 		$journal = $request->getJournal();
 
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
 		$sectionId = $this->getSectionId();
 		if ($sectionId) {
 			$section = $sectionDao->getById($sectionId, $journal->getId());
 		}
 
-		if (isset($section) ) {
+		if (isset($section)) {
 			$this->setData(array(
 				'title' => $section->getTitle(null), // Localized
 				'abbrev' => $section->getAbbrev(null), // Localized
 				'reviewFormId' => $section->getReviewFormId(),
+				'isInactive' => $section->getIsInactive(),
 				'metaIndexed' => !$section->getMetaIndexed(), // #2066: Inverted
 				'metaReviewed' => !$section->getMetaReviewed(), // #2066: Inverted
 				'abstractsNotRequired' => $section->getAbstractsNotRequired(),
@@ -64,11 +65,45 @@ class SectionForm extends PKPSectionForm {
 				'hideAuthor' => $section->getHideAuthor(),
 				'policy' => $section->getPolicy(null), // Localized
 				'wordCount' => $section->getAbstractWordCount(),
-				'subEditors' => $this->_getAssignedSubEditorIds($sectionId, $journal->getId()),
+				'assignedSubeditors' => Services::get('user')->getIds([
+					'contextId' => Application::get()->getRequest()->getContext()->getId(),
+					'roleIds' => ROLE_ID_SUB_EDITOR,
+					'assignedToSection' => (int) $this->getSectionId(),
+				]),
 			));
+		} else {
+			$this->setData([
+			'assignedSubeditors' => [],
+			]);
 		}
 
 		parent::initData();
+	}
+
+	/**
+	 * @see Form::validate()
+	 */
+	function validate($callHooks = true) {
+		// Validate if it can be inactive
+		if ($this->getData('isInactive')) {
+			$request = Application::get()->getRequest();
+			$context = $request->getContext();
+			$sectionId = $this->getSectionId();
+
+			$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
+			$sectionsIterator = $sectionDao->getByContextId($context->getId());
+			$activeSectionsCount = 0;
+			while ($section = $sectionsIterator->next()) {
+				if (!$section->getIsInactive() && ($sectionId != $section->getId())) {
+					$activeSectionsCount++;
+				}
+			}
+			if ($activeSectionsCount < 1 && $this->getData('isInactive')) {
+				$this->addError('isInactive', __('manager.sections.confirmDeactivateSection.error'));
+			}
+		}
+
+		return parent::validate($callHooks);
 	}
 
 	/**
@@ -80,24 +115,13 @@ class SectionForm extends PKPSectionForm {
 
 		$journal = $request->getJournal();
 
-		$reviewFormDao = DAORegistry::getDAO('ReviewFormDAO');
+		$reviewFormDao = DAORegistry::getDAO('ReviewFormDAO'); /* @var $reviewFormDao ReviewFormDAO */
 		$reviewForms = $reviewFormDao->getActiveByAssocId(ASSOC_TYPE_JOURNAL, $journal->getId());
 		$reviewFormOptions = array();
 		while ($reviewForm = $reviewForms->next()) {
 			$reviewFormOptions[$reviewForm->getId()] = $reviewForm->getLocalizedTitle();
 		}
 		$templateMgr->assign('reviewFormOptions', $reviewFormOptions);
-
-		// Section/Series Editors
-		$subEditorsListPanel = $this->_getSubEditorsListPanel($journal->getId(), $request);
-		$templateMgr->assign(array(
-			'hasSubEditors' => !empty($subEditorsListPanel->items),
-			'subEditorsListData' => [
-				'components' => [
-					'subeditors' => $subEditorsListPanel->getConfig(),
-				]
-			]
-		));
 
 		return parent::fetch($request, $template, $display);
 	}
@@ -107,7 +131,7 @@ class SectionForm extends PKPSectionForm {
 	 */
 	function readInputData() {
 		parent::readInputData();
-		$this->readUserVars(array('abbrev', 'policy', 'reviewFormId', 'identifyType', 'metaIndexed', 'metaReviewed', 'abstractsNotRequired', 'editorRestriction', 'hideTitle', 'hideAuthor', 'wordCount'));
+		$this->readUserVars(array('abbrev', 'policy', 'reviewFormId', 'identifyType', 'isInactive', 'metaIndexed', 'metaReviewed', 'abstractsNotRequired', 'editorRestriction', 'hideTitle', 'hideAuthor', 'wordCount'));
 	}
 
 	/**
@@ -115,7 +139,7 @@ class SectionForm extends PKPSectionForm {
 	 * @return array
 	 */
 	function getLocaleFieldNames() {
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
 		return $sectionDao->getLocaleFieldNames();
 	}
 
@@ -123,9 +147,10 @@ class SectionForm extends PKPSectionForm {
 	 * Save section.
 	 * @return mixed
 	 */
-	function execute() {
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
-		$journal = Application::get()->getRequest()->getJournal();
+	function execute(...$functionArgs) {
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
+		$request = Application::get()->getRequest();
+		$journal = $request->getJournal();
 
 		// Get or create the section object
 		if ($this->getSectionId()) {
@@ -142,6 +167,7 @@ class SectionForm extends PKPSectionForm {
 		$reviewFormId = $this->getData('reviewFormId');
 		if ($reviewFormId === '') $reviewFormId = null;
 		$section->setReviewFormId($reviewFormId);
+		$section->setIsInactive($this->getData('isInactive') ? 1 : 0);
 		$section->setMetaIndexed($this->getData('metaIndexed') ? 0 : 1); // #2066: Inverted
 		$section->setMetaReviewed($this->getData('metaReviewed') ? 0 : 1); // #2066: Inverted
 		$section->setAbstractsNotRequired($this->getData('abstractsNotRequired') ? 1 : 0);
@@ -161,9 +187,6 @@ class SectionForm extends PKPSectionForm {
 			$sectionDao->resequenceSections($journal->getId());
 		}
 
-		// Update section editors
-		$this->_saveSubEditors($journal->getId());
-
-		return parent::execute();
+		return parent::execute(...$functionArgs);
 	}
 }

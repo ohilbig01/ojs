@@ -3,9 +3,9 @@
 /**
  * @file classes/services/NavigationMenuService.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class NavigationMenuService
  * @ingroup services
@@ -113,7 +113,7 @@ class NavigationMenuService extends \PKP\Services\PKPNavigationMenuService {
 				case NMI_TYPE_CURRENT:
 					$navigationMenuItem->setUrl($dispatcher->url(
 						$request,
-						ROUTE_PAGE,
+						\PKPApplication::ROUTE_PAGE,
 						null,
 						'issue',
 						'current',
@@ -123,7 +123,7 @@ class NavigationMenuService extends \PKP\Services\PKPNavigationMenuService {
 				case NMI_TYPE_ARCHIVES:
 					$navigationMenuItem->setUrl($dispatcher->url(
 						$request,
-						ROUTE_PAGE,
+						\PKPApplication::ROUTE_PAGE,
 						null,
 						'issue',
 						'archive',
@@ -133,7 +133,7 @@ class NavigationMenuService extends \PKP\Services\PKPNavigationMenuService {
 				case NMI_TYPE_SUBSCRIPTIONS:
 					$navigationMenuItem->setUrl($dispatcher->url(
 						$request,
-						ROUTE_PAGE,
+						\PKPApplication::ROUTE_PAGE,
 						null,
 						'about',
 						'subscriptions',
@@ -143,7 +143,7 @@ class NavigationMenuService extends \PKP\Services\PKPNavigationMenuService {
 				case NMI_TYPE_MY_SUBSCRIPTIONS:
 					$navigationMenuItem->setUrl($dispatcher->url(
 						$request,
-						ROUTE_PAGE,
+						\PKPApplication::ROUTE_PAGE,
 						null,
 						'user',
 						'subscriptions',

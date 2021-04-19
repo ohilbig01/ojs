@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/pubIds/PubIdExportRepresentationsListGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PubIdExportRepresentationsListGridHandler
  * @ingroup controllers_grid_pubIds
@@ -192,7 +192,7 @@ class PubIdExportRepresentationsListGridHandler extends GridHandler {
 	 */
 	function renderFilter($request, $filterData = array()) {
 		$context = $request->getContext();
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		$issuesIterator = $issueDao->getPublishedIssues($context->getId());
 		$issues = $issuesIterator->toArray();
 		foreach ($issues as $issue) {
@@ -233,7 +233,7 @@ class PubIdExportRepresentationsListGridHandler extends GridHandler {
 	 * @copydoc GridHandler::loadData()
 	 */
 	protected function loadData($request, $filter) {
-		$articleGalleyDao = DAORegistry::getDAO('ArticleGalleyDAO');
+		$articleGalleyDao = DAORegistry::getDAO('ArticleGalleyDAO'); /* @var $articleGalleyDao ArticleGalleyDAO */
 		$context = $request->getContext();
 		list($search, $column, $issueId, $statusId) = $this->getFilterValues($filter);
 		$title = $author = null;

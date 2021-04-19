@@ -26,6 +26,13 @@ content to the upgrade. Downgrades from 3.x to 2.x will not be supported.
 Note that upgrading from OJS 2.4.x to OJS 3.0 will rearrange your submission
 file storage, so be sure to back it up before running an upgrade.
 
+It is recommended that you execute the upgrade script under the same user
+account that your server uses to execute OJS. If you cannot do this, you will
+need to ensure file permissions in your files directory allow the upgrade
+script to manage files there *before* the upgrade, and then reset file
+permissions *after* the upgrade completes (so that OJS can manage files there
+when invoked normally via the web).
+
 With that noted, follow the OJS 3.0 process described below.
 
 
@@ -42,12 +49,12 @@ and other documentation in the docs directory before performing an upgrade.
 
 ### Obtaining the latest OJS code
 
-The OJS source code is available in two forms: a complete stand-alone 
-package, and from read-only github access.
+The OJS source code is available in two forms: a complete stand-alone
+package, and from read-only GitHub access.
 
 #### 1. Full Package
 
-If you have not made local code modifications to the system, upgrade by 
+If you have not made local code modifications to the system, upgrade by
 downloading the complete package for the latest release of OJS:
 
 - Download and decompress the package from the OJS web site into an empty
@@ -69,17 +76,17 @@ downloading the complete package for the latest release of OJS:
 
 #### 2. git
 
-Updating from github is the recommended approach if you have made local
+Updating from GitHub is the recommended approach if you have made local
 modifications to the system.
 
-If your instance of OJS was checked out from github (see [docs/README-GIT.md](README-GIT.md)),
+If your instance of OJS was checked out from GitHub (see [README.md](../README.md)),
 you can update the OJS code using a git client.
 
 To update the OJS code from a git check-out, run the following command from
 your OJS directory:
 
 ```
-$ git rebase --onto <new-release-tag> <previous-release-tag>
+git rebase --onto <new-release-tag> <previous-release-tag>
 ```
 
 This assumes that you have made local changes and committed them on top of
@@ -88,8 +95,8 @@ them on top of the new release. This may cause merge conflicts which have to
 be resolved in the usual way, e.g. using a merge tool like kdiff3.
 
 "TAG" should be replaced with the git tag corresponding to the new release.
-OJS release version tags are of the form "ojs-MAJOR_MINOR_REVSION-BUILD".
-For example, the tag for the initial release of OJS 3.0.0 is "ojs-3_0_0-0".
+OJS release version tags are of the form "MAJOR_MINOR_REVSION-BUILD".
+For example, the tag for the initial release of OJS 3.2.0 is "3_2_0-0".
 
 Consult the [README](README.md) of the latest OJS package or the OJS web site for the
 tag corresponding to the latest available OJS release.
@@ -100,14 +107,29 @@ than OJS or third-party developers; using experimental code on a production
 deployment is strongly discouraged and will not be supported in any way by
 the OJS team.
 
+### Updating dependencies
+
+After obtaining to the latest OJS code, additional steps are required to
+update OJS's dependencies.
+
+Firstly, update all submodules and libraries like so:
+
+```
+git submodule update --init --recursive
+```
+
+Then, install and update dependencies via Composer:
+
+```
+composer --working-dir=lib/pkp install
+composer --working-dir=plugins/paymethod/paypal install
+composer --working-dir=plugins/generic/citationStyleLanguage install
+```
 
 ### Upgrading the OJS database
 
-After obtaining the latest OJS code, an additional script must be run to
+After updating your OJS installation, an additional script must be run to
 upgrade the OJS database.
-
-NOTE: Patches to the included ADODB library may be required for PostgreSQL
-upgrades; see https://forum.pkp.sfu.ca/t/upgrade-failure-postgresql/19215
 
 This script can be executed from the command-line or via the OJS web interface.
 
@@ -117,8 +139,8 @@ If you have the CLI version of PHP installed (e.g., `/usr/bin/php`), you can
 upgrade the database as follows:
 
 - Edit config.inc.php and change "installed = On" to "installed = Off"
-- Run the following command from the OJS directory (not including the $):
-	`$ php tools/upgrade.php upgrade`
+- Run the following command from the OJS directory:
+	`php tools/upgrade.php upgrade`
 - Re-edit config.inc.php and change "installed = Off" back to
 	 "installed = On"
 

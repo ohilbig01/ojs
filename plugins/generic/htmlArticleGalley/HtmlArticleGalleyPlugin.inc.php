@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/htmlArticleGalley/HtmlArticleGalleyPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class HtmlArticleGalleyPlugin
  * @ingroup plugins_generic_htmlArticleGalley
@@ -62,12 +62,25 @@ class HtmlArticleGalleyPlugin extends GenericPlugin {
 		$galley =& $args[2];
 		$article =& $args[3];
 
-		if ($galley && $galley->getFileType() == 'text/html') {
+		if (!$galley) {
+			return false;
+		}
+
+		$submissionFile = $galley->getFile();
+		if ($submissionFile->getData('mimetype') === 'text/html') {
+			foreach ($article->getData('publications') as $publication) {
+				if ($publication->getId() === $galley->getData('publicationId')) {
+					$galleyPublication = $publication;
+					break;
+				}
+			}
 			$templateMgr = TemplateManager::getManager($request);
 			$templateMgr->assign(array(
 				'issue' => $issue,
 				'article' => $article,
 				'galley' => $galley,
+				'isLatestPublication' => $article->getData('currentPublicationId') === $galley->getData('publicationId'),
+				'galleyPublication' => $galleyPublication,
 			));
 			$templateMgr->display($this->getTemplateResource('display.tpl'));
 
@@ -88,7 +101,12 @@ class HtmlArticleGalleyPlugin extends GenericPlugin {
 		$fileId =& $args[2];
 		$request = Application::get()->getRequest();
 
-		if ($galley && $galley->getFileType() == 'text/html' && $galley->getFileId() == $fileId) {
+		if (!$galley) {
+			return false;
+		}
+
+		$submissionFile = $galley->getFile();
+		if ($galley->getData('submissionFileId') == $fileId && $submissionFile->getData('mimetype') === 'text/html' && $galley->getData('submissionFileId') == $submissionFile->getId()) {
 			if (!HookRegistry::call('HtmlArticleGalleyPlugin::articleDownload', array($article,  &$galley, &$fileId))) {
 				echo $this->_getHTMLContents($request, $galley);
 				$returner = true;
@@ -107,38 +125,43 @@ class HtmlArticleGalleyPlugin extends GenericPlugin {
 	 * @param $galley ArticleGalley
 	 * @return string
 	 */
-	function _getHTMLContents($request, $galley) {
-		$journal = $request->getJournal();
+	protected function _getHTMLContents($request, $galley) {
 		$submissionFile = $galley->getFile();
-		$contents = file_get_contents($submissionFile->getFilePath());
+		$submissionId = $submissionFile->getData('submissionId');
+		$contents = Services::get('file')->fs->read($submissionFile->getData('path'));
 
 		// Replace media file references
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
 		import('lib.pkp.classes.submission.SubmissionFile'); // Constants
-		$embeddableFiles = array_merge(
-			$submissionFileDao->getLatestRevisions($submissionFile->getSubmissionId(), SUBMISSION_FILE_PROOF),
-			$submissionFileDao->getLatestRevisionsByAssocId(ASSOC_TYPE_SUBMISSION_FILE, $submissionFile->getFileId(), $submissionFile->getSubmissionId(), SUBMISSION_FILE_DEPENDENT)
-		);
+		$embeddableFilesIterator = Services::get('submissionFile')->getMany([
+			'assocTypes' => [ASSOC_TYPE_SUBMISSION_FILE],
+			'assocIds' => [$submissionFile->getId()],
+			'fileStages' => [SUBMISSION_FILE_DEPENDENT],
+			'includeDependentFiles' => true,
+		]);
+		$embeddableFiles = iterator_to_array($embeddableFilesIterator);
+
 		$referredArticle = null;
 		$submissionDao = DAORegistry::getDAO('SubmissionDAO');
-
 		foreach ($embeddableFiles as $embeddableFile) {
 			$params = array();
 
-			if ($embeddableFile->getFileType()=='text/plain' || $embeddableFile->getFileType()=='text/css') $params['inline']='true';
+			if ($embeddableFile->getData('mimetype') == 'text/plain' || $embeddableFile->getData('mimetype') == 'text/css') {
+				$params['inline'] ='true';
+			}
 
 			// Ensure that the $referredArticle object refers to the article we want
-			if (!$referredArticle || $referredArticle->getId() != $galley->getSubmissionId()) {
-				$referredArticle = $submissionDao->getById($galley->getSubmissionId());
+			if (!$referredArticle || $referredArticle->getId() != $submissionId) {
+				$referredArticle = $submissionDao->getById($submissionId);
 			}
-			$fileUrl = $request->url(null, 'article', 'download', array($referredArticle->getBestArticleId(), $galley->getBestGalleyId(), $embeddableFile->getFileId()), $params);
-			$pattern = preg_quote(rawurlencode($embeddableFile->getOriginalFileName()));
+			$fileUrl = $request->url(null, 'article', 'download', array($referredArticle->getBestId(), $galley->getBestGalleyId(), $embeddableFile->getId()), $params);
+			$pattern = preg_quote(rawurlencode($embeddableFile->getLocalizedData('name')));
 
 			$contents = preg_replace(
 				'/([Ss][Rr][Cc]|[Hh][Rr][Ee][Ff]|[Dd][Aa][Tt][Aa])\s*=\s*"([^"]*' . $pattern . ')"/',
 				'\1="' . $fileUrl . '"',
 				$contents
 			);
+			if ($contents === null) error_log('PREG error in ' . __FILE__ . ' line ' . __LINE__ . ': ' . preg_last_error());
 
 			// Replacement for Flowplayer
 			$contents = preg_replace(
@@ -146,6 +169,7 @@ class HtmlArticleGalleyPlugin extends GenericPlugin {
 				'url:\'' . $fileUrl . '\'',
 				$contents
 			);
+			if ($contents === null) error_log('PREG error in ' . __FILE__ . ' line ' . __LINE__ . ': ' . preg_last_error());
 
 			// Replacement for other players (ested with odeo; yahoo and google player won't work w/ OJS URLs, might work for others)
 			$contents = preg_replace(
@@ -153,7 +177,7 @@ class HtmlArticleGalleyPlugin extends GenericPlugin {
 				'url=' . $fileUrl ,
 				$contents
 			);
-
+			if ($contents === null) error_log('PREG error in ' . __FILE__ . ' line ' . __LINE__ . ': ' . preg_last_error());
 		}
 
 		// Perform replacement for ojs://... URLs
@@ -162,13 +186,14 @@ class HtmlArticleGalleyPlugin extends GenericPlugin {
 			array($this, '_handleOjsUrl'),
 			$contents
 		);
+		if ($contents === null) error_log('PREG error in ' . __FILE__ . ' line ' . __LINE__ . ': ' . preg_last_error());
 
 		$templateMgr = TemplateManager::getManager($request);
 		$contents = $templateMgr->loadHtmlGalleyStyles($contents, $embeddableFiles);
 
 		// Perform variable replacement for journal, issue, site info
-		$issueDao = DAORegistry::getDAO('IssueDAO');
-		$issue = $issueDao->getBySubmissionId($galley->getSubmissionId());
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
+		$issue = $issueDao->getBySubmissionId($submissionId);
 
 		$journal = $request->getJournal();
 		$site = $request->getSite();

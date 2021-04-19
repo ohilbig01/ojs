@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/toc/TocGridCellProvider.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class TocGridCellProvider
  * @ingroup controllers_grid_toc
@@ -38,7 +38,7 @@ class TocGridCellProvider extends GridCellProvider {
 			case 'title':
 				return array('label' => $element->getLocalizedTitle());
 			case 'access':
-				return array('selected' => $element->getAccessStatus()==ARTICLE_ACCESS_OPEN);
+				return array('selected' => $element->getCurrentPublication()->getData('accessStatus')==ARTICLE_ACCESS_OPEN);
 			default: assert(false);
 		}
 	}
@@ -47,9 +47,10 @@ class TocGridCellProvider extends GridCellProvider {
 	 * @copydoc GridCellProvider::getCellActions()
 	 */
 	function getCellActions($request, $row, $column, $position = GRID_ACTION_POSITION_DEFAULT) {
+		import('lib.pkp.classes.linkAction.request.AjaxAction');
 		switch ($column->getId()) {
 			case 'access':
-				$article = $row->getData(); /* @var $article PublishedSubmission */
+				$article = $row->getData(); /* @var $article Submission */
 				return array(new LinkAction(
 					'disable',
 					new AjaxAction(
@@ -58,7 +59,7 @@ class TocGridCellProvider extends GridCellProvider {
 							array_merge(
 								array(
 									'articleId' => $article->getId(),
-									'status' => ($article->getAccessStatus() == ARTICLE_ACCESS_OPEN) ? ARTICLE_ACCESS_ISSUE_DEFAULT : ARTICLE_ACCESS_OPEN,
+									'status' => ($article->getCurrentPublication()->getData('accessStatus') == ARTICLE_ACCESS_OPEN) ? ARTICLE_ACCESS_ISSUE_DEFAULT : ARTICLE_ACCESS_OPEN,
 									'csrfToken' => $request->getSession()->getCSRFToken(),
 								),
 								$row->getRequestArgs()

@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/native/filter/IssueGalleyNativeXmlFilter.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class IssueGalleyNativeXmlFilter
  * @ingroup plugins_importexport_native
@@ -80,6 +80,8 @@ class IssueGalleyNativeXmlFilter extends NativeExportFilter {
 		$issueGalleyNode->setAttribute('locale', $issueGalley->getLocale());
 		$issueGalleyNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'label', htmlspecialchars($issueGalley->getLabel(), ENT_COMPAT, 'UTF-8')));
 
+		$this->addIdentifiers($doc, $issueGalleyNode, $issueGalley);
+
 		$this->addFile($doc, $issueGalleyNode, $issueGalley);
 
 		return $issueGalleyNode;
@@ -92,7 +94,7 @@ class IssueGalleyNativeXmlFilter extends NativeExportFilter {
 	 * @param $issueGalley IssueGalley
 	 */
 	function addFile($doc, $issueGalleyNode, $issueGalley) {
-		$issueFileDao = DAORegistry::getDAO('IssueFileDAO');
+		$issueFileDao = DAORegistry::getDAO('IssueFileDAO'); /* @var $issueFileDao IssueFileDAO */
 		$issueFile = $issueFileDao->getById($issueGalley->getFileId());
 
 		if ($issueFile) {
@@ -115,6 +117,28 @@ class IssueGalleyNativeXmlFilter extends NativeExportFilter {
 			$issueFileNode->appendChild($embedNode);
 
 			$issueGalleyNode->appendChild($issueFileNode);
+		}
+	}
+
+	/**
+	 * Create and add identifier nodes to an issue galley node.
+	 * @param $doc DOMDocument
+	 * @param $issueGalleyNode DOMElement
+	 * @param $issueGalley IssueGalley
+	 */
+	function addIdentifiers($doc, $issueGalleyNode, $issueGalley) {
+		$deployment = $this->getDeployment();
+
+		// Add internal ID
+		$issueGalleyNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'id', $issueGalley->getId()));
+		$node->setAttribute('type', 'internal');
+		$node->setAttribute('advice', 'ignore');
+
+		// Add public ID
+		if ($pubId = $issueGalley->getStoredPubId('publisher-id')) {
+			$issueGalleyNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'id', htmlspecialchars($pubId, ENT_COMPAT, 'UTF-8')));
+			$node->setAttribute('type', 'public');
+			$node->setAttribute('advice', 'update');
 		}
 	}
 }

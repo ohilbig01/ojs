@@ -3,9 +3,9 @@
 /**
  * @file plugins/paymethod/paypal/PaypalPaymentPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PaypalPaymentPlugin
  * @ingroup plugins_paymethod_paypal
@@ -58,6 +58,7 @@ class PaypalPaymentPlugin extends PaymethodPlugin {
 	 * @param $form FormComponent
 	 */
 	public function addSettings($hookName, $form) {
+		import('lib.pkp.classes.components.forms.context.PKPPaymentSettingsForm'); // Load constant
 		if ($form->id !== FORM_PAYMENT_SETTINGS) {
 			return;
 		}
@@ -146,7 +147,7 @@ class PaypalPaymentPlugin extends PaymethodPlugin {
 	 */
 	function handle($args, $request) {
 		$journal = $request->getJournal();
-		$queuedPaymentDao = DAORegistry::getDAO('QueuedPaymentDAO');
+		$queuedPaymentDao = DAORegistry::getDAO('QueuedPaymentDAO'); /* @var $queuedPaymentDao QueuedPaymentDAO */
 		import('classes.payment.ojs.OJSPaymentManager'); // Class definition required for unserializing
 		try {
 			$queuedPayment = $queuedPaymentDao->getById($queuedPaymentId = $request->getUserVar('queuedPaymentId'));
@@ -187,12 +188,5 @@ class PaypalPaymentPlugin extends PaymethodPlugin {
 	 */
 	function getInstallEmailTemplatesFile() {
 		return ($this->getPluginPath() . DIRECTORY_SEPARATOR . 'emailTemplates.xml');
-	}
-
-	/**
-	 * @see Plugin::getInstallEmailTemplateDataFile
-	 */
-	function getInstallEmailTemplateDataFile() {
-		return ($this->getPluginPath() . '/locale/{$installedLocale}/emailTemplates.xml');
 	}
 }

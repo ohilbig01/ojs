@@ -3,9 +3,9 @@
 /**
  * @file plugins/auth/ldap/LDAPAuthPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class LDAPAuthPlugin
  * @ingroup plugins_auth_ldap
@@ -282,7 +282,7 @@ class LDAPAuthPlugin extends AuthPlugin {
 	 * @param $uattr array
 	 */
 	function userFromAttr(&$user, &$uattr) {
-		$siteDao = DAORegistry::getDAO('SiteDAO');
+		$siteDao = DAORegistry::getDAO('SiteDAO'); /* @var $siteDao SiteDAO */
 		$site = $siteDao->getSite();
 
 		$attr = array_change_key_case($uattr, CASE_LOWER); // Note:  array_change_key_case requires PHP >= 4.2.0
@@ -329,7 +329,7 @@ class LDAPAuthPlugin extends AuthPlugin {
 	 * @param $attr array
 	 */
 	function userToAttr(&$user, &$attr) {
-		$siteDao = DAORegistry::getDAO('SiteDAO');
+		$siteDao = DAORegistry::getDAO('SiteDAO'); /* @var $siteDao SiteDAO */
 		$site = $siteDao->getSite();
 		// FIXME empty strings for unset fields?
 		if ($user->getFullName())

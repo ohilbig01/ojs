@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/datacite/classes/form/DataciteSettingsForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DataciteSettingsForm
  * @ingroup plugins_importexport_datacite_classes_form
@@ -59,14 +59,14 @@ class DataciteSettingsForm extends Form {
 		// DOI plugin settings action link
 		$pubIdPlugins = PluginRegistry::loadCategory('pubIds', true);
 		if (isset($pubIdPlugins['doipubidplugin'])) {
-			$application = Application::getApplication();
+			$application = Application::get();
 			$request = $application->getRequest();
 			$dispatcher = $application->getDispatcher();
 			import('lib.pkp.classes.linkAction.request.AjaxModal');
 			$doiPluginSettingsLinkAction = new LinkAction(
 					'settings',
 					new AjaxModal(
-							$dispatcher->url($request, ROUTE_COMPONENT, null, 'grid.settings.plugins.SettingsPluginGridHandler', 'manage', null, array('plugin' => 'doipubidplugin', 'category' => 'pubIds')),
+							$dispatcher->url($request, PKPApplication::ROUTE_COMPONENT, null, 'grid.settings.plugins.SettingsPluginGridHandler', 'manage', null, array('plugin' => 'doipubidplugin', 'category' => 'pubIds')),
 							__('plugins.importexport.common.settings.DOIPluginSettings')
 							),
 					__('plugins.importexport.common.settings.DOIPluginSettings'),
@@ -104,11 +104,33 @@ class DataciteSettingsForm extends Form {
 	}
 
 	/**
-	 * Execute the form.
+	 * @copydoc Form::validate
 	 */
-	function execute() {
+	function validate($callHooks = true) {
+		// if in test mode, the test DOI prefix must exist
+		if ($this->getData('testMode')) {
+			if (empty($this->getData('testDOIPrefix'))) {
+				$this->addError('testDOIPrefix', __('plugins.importexport.datacite.settings.form.testDOIPrefixRequired'));
+				$this->addErrorField('testDOIPrefix');
+			}
+			// if username exist there will be the possibility to register from within OJS,
+			// so the test username must exist too
+			if (!empty($this->getData('username')) && empty($this->getData('testUsername'))) {
+				$this->addError('testUsername', __('plugins.importexport.datacite.settings.form.testUsernameRequired'));
+				$this->addErrorField('testUsername');
+			}
+		}
+
+		return parent::validate($callHooks);
+	}
+
+	/**
+	 * @copydoc Form::execute()
+	 */
+	function execute(...$functionArgs) {
 		$plugin = $this->_getPlugin();
 		$contextId = $this->_getContextId();
+		parent::execute(...$functionArgs);
 		foreach($this->getFormFields() as $fieldName => $fieldType) {
 			$plugin->updateSetting($contextId, $fieldName, $this->getData($fieldName), $fieldType);
 		}
@@ -127,7 +149,10 @@ class DataciteSettingsForm extends Form {
 			'username' => 'string',
 			'password' => 'string',
 			'automaticRegistration' => 'bool',
-			'testMode' => 'bool'
+			'testMode' => 'bool',
+			'testUsername' => 'string',
+			'testPassword' => 'string',
+			'testDOIPrefix' => 'string',
 		);
 	}
 
@@ -137,7 +162,7 @@ class DataciteSettingsForm extends Form {
 	 * @return boolean
 	 */
 	function isOptional($settingName) {
-		return in_array($settingName, array('username', 'password', 'automaticRegistration', 'testMode'));
+		return in_array($settingName, array('username', 'password', 'automaticRegistration', 'testMode', 'testUsername', 'testPassword', 'testDOIPrefix'));
 	}
 
 }

@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/issues/form/IssueGalleyForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class IssueGalleyForm
  * @ingroup issue_galley
@@ -36,6 +36,7 @@ class IssueGalleyForm extends Form {
 		AppLocale::requireComponents(LOCALE_COMPONENT_APP_EDITOR, LOCALE_COMPONENT_PKP_SUBMISSION);
 
 		$this->addCheck(new FormValidator($this, 'label', 'required', 'editor.issues.galleyLabelRequired'));
+		$this->addCheck(new FormValidatorRegExp($this, 'urlPath', 'optional', 'validator.alpha_dash', '/^[-_a-z0-9]*$/'));
 		$this->addCheck(new FormValidatorPost($this));
 		$this->addCheck(new FormValidatorCSRF($this));
 
@@ -44,7 +45,7 @@ class IssueGalleyForm extends Form {
 		$this->addCheck(new FormValidatorCustom(
 			$this, 'galleyLocale', 'required', 'editor.issues.galleyLocaleRequired',
 			function($galleyLocale) use ($journal) {
-				return in_array($galleyLocale, $journal->getSupportedLocales());
+				return in_array($galleyLocale, $journal->getSupportedFormLocales());
 			}
 		));
 
@@ -55,20 +56,23 @@ class IssueGalleyForm extends Form {
 	}
 
 	/**
-	 * Display the form.
+	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$journal = $request->getJournal();
 		$templateMgr = TemplateManager::getManager($request);
 
-		$templateMgr->assign('issueId', $this->_issue->getId());
-		if ($this->_issueGalley) {
-			$templateMgr->assign('issueGalleyId', $this->_issueGalley->getId());
-			$templateMgr->assign('issueGalley', $this->_issueGalley);
-		}
-		$templateMgr->assign('supportedLocales', $journal->getSupportedLocaleNames());
+		$templateMgr->assign(array(
+			'issueId' => $this->_issue->getId(),
+			'supportedLocales' => $journal->getSupportedLocaleNames(),
+			'enablePublisherId' => in_array('issueGalley', (array) $request->getContext()->getData('enablePublisherId')),
+		));
+		if ($this->_issueGalley) $templateMgr->assign(array(
+				'issueGalleyId' => $this->_issueGalley->getId(),
+				'issueGalley' => $this->_issueGalley,
+			));
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -82,12 +86,28 @@ class IssueGalleyForm extends Form {
 
 		$publicGalleyId = $this->getData('publicGalleyId');
 		if ($publicGalleyId) {
-			if (ctype_digit($publicGalleyId)) {
+			if (ctype_digit((string) $publicGalleyId)) {
 				$this->addError('publicGalleyId', __('editor.publicIdentificationNumericNotAllowed', array('publicIdentifier' => $publicGalleyId)));
 				$this->addErrorField('publicGalleyId');
 			} elseif ($journalDao->anyPubIdExists($journal->getId(), 'publisher-id', $publicGalleyId, ASSOC_TYPE_ISSUE_GALLEY, $this->_issueGalley?$this->_issueGalley->getId():null, true)) {
 				$this->addError('publicGalleyId', __('editor.publicIdentificationExistsForTheSameType', array('publicIdentifier' => $publicGalleyId)));
 				$this->addErrorField('publicGalleyId');
+			}
+		}
+
+		if ($this->getData('urlPath')) {
+			if (ctype_digit((string) $this->getData('urlPath'))) {
+				$this->addError('urlPath', __('publication.urlPath.numberInvalid'));
+				$this->addErrorField('urlPath');
+			} else {
+				$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO'); /* @var $issueGalleyDao IssueGalleyDAO */
+				$issueGalley = $issueGalleyDao->getByBestId($this->getData('urlPath'), $this->_issue->getId());
+				if ($issueGalley &&
+					(!$this->_issueGalley || $this->_issueGalley->getId() !== $issueGalley->getId())
+				) {
+					$this->addError('urlPath', __('publication.urlPath.duplicate'));
+					$this->addErrorField('urlPath');
+				}
 			}
 		}
 
@@ -102,7 +122,8 @@ class IssueGalleyForm extends Form {
 			$this->_data = array(
 				'label' => $this->_issueGalley->getLabel(),
 				'publicGalleyId' => $this->_issueGalley->getStoredPubId('publisher-id'),
-				'galleyLocale' => $this->_issueGalley->getLocale()
+				'galleyLocale' => $this->_issueGalley->getLocale(),
+				'urlPath' => $this->_issueGalley->getData('urlPath'),
 			);
 		} else {
 			$this->_data = array();
@@ -118,16 +139,16 @@ class IssueGalleyForm extends Form {
 				'label',
 				'publicGalleyId',
 				'galleyLocale',
-				'temporaryFileId'
+				'temporaryFileId',
+				'urlPath',
 			)
 		);
 	}
 
 	/**
-	 * Save changes to the galley.
-	 * @return int the galley ID
+	 * @copydoc Form::execute()
 	 */
-	function execute() {
+	function execute(...$functionArgs) {
 		import('classes.file.IssueFileManager');
 		$issueFileManager = new IssueFileManager($this->_issue->getId());
 
@@ -136,11 +157,13 @@ class IssueGalleyForm extends Form {
 		$user = $request->getUser();
 
 		$issueGalley = $this->_issueGalley;
-		$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO');
+		$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO'); /* @var $issueGalleyDao IssueGalleyDAO */
 
 		// If a temporary file ID was specified (i.e. an upload occurred), get the file for later.
-		$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
+		$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO'); /* @var $temporaryFileDao TemporaryFileDAO */
 		$temporaryFile = $temporaryFileDao->getTemporaryFile($this->getData('temporaryFileId'), $user->getId());
+
+		parent::execute(...$functionArgs);
 
 		if ($issueGalley) {
 			// Update an existing galley
@@ -157,6 +180,7 @@ class IssueGalleyForm extends Form {
 			$issueGalley->setLabel($this->getData('label'));
 			$issueGalley->setStoredPubId('publisher-id', $this->getData('publicGalleyId'));
 			$issueGalley->setLocale($this->getData('galleyLocale'));
+			$issueGalley->setData('urlPath', $this->getData('urlPath'));
 
 			// Update galley in the db
 			$issueGalleyDao->updateObject($issueGalley);
@@ -167,6 +191,7 @@ class IssueGalleyForm extends Form {
 			$issueGalley = $issueGalleyDao->newDataObject();
 			$issueGalley->setIssueId($this->_issue->getId());
 			$issueGalley->setFileId($issueGalleyFile->getId());
+			$issueGalley->setData('urlPath', $this->getData('urlPath'));
 
 			if ($this->getData('label') == null) {
 				// Generate initial label based on file type
@@ -199,5 +224,4 @@ class IssueGalleyForm extends Form {
 		return $this->_issueGalley->getId();
 	}
 }
-
 

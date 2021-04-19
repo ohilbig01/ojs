@@ -1,0 +1,593 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2021-04-05 21:03+0000\n"
+"Last-Translator: Dimitri Gogelia <dimitri.gogelia@iliauni.edu.ge>\n"
+"Language-Team: Georgian <http://translate.pkp.sfu.ca/projects/ojs/manager/"
+"ka_GE/>\n"
+"Language: ka_GE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
+
+msgid "manager.sections.wordCount"
+msgstr "სიტყვების რაოდენობა"
+
+msgid "manager.sections.readingTools"
+msgstr "მკითხველის ხელსაწყოები"
+
+msgid "manager.sections.policy"
+msgstr "სექციის წესები"
+
+msgid "manager.sections.indexed"
+msgstr "ინდექსირდება"
+
+msgid "manager.sections.create"
+msgstr "სექციის შექმნა"
+
+msgid "manager.people.enrollSyncJournal"
+msgstr "ჟურნალით"
+
+msgid "manager.people.emailUsers.selectTemplate"
+msgstr "შაბლონის არჩევა"
+
+msgid "manager.people.allJournals"
+msgstr "ყველა ჟურნალი"
+
+msgid "manager.paymentTypes"
+msgstr "გადახდის ტიპები"
+
+msgid "manager.payment.records"
+msgstr "ჩანაწერები"
+
+msgid "manager.payment.readerFees"
+msgstr "მკითხველის გადახდები"
+
+msgid "manager.payment.paymentType"
+msgstr "გადახდის ტიპი"
+
+msgid "manager.payment.paymentMethods"
+msgstr "გადახდის მეთოდები"
+
+msgid "manager.payment.paymentMethod"
+msgstr "გადახდის მეთოდი"
+
+msgid "manager.payment.options.purchaseIssueFee"
+msgstr "გამოცემის შეძენა"
+
+msgid "manager.payment.options.purchaseArticleFee"
+msgstr "სტატიის შეძენა"
+
+msgid "manager.payment.options.feeName"
+msgstr "გადახდის დასახელება"
+
+msgid "manager.payment.options.feeDescription"
+msgstr "გადახდის აღწერა"
+
+msgid "manager.payment.options.fee"
+msgstr "გადახდა"
+
+msgid "manager.payment.options"
+msgstr "პარამეტრები"
+
+msgid "manager.payment.notFound"
+msgstr "ვერ მოიძებნა"
+
+msgid "manager.payment.noPayments"
+msgstr "არ არის გადახდები"
+
+msgid "manager.payment.generalOptions"
+msgstr "ზოგადი პარამეტრები"
+
+msgid "manager.payment.generalFees"
+msgstr "ზოგადი გადახდები"
+
+msgid "manager.payment.feePaymentOptions"
+msgstr "გადახდის პარამეტრები"
+
+msgid "manager.payment.enable"
+msgstr "ჩართვა"
+
+msgid "manager.payment.editSubscription"
+msgstr "გამოწერის ჩასწორება"
+
+msgid "manager.payment.details"
+msgstr "დეტალები"
+
+msgid "manager.payment.description"
+msgstr "აღწერა"
+
+msgid "manager.payment.authorFees"
+msgstr "ავტორის გადახდები"
+
+msgid "manager.payment.amount"
+msgstr "თანხა"
+
+msgid "manager.payment.addPayment"
+msgstr "გადახდის დამატება"
+
+msgid "manager.managementPages"
+msgstr "მართვის გვერდები"
+
+msgid "manager.language.forms"
+msgstr "ფორმები"
+
+msgid "manager.language.submissions"
+msgstr "გაგზავნილი მასალები"
+
+msgid "manager.language.ui"
+msgstr "ინტერფეისი"
+
+msgid "manager.journalManagement"
+msgstr "ჟურნალის მართვა"
+
+msgid "manager.website.archiving"
+msgstr "დაარქივება"
+
+msgid "manager.distribution.publishingMode"
+msgstr "პუბლიკაციის რეჟიმი"
+
+msgid "manager.distribution.publication"
+msgstr "პუბლიკაცია"
+
+msgid "manager.distribution.copyrightYearBasis.submission"
+msgstr "სტატიის გამოქვეყნების თარიღის გამოყენება"
+
+msgid "manager.distribution.copyrightYearBasis.issue"
+msgstr "გამოცემის გამოქვეყნების თარიღის გამოყენება"
+
+msgid "manager.distribution.access"
+msgstr "წვდომა"
+
+msgid "stats.publications.galleys"
+msgstr "ფაილები"
+
+msgid "plugins.importexport.common.register.success"
+msgstr "წარმატებული რეგისტრაცია!"
+
+msgid "plugins.importexport.common.action.register"
+msgstr "რეგისტრაცია"
+
+msgid "plugins.importexport.common.action.export"
+msgstr "ექსპორტი"
+
+msgid "plugins.importexport.common.action"
+msgstr "მოქმედება"
+
+msgid "plugins.importexport.common.status.registered"
+msgstr "რეგისტრირებული"
+
+msgid "plugins.importexport.common.settings.form.password"
+msgstr "პაროლი"
+
+msgid "plugins.importexport.common.export.articles"
+msgstr "სტატიები"
+
+msgid "plugins.importexport.common.settings"
+msgstr "პარამეტრები"
+
+msgid "grid.genres.title.short"
+msgstr "კომპონენტები"
+
+msgid "grid.category.path"
+msgstr "მდებარეობა"
+
+msgid "manager.setup.categories"
+msgstr "კატეგორიები"
+
+msgid "manager.subscriptionTypes.form.options"
+msgstr "პარამეტრები"
+
+msgid "manager.subscriptionTypes.form.subscriptions"
+msgstr "გამოწერები"
+
+msgid "manager.subscriptionTypes.form.format"
+msgstr "ფორმატი"
+
+msgid "manager.subscriptionTypes.form.duration"
+msgstr "ხანგრძლივობა"
+
+msgid "manager.subscriptionTypes.form.description"
+msgstr "აღწერა"
+
+msgid "manager.subscriptionTypes.form.currency"
+msgstr "ვალუტა"
+
+msgid "manager.subscriptionTypes.form.cost"
+msgstr "საფასური"
+
+msgid "manager.subscriptionTypes.editTitle"
+msgstr "ჩასწორება"
+
+msgid "manager.subscriptionTypes.duration"
+msgstr "ხანგრძლივობა"
+
+msgid "manager.subscriptionTypes.createTitle"
+msgstr "შექმნა"
+
+msgid "manager.subscriptionTypes.subscriptions"
+msgstr "გამოწერები"
+
+msgid "manager.subscriptionTypes.cost"
+msgstr "საფასური"
+
+msgid "manager.subscriptions.user"
+msgstr "მომხმარებელი"
+
+msgid "manager.subscriptions.select"
+msgstr "მონიშვნა"
+
+msgid "manager.subscriptions.notes"
+msgstr "შენიშვნები"
+
+msgid "manager.subscriptions.membership"
+msgstr "წევრობა"
+
+msgid "manager.subscriptions.form.addIpRange"
+msgstr "დამატება"
+
+msgid "manager.subscriptions.form.deleteIpRange"
+msgstr "წაშლა"
+
+msgid "manager.subscriptions.form.domain"
+msgstr "დომენი"
+
+msgid "manager.subscriptions.form.notes"
+msgstr "შენიშვნები"
+
+msgid "manager.subscriptions.form.membership"
+msgstr "წევრობა"
+
+msgid "manager.subscriptions.form.userContact"
+msgstr "კონტაქტი"
+
+msgid "manager.subscriptions.form.userId"
+msgstr "მომხმარებელი"
+
+msgid "manager.subscriptions.form.dateEnd"
+msgstr "დასრულების თარიღი"
+
+msgid "manager.subscriptions.form.dateStart"
+msgstr "დაწყების თარიღი"
+
+msgid "manager.subscriptions.form.status"
+msgstr "სტატუსი"
+
+msgid "manager.subscriptions.allStatus"
+msgstr "ყველა"
+
+msgid "manager.subscriptions.editTitle"
+msgstr "ჩასწორება"
+
+msgid "manager.subscriptions.domain"
+msgstr "დომენი"
+
+msgid "manager.subscriptions.dateStartSearch"
+msgstr "დაწყების თარიღი"
+
+msgid "manager.subscriptions.dateStart"
+msgstr "დასაწყისი"
+
+msgid "manager.subscriptions.dateEndSearch"
+msgstr "დასრულების თარიღი"
+
+msgid "manager.subscriptions.dateEnd"
+msgstr "დასასრული"
+
+msgid "manager.subscriptions.renew"
+msgstr "განახლება"
+
+msgid "manager.subscriptions.createTitle"
+msgstr "შექმნა"
+
+msgid "manager.subscriptions"
+msgstr "გამოწერები"
+
+msgid "manager.statistics.statistics.subscriptions"
+msgstr "გამოწერები"
+
+msgid "manager.statistics.statistics.count.decline"
+msgstr "უარყოფა"
+
+msgid "manager.statistics.statistics.count.accept"
+msgstr "მიღება"
+
+msgid "manager.setup.userRegistration"
+msgstr "მომხმარებლის რეგისტრაცია"
+
+msgid "manager.setup.useThumbnail"
+msgstr "ესკიზი"
+
+msgid "manager.setup.subjectKeywordTopic"
+msgstr "საკვანძო სიტყვები"
+
+msgid "manager.setup.policies"
+msgstr "პოლიტიკები"
+
+msgid "manager.setup.note"
+msgstr "შენიშვნა"
+
+msgid "manager.setup.lists"
+msgstr "ჩამონათვალი"
+
+msgid "manager.setup.institution"
+msgstr "დაწესებულება"
+
+msgid "manager.setup.information"
+msgstr "ინფორმაცია"
+
+msgid "manager.setup.details"
+msgstr "დეტალები"
+
+msgid "manager.setup.announcementsIntroduction"
+msgstr "გაცნობითი ხასიათის შესავალი"
+
+msgid "manager.setup.announcements"
+msgstr "განცხადებები"
+
+msgid "manager.setup.aboutItemContent"
+msgstr "შიგთავსი"
+
+msgid "manager.payment.action"
+msgstr "მოქმედება"
+
+msgid "manager.setup"
+msgstr "ჟურნალის პარამეტრები"
+
+msgid "manager.sections.wordCountInstructions"
+msgstr ""
+"ამ განყოფილების აბსტრაქტში სიტყვების რაოდენობის შეზღუდვა (0 — შეუზღუდის "
+"გარეშე)"
+
+msgid "manager.sections.unassigned"
+msgstr "განყოფილების ხელმისაწვდომი რედაქტორები"
+
+msgid "manager.sections.submissionReview"
+msgstr "არ იქნება რეცენზირებადი"
+
+msgid "manager.sections.submissionIndexing"
+msgstr "არ იქნება გათვალისწინებული ჟურნალის ინდექსირებისას"
+
+msgid "manager.sections.reviewed"
+msgstr "რეცენზირებადია"
+
+msgid "manager.sections.open"
+msgstr "ღიაა მასალების წარსადგენად"
+
+msgid "manager.sections.noneCreated"
+msgstr "სექციები არ შექმნილა."
+
+msgid "grid.genres.description"
+msgstr ""
+"ეს კომპონენტები გამოიყენება ფაილების დასახელების მიზნებისათვის და "
+"წარმოდგენილია ფაილების ატვირთვის ჩამოსაშლელ მენიუში. ## მითითებული ჟანრები "
+"საშუალებას აძლევს მომხმარებელს დააკავშიროს ფაილი ან მთლიანი წარდგინებით 99Z "
+"ან კონკრეტული კომპონენტით ნომრით (მაგ., 02)."
+
+msgid "grid.genres.title"
+msgstr "სტატიის კომპონენტები"
+
+msgid "manager.publication.library"
+msgstr "გამომცემელის ბიბლიოთეკა"
+
+msgid "grid.action.addSection"
+msgstr "სექციის დამატება"
+
+msgid "manager.navigationMenus.mySubscriptions.conditionalWarning"
+msgstr "ეს ბმული გამოჩნდება მხოლოდ სტუმრის შესვლისას."
+
+msgid "manager.navigationMenus.mySubscriptions.description"
+msgstr ""
+"გვერდის ბმული, სადაც აღწერილია სტუმრის მიმდინარე და წარსული ხელმოწერები."
+
+msgid "manager.navigationMenus.subscriptions.description"
+msgstr "თქვენს მიერ შემოთავაზებული ხელმოწერების აღწერილი გვერდის ბმული."
+
+msgid "manager.institutionalSubscriptions"
+msgstr "ორგანიზაციის გამოწერები"
+
+msgid "manager.individualSubscriptions"
+msgstr "ინდივიდუალური გამოწერები"
+
+msgid "manager.section.submissionsToThisSection"
+msgstr "ჩანაწერები გაკეთებულია ჟურნალის ამ განყოფილებაში"
+
+msgid "manager.sections.identifyTypeExamples"
+msgstr ""
+"(მაგალითად, „რეცენზირებადი სტატია“, „წიგნის მიმოხილვა“, „სპეციალისტი "
+"კომენტარი“ და ა.შ.)"
+
+msgid "manager.sections.identifyType"
+msgstr "ამ სექციაში გამოქვეყნებული სტატიების იდენტიფიცირება, როგორც"
+
+msgid "manager.sections.hideTocTitle"
+msgstr "წაშალეთ ამ სექციის სათაური საკითხის შინაარსის ცხრილიდან."
+
+msgid "manager.sections.hideTocAuthor"
+msgstr ""
+"წაშალეთ ავტორების სახელები განყოფილებების ერთეულების შესახებ ნომრების "
+"შინაარსიდან."
+
+msgid "manager.sections.form.titleRequired"
+msgstr "სექციისთვის საჭიროა სათაური."
+
+msgid "manager.sections.form.reviewFormId"
+msgstr "გთხოვთ, დარწმუნდეთ, რომ შეარჩიეთ განხილვის სწორი ფორმა."
+
+msgid "manager.sections.form.mustAllowPermission"
+msgstr ""
+"გთხოვთ, დარწმუნდეთ, რომ სექციის რედაქტორის თითოეული დავალებისთვის მონიშნულია "
+"მინიმუმ ერთი ველი."
+
+msgid "manager.sections.form.abbrevRequired"
+msgstr "სექციისთვის საჭიროა შემოკლებული სათაური"
+
+msgid "manager.sections.confirmDeactivateSection.error"
+msgstr ""
+"მინიმუმ ერთი სექცია უნდა იყოს აქტიური. ეწვიეთ სამუშაო ნაკადის პარამეტრებს, "
+"რომ გათიშოთ ამ ჟურნალის ყველა გაგზავნა."
+
+msgid "manager.sections.editors"
+msgstr "სექციის რედაქტორები"
+
+msgid "manager.sections.editorRestriction"
+msgstr ""
+"სტატიების წარდგენა შესაძლებელია მხოლოდ რედაქტორებისა და განყოფილებების "
+"რედაქტორების მიერ."
+
+msgid "manager.sections.alertDelete"
+msgstr ""
+"სანამ ეს სექცია წაიშლება, თქვენ უნდა გადააგზავნოთ მასში გაგზავნილი სტატიები "
+"სხვა სექციებში."
+
+msgid "manager.sections.confirmDelete"
+msgstr "დარწმუნებული ხართ, რომ გსურთ სამუდამოდ წაშალოთ ეს სექცია?"
+
+msgid "manager.sections.assigned"
+msgstr "ამ სექციის რედაქტორები"
+
+msgid "manager.section.noSectionEditors"
+msgstr ""
+"სექციის რედაქტორები ჯერ არ არის. დაამატეთ ეს როლი მინიმუმ ერთ მომხმარებელს "
+"მენეჯმენტის > პარამეტრების > მომხმარებლებისა და როლების საშუალებით."
+
+msgid "manager.sections.abstractsNotRequired"
+msgstr "არ საჭიროებს აბსტრაქტს"
+
+msgid "manager.people.syncUserDescription"
+msgstr ""
+"ჩარიცხვის სინქრონიზაცია ჩაწერს მითითებულ ჟურნალში მითითებულ როლში ჩარიცხულ "
+"ყველა მომხმარებელს იმავე ჟურნალის იმავე როლში. ეს ფუნქცია საშუალებას აძლევს "
+"მომხმარებლებს (მაგალითად, რეცენზენტები) სინქრონიზირდნენ ჟურნალებს შორის."
+
+msgid "manager.people.roleEnrollment"
+msgstr "{$role} როლის მინიჭება"
+
+msgid "manager.people.mergeUsers.into.description"
+msgstr ""
+"აირჩიეთ მომხმარებელი, რომელსაც მიაკუთვნებს წინა მომხმარებლების ავტორობას, "
+"რედაქტირების დავალებებს და ა.შ."
+
+msgid "manager.people.mergeUsers.from.description"
+msgstr ""
+"აირჩიეთ მომხმარებელი (ან რამოდენიმე) სხვა მომხმარებელთან შერწყმისათვის ("
+"მაგალითად, როდესაც ერთმა ადამიანმა ორი ანგარიში შექმნა შეცდომით). პირველად "
+"არჩეული ანგარიში (ანგარიშები), წაიშლება, ხოლო ყველა მისი სტატია, სარედაქციო "
+"დავალება და ა.შ. გაერთიანდება მეორე ანგარიშთან."
+
+msgid "manager.people.enrollExistingUser"
+msgstr "არსებული მომხმარებლის დარეგისტრირება"
+
+msgid "manager.people.confirmRemove"
+msgstr ""
+"გსურთ ამ მომხმარებლის წაშლა ამ ჟურნალიდან? ეს მოქმედება გააუქმებს "
+"მომხმარებელს ამ ჟურნალის ყველა როლიდან."
+
+msgid "manager.people.allUsers"
+msgstr "ყველა დარეგისტრირებული მომხმარებელი"
+
+msgid "manager.people.showNoRole"
+msgstr "მომხმარებლები როლის გარეშე"
+
+msgid "manager.people.allSiteUsers"
+msgstr "დაარეგისტრირეთ მომხმარებელი ამ საიტიდან ამ ჟურნალში"
+
+msgid "manager.people.allEnrolledUsers"
+msgstr "ამ ჟურნალში დარეგისტრირებული მომხმარებლები"
+
+msgid "manager.payment.userName"
+msgstr "გადახდის იდენტიფიკატორი"
+
+msgid "manager.payment.readerFeesDescription"
+msgstr ""
+"შერჩეული ვარიანტები, მათ აღწერასა და საფასურთან ერთად (რომლის რედაქტირებაც "
+"შესაძლებელია ქვემოთ), გამოჩნდება ჟურნალ შესახებ წესების მიხედვით, ასევე იმ "
+"წერტილებში, სადაც გადახდაა საჭირო."
+
+msgid "manager.payment.paymentMethod.description"
+msgstr "ამ ეკრანიდან შეგიძლიათ მოარგოთ გადახდის მეთოდის ნებისმიერი პლაგინი."
+
+msgid "manager.payment.paymentId"
+msgstr "გადახდის იდენტიფიკატორი"
+
+msgid "manager.payment.options.text"
+msgstr "გადახდის მეთოდის აღწერა"
+
+msgid "manager.payment.options.publicationFee"
+msgstr "სტატიის დამუშავების საფასური"
+
+msgid "manager.payment.options.onlypdf"
+msgstr "შეზღუდეთ მხოლოდ გამოცემებისა და სტატიების PDF ვერსიასთან წვდომა"
+
+msgid "manager.payment.options.membershipFee"
+msgstr "ასოცირებული წევრობა"
+
+msgid "manager.payment.options.enablePayments"
+msgstr ""
+"გადახდები ჩართული იქნება ამ ჟურნალისთვის. გაითვალისწინეთ, რომ მომხმარებლებს "
+"მოეთხოვებათ სისტემაში შესვლა გადახდების განსახორციელებლად."
+
+msgid "manager.payment.options.acceptSubscriptionPayments"
+msgstr ""
+"ეს გაააქტიურებს გადასახადების გადახდებს, სადაც ტიპებს, ღირებულებას, "
+"ხანგრძლივობასა და გამოწერებს მართავს ჟურნალის (გამოწერების) მმართველი."
+
+msgid "manager.payment.generalFeesDescription"
+msgstr ""
+"ასოცირებული წევრობა გამოჩნდება ჟურნალ About the Journal under Policies-ში."
+
+msgid "manager.payment.form.numeric"
+msgstr ""
+"ყველა ხარჯი უნდა იყოს დადებითი რიცხვითი მნიშვნელობები (ათობითი წერტილები "
+"დაშვებულია)"
+
+msgid "manager.payment.currencymessage"
+msgstr ""
+"OJS არ ახდენს ვალუტის კონვერტაციას.  თუ იღებთ გადასახადებს გამომწერებისაგან, "
+"დარწმუნდით, რომ გადასახადის ვალუტა ემთხვევა აქ მითითებულ ვალუტას."
+
+msgid "manager.payment.authorFeesDescription"
+msgstr "შეიტანეთ საფასურის ოდენობები ქვემოთ, რათა ჩაირთოს ავტორის გადასახადები."
+
+msgid "manager.languages.primaryLocaleInstructions"
+msgstr "ეს იქნება ნაგულისხმევი ენა ჟურნალის საიტისთვის."
+
+msgid "manager.languages.noneAvailable"
+msgstr ""
+"უკაცრავად, დამატებითი ენები არ არის ხელმისაწვდომი. დაუკავშირდით თქვენი "
+"საიტის ადმინისტრატორს, თუ გსურთ ამ ჟურნალში დამატებითი ენების გამოყენება."
+
+msgid "manager.language.confirmDefaultSettingsOverwrite"
+msgstr ""
+"ეს ჩაანაცვლებს ენაზე დამოკიდებულ სპეციალურ ჟურნალის პარამეტრებს, რომლებიც "
+"გქონდათ ამ ენებისათვის"
+
+msgid "manager.files.note"
+msgstr ""
+"შენიშვნა: ფაილების ბრაუზერი არის მოწინავე ფუნქცია, რომელიც საშუალებას აძლევს "
+"ჟურნალთან დაკავშირებული ფაილების და დირექტორიების პირდაპირ ნახვასა და "
+"მანიპულირებას."
+
+msgid "manager.emails.confirmResetAll"
+msgstr ""
+"დარწმუნებული ხართ, რომ გსურთ ამ ჟურნალის ყველა ელფოსტის შაბლონის ჩამოყრა? "
+"თქვენ დაკარგავთ თქვენს მიერ მორგებულ ნებისმიერ კონფიგურაციას."
+
+msgid "manager.distribution.publishingMode.subscription"
+msgstr ""
+"ჟურნალი მოითხოვს გამოწერებს, რომ შესაძლებელი გახდეს მის ზოგიერთ ან ყველა "
+"შინაარსზე წვდომა."
+
+msgid "manager.distribution.publishingMode.openAccess"
+msgstr "ჟურნალი უზრუნველყოფს მის შინაარსზე ღია წვდომას."
+
+msgid "manager.distribution.publishingMode.none"
+msgstr "OJS არ იქნება გამოყენებული ჟურნალის შინაარსის ონლაინ გამოსაქვეყნებლად."
+
+msgid "manager.distribution.copyrightYearBasis.description"
+msgstr ""
+"აირჩიეთ, თუ როგორ არის არჩეული საავტორო უფლებების ნაგულისხმევი თარიღი "
+"სტატიისთვის. ეს ნაგულისხმევი შეიძლება შეიცვალოს ინდივიდუალურად. თუ „"
+"აქვეყნებთ სტატიის შემოსვლისთანავე“, ნუ გამოიყენებთ გამოცემის გამოქვეყნების "
+"თარიღს."

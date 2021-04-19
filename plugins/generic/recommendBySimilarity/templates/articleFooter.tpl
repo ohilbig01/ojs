@@ -1,9 +1,9 @@
 {**
  * plugins/generic/recommendBySimilarity/templates/articleFooter.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * A template to be included via Templates::Article::Footer::PageFooter hook.
  *}
@@ -13,7 +13,7 @@
 
 		<ul>
 			{iterate from=articlesBySimilarity item=articleBySimilarity}
-				{assign var=publishedSubmission value=$articleBySimilarity.publishedSubmission}
+				{assign var=submission value=$articleBySimilarity.publishedSubmission}
 				{assign var=article value=$articleBySimilarity.article}
 				{assign var=issue value=$articleBySimilarity.issue}
 				{assign var=journal value=$articleBySimilarity.journal}
@@ -21,7 +21,7 @@
 					{foreach from=$article->getAuthors() item=author}
 						{$author->getFullName()|escape},
 					{/foreach}
-					<a href="{url journal=$journal->getPath() page="article" op="view" path=$publishedSubmission->getBestArticleId()}">
+					<a href="{url journal=$journal->getPath() page="article" op="view" path=$submission->getBestId()}">
 						{$article->getLocalizedTitle()|strip_unsafe_html}
 					</a>,
 					<a href="{url journal=$journal->getPath() page="issue" op="view" path=$issue->getBestIssueId()}">
@@ -35,7 +35,7 @@
 		</p>
 		<p id="articlesBySimilaritySearch">
 			{capture assign="advancedSearchLink"}{strip}
-				<a href="{url page="search" op="search" query=$articlesBySimilarityQuery}">
+				<a href="{url page="search" query=$articlesBySimilarityQuery}">
 					{translate key="plugins.generic.recommendBySimilarity.advancedSearch"}
 				</a>
 			{/strip}{/capture}

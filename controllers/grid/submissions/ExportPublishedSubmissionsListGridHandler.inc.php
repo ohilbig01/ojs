@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/submissions/ExportPublishedSubmissionsListGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ExportPublishedSubmissionsListGridHandler
  * @ingroup controllers_grid_submissions
@@ -168,7 +168,7 @@ class ExportPublishedSubmissionsListGridHandler extends GridHandler {
 	 */
 	function renderFilter($request, $filterData = array()) {
 		$context = $request->getContext();
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		$issuesIterator = $issueDao->getPublishedIssues($context->getId());
 		$issues = $issuesIterator->toArray();
 		foreach ($issues as $issue) {
@@ -209,7 +209,6 @@ class ExportPublishedSubmissionsListGridHandler extends GridHandler {
 	 * @copydoc GridHandler::loadData()
 	 */
 	protected function loadData($request, $filter) {
-		$publishedSubmissionDao = DAORegistry::getDAO('PublishedSubmissionDAO');
 		$context = $request->getContext();
 		list($search, $column, $issueId, $statusId) = $this->getFilterValues($filter);
 		$title = $author = null;
@@ -222,7 +221,8 @@ class ExportPublishedSubmissionsListGridHandler extends GridHandler {
 		if ($statusId) {
 			$pubIdStatusSettingName = $this->_plugin->getDepositStatusSettingName();
 		}
-		return $publishedSubmissionDao->getExportable(
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+		return $submissionDao->getExportable(
 			$context->getId(),
 			null,
 			$title,

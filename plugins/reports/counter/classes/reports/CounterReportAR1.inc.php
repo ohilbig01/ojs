@@ -33,7 +33,7 @@ class CounterReportAR1 extends CounterReport {
 	 * @return array COUNTER\ReportItem
 	 */
 	function getReportItems($columns = array(), $filters = array(), $orderBy = array(), $range = null) {
-		$metricsDao = DAORegistry::getDAO('MetricsDAO');
+		$metricsDao = DAORegistry::getDAO('MetricsDAO'); /* @var $metricsDao MetricsDAO */
 
 		// Columns are fixed for this report
 		$defaultColumns = array(STATISTICS_DIMENSION_MONTH, STATISTICS_DIMENSION_SUBMISSION_ID);
@@ -124,14 +124,14 @@ class CounterReportAR1 extends CounterReport {
 	 * @return mixed COUNTER\ReportItems or false
 	 */
 	private function _createReportItem($submissionId, $metrics) {
-		$submissionDao = DAORegistry::getDAO('SubmissionDAO');
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		$article = $submissionDao->getById($submissionId);
 		if (!$article) {
 			return false;
 		}
 		$title = $article->getLocalizedTitle();
 		$journalId = $article->getContextId();
-		$journalDao = DAORegistry::getDAO('JournalDAO');
+		$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
 		$journal = $journalDao->getById($journalId);
 		if (!$journal) {
 			return false;
@@ -150,7 +150,7 @@ class CounterReportAR1 extends CounterReport {
 		$journalPubIds[] = new COUNTER\Identifier(COUNTER_LITERAL_PROPRIETARY, $journal->getPath());
 		$pubIdPlugins = PluginRegistry::loadCategory('pubIds', true, $journalId);
 		$articlePubIds = array();
-		$articlePubIds[] = new COUNTER\Identifier(COUNTER_LITERAL_PROPRIETARY, $submissionId);
+		$articlePubIds[] = new COUNTER\Identifier(COUNTER_LITERAL_PROPRIETARY, (string) $submissionId);
 		foreach ($pubIdPlugins as $pubIdPlugin) {
 			$pubId = $article->getStoredPubId($pubIdPlugin->getPubIdType(), true);
 			if ($pubId) {
@@ -169,7 +169,7 @@ class CounterReportAR1 extends CounterReport {
 		$reportItem = array();
 		try {
 			$reportItem = new COUNTER\ReportItems(
-				__('common.openJournalSystems'),
+				__('common.software'),
 				$title,
 				COUNTER_LITERAL_ARTICLE,
 				$metrics,

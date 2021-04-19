@@ -3,9 +3,9 @@
 /**
  * @file pages/payment/PaymentHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PaymentHandler
  * @ingroup pages_payment
@@ -49,7 +49,7 @@ class PaymentHandler extends Handler {
 
 		$paymentManager = Application::getPaymentManager($request->getContext());
 		$templateMgr = TemplateManager::getManager($request);
-		$queuedPaymentDao = DAORegistry::getDAO('QueuedPaymentDAO');
+		$queuedPaymentDao = DAORegistry::getDAO('QueuedPaymentDAO'); /* @var $queuedPaymentDao QueuedPaymentDAO */
 		$queuedPayment = $queuedPaymentDao->getById($queuedPaymentId = array_shift($args));
 		if (!$queuedPayment) {
 			$templateMgr->assign(array(

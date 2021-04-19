@@ -1,9 +1,9 @@
 {**
  * templates/controllers/grid/pubIds/form/assignPublicIdentifiersForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  *}
  <script>
@@ -26,7 +26,7 @@
 			{fbvElement type="checkbox" name="sendIssueNotification" id="sendIssueNotification" checked=true label="notification.sendNotificationConfirmation" inline=true}
 		{/fbvFormSection}		
 {elseif $pubObject instanceof Article}
-	<form class="pkp_form" id="assignPublicIdentifierForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT component="tab.issueEntry.IssueEntryTabHandler" op="assignPubIds" escape=false}">
+	<form class="pkp_form" id="assignPublicIdentifierForm" method="post" action="{url router=PKPApplication::ROUTE_COMPONENT component="tab.issueEntry.IssueEntryTabHandler" op="assignPubIds" escape=false}">
 		<input type="hidden" name="submissionId" value="{$pubObject->getId()|escape}" />
 		<input type="hidden" name="stageId" value="{$formParams.stageId|escape}" />
 		{assign var=hideCancel value=true}

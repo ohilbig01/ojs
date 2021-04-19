@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/articleGalleys/ArticleGalleyGridHandler.inc.php
  *
- * Copyright (c) 2016-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2016-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArticleGalleyGridHandler
  * @ingroup controllers_grid_articleGalleys
@@ -19,12 +19,12 @@ import('lib.pkp.classes.controllers.grid.GridHandler');
 // Link action & modal classes
 import('lib.pkp.classes.linkAction.request.AjaxModal');
 
+use \PKP\core\JSONMessage;
+
 class ArticleGalleyGridHandler extends GridHandler {
 
 	/** @var PKPRequest */
 	var $_request;
-
-	var $_canEdit;
 
 	/**
 	 * Constructor
@@ -49,6 +49,14 @@ class ArticleGalleyGridHandler extends GridHandler {
 	 */
 	function getSubmission() {
 		return $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
+	}
+
+	/**
+	 * Get the authorized publication.
+	 * @return Publication
+	 */
+	function getPublication() {
+		return $this->getAuthorizedContextObject(ASSOC_TYPE_PUBLICATION);
 	}
 
 	/**
@@ -79,6 +87,9 @@ class ArticleGalleyGridHandler extends GridHandler {
 		import('lib.pkp.classes.security.authorization.WorkflowStageAccessPolicy');
 		$this->addPolicy(new WorkflowStageAccessPolicy($request, $args, $roleAssignments, 'submissionId', WORKFLOW_STAGE_ID_PRODUCTION));
 
+		import('lib.pkp.classes.security.authorization.PublicationAccessPolicy');
+		$this->addPolicy(new PublicationAccessPolicy($request, $args, $roleAssignments));
+
 		if ($request->getUserVar('representationId')) {
 			import('lib.pkp.classes.security.authorization.internal.RepresentationRequiredPolicy');
 			$this->addPolicy(new RepresentationRequiredPolicy($request, $args));
@@ -102,14 +113,8 @@ class ArticleGalleyGridHandler extends GridHandler {
 			LOCALE_COMPONENT_APP_EDITOR
 		);
 
-		$this->_canEdit = true;
-
-		if ($this->getSubmission()->getSubmissionVersion() != $this->getSubmission()->getCurrentSubmissionVersion()) {
-			$this->_canEdit = false;
-		}
-
 		import('controllers.grid.articleGalleys.ArticleGalleyGridCellProvider');
-		$cellProvider = new ArticleGalleyGridCellProvider($this->getSubmission(), $this->_canEdit);
+		$cellProvider = new ArticleGalleyGridCellProvider($this->getSubmission(), $this->getPublication(), $this->canEdit());
 
 		// Columns
 		$this->addColumn(new GridColumn(
@@ -120,21 +125,17 @@ class ArticleGalleyGridHandler extends GridHandler {
 			$cellProvider
 		));
 
-		if ($this->_canEdit) {
-			$router = $request->getRouter();
-			$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
-			if (0 != count(array_intersect($userRoles, array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT)))) {
-				$this->addAction(new LinkAction(
-					'addGalley',
-					new AjaxModal(
-						$router->url($request, null, null, 'addGalley', null, $this->getRequestArgs()),
-						__('submission.layout.newGalley'),
-						'modal_add_item'
-					),
-					__('grid.action.addGalley'),
-					'add_item'
-				));
-			}
+		if ($this->canEdit()) {
+			$this->addAction(new LinkAction(
+				'addGalley',
+				new AjaxModal(
+					$request->getRouter()->url($request, null, null, 'addGalley', null, $this->getRequestArgs()),
+					__('submission.layout.newGalley'),
+					'modal_add_item'
+				),
+				__('grid.action.addGalley'),
+				'add_item'
+			));
 		}
 	}
 
@@ -145,7 +146,7 @@ class ArticleGalleyGridHandler extends GridHandler {
 	 * @copydoc GridHandler::initFeatures()
 	 */
 	function initFeatures($request, $args) {
-		if ($this->_canEdit) {
+		if ($this->canEdit()) {
 			import('lib.pkp.classes.controllers.grid.feature.OrderGridItemsFeature');
 			return array(new OrderGridItemsFeature());
 		}
@@ -164,9 +165,8 @@ class ArticleGalleyGridHandler extends GridHandler {
 	 * @copydoc GridHandler::setDataElementSequence()
 	 */
 	function setDataElementSequence($request, $rowId, $gridDataElement, $newSequence) {
-		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO');
-		$journal = $request->getJournal();
-		$galley = $galleyDao->getById($rowId, null, $journal->getId());
+		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO'); /* @var $galleyDao ArticleGalleyDAO */
+		$galley = $galleyDao->getById($rowId);
 		$galley->setSequence($newSequence);
 		$galleyDao->updateObject($galley);
 	}
@@ -182,7 +182,8 @@ class ArticleGalleyGridHandler extends GridHandler {
 		import('controllers.grid.articleGalleys.ArticleGalleyGridRow');
 		return new ArticleGalleyGridRow(
 			$this->getSubmission(),
-			$this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES)
+			$this->getPublication(),
+			$this->canEdit()
 		);
 	}
 
@@ -194,7 +195,7 @@ class ArticleGalleyGridHandler extends GridHandler {
 	function getRequestArgs() {
 		return array(
 			'submissionId' => $this->getSubmission()->getId(),
-			'submissionVersion' => $this->getSubmission()->getSubmissionVersion(),
+			'publicationId' => $this->getPublication()->getId(),
 		);
 	}
 
@@ -202,8 +203,16 @@ class ArticleGalleyGridHandler extends GridHandler {
 	 * @copydoc GridHandler::loadData()
 	 */
 	function loadData($request, $filter = null) {
-		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO');
-		return $galleyDao->getBySubmissionId($this->getSubmission()->getId(), null, $this->getSubmission()->getSubmissionVersion());
+		$galleyIterator = Services::get('galley')->getMany([
+			'publicationIds' => [$this->getPublication()->getId()],
+		]);
+		// ArticleGalleyGridRow::initialize expects the array
+		// key to match the galley id
+		$galleys = [];
+		foreach ($galleyIterator as $galley) {
+			$galleys[$galley->getId()] = $galley;
+		}
+		return $galleys;
 	}
 
 	//
@@ -216,12 +225,8 @@ class ArticleGalleyGridHandler extends GridHandler {
 	 * @return JSONMessage JSON object
 	 */
 	function identifiers($args, $request) {
-		$submission = $this->getSubmission();
 		$representationDao = Application::getRepresentationDAO();
-		$representation = $representationDao->getById(
-			$request->getUserVar('representationId'),
-			$submission->getId()
-		);
+		$representation = $representationDao->getById($request->getUserVar('representationId'));
 		import('controllers.tab.pubIds.form.PublicIdentifiersForm');
 		$form = new PublicIdentifiersForm($representation);
 		$form->initData();
@@ -235,14 +240,10 @@ class ArticleGalleyGridHandler extends GridHandler {
 	 * @return JSONMessage JSON object
 	 */
 	function updateIdentifiers($args, $request) {
-		$submission = $this->getSubmission();
 		$representationDao = Application::getRepresentationDAO();
-		$representation = $representationDao->getById(
-			$request->getUserVar('representationId'),
-			$submission->getId()
-		);
+		$representation = $representationDao->getById($request->getUserVar('representationId'));
 		import('controllers.tab.pubIds.form.PublicIdentifiersForm');
-		$form = new PublicIdentifiersForm($representation);
+		$form = new PublicIdentifiersForm($representation, null, array_merge($this->getRequestArgs(), ['representationId' => $representation->getId()]));
 		$form->readInputData();
 		if ($form->validate()) {
 			$form->execute();
@@ -263,10 +264,7 @@ class ArticleGalleyGridHandler extends GridHandler {
 
 		$submission = $this->getSubmission();
 		$representationDao = Application::getRepresentationDAO();
-		$representation = $representationDao->getById(
-			$request->getUserVar('representationId'),
-			$submission->getId()
-		);
+		$representation = $representationDao->getById($request->getUserVar('representationId'));
 		import('controllers.tab.pubIds.form.PublicIdentifiersForm');
 		$form = new PublicIdentifiersForm($representation);
 		$form->clearPubId($request->getUserVar('pubIdPlugIn'));
@@ -283,10 +281,11 @@ class ArticleGalleyGridHandler extends GridHandler {
 		import('controllers.grid.articleGalleys.form.ArticleGalleyForm');
 		$galleyForm = new ArticleGalleyForm(
 			$request,
-			$this->getSubmission()
+			$this->getSubmission(),
+			$this->getPublication()
 		);
 		$galleyForm->initData();
-		return new JSONMessage(true, $galleyForm->fetch($request, $this->getRequestArgs()));
+		return new JSONMessage(true, $galleyForm->fetch($request));
 	}
 
 	/**
@@ -299,15 +298,9 @@ class ArticleGalleyGridHandler extends GridHandler {
 		$galley = $this->getGalley();
 		if (!$galley || !$request->checkCSRF()) return new JSONMessage(false);
 
-		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO');
-		$galleyDao->deleteObject($galley);
+		Services::get('galley')->delete($galley);
 
-		if ($galley->getFileId()) {
-			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
-			$submissionFileDao->deleteAllRevisionsById($galley->getFileId());
-		}
-
-		$notificationDao = DAORegistry::getDAO('NotificationDAO');
+		$notificationDao = DAORegistry::getDAO('NotificationDAO'); /* @var $notificationDao NotificationDAO */
 		$notificationDao->deleteByAssoc(ASSOC_TYPE_REPRESENTATION, $galley->getId());
 
 		if ($this->getSubmission()->getStageId() == WORKFLOW_STAGE_ID_EDITING ||
@@ -319,14 +312,9 @@ class ArticleGalleyGridHandler extends GridHandler {
 				array(NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER, NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS),
 				null,
 				ASSOC_TYPE_SUBMISSION,
-				$galley->getSubmissionId()
+				$this->getSubmission()->getId()
 			);
 		}
-
-		//inform search index that file has been deleted
-		$articleSearchIndex = Application::getSubmissionSearchIndex();
-		$articleSearchIndex->submissionFileDeleted($galley->getSubmissionId());
-		$articleSearchIndex->submissionChangesFinished();
 
 		return DAO::getDataChangedEvent($galley->getId());
 	}
@@ -344,8 +332,21 @@ class ArticleGalleyGridHandler extends GridHandler {
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign(array(
 			'submissionId' => $this->getSubmission()->getId(),
+			'publicationId' => $this->getPublication()->getId(),
 			'representationId' => $galley->getId(),
 		));
+		$publisherIdEnabled = in_array('galley', (array) $request->getContext()->getData('enablePublisherId'));
+		$pubIdsEnabled = false;
+		$pubIdPlugins = PluginRegistry::loadCategory('pubIds', true, $request->getContext()->getId());
+		foreach ($pubIdPlugins as $pubIdPlugin) {
+			if ($pubIdPlugin->isObjectTypeEnabled('Representation', $request->getContext()->getId())) {
+				$pubIdsEnabled = true;
+				break;
+			}
+		}
+		if ($publisherIdEnabled || $pubIdsEnabled) {
+			$templateMgr->assign('enableIdentifiers', true);
+		}
 		return new JSONMessage(true, $templateMgr->fetch('controllers/grid/articleGalleys/editFormat.tpl'));
 	}
 
@@ -361,10 +362,11 @@ class ArticleGalleyGridHandler extends GridHandler {
 		$galleyForm = new ArticleGalleyForm(
 			$request,
 			$this->getSubmission(),
+			$this->getPublication(),
 			$this->getGalley()
 		);
 		$galleyForm->initData();
-		return new JSONMessage(true, $galleyForm->fetch($request, $this->getRequestArgs()));
+		return new JSONMessage(true, $galleyForm->fetch($request));
 	}
 
 	/**
@@ -377,7 +379,7 @@ class ArticleGalleyGridHandler extends GridHandler {
 		$galley = $this->getGalley();
 
 		import('controllers.grid.articleGalleys.form.ArticleGalleyForm');
-		$galleyForm = new ArticleGalleyForm($request, $this->getSubmission(), $galley);
+		$galleyForm = new ArticleGalleyForm($request, $this->getSubmission(), $this->getPublication(), $galley);
 		$galleyForm->readInputData();
 
 		if ($galleyForm->validate()) {
@@ -392,13 +394,13 @@ class ArticleGalleyGridHandler extends GridHandler {
 					array(NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER, NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS),
 					null,
 					ASSOC_TYPE_SUBMISSION,
-					$galley->getSubmissionId()
+					$this->getSubmission()->getId()
 				);
 			}
 
 			return DAO::getDataChangedEvent($galley->getId());
 		}
-		return new JSONMessage(true, $galleyForm->fetch());
+		return new JSONMessage(true, $galleyForm->fetch($request));
 	}
 
 	/**
@@ -408,12 +410,31 @@ class ArticleGalleyGridHandler extends GridHandler {
 		$json = parent::fetchRow($args, $request);
 		if ($row = $this->getRequestedRow($request, $args)) {
 			$galley = $row->getData();
-			if ($galley->getRemoteUrl()=='' && !$galley->getFileId()) {
+			if ($galley->getRemoteUrl()=='' && !$galley->getData('submissionFileId')) {
 				$json->setEvent('uploadFile', $galley->getId());
 			}
 		}
 
 		return $json;
+	}
+
+	/**
+	 * Can the current user edit the galleys in this grid?
+	 *
+	 * The user must have an allowed role in one of the assigned stages.
+	 * If the user is not assigned, they can edit if they are an editor
+	 * or admin.
+	 *
+	 * @return boolean
+	 */
+	public function canEdit() {
+		return $this->getPublication()->getData('status') !== STATUS_PUBLISHED &&
+			Services::get('user')->canUserAccessStage(
+				WORKFLOW_STAGE_ID_PRODUCTION,
+				PKPApplication::WORKFLOW_TYPE_EDITORIAL,
+				$this->getAuthorizedContextObject(ASSOC_TYPE_ACCESSIBLE_WORKFLOW_STAGES),
+				$this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES)
+			);
 	}
 }
 

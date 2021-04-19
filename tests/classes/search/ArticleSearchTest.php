@@ -3,9 +3,9 @@
 /**
  * @file tests/classes/search/ArticleSearchTest.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArticleSearchTest
  * @ingroup tests_classes_search
@@ -17,12 +17,15 @@
 require_mock_env('env1');
 
 import('lib.pkp.tests.PKPTestCase');
-import('lib.pkp.classes.core.ArrayItemIterator');
 import('classes.search.ArticleSearch');
-import('lib.pkp.classes.core.PKPRouter');
 
 define('SUBMISSION_SEARCH_TEST_DEFAULT_ARTICLE', 1);
 define('SUBMISSION_SEARCH_TEST_ARTICLE_FROM_PLUGIN', 2);
+
+use \PKP\core\ArrayItemIterator;
+use \PKP\core\PKPRouter;
+
+use \APP\journal\Journal;
 
 class ArticleSearchTest extends PKPTestCase {
 	/** @var array */
@@ -37,7 +40,7 @@ class ArticleSearchTest extends PKPTestCase {
 	protected function getMockedDAOs() {
 		$mockedDaos = parent::getMockedDAOs();
 		$mockedDaos += array(
-			'ArticleSearchDAO', 'SubmissionDAO', 'PublishedSubmissionDAO',
+			'ArticleSearchDAO', 'SubmissionDAO',
 			'IssueDAO', 'JournalDAO', 'SectionDAO'
 		);
 		return $mockedDaos;
@@ -46,14 +49,13 @@ class ArticleSearchTest extends PKPTestCase {
 	/**
 	 * @see PKPTestCase::setUp()
 	 */
-	protected function setUp() {
+	protected function setUp() : void {
 		parent::setUp();
 		HookRegistry::rememberCalledHooks();
 
 		// Prepare the mock environment for this test.
 		$this->registerMockArticleSearchDAO();
 		$this->registerMockSubmissionDAO();
-		$this->registerMockPublishedSubmissionDAO();
 		$this->registerMockIssueDAO();
 		$this->registerMockJournalDAO();
 		$this->registerMockSectionDAO();
@@ -68,7 +70,7 @@ class ArticleSearchTest extends PKPTestCase {
 	/**
 	 * @see PKPTestCase::tearDown()
 	 */
-	protected function tearDown() {
+	protected function tearDown() : void {
 		HookRegistry::resetCalledHooks();
 		parent::tearDown();
 	}
@@ -266,28 +268,6 @@ class ArticleSearchTest extends PKPTestCase {
 
 		// Register the mock DAO.
 		DAORegistry::registerDAO('SubmissionDAO', $submissionDao);
-	}
-
-	/**
-	 * Mock and register an PublishedSubmissionDAO as a test
-	 * back end for the ArticleSearch class.
-	 */
-	private function registerMockPublishedSubmissionDAO() {
-		// Mock a PublishedSubmissionDAO.
-		$publishedSubmissionDAO = $this->getMockBuilder(PublishedSubmissionDAO::class)
-			->setMethods(array('getBySubmissionId'))
-			->getMock();
-
-		// Mock a published submission.
-		$publishedSubmission = new PublishedSubmission();
-
-		// Mock the getBySubmissionId() method.
-		$publishedSubmissionDAO->expects($this->any())
-		                    ->method('getBySubmissionId')
-		                    ->will($this->returnValue($publishedSubmission));
-
-		// Register the mock DAO.
-		DAORegistry::registerDAO('PublishedSubmissionDAO', $publishedSubmissionDAO);
 	}
 
 	/**

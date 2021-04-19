@@ -3,9 +3,9 @@
 /**
  * @file classes/statistics/MetricsDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class MetricsDAO
  * @ingroup statistics
@@ -42,16 +42,16 @@ class MetricsDAO extends PKPMetricsDAO {
 	/**
 	 * @copydoc PKPMetricsDAO::foreignKeyLookup()
 	 */
-	protected function foreignKeyLookup($assocType, $assocId) {
+	protected function foreignKeyLookup($assocType, $assocId, $representationId = null) {
 		list($contextId, $sectionId, $assocObjType,
-			$assocObjId, $submissionId, $representationId) = parent::foreignKeyLookup($assocType, $assocId);
+			$assocObjId, $submissionId, $representationId) = parent::foreignKeyLookup($assocType, $assocId, $representationId);
 
 		$isFile = false;
 
 		if (!$contextId) {
 			switch ($assocType) {
 				case ASSOC_TYPE_ISSUE_GALLEY:
-					$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO');
+					$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO'); /* @var $issueGalleyDao IssueGalleyDAO */
 					$issueGalley = $issueGalleyDao->getById($assocId);
 					if (!$issueGalley) {
 						throw new Exception('Cannot load record: invalid issue galley id.');
@@ -69,7 +69,7 @@ class MetricsDAO extends PKPMetricsDAO {
 						$issueId = $assocObjId;
 					}
 
-					$issueDao = DAORegistry::getDAO('IssueDAO');
+					$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 					$issue = $issueDao->getById($issueId);
 
 					if (!$issue) {
@@ -91,10 +91,9 @@ class MetricsDAO extends PKPMetricsDAO {
 		$returnArray = parent::getAssocObjectInfo($submissionId, $contextId);
 
 		// Submissions in OJS are associated with an Issue.
-		$publishedSubmissionDao = DAORegistry::getDAO('PublishedSubmissionDAO');
-		$publishedSubmission = $publishedSubmissionDao->getBySubmissionId($submissionId, $contextId, true);
-		if ($publishedSubmission) {
-			$returnArray = array(ASSOC_TYPE_ISSUE, $publishedSubmission->getIssueId());
+		$submission = Services::get('submission')->get($submissionId);
+		if ($submission->getCurrentPublication()->getData('issueId')) {
+			$returnArray = array(ASSOC_TYPE_ISSUE, $submission->getCurrentPublication()->getData('issueId'));
 		}
 		return $returnArray;
 	}

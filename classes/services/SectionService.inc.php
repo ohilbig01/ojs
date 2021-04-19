@@ -3,9 +3,9 @@
 /**
  * @file classes/services/SectionService.php
 *
-* Copyright (c) 2014-2019 Simon Fraser University
-* Copyright (c) 2000-2019 John Willinsky
-* Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+* Copyright (c) 2014-2021 Simon Fraser University
+* Copyright (c) 2000-2021 John Willinsky
+* Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
 *
 * @class SectionService
 * @ingroup services
@@ -15,8 +15,10 @@
 
 namespace APP\Services;
 
-use \Services;
 use \PKP\Services\interfaces\EntityPropertyInterface;
+use \PKP\services\PKPSchemaService;
+
+use \APP\core\Services;
 
 class SectionService implements EntityPropertyInterface {
 
@@ -24,19 +26,24 @@ class SectionService implements EntityPropertyInterface {
 	 * Get array of sections
 	 *
 	 * @param int $contextId
+	 * @param boolean $activeOnly Exclude inactive sections 
+	 * 	from the section list that is returned
 	 *
 	 * @return array
 	 */
-	public function getSectionList($contextId) {
-		$sectionDao = \DAORegistry::getDAO('SectionDAO');
+	public function getSectionList($contextId, $activeOnly = false) {
+		$sectionDao = \DAORegistry::getDAO('SectionDAO'); /* $sectionDao SectionDAO */
 		$sectionIterator = $sectionDao->getByContextId($contextId);
 
 		$sections = array();
 		while ($section = $sectionIterator->next()) {
-			$sections[] = array(
-				'id' => $section->getId(),
-				'title' => $section->getLocalizedTitle(),
-			);
+			if (!$activeOnly || ($activeOnly && !$section->getIsInactive())) {
+				$sections[] = array(
+					'id' => $section->getId(),
+					'title' => $section->getLocalizedTitle(),
+					'group' => $section->getIsInactive(),
+				);
+			}
 		}
 
 		return $sections;
@@ -64,8 +71,8 @@ class SectionService implements EntityPropertyInterface {
 			}
 		}
 
-		$locales = $args['request']->getContext()->getSupportedLocales();
-		$values = Services::get('schema')->addMissingMultilingualValues(SCHEMA_GALLEY, $values, $locales);
+		$locales = $args['request']->getContext()->getSupportedFormLocales();
+		$values = Services::get('schema')->addMissingMultilingualValues(PKPSchemaService::SCHEMA_GALLEY, $values, $locales);
 
 		\HookRegistry::call('Section::getProperties::values', array(&$values, $section, $props, $args));
 
@@ -110,7 +117,7 @@ class SectionService implements EntityPropertyInterface {
 	 * @return Section
 	 */
 	public function addSection($section, $context) {
-		$sectionDao = \DAORegistry::getDAO('SectionDAO');
+		$sectionDao = \DAORegistry::getDAO('SectionDAO'); /* $sectionDao SectionDAO */
 
 		// Don't allow sections to be added to any other context
 		$section->setJournalId($context->getId());

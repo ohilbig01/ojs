@@ -2,9 +2,9 @@
 /**
  * @file classes/security/authorization/OjsIssueRequiredPolicy.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OjsIssueRequiredPolicy
  * @ingroup security_authorization_internal
@@ -40,7 +40,7 @@ class OjsIssueRequiredPolicy extends DataObjectRequiredPolicy {
 		if (!$issueId) return AUTHORIZATION_DENY;
 
 		// Make sure the issue belongs to the journal.
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		$issue = $issueDao->getByBestId($issueId,  $this->journal->getId());
 
 		if (!is_a($issue, 'Issue')) return AUTHORIZATION_DENY;
@@ -69,7 +69,8 @@ class OjsIssueRequiredPolicy extends DataObjectRequiredPolicy {
 	 * @copydoc DataObjectRequiredPolicy::getDataObjectId()
 	 * Considers a not numeric public URL identifier
 	 */
-	function getDataObjectId() {
+	function getDataObjectId($lookOnlyByParameterName = false) {
+		if ($lookOnlyByParameterName) throw new Exception('lookOnlyByParameterName not supported for issues.');
 		// Identify the data object id.
 		$router = $this->_request->getRouter();
 		switch(true) {

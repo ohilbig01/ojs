@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/doaj/filter/DOAJJsonFilter.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DOAJJsonFilter
  * @ingroup plugins_importexport_doaj
@@ -41,7 +41,7 @@ class DOAJJsonFilter extends NativeImportExportFilter {
 	//
 	/**
 	 * @see Filter::process()
-	 * @param $pubObject PublishedSubmission
+	 * @param $pubObject Submission
 	 * @return JSON string
 	 */
 	function &process(&$pubObject) {
@@ -52,7 +52,8 @@ class DOAJJsonFilter extends NativeImportExportFilter {
 
 		// Create the JSON string Article JSON example bibJson https://github.com/DOAJ/harvester/blob/9b59fddf2d01f7c918429d33b63ca0f1a6d3d0d0/service/tests/fixtures/article.py
 
-		$issueId = $pubObject->getIssueId();
+		$publication = $pubObject->getCurrentPublication();
+		$issueId = $publication->getData('issueId');
 		if ($cache->isCached('issues', $issueId)) {
 			$issue = $cache->get('issues', $issueId);
 		} else {
@@ -134,8 +135,8 @@ class DOAJJsonFilter extends NativeImportExportFilter {
 		if (!empty($abstract)) $article['bibjson']['abstract'] = PKPString::html2text($abstract);
 		// Keywords
 		$dao = DAORegistry::getDAO('SubmissionKeywordDAO');
-		$keywords = $dao->getKeywords($pubObject->getId(), array($pubObject->getLocale()));
-		$allowedNoOfKeywords = array_slice($keywords[$pubObject->getLocale()], 0, 6);
+		$keywords = $dao->getKeywords($publication->getId(), array($pubObject->getLocale()));
+		$allowedNoOfKeywords = array_slice($keywords[$pubObject->getLocale()]??[], 0, 6);
 		if (!empty($keywords[$pubObject->getLocale()])) $article['bibjson']['keywords'] = $allowedNoOfKeywords;
 
 		/* not needed here:

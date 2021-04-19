@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/native/filter/NativeXmlIssueGalleyFilter.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class NativeXmlIssueGalleyFilter
  * @ingroup plugins_importexport_native
@@ -69,7 +69,7 @@ class NativeXmlIssueGalleyFilter extends NativeImportFilter {
 		assert(is_a($issue, 'Issue'));
 
 		// Create the data object
-		$issueGalleyDao  = DAORegistry::getDAO('IssueGalleyDAO');
+		$issueGalleyDao  = DAORegistry::getDAO('IssueGalleyDAO'); /* @var $issueGalleyDao IssueGalleyDAO */
 		$issueGalley = $issueGalleyDao->newDataObject();
 		$issueGalley->setIssueId($issue->getId());
 		$locale = $node->getAttribute('locale');
@@ -79,9 +79,12 @@ class NativeXmlIssueGalleyFilter extends NativeImportFilter {
 
 		// Handle metadata in subelements.
 		for ($n = $node->firstChild; $n !== null; $n=$n->nextSibling) if (is_a($n, 'DOMElement')) switch($n->tagName) {
+			case 'id':
+				$this->parseIdentifier($n, $issueGalley);
+				break;
 			case 'label': $issueGalley->setLabel($n->textContent); break;
 			case 'issue_file':
-				$issueFileDao = DAORegistry::getDAO('IssueFileDAO');
+				$issueFileDao = DAORegistry::getDAO('IssueFileDAO'); /* @var $issueFileDao IssueFileDAO */
 				$issueFile = $issueFileDao->newDataObject();
 				$issueFile->setIssueId($issue->getId());
 
@@ -107,6 +110,27 @@ class NativeXmlIssueGalleyFilter extends NativeImportFilter {
 
 		$issueGalleyDao->insertObject($issueGalley);
 		return $issueGalley;
+	}
+
+	/**
+	 * Parse an identifier node and set up the galley object accordingly
+	 * @param $element DOMElement
+	 * @param $issue Issue
+	 */
+	function parseIdentifier($element, $issue) {
+		$deployment = $this->getDeployment();
+		$advice = $element->getAttribute('advice');
+		switch ($element->getAttribute('type')) {
+			case 'internal':
+				// "update" advice not supported yet.
+				assert(!$advice || $advice == 'ignore');
+				break;
+			case 'public':
+				if ($advice == 'update') {
+					$issue->setStoredPubId('publisher-id', $element->textContent);
+				}
+				break;
+		}
 	}
 }
 

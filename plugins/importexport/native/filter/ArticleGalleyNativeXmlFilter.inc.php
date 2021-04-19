@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/native/filter/ArticleGalleyNativeXmlFilter.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArticleGalleyNativeXmlFilter
  * @ingroup plugins_importexport_native
@@ -60,9 +60,9 @@ class ArticleGalleyNativeXmlFilter extends RepresentationNativeXmlFilter {
 	 * @return array
 	 */
 	function getFiles($representation) {
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
+		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
 		$galleyFiles = array();
-		if ($representation->getFileId()) $galleyFiles = array($submissionFileDao->getLatestRevision($representation->getFileId()));
+		if ($representation->getFileId()) $galleyFiles = array(Services::get('submissionFile')->get($representation->getFileId()));
 		return $galleyFiles;
 	}
 }

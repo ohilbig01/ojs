@@ -4,9 +4,9 @@
 <!--
   * 3.0.0_preupdate.xml
   *
-  * Copyright (c) 2014-2019 Simon Fraser University
-  * Copyright (c) 2003-2019 John Willinsky
-  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+  * Copyright (c) 2014-2021 Simon Fraser University
+  * Copyright (c) 2003-2021 John Willinsky
+  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
   *
   * Database updates XML file (run before schema is reconciled).
   *
@@ -30,7 +30,7 @@
 
 	<!-- Articles migration -->
 	<sql>
-		<query>CREATE TABLE articles_migration AS (SELECT journal_id, article_id, user_id, submission_file_id, revised_file_id, review_file_id, editor_file_id FROM articles)</query>
+		<query>CREATE TABLE articles_migration AS (SELECT journal_id, article_id, user_id, submission_file_id, revised_file_id, review_file_id, editor_file_id, language FROM articles)</query>
 	</sql>
 
 	<!-- Article files migration -->

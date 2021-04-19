@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/subscriptions/PaymentsGridCellProvider.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PaymentsGridCellProvider
  * @ingroup controllers_grid_subscriptions
@@ -44,9 +44,9 @@ class PaymentsGridCellProvider extends GridCellProvider {
 
 		switch ($column->getId()) {
 			case 'name':
-				$userDao = DAORegistry::getDAO('UserDAO');
+				$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 				$user = $userDao->getById($payment->getUserId());
-				return array('label' => $user->getFullName());
+				return array('label' => $user ? $user->getFullName() : __('common.user.nonexistent')); // If no $user, returns "[Nonexistent user]" to avoid null user
 			case 'type':
 				$paymentManager = Application::getPaymentManager($this->_request->getJournal());
 				return array('label' => $paymentManager->getPaymentName($payment));

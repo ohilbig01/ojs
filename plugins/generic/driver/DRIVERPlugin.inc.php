@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/driver/DRIVERPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DRIVERPlugin
  * @ingroup plugins_generic_driver
@@ -82,7 +82,7 @@ class DRIVERPlugin extends GenericPlugin {
 
 		$records = array();
 		if (isset($set) && $set == 'driver') {
-			$driverDao = DAORegistry::getDAO('DRIVERDAO');
+			$driverDao = DAORegistry::getDAO('DRIVERDAO'); /* @var $driverDao DRIVERDAO */
 			$driverDao->setOAI($journalOAI);
 			if ($hookName == 'JournalOAI::records') {
 				$funcName = '_returnRecordFromRow';
@@ -116,7 +116,7 @@ class DRIVERPlugin extends GenericPlugin {
 		$articleTombstone =& $params[0];
 
 		if ($this->isDRIVERArticle($articleTombstone->getOAISetObjectId(ASSOC_TYPE_JOURNAL), $articleTombstone->getDataObjectId())) {
-			$dataObjectTombstoneSettingsDao = DAORegistry::getDAO('DataObjectTombstoneSettingsDAO');
+			$dataObjectTombstoneSettingsDao = DAORegistry::getDAO('DataObjectTombstoneSettingsDAO'); /* @var $dataObjectTombstoneSettingsDao DataObjectTombstoneSettingsDAO */
 			$dataObjectTombstoneSettingsDao->updateSetting($articleTombstone->getId(), 'driver', true, 'bool');
 		}
 		return false;
@@ -130,13 +130,13 @@ class DRIVERPlugin extends GenericPlugin {
 	function isDRIVERRecord($row) {
 		// if the article is alive
 		if (!isset($row['tombstone_id'])) {
-			$journalDao = DAORegistry::getDAO('JournalDAO');
-			$publishedSubmissionDao = DAORegistry::getDAO('PublishedSubmissionDAO');
-			$issueDao = DAORegistry::getDAO('IssueDAO');
+			$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
+			$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 
 			$journal = $journalDao->getById($row['journal_id']);
-			$article = $publishedSubmissionDao->getBySubmissionId($row['submission_id']);
-			$issue = $issueDao->getById($article->getIssueId());
+			$submission = Services::get('submission')->get($row['submission_id']);
+			$publication = $submission->getCurrentPublication();
+			$issue = $issueDao->getById($publication->getData('issueId'));
 
 			// is open access
 			$status = '';
@@ -146,7 +146,7 @@ class DRIVERPlugin extends GenericPlugin {
 				if ($issue->getAccessStatus() == 0 || $issue->getAccessStatus() == ISSUE_ACCESS_OPEN) {
 					$status = DRIVER_ACCESS_OPEN;
 				} else if ($issue->getAccessStatus() == ISSUE_ACCESS_SUBSCRIPTION) {
-					if (is_a($article, 'PublishedSubmission') && $article->getAccessStatus() == ARTICLE_ACCESS_OPEN) {
+					if ($publication->getData('accessStatus') == ARTICLE_ACCESS_OPEN) {
 						$status = DRIVER_ACCESS_OPEN;
 					} else if ($issue->getAccessStatus() == ISSUE_ACCESS_SUBSCRIPTION && $issue->getOpenAccessDate() != NULL) {
 						$status = DRIVER_ACCESS_EMBARGOED;
@@ -164,13 +164,13 @@ class DRIVERPlugin extends GenericPlugin {
 			}
 
 			// is there a full text
-			$galleys = $article->getGalleys();
+			$galleys = $submission->getGalleys();
 			if (!empty($galleys)) {
 				return $status == DRIVER_ACCESS_OPEN;
 			}
 			return false;
 		} else {
-			$dataObjectTombstoneSettingsDao = DAORegistry::getDAO('DataObjectTombstoneSettingsDAO');
+			$dataObjectTombstoneSettingsDao = DAORegistry::getDAO('DataObjectTombstoneSettingsDAO'); /* @var $dataObjectTombstoneSettingsDao DataObjectTombstoneSettingsDAO */
 			return $dataObjectTombstoneSettingsDao->getSetting($row['tombstone_id'], 'driver');
 		}
 	}
@@ -182,13 +182,13 @@ class DRIVERPlugin extends GenericPlugin {
 	 * @return boolean
 	 */
 	function isDRIVERArticle($journalId, $articleId) {
-			$journalDao = DAORegistry::getDAO('JournalDAO');
-			$publishedSubmissionDao = DAORegistry::getDAO('PublishedSubmissionDAO');
-			$issueDao = DAORegistry::getDAO('IssueDAO');
+			$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
+			$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 
 			$journal = $journalDao->getById($journalId);
-			$article = $publishedSubmissionDao->getBySubmissionId($articleId);
-			$issue = $issueDao->getById($article->getIssueId());
+			$submission = Services::get('submission')->get($articleId);
+			$publication = $submission->getCurrentPublication();
+			$issue = $issueDao->getById($publication->getData('issueId'));
 
 			// is open access
 			$status = '';
@@ -198,7 +198,7 @@ class DRIVERPlugin extends GenericPlugin {
 				if ($issue->getAccessStatus() == 0 || $issue->getAccessStatus() == ISSUE_ACCESS_OPEN) {
 					$status = DRIVER_ACCESS_OPEN;
 				} else if ($issue->getAccessStatus() == ISSUE_ACCESS_SUBSCRIPTION) {
-					if (is_a($article, 'PublishedSubmission') && $article->getAccessStatus() == ARTICLE_ACCESS_OPEN) {
+					if ($publication->getData('accessStatus') == ARTICLE_ACCESS_OPEN) {
 						$status = DRIVER_ACCESS_OPEN;
 					} else if ($issue->getAccessStatus() == ISSUE_ACCESS_SUBSCRIPTION && $issue->getOpenAccessDate() != NULL) {
 						$status = DRIVER_ACCESS_EMBARGOED;
@@ -216,7 +216,7 @@ class DRIVERPlugin extends GenericPlugin {
 			}
 
 			// is there a full text
-			$galleys = $article->getGalleys();
+			$galleys = $submission->getGalleys();
 			if (!empty($galleys)) {
 				return $status == DRIVER_ACCESS_OPEN;
 			}

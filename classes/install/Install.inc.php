@@ -3,9 +3,9 @@
 /**
  * @file classes/install/Install.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Install
  * @ingroup install
@@ -20,7 +20,7 @@
 
 
 // Default installation data
-define('INSTALLER_DEFAULT_SITE_TITLE', 'common.openJournalSystems');
+define('INSTALLER_DEFAULT_SITE_TITLE', 'common.software');
 define('INSTALLER_DEFAULT_MIN_PASSWORD_LENGTH', 6);
 
 import('lib.pkp.classes.install.PKPInstall');
