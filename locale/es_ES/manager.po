@@ -1,9 +1,10 @@
+# Jordi LC <jordi.lacruz@uab.cat>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27T09:54:41-07:00\n"
-"PO-Revision-Date: 2020-12-01 11:47+0000\n"
+"PO-Revision-Date: 2021-08-04 12:04+0000\n"
 "Last-Translator: Jordi LC <jordi.lacruz@uab.cat>\n"
 "Language-Team: Spanish <http://translate.pkp.sfu.ca/projects/ojs/manager/"
 "es_ES/>\n"
@@ -692,9 +693,6 @@ msgstr "Identificación del contenido de la revista"
 
 msgid "manager.setup.publisher"
 msgstr "Editorial"
-
-msgid "manager.setup.publishingDescription"
-msgstr "El nombre de la organización que publica la revista aparecerá en la sección Acerca de la revista."
 
 msgid "manager.setup.referenceLinking"
 msgstr "Enlaces de referencia"
@@ -1605,12 +1603,6 @@ msgstr "El archivo cargado {$param} no se puede leer."
 msgid "plugins.importexport.common.senderTask.warning.noDOIprefix"
 msgstr "No se encuentra el prefijo DOI para la revista con la ruta {$path}."
 
-msgid "plugins.importexport.common.cliError"
-msgstr "ERROR:"
-
-msgid "plugins.importexport.common.error.unknownJournal"
-msgstr "La ruta de la revista especificada, \"{$journalPath}\", no existe."
-
 msgid "plugins.importexport.common.error.unknownObjects"
 msgstr "Los objetos especificados no se pueden encontrar."
 
@@ -1735,9 +1727,6 @@ msgstr ""
 msgid "manager.setup.reviewOptions.restrictReviewerFileAccess"
 msgstr "Restringir el acceso al archivo"
 
-msgid "manager.setup.publishing"
-msgstr "Detalles de publicación"
-
 msgid "manager.setup.numPageLinks.description"
 msgstr ""
 "Limitar el número de enlaces que mostrar en las páginas subsiguientes de una "
@@ -1814,5 +1803,29 @@ msgstr ""
 
 msgid "manager.sections.confirmDeactivateSection.error"
 msgstr ""
-"Debe estar activa como mínimo una sección. Visite los ajustes del flujo de "
+"Como mínimo debe estar activa una sección. Visite los ajustes del flujo de "
 "trabajo para deshabilitar todos los envíos a la revista."
+
+msgid "plugins.importexport.issueGalleys.exportFailed"
+msgstr "El proceso ha fallado al analizar las galeradas del número"
+
+msgid "plugins.importexport.issue.cli.display"
+msgstr "\"{$issueId}\" - \"{$issueIdentification}\""
+
+msgid "plugins.importexport.native.export.issues.results"
+msgstr "Exportar los resultados de los números"
+
+msgid "manager.setup.notifications.copySubmissionAckPrimaryContact.disabled.description"
+msgstr ""
+"No se ha definido el contacto principal de esta revista. Puede introducirlo "
+"en los <a href=\"{$url}\">ajustes de la revista</a>."
+
+msgid "manager.setup.notifications.copySubmissionAckPrimaryContact.description"
+msgstr ""
+"Enviar una copia del correo electrónico de agradecimiento por el envío al "
+"contacto principal de la revista."
+
+msgid "manager.setup.selectCountry"
+msgstr ""
+"Seleccione el país donde se ubica la revista, o el país de la dirección "
+"postal de la revista o del editor/a."

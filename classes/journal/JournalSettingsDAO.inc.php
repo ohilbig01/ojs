@@ -8,28 +8,38 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class JournalSettingsDAO
+ *
  * @deprecated To be removed after last use case in Upgrade.inc.php is removed!
  * @ingroup journal
  *
  * @brief Operations for retrieving and modifying journal settings.
  */
 
-use \PKP\db\SettingsDAO;
+namespace APP\journal;
 
-class JournalSettingsDAO extends SettingsDAO {
-	/**
-	 * Get the settings table name.
-	 * @return string
-	 */
-	protected function _getTableName() {
-		return 'journal_settings';
-	}
+use PKP\db\SettingsDAO;
 
-	/**
-	 * Get the primary key column name.
-	 */
-	protected function _getPrimaryKeyColumn() {
-		return 'journal_id';
-	}
+class JournalSettingsDAO extends SettingsDAO
+{
+    /**
+     * Get the settings table name.
+     *
+     * @return string
+     */
+    protected function _getTableName()
+    {
+        return 'journal_settings';
+    }
+
+    /**
+     * Get the primary key column name.
+     */
+    protected function _getPrimaryKeyColumn()
+    {
+        return 'journal_id';
+    }
 }
 
+if (!PKP_STRICT_MODE) {
+    class_alias('\APP\journal\JournalSettingsDAO', '\JournalSettingsDAO');
+}

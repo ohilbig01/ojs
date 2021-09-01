@@ -13,19 +13,23 @@
  */
 
 namespace APP\components\listPanels;
-use \PKP\components\listPanels\PKPEmailTemplatesListPanel;
 
-class EmailTemplatesListPanel extends PKPEmailTemplatesListPanel {
-	/**
-	 * @copydoc ListPanel::getConfig()
-	 */
-	public function getConfig() {
-		$config = parent::getConfig();
-		$config['filters'][count($config['filters']) - 2]['filters'][] = [
-			'param' => 'toRoleIds',
-			'title' => __('default.groups.name.subscriptionManager'),
-			'value' => ROLE_ID_SUBSCRIPTION_MANAGER,
-		];
-		return $config;
-	}
+use PKP\components\listPanels\PKPEmailTemplatesListPanel;
+use PKP\security\Role;
+
+class EmailTemplatesListPanel extends PKPEmailTemplatesListPanel
+{
+    /**
+     * @copydoc ListPanel::getConfig()
+     */
+    public function getConfig()
+    {
+        $config = parent::getConfig();
+        $config['filters'][count($config['filters']) - 2]['filters'][] = [
+            'param' => 'toRoleIds',
+            'title' => __('default.groups.name.subscriptionManager'),
+            'value' => Role::ROLE_ID_SUBSCRIPTION_MANAGER,
+        ];
+        return $config;
+    }
 }

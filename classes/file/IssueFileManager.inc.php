@@ -16,176 +16,214 @@
  * [issue id]/public
  */
 
-import('lib.pkp.classes.file.FileManager');
-import('classes.issue.IssueFile');
+namespace APP\file;
 
-class IssueFileManager extends FileManager {
+use APP\facades\Repo;
+use APP\issue\IssueFile;
+use PKP\config\Config;
+use PKP\core\Core;
+use PKP\db\DAORegistry;
+use PKP\file\FileManager;
 
-	/** @var string the path to location of the files */
-	var $_filesDir = null;
+use PKP\plugins\HookRegistry;
 
-	/** @var int the associated issue ID */
-	var $_issueId = null;
+class IssueFileManager extends FileManager
+{
+    /** @var string the path to location of the files */
+    public $_filesDir = null;
 
-	/**
-	 * Constructor.
-	 * Create a manager for handling issue files.
-	 * @param $issueId int
-	 */
-	function __construct($issueId) {
-		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
-		$issue = $issueDao->getById($issueId);
-		assert(isset($issue));
+    /** @var int the associated issue ID */
+    public $_issueId = null;
 
-		$this->setIssueId($issueId);
-		$this->setFilesDir(Config::getVar('files', 'files_dir') . '/journals/' . $issue->getJournalId() . '/issues/' . $issueId . '/');
+    /**
+     * Constructor.
+     * Create a manager for handling issue files.
+     *
+     * @param $issueId int
+     */
+    public function __construct($issueId)
+    {
+        $issue = Repo::issue()->get($issueId);
+        assert(isset($issue));
 
-		parent::__construct();
-	}
+        $this->setIssueId($issueId);
+        $this->setFilesDir(Config::getVar('files', 'files_dir') . '/journals/' . $issue->getJournalId() . '/issues/' . $issueId . '/');
 
-	/**
-	 * Get the issue files directory.
-	 * @return string
-	 */
-	function getFilesDir() {
-		return $this->_filesDir;
-	}
+        parent::__construct();
+    }
 
-	/**
-	 * Set the issue files directory.
-	 * @param $filesDir string
-	 */
-	function setFilesDir($filesDir) {
-		$this->_filesDir = $filesDir;
-	}
+    /**
+     * Get the issue files directory.
+     *
+     * @return string
+     */
+    public function getFilesDir()
+    {
+        return $this->_filesDir;
+    }
 
-	/**
-	 * Get the issue ID.
-	 * @return int
-	 */
-	function getIssueId() {
-	 	return $this->_issueId;
-	}
+    /**
+     * Set the issue files directory.
+     *
+     * @param $filesDir string
+     */
+    public function setFilesDir($filesDir)
+    {
+        $this->_filesDir = $filesDir;
+    }
 
-	/**
-	 * Set the issue ID.
-	 * @param $issueId int
-	 */
-	function setIssueId($issueId) {
-		$this->_issueId = (int) $issueId;
-	}
+    /**
+     * Get the issue ID.
+     *
+     * @return int
+     */
+    public function getIssueId()
+    {
+        return $this->_issueId;
+    }
 
-	/**
-	 * Delete an issue file by ID.
-	 * @param $fileId int
-	 * @return boolean if successful
-	 */
-	function deleteById($fileId) {
-		$issueFileDao = DAORegistry::getDAO('IssueFileDAO'); /* @var $issueFileDao IssueFileDAO */
-		$issueFile = $issueFileDao->getById($fileId);
+    /**
+     * Set the issue ID.
+     *
+     * @param $issueId int
+     */
+    public function setIssueId($issueId)
+    {
+        $this->_issueId = (int) $issueId;
+    }
 
-		if (parent::deleteByPath($this->getFilesDir() . $this->contentTypeToPath($issueFile->getContentType()) . '/' . $issueFile->getServerFileName())) {
-			$issueFileDao->deleteById($fileId);
-			return true;
-		}
+    /**
+     * Delete an issue file by ID.
+     *
+     * @param $fileId int
+     *
+     * @return boolean if successful
+     */
+    public function deleteById($fileId)
+    {
+        $issueFileDao = DAORegistry::getDAO('IssueFileDAO'); /* @var $issueFileDao IssueFileDAO */
+        $issueFile = $issueFileDao->getById($fileId);
 
-		return false;
-	}
+        if (parent::deleteByPath($this->getFilesDir() . $this->contentTypeToPath($issueFile->getContentType()) . '/' . $issueFile->getServerFileName())) {
+            $issueFileDao->deleteById($fileId);
+            return true;
+        }
 
-	/**
-	 * Delete the entire tree of files belonging to an issue.
-	 */
-	function deleteIssueTree() {
-		parent::rmtree($this->getFilesDir());
-	}
+        return false;
+    }
 
-	/**
-	 * Download a file.
-	 * @param $fileId int the file id of the file to download
-	 * @param $inline boolean print file as inline instead of attachment, optional
-	 * @return boolean
-	 */
-	function downloadById($fileId, $inline = false) {
-		$issueFileDao = DAORegistry::getDAO('IssueFileDAO'); /* @var $issueFileDao IssueFileDAO */
-		$issueFile = $issueFileDao->getById($fileId);
+    /**
+     * Delete the entire tree of files belonging to an issue.
+     */
+    public function deleteIssueTree()
+    {
+        parent::rmtree($this->getFilesDir());
+    }
 
-		if ($issueFile) {
-			$fileType = $issueFile->getFileType();
-			$filePath = $this->getFilesDir() . $this->contentTypeToPath($issueFile->getContentType()) . '/' . $issueFile->getServerFileName();
+    /**
+     * Download a file.
+     *
+     * @param $fileId int the file id of the file to download
+     * @param $inline boolean print file as inline instead of attachment, optional
+     *
+     * @return boolean
+     */
+    public function downloadById($fileId, $inline = false)
+    {
+        $issueFileDao = DAORegistry::getDAO('IssueFileDAO'); /* @var $issueFileDao IssueFileDAO */
+        $issueFile = $issueFileDao->getById($fileId);
 
-			return parent::downloadByPath($filePath, $fileType, $inline);
+        if ($issueFile) {
+            $fileType = $issueFile->getFileType();
+            $filePath = $this->getFilesDir() . $this->contentTypeToPath($issueFile->getContentType()) . '/' . $issueFile->getServerFileName();
 
-		} else {
-			return false;
-		}
-	}
+            return parent::downloadByPath($filePath, $fileType, $inline);
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * Return directory path based on issue content type (used for naming files).
-	 * @param $contentType int
-	 * @return string
-	 */
-	function contentTypeToPath($contentType) {
-		switch ($contentType) {
-			case ISSUE_FILE_PUBLIC: return 'public';
-		}
-	}
+    /**
+     * Return directory path based on issue content type (used for naming files).
+     *
+     * @param $contentType int
+     *
+     * @return string
+     */
+    public function contentTypeToPath($contentType)
+    {
+        switch ($contentType) {
+            case IssueFile::ISSUE_FILE_PUBLIC: return 'public';
+        }
+    }
 
-	/**
-	 * Return abbreviation based on issue content type (used for naming files).
-	 * @param $contentType int
-	 * @return string
-	 */
-	function contentTypeToAbbrev($contentType) {
-		switch ($contentType) {
-			case ISSUE_FILE_PUBLIC: return 'PB';
-		}
-	}
+    /**
+     * Return abbreviation based on issue content type (used for naming files).
+     *
+     * @param $contentType int
+     *
+     * @return string
+     */
+    public function contentTypeToAbbrev($contentType)
+    {
+        switch ($contentType) {
+            case IssueFile::ISSUE_FILE_PUBLIC: return 'PB';
+        }
+    }
 
-	/**
-	 * Create an issue galley based on a temporary file.
-	 * @param $temporaryFile TemporaryFile
-	 * @param $contentType int Issue file content type
-	 * @return IssueFile|false the resulting issue file
-	 */
-	function fromTemporaryFile($temporaryFile, $contentType = ISSUE_FILE_PUBLIC) {
-		$result = null;
-		if (HookRegistry::call('IssueFileManager::fromTemporaryFile', array(&$temporaryFile, &$contentType, &$result))) return $result;
+    /**
+     * Create an issue galley based on a temporary file.
+     *
+     * @param $temporaryFile TemporaryFile
+     * @param $contentType int Issue file content type
+     *
+     * @return IssueFile|false the resulting issue file
+     */
+    public function fromTemporaryFile($temporaryFile, $contentType = IssueFile::ISSUE_FILE_PUBLIC)
+    {
+        $result = null;
+        if (HookRegistry::call('IssueFileManager::fromTemporaryFile', [&$temporaryFile, &$contentType, &$result])) {
+            return $result;
+        }
 
-		$issueId = $this->getIssueId();
-		$issueFileDao = DAORegistry::getDAO('IssueFileDAO'); /* @var $issueFileDao IssueFileDAO */
+        $issueId = $this->getIssueId();
+        $issueFileDao = DAORegistry::getDAO('IssueFileDAO'); /* @var $issueFileDao IssueFileDAO */
 
-		$contentTypePath = $this->contentTypeToPath($contentType);
-		$dir = $this->getFilesDir() . $contentTypePath . '/';
+        $contentTypePath = $this->contentTypeToPath($contentType);
+        $dir = $this->getFilesDir() . $contentTypePath . '/';
 
-		$issueFile = $issueFileDao->newDataObject();
-		$issueFile->setIssueId($issueId);
-		$issueFile->setDateUploaded($temporaryFile->getDateUploaded());
-		$issueFile->setDateModified(Core::getCurrentDate());
-		$issueFile->setServerFileName(''); // Blank until we insert to generate a file ID
-		$issueFile->setFileType($temporaryFile->getFileType());
-		$issueFile->setFileSize($temporaryFile->getFileSize());
-		$issueFile->setOriginalFileName($temporaryFile->getOriginalFileName());
-		$issueFile->setContentType($contentType);
+        $issueFile = $issueFileDao->newDataObject();
+        $issueFile->setIssueId($issueId);
+        $issueFile->setDateUploaded($temporaryFile->getDateUploaded());
+        $issueFile->setDateModified(Core::getCurrentDate());
+        $issueFile->setServerFileName(''); // Blank until we insert to generate a file ID
+        $issueFile->setFileType($temporaryFile->getFileType());
+        $issueFile->setFileSize($temporaryFile->getFileSize());
+        $issueFile->setOriginalFileName($temporaryFile->getOriginalFileName());
+        $issueFile->setContentType($contentType);
 
-		if (!$issueFileDao->insertObject($issueFile)) return false;
+        if (!$issueFileDao->insertObject($issueFile)) {
+            return false;
+        }
 
-		$extension = $this->parseFileExtension($issueFile->getOriginalFileName());
-		$newFileName = $issueFile->getIssueId().'-'.$issueFile->getId().'-'.$this->contentTypeToAbbrev($contentType).'.'.$extension;
-		$issueFile->setServerFileName($newFileName);
+        $extension = $this->parseFileExtension($issueFile->getOriginalFileName());
+        $newFileName = $issueFile->getIssueId() . '-' . $issueFile->getId() . '-' . $this->contentTypeToAbbrev($contentType) . '.' . $extension;
+        $issueFile->setServerFileName($newFileName);
 
-		// Copy the actual file
-		if (!$this->copyFile($temporaryFile->getFilePath(), $dir . $newFileName)) {
-			// Upload failed; remove the new DB record.
-			$issueFileDao->deleteById($issueFile->getId());
-			return false;
-		}
+        // Copy the actual file
+        if (!$this->copyFile($temporaryFile->getFilePath(), $dir . $newFileName)) {
+            // Upload failed; remove the new DB record.
+            $issueFileDao->deleteById($issueFile->getId());
+            return false;
+        }
 
-		// Upload succeeded. Update issue file record with new filename.
-		$issueFileDao->updateObject($issueFile);
+        // Upload succeeded. Update issue file record with new filename.
+        $issueFileDao->updateObject($issueFile);
 
-		return $issueFile;
-	}
+        return $issueFile;
+    }
 }
 
-
+if (!PKP_STRICT_MODE) {
+    class_alias('\APP\file\IssueFileManager', '\IssueFileManager');
+}

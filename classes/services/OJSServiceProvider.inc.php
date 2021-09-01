@@ -13,112 +13,88 @@
  * @brief Utility class to package all OJS services
  */
 
-namespace APP\Services;
+namespace APP\services;
 
-use \Pimple\Container;
-use \APP\Services\PublicationService;
-use \APP\Services\StatsEditorialService;
-use \APP\Services\StatsService;
-use \APP\Services\SubmissionFileService;
-use \PKP\Services\PKPAnnouncementService;
-use \PKP\Services\PKPAuthorService;
-use \PKP\Services\PKPEmailTemplateService;
-use \PKP\Services\PKPFileService;
-use \PKP\Services\PKPSchemaService;
-use \PKP\Services\PKPSiteService;
-use \PKP\Services\PKPUserService;
+use Pimple\Container;
 
-class OJSServiceProvider implements \Pimple\ServiceProviderInterface {
+use PKP\services\PKPAuthorService;
+use PKP\services\PKPEmailTemplateService;
+use PKP\services\PKPFileService;
+use PKP\services\PKPSchemaService;
+use PKP\services\PKPSiteService;
 
-	/**
-	 * Registers services
-	 * @param \Pimple\Container $pimple
-	 */
-	public function register(Container $pimple) {
+class OJSServiceProvider implements \Pimple\ServiceProviderInterface
+{
+    /**
+     * Registers services
+     *
+     */
+    public function register(Container $pimple)
+    {
 
-		// Announcement service
-		$pimple['announcement'] = function() {
-			return new PKPAnnouncementService();
-		};
+        // Author service
+        $pimple['author'] = function () {
+            return new PKPAuthorService();
+        };
 
-		// Author service
-		$pimple['author'] = function() {
-			return new PKPAuthorService();
-		};
+        // File service
+        $pimple['file'] = function () {
+            return new PKPFileService();
+        };
 
-		// File service
-		$pimple['file'] = function() {
-			return new PKPFileService();
-		};
+        // Issue service
+        $pimple['issue'] = function () {
+            return new IssueService();
+        };
 
-		// Submission service
-		$pimple['submission'] = function() {
-			return new SubmissionService();
-		};
+        // Section service
+        $pimple['section'] = function () {
+            return new SectionService();
+        };
 
-		// Publication service
-		$pimple['publication'] = function() {
-			return new PublicationService();
-		};
+        // NavigationMenus service
+        $pimple['navigationMenu'] = function () {
+            return new NavigationMenuService();
+        };
 
-		// Issue service
-		$pimple['issue'] = function() {
-			return new IssueService();
-		};
+        // Galley service
+        $pimple['galley'] = function () {
+            return new GalleyService();
+        };
 
-		// Section service
-		$pimple['section'] = function() {
-			return new SectionService();
-		};
+        // Context service
+        $pimple['context'] = function () {
+            return new ContextService();
+        };
 
-		// NavigationMenus service
-		$pimple['navigationMenu'] = function() {
-			return new NavigationMenuService();
-		};
+        // Site service
+        $pimple['site'] = function () {
+            return new PKPSiteService();
+        };
 
-		// Galley service
-		$pimple['galley'] = function() {
-			return new GalleyService();
-		};
+        // Submission file service
+        $pimple['submissionFile'] = function () {
+            return new SubmissionFileService();
+        };
 
-		// User service
-		$pimple['user'] = function() {
-			return new PKPUserService();
-		};
+        // Email Templates service
+        $pimple['emailTemplate'] = function () {
+            return new PKPEmailTemplateService();
+        };
 
-		// Context service
-		$pimple['context'] = function() {
-			return new ContextService();
-		};
+        // Schema service
+        $pimple['schema'] = function () {
+            return new PKPSchemaService();
+        };
 
-		// Site service
-		$pimple['site'] = function() {
-			return new PKPSiteService();
-		};
+        // Publication statistics service
+        $pimple['stats'] = function () {
+            return new StatsService();
+        };
 
-		// Submission file service
-		$pimple['submissionFile'] = function() {
-			return new SubmissionFileService();
-		};
-
-		// Email Templates service
-		$pimple['emailTemplate'] = function() {
-			return new PKPEmailTemplateService();
-		};
-
-		// Schema service
-		$pimple['schema'] = function() {
-			return new PKPSchemaService();
-		};
-
-		// Publication statistics service
-		$pimple['stats'] = function() {
-			return new StatsService();
-		};
-
-		// Editorial statistics service
-		$pimple['editorialStats'] = function() {
-			return new StatsEditorialService();
-		};
-	}
+        // Editorial statistics service
+        $pimple['editorialStats'] = function () {
+            return new StatsEditorialService();
+        };
+    }
 }

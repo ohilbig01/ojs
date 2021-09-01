@@ -15,11 +15,11 @@
  * @brief Handle requests for submission API functions.
  *
  */
-$requestPath = Application::get()->getRequest()->getRequestPath();
-if (strpos($requestPath, '/files')) {
-	import('lib.pkp.api.v1.submissions.PKPSubmissionFileHandler');
-	return new PKPSubmissionFileHandler();
+$urlParts = explode('/', trim($_SERVER['PATH_INFO'], '/'));
+if (count($urlParts) >= 6 && $urlParts[5] == 'files') {
+    import('lib.pkp.api.v1.submissions.PKPSubmissionFileHandler');
+    return new PKPSubmissionFileHandler();
 } else {
-	import('lib.pkp.api.v1.submissions.PKPSubmissionHandler');
-	return new PKPSubmissionHandler();
+    import('api.v1.submissions.SubmissionHandler');
+    return new SubmissionHandler();
 }

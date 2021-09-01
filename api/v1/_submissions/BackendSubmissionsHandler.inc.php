@@ -14,157 +14,168 @@
  *
  */
 
+use APP\payment\ojs\OJSPaymentManager;
+use APP\submission\Collector;
+use PKP\security\Role;
+
 import('lib.pkp.api.v1._submissions.PKPBackendSubmissionsHandler');
 
-class BackendSubmissionsHandler extends PKPBackendSubmissionsHandler {
+class BackendSubmissionsHandler extends PKPBackendSubmissionsHandler
+{
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->_endpoints = array_merge_recursive($this->_endpoints, [
+            'PUT' => [
+                [
+                    'pattern' => '/{contextPath}/api/{version}/_submissions/{submissionId:\d+}/payment',
+                    'handler' => [$this, 'payment'],
+                    'roles' => [
+                        Role::ROLE_ID_SUB_EDITOR,
+                        Role::ROLE_ID_MANAGER,
+                        Role::ROLE_ID_ASSISTANT,
+                    ],
+                ],
+            ],
+        ]);
 
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		\HookRegistry::register('API::_submissions::params', array($this, 'addAppSubmissionsParams'));
+        parent::__construct();
+    }
 
-		$this->_endpoints = array_merge_recursive($this->_endpoints, [
-			'PUT' => [
-				[
-					'pattern' => '/{contextPath}/api/{version}/_submissions/{submissionId:\d+}/payment',
-					'handler' => [$this, 'payment'],
-					'roles' => [
-						ROLE_ID_SUB_EDITOR,
-						ROLE_ID_MANAGER,
-						ROLE_ID_ASSISTANT,
-					],
-				],
-			],
-		]);
+    /**
+     * @copydoc PKPHandler::authorize()
+     */
+    public function authorize($request, &$args, $roleAssignments)
+    {
+        $routeName = $this->getSlimRequest()->getAttribute('route')->getName();
 
-		parent::__construct();
-	}
+        if ($routeName === 'payment') {
+            import('lib.pkp.classes.security.authorization.SubmissionAccessPolicy');
+            $this->addPolicy(new SubmissionAccessPolicy($request, $args, $roleAssignments));
+        }
 
-	/**
-	 * @copydoc PKPHandler::authorize()
-	 */
-	public function authorize($request, &$args, $roleAssignments) {
-		$routeName = $this->getSlimRequest()->getAttribute('route')->getName();
+        return parent::authorize($request, $args, $roleAssignments);
+    }
 
-		if ($routeName === 'payment') {
-			import('lib.pkp.classes.security.authorization.SubmissionAccessPolicy');
-			$this->addPolicy(new SubmissionAccessPolicy($request, $args, $roleAssignments));
-		}
+    /**
+     * Change the status of submission payments.
+     *
+     * @param $slimRequest Request Slim request object
+     * @param $response Response object
+     * @param array $args arguments
+     *
+     * @return Response
+     */
+    public function payment($slimRequest, $response, $args)
+    {
+        $request = $this->getRequest();
+        $context = $request->getContext();
+        $submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
 
-		return parent::authorize($request, $args, $roleAssignments);
-	}
+        if (!$submission || !$context || $context->getId() != $submission->getContextId()) {
+            return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
+        }
 
-	/**
-	 * Add ojs-specific parameters to the getMany request
-	 *
-	 * @param $hookName string
-	 * @param $args array [
-	 * 		@option $params array
-	 * 		@option $slimRequest Request Slim request object
-	 * 		@option $response Response object
-	 * ]
-	 */
-	public function addAppSubmissionsParams($hookName, $args) {
-		$params =& $args[0];
-		$slimRequest = $args[1];
-		$response = $args[2];
+        $paymentManager = \Application::getPaymentManager($context);
+        $publicationFeeEnabled = $paymentManager->publicationEnabled();
+        if (!$publicationFeeEnabled) {
+            return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
+        }
 
-		$originalParams = $slimRequest->getQueryParams();
+        $params = $slimRequest->getParsedBody();
 
-		if (!empty($originalParams['sectionIds'])) {
-			if (is_array($originalParams['sectionIds'])) {
-				$params['sectionIds'] = array_map('intval', $originalParams['sectionIds']);
-			} else {
-				$params['sectionIds'] = array((int) $originalParams['sectionIds']);
-			}
-		}
-	}
+        if (empty($params['publicationFeeStatus'])) {
+            return $response->withJson([
+                'publicationFeeStatus' => [__('validator.required')],
+            ], 400);
+        }
 
-	/**
-	 * Change the status of submission payments.
-	 *
-	 * @param $slimRequest Request Slim request object
-	 * @param $response Response object
-	 * @param array $args arguments
-	 * @return Response
-	 */
-	public function payment($slimRequest, $response, $args) {
-		$request = $this->getRequest();
-		$context = $request->getContext();
-		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
+        $completedPaymentDao = \DAORegistry::getDAO('OJSCompletedPaymentDAO'); /* @var $completedPaymentDao OJSCompletedPaymentDAO */
+        $publicationFeePayment = $completedPaymentDao->getByAssoc(null, OJSPaymentManager::PAYMENT_TYPE_PUBLICATION, $submission->getId());
 
-		if (!$submission || !$context || $context->getId() != $submission->getContextId()) {
-			return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
-		}
+        switch ($params['publicationFeeStatus']) {
+            case 'waived':
+                // Check if a waiver already exists; if so, don't do anything.
+                if ($publicationFeePayment && !$publicationFeePayment->getAmount()) {
+                    break;
+                }
 
-		$paymentManager = \Application::getPaymentManager($context);
-		$publicationFeeEnabled = $paymentManager->publicationEnabled();
-		if (!$publicationFeeEnabled) {
-			return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
-		}
+                // If a fulfillment (nonzero amount) already exists, remove it.
+                if ($publicationFeePayment) {
+                    $completedPaymentDao->deleteById($publicationFeePayment->getId());
+                }
 
-		$params = $slimRequest->getParsedBody();
+                // Record a waived payment.
+                $queuedPayment = $paymentManager->createQueuedPayment(
+                    $request,
+                    OJSPaymentManager::PAYMENT_TYPE_PUBLICATION,
+                    $request->getUser()->getId(),
+                    $submission->getId(),
+                    0,
+                    '' // Zero amount, no currency
+                );
+                $paymentManager->queuePayment($queuedPayment);
+                $paymentManager->fulfillQueuedPayment($request, $queuedPayment, 'ManualPayment');
+                break;
+            case 'paid':
+                // Check if a fulfilled payment already exists; if so, don't do anything.
+                if ($publicationFeePayment && $publicationFeePayment->getAmount()) {
+                    break;
+                }
 
-		if (empty($params['publicationFeeStatus'])) {
-			return $response->withJson([
-				'publicationFeeStatus' => [__('validator.required')],
-			], 400);
-		}
+                // If a waiver (0 amount) already exists, remove it.
+                if ($publicationFeePayment) {
+                    $completedPaymentDao->deleteById($publicationFeePayment->getId());
+                }
 
-		$completedPaymentDao = \DAORegistry::getDAO('OJSCompletedPaymentDAO'); /* @var $completedPaymentDao OJSCompletedPaymentDAO */
-		$publicationFeePayment = $completedPaymentDao->getByAssoc(null, PAYMENT_TYPE_PUBLICATION, $submission->getId());
+                // Record a fulfilled payment.
+                $stageAssignmentDao = \DAORegistry::getDAO('StageAssignmentDAO'); /* @var $stageAssignmentDao StageAssignmentDAO */
+                $submitterAssignments = $stageAssignmentDao->getBySubmissionAndRoleId($submission->getId(), Role::ROLE_ID_AUTHOR);
+                $submitterAssignment = $submitterAssignments->next();
+                $queuedPayment = $paymentManager->createQueuedPayment(
+                    $request,
+                    OJSPaymentManager::PAYMENT_TYPE_PUBLICATION,
+                    $submitterAssignment->getUserId(),
+                    $submission->getId(),
+                    $context->getSetting('publicationFee'),
+                    $context->getSetting('currency')
+                );
+                $paymentManager->queuePayment($queuedPayment);
+                $paymentManager->fulfillQueuedPayment($request, $queuedPayment, 'Waiver');
+                break;
+            case 'unpaid':
+                if ($publicationFeePayment) {
+                    $completedPaymentDao->deleteById($publicationFeePayment->getId());
+                }
+                break;
+            default:
+                return $response->withJson([
+                    'publicationFeeStatus' => [__('validator.required')],
+                ], 400);
+        }
 
-		switch ($params['publicationFeeStatus']) {
-			case 'waived':
-				// Check if a waiver already exists; if so, don't do anything.
-				if ($publicationFeePayment && !$publicationFeePayment->getAmount()) break;
+        return $response->withJson(true);
+    }
 
-				// If a fulfillment (nonzero amount) already exists, remove it.
-				if ($publicationFeePayment) $completedPaymentDao->deleteById($publicationFeePayment->getId());
+    /** @copydoc PKPSubmissionHandler::getSubmissionCollector() */
+    protected function getSubmissionCollector(array $queryParams): Collector
+    {
+        $collector = parent::getSubmissionCollector($queryParams);
 
-				// Record a waived payment.
-				$queuedPayment = $paymentManager->createQueuedPayment(
-					$request,
-					PAYMENT_TYPE_PUBLICATION,
-					$request->getUser()->getId(),
-					$submission->getId(),
-					0, '' // Zero amount, no currency
-				);
-				$paymentManager->queuePayment($queuedPayment);
-				$paymentManager->fulfillQueuedPayment($request, $queuedPayment, 'ManualPayment');
-				break;
-			case 'paid':
-				// Check if a fulfilled payment already exists; if so, don't do anything.
-				if ($publicationFeePayment && $publicationFeePayment->getAmount()) break;
+        if (isset($queryParams['issueIds'])) {
+            $collector->filterByIssueIds(
+                array_map('intval', $this->paramToArray($queryParams['issueIds']))
+            );
+        }
 
-				// If a waiver (0 amount) already exists, remove it.
-				if ($publicationFeePayment) $completedPaymentDao->deleteById($publicationFeePayment->getId());
+        if (isset($queryParams['sectionIds'])) {
+            $collector->filterBySectionIds(
+                array_map('intval', $this->paramToArray($queryParams['sectionIds']))
+            );
+        }
 
-				// Record a fulfilled payment.
-				$stageAssignmentDao = \DAORegistry::getDAO('StageAssignmentDAO'); /* @var $stageAssignmentDao StageAssignmentDAO */
-				$submitterAssignments = $stageAssignmentDao->getBySubmissionAndRoleId($submission->getId(), ROLE_ID_AUTHOR);
-				$submitterAssignment = $submitterAssignments->next();
-				$queuedPayment = $paymentManager->createQueuedPayment(
-					$request,
-					PAYMENT_TYPE_PUBLICATION,
-					$submitterAssignment->getUserId(),
-					$submission->getId(),
-					$context->getSetting('publicationFee'),
-					$context->getSetting('currency')
-				);
-				$paymentManager->queuePayment($queuedPayment);
-				$paymentManager->fulfillQueuedPayment($request, $queuedPayment, 'Waiver');
-				break;
-			case 'unpaid':
-				if ($publicationFeePayment) $completedPaymentDao->deleteById($publicationFeePayment->getId());
-				break;
-			default:
-				return $response->withJson([
-					'publicationFeeStatus' => [__('validator.required')],
-				], 400);
-		}
-
-		return $response->withJson(true);
-	}
+        return $collector;
+    }
 }

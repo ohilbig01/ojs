@@ -14,49 +14,53 @@
  *  review (skipping internal)
  */
 
-import('lib.pkp.classes.controllers.modals.editorDecision.form.EditorDecisionForm');
 
-class InitiateExternalReviewForm extends EditorDecisionForm {
+use APP\workflow\EditorDecisionActionsManager;
+use PKP\controllers\modals\editorDecision\form\EditorDecisionForm;
 
-	/**
-	 * Constructor.
-	 * @param $submission Submission
-	 * @param $decision int SUBMISSION_EDITOR_DECISION_...
-	 * @param $stageId int WORKFLOW_STAGE_ID_...
-	 */
-	function __construct($submission, $decision, $stageId) {
-		AppLocale::requireComponents(LOCALE_COMPONENT_APP_SUBMISSION);
-		parent::__construct($submission, $decision, $stageId, 'controllers/modals/editorDecision/form/initiateExternalReviewForm.tpl');
-	}
+use PKP\submission\action\EditorAction;
+use PKP\submission\reviewRound\ReviewRound;
 
-	//
-	// Implement protected template methods from Form
-	//
-	/**
-	 * Execute the form.
-	 */
-	function execute(...$formParams) {
-		parent::execute(...$formParams);
+class InitiateExternalReviewForm extends EditorDecisionForm
+{
+    /**
+     * Constructor.
+     *
+     * @param $submission Submission
+     * @param $decision int SUBMISSION_EDITOR_DECISION_...
+     * @param $stageId int WORKFLOW_STAGE_ID_...
+     */
+    public function __construct($submission, $decision, $stageId)
+    {
+        AppLocale::requireComponents(LOCALE_COMPONENT_APP_SUBMISSION);
+        parent::__construct($submission, $decision, $stageId, 'controllers/modals/editorDecision/form/initiateExternalReviewForm.tpl');
+    }
 
-		$request = Application::get()->getRequest();
+    //
+    // Implement protected template methods from Form
+    //
+    /**
+     * Execute the form.
+     */
+    public function execute(...$formParams)
+    {
+        parent::execute(...$formParams);
 
-		// Retrieve the submission.
-		$submission = $this->getSubmission();
+        $request = Application::get()->getRequest();
 
-		// Record the decision.
-		import('classes.workflow.EditorDecisionActionsManager');
-		$actionLabels = (new EditorDecisionActionsManager())->getActionLabels($request->getContext(), $submission, $this->getStageId(), array($this->_decision));
+        // Retrieve the submission.
+        $submission = $this->getSubmission();
 
-		import('lib.pkp.classes.submission.action.EditorAction');
-		$editorAction = new EditorAction();
-		$editorAction->recordDecision($request, $submission, $this->_decision, $actionLabels);
+        // Record the decision.
+        $actionLabels = (new EditorDecisionActionsManager())->getActionLabels($request->getContext(), $submission, $this->getStageId(), [$this->_decision]);
 
-		// Move to the internal review stage.
-		$editorAction->incrementWorkflowStage($submission, WORKFLOW_STAGE_ID_EXTERNAL_REVIEW, $request);
+        $editorAction = new EditorAction();
+        $editorAction->recordDecision($request, $submission, $this->_decision, $actionLabels);
 
-		// Create an initial internal review round.
-		$this->_initiateReviewRound($submission, WORKFLOW_STAGE_ID_EXTERNAL_REVIEW, $request, REVIEW_ROUND_STATUS_PENDING_REVIEWERS);
-	}
+        // Move to the internal review stage.
+        $editorAction->incrementWorkflowStage($submission, WORKFLOW_STAGE_ID_EXTERNAL_REVIEW);
+
+        // Create an initial internal review round.
+        $this->_initiateReviewRound($submission, WORKFLOW_STAGE_ID_EXTERNAL_REVIEW, $request, ReviewRound::REVIEW_ROUND_STATUS_PENDING_REVIEWERS);
+    }
 }
-
-

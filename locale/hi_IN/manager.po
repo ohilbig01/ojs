@@ -500,12 +500,6 @@ msgstr ""
 "समीक्षकों को अपने द्वारा प्रस्तुत प्रत्येक सहकर्मी समीक्षा के साथ एक सीआई बया"
 "न दर्ज करने की आवश्यकता होती है।"
 
-# (pofilter) doublequoting: Different quotation marks
-# (pofilter) endpunc: Different punctuation at the end
-# (pofilter) escapes: Escapes in original () don't match escapes in translation ('\')
-msgid "manager.setup.historyDescription"
-msgstr "यह पाठ जर्नल वेबसाइट के \ "About \" अनुभाग में दिखाई देगा और इसका उपयोग शीर्षक, संपादकीय बोर्ड और जर्नल के प्रकाशन इतिहास की प्रासंगिकता के अन्य मदों में परिवर्तन का वर्णन करने के लिए किया जा सकता है।."
-
 # (pofilter) endpunc: Different punctuation at the end
 msgid "manager.setup.contact.success"
 msgstr "इस जर्नल के लिए संपर्क विवरण अपडेट किया गया है."
@@ -991,20 +985,6 @@ msgstr "नेविगेशन बार"
 msgid "manager.setup.navigationBarDescription"
 msgstr "अतिरिक्त नेविगेशन बार आइटम जोड़ें या निकालें।"
 
-# (pofilter) brackets: Added '(', ')'
-# (pofilter) doublequoting: Different quotation marks
-# (pofilter) escapes: Escapes in original () don't match escapes in translation ('\')
-# (pofilter) startcaps: Different capitalization at the start
-# (pofilter) urls: Different URLs
-msgid "manager.setup.navItemIsAbsolute"
-msgstr "URL साइट के सापेक्ष पथ के बजाय एक पूर्ण URL (उदा।, \ "Http: //www.example.com \") है (जैसे,\"/manager/setup\"")"
-
-# (pofilter) brackets: Added '(', ')'
-# (pofilter) doublequoting: Different quotation marks
-# (pofilter) escapes: Escapes in original () don't match escapes in translation ('\', '\')
-msgid "manager.setup.navItemIsLiteral"
-msgstr "लेबल मान एक स्थानीयकरण संदेश कुंजी के बजाय एक शाब्दिक स्ट्रिंग (उदा।, \ "जर्नल सेटअप \") है (जैसे, \ "manager.setup \"")"
-
 # (pofilter) endpunc: Different punctuation at the end
 msgid "manager.setup.noImageFileUploaded"
 msgstr "कोई छवि फ़ाइल अपलोड नहीं की गई।"
@@ -1089,13 +1069,6 @@ msgstr "प्रकाशन शेड्यूलिंग"
 # (pofilter) simplecaps: Different capitalization
 msgid "manager.setup.publicIdentifier"
 msgstr "जर्नल कंटेंट की पहचान"
-
-# (pofilter) endpunc: Different punctuation at the end
-# (pofilter) simplecaps: Different capitalization
-msgid "manager.setup.publishingDescription"
-msgstr ""
-"ये विवरण तृतीय-पक्ष अभिलेखीय निकायों को प्रदान किए गए मेटाडेटा में शामिल किए "
-"जा सकते हैं।"
 
 # (pofilter) simplecaps: Different capitalization
 msgid "manager.setup.referenceLinking"
@@ -2269,20 +2242,6 @@ msgstr "DOI उपसर्ग पथ के साथ जर्नल के �
 
 # (pofilter) endpunc: Different punctuation at the end
 # (pofilter) simplecaps: Different capitalization
-msgid "plugins.importexport.common.cliError"
-msgstr "त्रुटि:"
-
-# (pofilter) brackets: Added '{', '}'
-# (pofilter) doublequoting: Different quotation marks
-# (pofilter) endpunc: Different punctuation at the end
-# (pofilter) pythonbraceformat: Unknown named placeholders in translation: {$journalPath}
-# (pofilter) simplecaps: Different capitalization
-# (pofilter) startcaps: Different capitalization at the start
-msgid "plugins.importexport.common.error.unknownJournal"
-msgstr "निर्दिष्ट जर्नल पथ, \"{$ journalPath}\", मौजूद नहीं है।"
-
-# (pofilter) endpunc: Different punctuation at the end
-# (pofilter) simplecaps: Different capitalization
 msgid "plugins.importexport.common.error.unknownObjects"
 msgstr "निर्दिष्ट ऑब्जेक्ट नहीं मिले।"
 
@@ -2645,9 +2604,6 @@ msgstr "स्वचालित ईमेल स्मरणपत्र"
 
 msgid "manager.setup.publisher"
 msgstr "प्रकाशक"
-
-msgid "manager.setup.publishing"
-msgstr "प्रकाशन विवरण"
 
 msgid "manager.setup.policies"
 msgstr "नीतियाँ"

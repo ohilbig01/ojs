@@ -13,89 +13,105 @@
  * @brief Operations for retrieving and adding statistics data.
  */
 
-import('lib.pkp.classes.statistics.PKPMetricsDAO');
+namespace APP\statistics;
 
-class MetricsDAO extends PKPMetricsDAO {
+use APP\facades\Repo;
+use PKP\db\DAORegistry;
+use PKP\statistics\PKPMetricsDAO;
 
-	/**
-	 * @copydoc PKPMetricsDAO::getMetrics()
-	 */
-	function &getMetrics($metricType, $columns = array(), $filters = array(), $orderBy = array(), $range = null, $nonAdditive = true) {
-		// Translate the issue dimension to a generic one used in pkp library.
-		// Do not move this into foreach: https://github.com/pkp/pkp-lib/issues/1615
-		$worker = array(&$columns, &$filters, &$orderBy);
-		foreach ($worker as &$parameter) { // Reference needed.
-			if ($parameter === $filters && array_key_exists(STATISTICS_DIMENSION_ISSUE_ID, $parameter)) {
-				$parameter[STATISTICS_DIMENSION_ASSOC_OBJECT_TYPE] = ASSOC_TYPE_ISSUE;
-			}
+use PKP\statistics\PKPStatisticsHelper;
 
-			$key = array_search(STATISTICS_DIMENSION_ISSUE_ID, $parameter);
-			if ($key !== false) {
-				$parameter[] = STATISTICS_DIMENSION_ASSOC_OBJECT_TYPE;
-			}
-			unset($parameter);
-		}
+class MetricsDAO extends PKPMetricsDAO
+{
+    /**
+     * @copydoc PKPMetricsDAO::getMetrics()
+     *
+     * @param null|mixed $range
+     */
+    public function &getMetrics($metricType, $columns = [], $filters = [], $orderBy = [], $range = null, $nonAdditive = true)
+    {
+        // Translate the issue dimension to a generic one used in pkp library.
+        // Do not move this into foreach: https://github.com/pkp/pkp-lib/issues/1615
+        $worker = [&$columns, &$filters, &$orderBy];
+        foreach ($worker as &$parameter) { // Reference needed.
+            if ($parameter === $filters && array_key_exists(StatisticsHelper::STATISTICS_DIMENSION_ISSUE_ID, $parameter)) {
+                $parameter[PKPStatisticsHelper::STATISTICS_DIMENSION_ASSOC_OBJECT_TYPE] = ASSOC_TYPE_ISSUE;
+            }
 
-		return parent::getMetrics($metricType, $columns, $filters, $orderBy, $range, $nonAdditive);
-	}
+            $key = array_search(StatisticsHelper::STATISTICS_DIMENSION_ISSUE_ID, $parameter);
+            if ($key !== false) {
+                $parameter[] = PKPStatisticsHelper::STATISTICS_DIMENSION_ASSOC_OBJECT_TYPE;
+            }
+            unset($parameter);
+        }
 
-	/**
-	 * @copydoc PKPMetricsDAO::foreignKeyLookup()
-	 */
-	protected function foreignKeyLookup($assocType, $assocId, $representationId = null) {
-		list($contextId, $sectionId, $assocObjType,
-			$assocObjId, $submissionId, $representationId) = parent::foreignKeyLookup($assocType, $assocId, $representationId);
+        return parent::getMetrics($metricType, $columns, $filters, $orderBy, $range, $nonAdditive);
+    }
 
-		$isFile = false;
+    /**
+     * @copydoc PKPMetricsDAO::foreignKeyLookup()
+     *
+     * @param null|mixed $representationId
+     */
+    protected function foreignKeyLookup($assocType, $assocId, $representationId = null)
+    {
+        [$contextId, $sectionId, $assocObjType,
+            $assocObjId, $submissionId, $representationId] = parent::foreignKeyLookup($assocType, $assocId, $representationId);
 
-		if (!$contextId) {
-			switch ($assocType) {
-				case ASSOC_TYPE_ISSUE_GALLEY:
-					$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO'); /* @var $issueGalleyDao IssueGalleyDAO */
-					$issueGalley = $issueGalleyDao->getById($assocId);
-					if (!$issueGalley) {
-						throw new Exception('Cannot load record: invalid issue galley id.');
-					}
+        $isFile = false;
 
-					$assocObjType = ASSOC_TYPE_ISSUE;
-					$assocObjId = $issueGalley->getIssueId();
-					$isFile = true;
-					// Don't break but go on to retrieve the issue.
-				case ASSOC_TYPE_ISSUE:
-					if (!$isFile) {
-						$assocObjType = $assocObjId = null;
-						$issueId = $assocId;
-					} else {
-						$issueId = $assocObjId;
-					}
+        if (!$contextId) {
+            switch ($assocType) {
+                case ASSOC_TYPE_ISSUE_GALLEY:
+                    $issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO'); /* @var $issueGalleyDao IssueGalleyDAO */
+                    $issueGalley = $issueGalleyDao->getById($assocId);
+                    if (!$issueGalley) {
+                        throw new Exception('Cannot load record: invalid issue galley id.');
+                    }
 
-					$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
-					$issue = $issueDao->getById($issueId);
+                    $assocObjType = ASSOC_TYPE_ISSUE;
+                    $assocObjId = $issueGalley->getIssueId();
+                    $isFile = true;
+                    // Don't break but go on to retrieve the issue.
+                    // no break
+                case ASSOC_TYPE_ISSUE:
+                    if (!$isFile) {
+                        $assocObjType = $assocObjId = null;
+                        $issueId = $assocId;
+                    } else {
+                        $issueId = $assocObjId;
+                    }
 
-					if (!$issue) {
-						throw new Exception('Cannot load record: invalid issue id.');
-					}
+                    $issue = Repo::issue()->get($issueId);
 
-					$contextId = $issue->getJournalId();
-					break;
-			}
-		}
+                    if (!$issue) {
+                        throw new Exception('Cannot load record: invalid issue id.');
+                    }
 
-		return array($contextId, $sectionId, $assocObjType, $assocObjId, $submissionId, $representationId);
-	}
+                    $contextId = $issue->getJournalId();
+                    break;
+            }
+        }
 
-	/**
-	 * @copydoc PKPMetricsDAO::getAssocObjectInfo()
-	 */
-	protected function getAssocObjectInfo($submissionId, $contextId) {
-		$returnArray = parent::getAssocObjectInfo($submissionId, $contextId);
+        return [$contextId, $sectionId, $assocObjType, $assocObjId, $submissionId, $representationId];
+    }
 
-		// Submissions in OJS are associated with an Issue.
-		$submission = Services::get('submission')->get($submissionId);
-		if ($submission->getCurrentPublication()->getData('issueId')) {
-			$returnArray = array(ASSOC_TYPE_ISSUE, $submission->getCurrentPublication()->getData('issueId'));
-		}
-		return $returnArray;
-	}
+    /**
+     * @copydoc PKPMetricsDAO::getAssocObjectInfo()
+     */
+    protected function getAssocObjectInfo($submissionId, $contextId)
+    {
+        $returnArray = parent::getAssocObjectInfo($submissionId, $contextId);
+
+        // Submissions in OJS are associated with an Issue.
+        $submission = Repo::submission()->get($submissionId);
+        if ($submission->getCurrentPublication()->getData('issueId')) {
+            $returnArray = [ASSOC_TYPE_ISSUE, $submission->getCurrentPublication()->getData('issueId')];
+        }
+        return $returnArray;
+    }
 }
 
+if (!PKP_STRICT_MODE) {
+    class_alias('\APP\statistics\MetricsDAO', '\MetricsDAO');
+}

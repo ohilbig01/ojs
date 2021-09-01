@@ -13,64 +13,88 @@
  * @brief Class defining basic operations for article tombstones.
  */
 
+namespace APP\article;
 
-class ArticleTombstoneManager {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-	}
+use APP\facades\Repo;
+use APP\submission\Submission;
+use PKP\config\Config;
 
-	function insertArticleTombstone(&$article, &$journal) {
-		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
-		$tombstoneDao = DAORegistry::getDAO('DataObjectTombstoneDAO'); /* @var $tombstoneDao DataObjectTombstoneDAO */
-		// delete article tombstone -- to ensure that there aren't more than one tombstone for this article
-		$tombstoneDao->deleteByDataObjectId($article->getId());
-		// insert article tombstone
-		$section = $sectionDao->getById($article->getSectionId());
-		$setSpec = urlencode($journal->getPath()) . ':' . urlencode($section->getLocalizedAbbrev());
-		$oaiIdentifier = 'oai:' . Config::getVar('oai', 'repository_id') . ':' . 'article/' . $article->getId();
-		$OAISetObjectsIds = array(
-			ASSOC_TYPE_JOURNAL => $journal->getId(),
-			ASSOC_TYPE_SECTION => $section->getId(),
-		);
+use PKP\context\Context;
+use PKP\db\DAORegistry;
+use PKP\plugins\HookRegistry;
 
-		$articleTombstone = $tombstoneDao->newDataObject();
-		$articleTombstone->setDataObjectId($article->getId());
-		$articleTombstone->stampDateDeleted();
-		$articleTombstone->setSetSpec($setSpec);
-		$articleTombstone->setSetName($section->getLocalizedTitle());
-		$articleTombstone->setOAIIdentifier($oaiIdentifier);
-		$articleTombstone->setOAISetObjectsIds($OAISetObjectsIds);
-		$tombstoneDao->insertObject($articleTombstone);
+class ArticleTombstoneManager
+{
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+    }
 
-		if (HookRegistry::call('ArticleTombstoneManager::insertArticleTombstone', array(&$articleTombstone, &$article, &$journal))) return;
-	}
+    public function insertArticleTombstone($article, $journal)
+    {
+        $sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
+        $tombstoneDao = DAORegistry::getDAO('DataObjectTombstoneDAO'); /* @var $tombstoneDao DataObjectTombstoneDAO */
+        // delete article tombstone -- to ensure that there aren't more than one tombstone for this article
+        $tombstoneDao->deleteByDataObjectId($article->getId());
+        // insert article tombstone
+        $section = $sectionDao->getById($article->getSectionId());
+        $setSpec = urlencode($journal->getPath()) . ':' . urlencode($section->getLocalizedAbbrev());
+        $oaiIdentifier = 'oai:' . Config::getVar('oai', 'repository_id') . ':' . 'article/' . $article->getId();
+        $OAISetObjectsIds = [
+            ASSOC_TYPE_JOURNAL => $journal->getId(),
+            ASSOC_TYPE_SECTION => $section->getId(),
+        ];
 
-	/**
-	 * Insert tombstone for every published submission
-	 * @param Context $context
-	 */
-	function insertTombstonesByContext(Context $context) {
-		import('classes.submission.Submission'); // STATUS_PUBLISHED
-		$submissionsIterator = Services::get('submission')->getMany(['contextId' => $context->getId(), 'status' => STATUS_PUBLISHED]);
-		foreach ($submissionsIterator as $submission) {
-			$this->insertArticleTombstone($submission, $context);
-		}
-	}
+        $articleTombstone = $tombstoneDao->newDataObject();
+        $articleTombstone->setDataObjectId($article->getId());
+        $articleTombstone->stampDateDeleted();
+        $articleTombstone->setSetSpec($setSpec);
+        $articleTombstone->setSetName($section->getLocalizedTitle());
+        $articleTombstone->setOAIIdentifier($oaiIdentifier);
+        $articleTombstone->setOAISetObjectsIds($OAISetObjectsIds);
+        $tombstoneDao->insertObject($articleTombstone);
 
-	/**
-	 * Delete tombstones for published submissions in this context
-	 * @param int $contextId
-	 */
-	function deleteTombstonesByContextId(int $contextId) {
-		import('classes.submission.Submission'); // STATUS_PUBLISHED
-		$tombstoneDao = DAORegistry::getDAO('DataObjectTombstoneDAO'); /* @var $tombstoneDao DataObjectTombstoneDAO */
-		$submissionsIterator = Services::get('submission')->getMany(['contextId' => $contextId, 'status' => STATUS_PUBLISHED]);
-		foreach ($submissionsIterator as $submission) {
-			$tombstoneDao->deleteByDataObjectId($submission->getId());
-		}
-	}
+        if (HookRegistry::call('ArticleTombstoneManager::insertArticleTombstone', [&$articleTombstone, &$article, &$journal])) {
+            return;
+        }
+    }
+
+    /**
+     * Insert tombstone for every published submission
+     */
+    public function insertTombstonesByContext(Context $context)
+    {
+        $submissions = Repo::submission()->getMany(
+            Repo::submission()
+                ->getCollector()
+                ->filterByContextIds([$context->getId()])
+                ->filterByStatus([Submission::STATUS_PUBLISHED])
+        );
+        foreach ($submissions as $submission) {
+            $this->insertArticleTombstone($submission, $context);
+        }
+    }
+
+    /**
+     * Delete tombstones for published submissions in this context
+     */
+    public function deleteTombstonesByContextId(int $contextId)
+    {
+        $tombstoneDao = DAORegistry::getDAO('DataObjectTombstoneDAO'); /* @var $tombstoneDao DataObjectTombstoneDAO */
+        $submissions = Repo::submission()->getMany(
+            Repo::submission()
+                ->getCollector()
+                ->filterByContextIds([$contextId])
+                ->filterByStatus([Submission::STATUS_PUBLISHED])
+        );
+        foreach ($submissions as $submission) {
+            $tombstoneDao->deleteByDataObjectId($submission->getId());
+        }
+    }
 }
 
-
+if (!PKP_STRICT_MODE) {
+    class_alias('\APP\article\ArticleTombstoneManager', '\ArticleTombstoneManager');
+}

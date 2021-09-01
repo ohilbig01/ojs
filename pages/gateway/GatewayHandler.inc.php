@@ -13,228 +13,247 @@
  * @brief Handle external gateway requests.
  */
 
-import('classes.handler.Handler');
+use APP\facades\Repo;
+use APP\handler\Handler;
 
-class GatewayHandler extends Handler {
+use APP\template\TemplateManager;
+use Illuminate\Support\LazyCollection;
 
-	var $plugin;
+class GatewayHandler extends Handler
+{
+    public $plugin;
 
-	/**
-	 * Constructor
-	 *
-	 * @param $request PKPRequest
-	 */
-	function __construct($request) {
-		parent::__construct();
-		$op = $request->getRouter()->getRequestedOp($request);
-		if ($op == 'plugin') {
-			$args = $request->getRouter()->getRequestedArgs($request);
-			$pluginName = array_shift($args);
-			$plugins = PluginRegistry::loadCategory('gateways');
-			if (!isset($plugins[$pluginName])) {
-				$request->getDispatcher()->handle404();
-			}
-			$this->plugin = $plugins[$pluginName];
-			foreach ($this->plugin->getPolicies($request) as $policy) {
-				$this->addPolicy($policy);
-			}
-		}
-	}
+    /**
+     * Constructor
+     *
+     * @param $request PKPRequest
+     */
+    public function __construct($request)
+    {
+        parent::__construct();
+        $op = $request->getRouter()->getRequestedOp($request);
+        if ($op == 'plugin') {
+            $args = $request->getRouter()->getRequestedArgs($request);
+            $pluginName = array_shift($args);
+            $plugins = PluginRegistry::loadCategory('gateways');
+            if (!isset($plugins[$pluginName])) {
+                $request->getDispatcher()->handle404();
+            }
+            $this->plugin = $plugins[$pluginName];
+            foreach ($this->plugin->getPolicies($request) as $policy) {
+                $this->addPolicy($policy);
+            }
+        }
+    }
 
-	/**
-	 * Index handler.
-	 * @param $args array
-	 * @param $request PKPRequest
-	 */
-	function index($args, $request) {
-		$request->redirect(null, 'index');
-	}
+    /**
+     * Index handler.
+     *
+     * @param $args array
+     * @param $request PKPRequest
+     */
+    public function index($args, $request)
+    {
+        $request->redirect(null, 'index');
+    }
 
-	/**
-	 * Display the LOCKSS manifest.
-	 * @param $args array
-	 * @param $request PKPRequest
-	 */
-	function lockss($args, $request) {
-		$this->validate();
-		$this->setupTemplate($request);
+    /**
+     * Display the LOCKSS manifest.
+     *
+     * @param $args array
+     * @param $request PKPRequest
+     */
+    public function lockss($args, $request)
+    {
+        $this->validate();
+        $this->setupTemplate($request);
 
-		$journal = $request->getJournal();
-		$templateMgr = TemplateManager::getManager($request);
+        $journal = $request->getJournal();
+        $templateMgr = TemplateManager::getManager($request);
 
-		if ($journal != null) {
-			if (!$journal->getData('enableLockss')) {
-				$request->redirect(null, 'index');
-			}
+        if ($journal != null) {
+            if (!$journal->getData('enableLockss')) {
+                $request->redirect(null, 'index');
+            }
+            $yearsIssuesPublished = Repo::issue()->getYearsIssuesPublished($journal->getId());
 
-			$year = $request->getUserVar('year');
+            // FIXME Should probably go in IssueDAO or a subclass
+            $year = $yearsIssuesPublished->contains((int) $request->getUserVar('year'))
+                ? (int) $request->getUserVar('year')
+                : null;
 
-			$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
+            if (!isset($year)) {
+                $year = $yearsIssuesPublished->max();
+                $templateMgr->assign('showInfo', true);
+            }
 
-			// FIXME Should probably go in IssueDAO or a subclass
-			if (isset($year)) {
-				$year = (int)$year;
-				$result = $issueDao->retrieve(
-					'SELECT * FROM issues WHERE journal_id = ? AND year = ? AND published = 1 ORDER BY current DESC, year ASC, volume ASC, number ASC',
-					[$journal->getId(), $year]
-				);
-				if (!$result->current()) unset($year);
-			}
+            $prevYear = $nextYear = null;
+            if (isset($year)) {
+                $key = $yearsIssuesPublished->search(function ($i) use ($year) {
+                    return $i === $year;
+                });
+                if (isset($key)) {
+                    $prevYear = $yearsIssuesPublished->get($key - 1);
+                    $nextYear = $yearsIssuesPublished->get($key + 1);
+                }
+            }
 
-			if (!isset($year)) {
-				$result = $issueDao->retrieve(
-					'SELECT MAX(year) AS max_year FROM issues WHERE journal_id = ? AND published = 1',
-					[$journal->getId()]
-				);
-				$row = $result->current();
-				$year = $row?$row->max_year:null;
-				$templateMgr->assign('showInfo', true);
-			}
+            $issues = $this->getPublishedIssuesByNumber($journal->getId(), null, null, $year);
+            $templateMgr->assign([
+                'journal' => $journal,
+                'year' => $year,
+                'prevYear' => $prevYear,
+                'nextYear' => $nextYear,
+                'issues' => $issues->toArray(),
+            ]);
 
-			$prevYear = $nextYear = null;
-			if (isset($year)) {
-				$result = $issueDao->retrieve(
-					'SELECT MAX(year) AS max_year FROM issues WHERE journal_id = ? AND published = 1 AND year < ?',
-					[$journal->getId(), $year]
-				);
-				$row = $result->current();
-				$prevYear = $row?$row->max_year:null;
+            $locales = $journal->getSupportedLocaleNames();
+            if (!isset($locales) || empty($locales)) {
+                $localeNames = AppLocale::getAllLocales();
+                $primaryLocale = AppLocale::getPrimaryLocale();
+                $locales = [$primaryLocale => $localeNames[$primaryLocale]];
+            }
+            $templateMgr->assign('locales', $locales);
+        } else {
+            $journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
+            $journals = $journalDao->getAll(true);
+            $templateMgr->assign('journals', $journals);
+        }
 
-				$result = $issueDao->retrieve(
-					'SELECT MIN(year) AS min_year FROM issues WHERE journal_id = ? AND published = 1 AND year > ?',
-					[$journal->getId(), $year]
-				);
-				$row = $result->current();
-				$nextYear = $row?$row->min_year:null;
-			}
+        $templateMgr->display('gateway/lockss.tpl');
+    }
 
-			$issues = $issueDao->getPublishedIssuesByNumber($journal->getId(), null, null, $year);
-			$templateMgr->assign([
-				'journal' => $journal,
-				'year' => $year,
-				'prevYear' => $prevYear,
-				'nextYear' => $nextYear,
-				'issues' => $issues,
-			]);
+    /**
+     * Display the CLOCKSS manifest.
+     *
+     * @param $args array
+     * @param $request PKPRequest
+     */
+    public function clockss($args, $request)
+    {
+        $this->validate();
+        $this->setupTemplate($request);
 
-			$locales = $journal->getSupportedLocaleNames();
-			if (!isset($locales) || empty($locales)) {
-				$localeNames = AppLocale::getAllLocales();
-				$primaryLocale = AppLocale::getPrimaryLocale();
-				$locales = array($primaryLocale => $localeNames[$primaryLocale]);
-			}
-			$templateMgr->assign('locales', $locales);
-		} else {
-			$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
-			$journals = $journalDao->getAll(true);
-			$templateMgr->assign('journals', $journals);
-		}
+        $journal = $request->getJournal();
+        $templateMgr = TemplateManager::getManager($request);
 
-		$templateMgr->display('gateway/lockss.tpl');
-	}
+        if ($journal != null) {
+            if (!$journal->getData('enableClockss')) {
+                $request->redirect(null, 'index');
+            }
 
-	/**
-	 * Display the CLOCKSS manifest.
-	 * @param $args array
-	 * @param $request PKPRequest
-	 */
-	function clockss($args, $request) {
-		$this->validate();
-		$this->setupTemplate($request);
+            $year = $request->getUserVar('year');
 
-		$journal = $request->getJournal();
-		$templateMgr = TemplateManager::getManager($request);
+            $deprecatedIssueDao = Repo::issue()->dao->deprecatedDao;
 
-		if ($journal != null) {
-			if (!$journal->getData('enableClockss')) {
-				$request->redirect(null, 'index');
-			}
+            // FIXME Should probably go in IssueDAO or a subclass
+            if (isset($year)) {
+                $year = (int)$year;
+                $result = $deprecatedIssueDao->retrieve(
+                    'SELECT * FROM issues WHERE journal_id = ? AND year = ? AND published = 1 ORDER BY current DESC, year ASC, volume ASC, number ASC',
+                    [$journal->getId(), $year]
+                );
+                $row = $result->current();
+                if (!$row) {
+                    unset($year);
+                }
+            }
 
-			$year = $request->getUserVar('year');
+            if (!isset($year)) {
+                $result = $deprecatedIssueDao->retrieve(
+                    'SELECT MAX(year) AS max_year FROM issues WHERE journal_id = ? AND published = 1',
+                    [$journal->getId()]
+                );
+                $row = $result->current();
+                $year = $row ? $row->max_year : null;
+                $issues = $this->getPublishedIssuesByNumber($journal->getId(), null, null, $year);
+                $templateMgr->assign([
+                    'issues' => $issues->toArray(),
+                    'showInfo' => true,
+                ]);
+            }
 
-			$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
+            $prevYear = $nextYear = null;
+            if (isset($year)) {
+                $result = $deprecatedIssueDao->retrieve(
+                    'SELECT MAX(year) AS max_year FROM issues WHERE journal_id = ? AND published = 1 AND year < ?',
+                    [$journal->getId(), $year]
+                );
+                $row = $result->current();
+                $prevYear = $row ? $row->max_year : null;
 
-			// FIXME Should probably go in IssueDAO or a subclass
-			if (isset($year)) {
-				$year = (int)$year;
-				$result = $issueDao->retrieve(
-					'SELECT * FROM issues WHERE journal_id = ? AND year = ? AND published = 1 ORDER BY current DESC, year ASC, volume ASC, number ASC',
-					[$journal->getId(), $year]
-				);
-				$row = $result->current();
-				if (!$row) unset($year);
-			}
+                $result = $deprecatedIssueDao->retrieve(
+                    'SELECT MIN(year) AS min_year FROM issues WHERE journal_id = ? AND published = 1 AND year > ?',
+                    [$journal->getId(), $year]
+                );
+                $row = $result->current();
+                $nextYear = $row ? $row->min_year : null;
+            }
 
-			if (!isset($year)) {
-				$result = $issueDao->retrieve(
-					'SELECT MAX(year) AS max_year FROM issues WHERE journal_id = ? AND published = 1',
-					[$journal->getId()]
-				);
-				$row = $result->current();
-				$year = $row?$row->max_year:null;
-				$issues = $issueDao->getPublishedIssuesByNumber($journal->getId(), null, null, $year);
-				$templateMgr->assign([
-					'issues' => $issues,
-					'showInfo' => true,
-				]);
-			}
+            $issues = $this->getPublishedIssuesByNumber($journal->getId(), null, null, $year);
+            $templateMgr->assign([
+                'journal' => $journal,
+                'year' => $year,
+                'prevYear' => $prevYear,
+                'nextYear' => $nextYear,
+                'issues' => $issues->toArray(),
+            ]);
 
-			$prevYear = $nextYear = null;
-			if (isset($year)) {
-				$result = $issueDao->retrieve(
-					'SELECT MAX(year) AS max_year FROM issues WHERE journal_id = ? AND published = 1 AND year < ?',
-					[$journal->getId(), $year]
-				);
-				$row = $result->current();
-				$prevYear = $row?$row->max_year:null;
+            $locales = $journal->getSupportedLocaleNames();
+            if (!isset($locales) || empty($locales)) {
+                $localeNames = AppLocale::getAllLocales();
+                $primaryLocale = AppLocale::getPrimaryLocale();
+                $locales = [$primaryLocale => $localeNames[$primaryLocale]];
+            }
+            $templateMgr->assign('locales', $locales);
+        } else {
+            $journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
+            $journals = $journalDao->getAll(true);
+            $templateMgr->assign('journals', $journals);
+        }
 
-				$result = $issueDao->retrieve(
-					'SELECT MIN(year) AS min_year FROM issues WHERE journal_id = ? AND published = 1 AND year > ?',
-					[$journal->getId(), $year]
-				);
-				$row = $result->current();
-				$nextYear = $row?$row->min_year:null;
-			}
+        $templateMgr->display('gateway/clockss.tpl');
+    }
 
-			$issues = $issueDao->getPublishedIssuesByNumber($journal->getId(), null, null, $year);
-			$templateMgr->assign([
-				'journal' => $journal,
-				'year' => $year,
-				'prevYear' => $prevYear,
-				'nextYear' => $nextYear,
-				'issues' => $issues,
-			]);
+    /**
+     * Handle requests for gateway plugins.
+     *
+     * @param $args array
+     * @param $request PKPRequest
+     */
+    public function plugin($args, $request)
+    {
+        $this->validate();
+        if (isset($this->plugin)) {
+            if (!$this->plugin->fetch(array_slice($args, 1), $request)) {
+                $request->redirect(null, 'index');
+            }
+        } else {
+            $request->redirect(null, 'index');
+        }
+    }
 
-			$locales = $journal->getSupportedLocaleNames();
-			if (!isset($locales) || empty($locales)) {
-				$localeNames = AppLocale::getAllLocales();
-				$primaryLocale = AppLocale::getPrimaryLocale();
-				$locales = array($primaryLocale => $localeNames[$primaryLocale]);
-			}
-			$templateMgr->assign('locales', $locales);
+    /**
+     * Retrieve Issue by some combination of volume, number, and year
+     *
+     */
+    protected function getPublishedIssuesByNumber(int $contextId, ?int $volume = null, ?int $number = null, ?int $year = null): LazyCollection
+    {
+        $collector = Repo::issue()->getCollector()
+            ->filterByContextIds([$contextId]);
 
-		} else {
-			$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
-			$journals = $journalDao->getAll(true);
-			$templateMgr->assign('journals', $journals);
-		}
+        if ($volume !== null) {
+            $collector->filterByVolumes([$volume]);
+        }
 
-		$templateMgr->display('gateway/clockss.tpl');
-	}
+        if ($number !== null) {
+            $collector->filterByNumbers([$number]);
+        }
 
-	/**
-	 * Handle requests for gateway plugins.
-	 * @param $args array
-	 * @param $request PKPRequest
-	 */
-	function plugin($args, $request) {
-		$this->validate();
-		if (isset($this->plugin)) {
-			if (!$this->plugin->fetch(array_slice($args, 1), $request)) {
-				$request->redirect(null, 'index');
-			}
-		} else {
-			$request->redirect(null, 'index');
-		}
-	}
+        if ($year !== null) {
+            $collector->filterByYears([$year]);
+        }
+
+        return Repo::issue()->getMany($collector);
+    }
 }

@@ -13,65 +13,79 @@
  * @brief Issue file class.
  */
 
-import('lib.pkp.classes.file.PKPFile');
+namespace APP\issue;
 
-/* File content type IDs */
-define('ISSUE_FILE_PUBLIC', 0x000001);
+use PKP\file\PKPFile;
 
+class IssueFile extends PKPFile
+{
+    /* File content type IDs */
+    public const ISSUE_FILE_PUBLIC = 1;
 
-class IssueFile extends PKPFile {
+    //
+    // Get/set methods
+    //
 
-	//
-	// Get/set methods
-	//
+    /**
+     * Get ID of issue.
+     *
+     * @return int
+     */
+    public function getIssueId()
+    {
+        return $this->getData('issueId');
+    }
 
-	/**
-	 * Get ID of issue.
-	 * @return int
-	 */
-	function getIssueId() {
-		return $this->getData('issueId');
-	}
+    /**
+     * set ID of issue.
+     *
+     * @param $issueId int
+     */
+    public function setIssueId($issueId)
+    {
+        return $this->setData('issueId', $issueId);
+    }
 
-	/**
-	 * set ID of issue.
-	 * @param $issueId int
-	 */
-	function setIssueId($issueId) {
-		return $this->setData('issueId', $issueId);
-	}
+    /**
+     * Get content type of the file.
+     *
+     * @ return string
+     */
+    public function getContentType()
+    {
+        return $this->getData('contentType');
+    }
 
-	/**
-	 * Get content type of the file.
-	 * @ return string
-	 */
-	function getContentType() {
-		return $this->getData('contentType');
-	}
+    /**
+     * set type of the file.
+     */
+    public function setContentType($contentType)
+    {
+        return $this->setData('contentType', $contentType);
+    }
 
-	/**
-	 * set type of the file.
-	 * @param $fileType string
-	 */
-	function setContentType($contentType) {
-		return $this->setData('contentType', $contentType);
-	}
+    /**
+     * Get modified date of file.
+     *
+     * @return date
+     */
+    public function getDateModified()
+    {
+        return $this->getData('dateModified');
+    }
 
-	/**
-	 * Get modified date of file.
-	 * @return date
-	 */
-	function getDateModified() {
-		return $this->getData('dateModified');
-	}
-
-	/**
-	 * set modified date of file.
-	 * @param $dateModified date
-	 */
-	function setDateModified($dateModified) {
-		return $this->setData('dateModified', $dateModified);
-	}
+    /**
+     * set modified date of file.
+     *
+     * @param $dateModified date
+     */
+    public function setDateModified($dateModified)
+    {
+        return $this->setData('dateModified', $dateModified);
+    }
 }
 
-
+if (!PKP_STRICT_MODE) {
+    class_alias('\APP\issue\IssueFile', '\IssueFile');
+    define('ISSUE_FILE_PUBLIC', \IssueFile::ISSUE_FILE_PUBLIC);
+}

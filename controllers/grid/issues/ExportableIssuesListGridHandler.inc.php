@@ -13,52 +13,69 @@
  * @brief Handle exportable issues grid requests.
  */
 
+use APP\facades\Repo;
+
 import('classes.controllers.grid.issues.IssueGridHandler');
 
-class ExportableIssuesListGridHandler extends IssueGridHandler {
+class ExportableIssuesListGridHandler extends IssueGridHandler
+{
+    //
+    // Implemented methods from GridHandler.
+    //
+    /**
+     * @copydoc GridHandler::isDataElementSelected()
+     */
+    public function isDataElementSelected($gridDataElement)
+    {
+        return false; // Nothing is selected by default
+    }
 
-	//
-	// Implemented methods from GridHandler.
-	//
-	/**
-	 * @copydoc GridHandler::isDataElementSelected()
-	 */
-	function isDataElementSelected($gridDataElement) {
-		return false; // Nothing is selected by default
-	}
+    /**
+     * @copydoc GridHandler::getSelectName()
+     */
+    public function getSelectName()
+    {
+        return 'selectedIssues';
+    }
 
-	/**
-	 * @copydoc GridHandler::getSelectName()
-	 */
-	function getSelectName() {
-		return 'selectedIssues';
-	}
+    /**
+     * @copydoc GridHandler::loadData()
+     */
+    protected function loadData($request, $filter)
+    {
+        $journal = $request->getJournal();
 
-	/**
-	 * @copydoc GridHandler::loadData()
-	 */
-	protected function loadData($request, $filter) {
-		$journal = $request->getJournal();
-		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
-		return $issueDao->getIssues($journal->getId(), $this->getGridRangeInfo($request, $this->getId()));
-	}
+        // Handle grid paging (deprecated style)
 
-	/**
-	 * @copydoc GridHandler::initFeatures()
-	 */
-	function initFeatures($request, $args) {
-		import('lib.pkp.classes.controllers.grid.feature.selectableItems.SelectableItemsFeature');
-		import('lib.pkp.classes.controllers.grid.feature.PagingFeature');
-		return array(new SelectableItemsFeature(), new PagingFeature());
-	}
+        $rangeInfo = $this->getGridRangeInfo($request, $this->getId());
+        $collector = Repo::issue()->getCollector()
+            ->filterByContextIds([$journal->getId()]);
+        $totalCount = Repo::issue()->getCount($collector);
+        $collector->limit($rangeInfo->getCount());
+        $collector->offset($rangeInfo->getOffset() + max(0, $rangeInfo->getPage() - 1) * $rangeInfo->getCount());
 
-	/**
-	 * Get the row handler - override the parent row handler. We do not need grid row actions.
-	 * @return GridRow
-	 */
-	protected function getRowInstance() {
-		return new GridRow();
-	}
+        $issues = iterator_to_array(Repo::issue()->getMany($collector));
+
+        return new \PKP\core\VirtualArrayIterator($issues, $totalCount, $rangeInfo->getPage(), $rangeInfo->getCount());
+    }
+
+    /**
+     * @copydoc GridHandler::initFeatures()
+     */
+    public function initFeatures($request, $args)
+    {
+        import('lib.pkp.classes.controllers.grid.feature.selectableItems.SelectableItemsFeature');
+        import('lib.pkp.classes.controllers.grid.feature.PagingFeature');
+        return [new SelectableItemsFeature(), new PagingFeature()];
+    }
+
+    /**
+     * Get the row handler - override the parent row handler. We do not need grid row actions.
+     *
+     * @return GridRow
+     */
+    protected function getRowInstance()
+    {
+        return new GridRow();
+    }
 }
-
-

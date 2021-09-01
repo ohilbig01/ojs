@@ -12,69 +12,77 @@
  * @brief Class for building database queries for galleys
  */
 
-namespace APP\Services\QueryBuilders;
+namespace APP\services\queryBuilders;
 
 use Illuminate\Support\Facades\DB;
-use PKP\Services\QueryBuilders\Interfaces\EntityQueryBuilderInterface;
 
-class GalleyQueryBuilder implements EntityQueryBuilderInterface {
-	/** @var array List of columns (see getQuery) */
-	public $columns;
+use PKP\plugins\HookRegistry;
+use PKP\services\queryBuilders\interfaces\EntityQueryBuilderInterface;
 
-	/** @var array get authors for one or more publications */
-	protected $publicationIds = [];
+class GalleyQueryBuilder implements EntityQueryBuilderInterface
+{
+    /** @var array List of columns (see getQuery) */
+    public $columns;
 
-	/**
-	 * Set publicationIds filter
-	 *
-	 * @param array|int $publicationIds
-	 * @return \APP\Services\QueryBuilders\GalleyQueryBuilder
-	 */
-	public function filterByPublicationIds($publicationIds) {
-		$this->publicationIds = is_array($publicationIds) ? $publicationIds : [$publicationIds];
-		return $this;
-	}
+    /** @var array get authors for one or more publications */
+    protected $publicationIds = [];
 
-	/**
-	 * @copydoc PKP\Services\QueryBuilders\Interfaces\EntityQueryBuilderInterface::getCount()
-	 */
-	public function getCount() {
-		return $this
-			->getQuery()
-			->select('g.galley_id')
-			->get()
-			->count();
-	}
+    /**
+     * Set publicationIds filter
+     *
+     * @param array|int $publicationIds
+     *
+     * @return \APP\services\queryBuilders\GalleyQueryBuilder
+     */
+    public function filterByPublicationIds($publicationIds)
+    {
+        $this->publicationIds = is_array($publicationIds) ? $publicationIds : [$publicationIds];
+        return $this;
+    }
 
-	/**
-	 * @copydoc PKP\Services\QueryBuilders\Interfaces\EntityQueryBuilderInterface::getCount()
-	 */
-	public function getIds() {
-		return $this
-			->getQuery()
-			->select('g.galley_id')
-			->pluck('g.galley_id')
-			->toArray();
-	}
+    /**
+     * @copydoc PKP\services\queryBuilders\interfaces\EntityQueryBuilderInterface::getCount()
+     */
+    public function getCount()
+    {
+        return $this
+            ->getQuery()
+            ->select('g.galley_id')
+            ->get()
+            ->count();
+    }
 
-	/**
-	 * @copydoc PKP\Services\QueryBuilders\Interfaces\EntityQueryBuilderInterface::getCount()
-	 */
-	public function getQuery() {
-		$this->columns = ['*'];
-		$q = DB::table('publication_galleys as g');
+    /**
+     * @copydoc PKP\services\queryBuilders\interfaces\EntityQueryBuilderInterface::getCount()
+     */
+    public function getIds()
+    {
+        return $this
+            ->getQuery()
+            ->select('g.galley_id')
+            ->pluck('g.galley_id')
+            ->toArray();
+    }
 
-		if (!empty($this->publicationIds)) {
-			$q->whereIn('g.publication_id', $this->publicationIds);
-		}
+    /**
+     * @copydoc PKP\services\queryBuilders\interfaces\EntityQueryBuilderInterface::getCount()
+     */
+    public function getQuery()
+    {
+        $this->columns = ['*'];
+        $q = DB::table('publication_galleys as g');
 
-		$q->orderBy('g.seq', 'asc');
+        if (!empty($this->publicationIds)) {
+            $q->whereIn('g.publication_id', $this->publicationIds);
+        }
 
-		// Add app-specific query statements
-		\HookRegistry::call('Galley::getMany::queryObject', array(&$q, $this));
+        $q->orderBy('g.seq', 'asc');
 
-		$q->select($this->columns);
+        // Add app-specific query statements
+        HookRegistry::call('Galley::getMany::queryObject', [&$q, $this]);
 
-		return $q;
-	}
+        $q->select($this->columns);
+
+        return $q;
+    }
 }

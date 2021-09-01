@@ -14,232 +14,231 @@
  *
  */
 
-import('lib.pkp.classes.handler.APIHandler');
+use APP\facades\Repo;
+use APP\issue\Collector;
+use APP\security\authorization\OjsIssueRequiredPolicy;
+use APP\security\authorization\OjsJournalMustPublishPolicy;
 
-use \APP\core\Services;
+use PKP\handler\APIHandler;
+use PKP\plugins\HookRegistry;
+use PKP\security\authorization\ContextAccessPolicy;
+use PKP\security\authorization\ContextRequiredPolicy;
+use PKP\security\Role;
 
-class IssueHandler extends APIHandler {
+class IssueHandler extends APIHandler
+{
+    /** @var int The default number of issues to return in one request */
+    public const DEFAULT_COUNT = 20;
 
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		$this->_handlerPath = 'issues';
-		$roles = array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT, ROLE_ID_REVIEWER, ROLE_ID_AUTHOR);
-		$this->_endpoints = array(
-			'GET' => array (
-				array(
-					'pattern' => $this->getEndpointPattern(),
-					'handler' => array($this, 'getMany'),
-					'roles' => $roles
-				),
-				array(
-					'pattern' => $this->getEndpointPattern().  '/current',
-					'handler' => array($this, 'getCurrent'),
-					'roles' => $roles
-				),
-				array(
-					'pattern' => $this->getEndpointPattern().  '/{issueId:\d+}',
-					'handler' => array($this, 'get'),
-					'roles' => $roles
-				),
-			)
-		);
-		parent::__construct();
-	}
+    /** @var int The maximum number of issues to return in one request */
+    public const MAX_COUNT = 100;
 
-	//
-	// Implement methods from PKPHandler
-	//
-	function authorize($request, &$args, $roleAssignments) {
-		$routeName = null;
-		$slimRequest = $this->getSlimRequest();
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->_handlerPath = 'issues';
+        $roles = [Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUB_EDITOR, Role::ROLE_ID_ASSISTANT, Role::ROLE_ID_REVIEWER, Role::ROLE_ID_AUTHOR];
+        $this->_endpoints = [
+            'GET' => [
+                [
+                    'pattern' => $this->getEndpointPattern(),
+                    'handler' => [$this, 'getMany'],
+                    'roles' => $roles
+                ],
+                [
+                    'pattern' => $this->getEndpointPattern() . '/current',
+                    'handler' => [$this, 'getCurrent'],
+                    'roles' => $roles
+                ],
+                [
+                    'pattern' => $this->getEndpointPattern() . '/{issueId:\d+}',
+                    'handler' => [$this, 'get'],
+                    'roles' => $roles
+                ],
+            ]
+        ];
+        parent::__construct();
+    }
 
-		if (!is_null($slimRequest) && ($route = $slimRequest->getAttribute('route'))) {
-			$routeName = $route->getName();
-		}
+    //
+    // Implement methods from PKPHandler
+    //
+    public function authorize($request, &$args, $roleAssignments)
+    {
+        $routeName = null;
+        $slimRequest = $this->getSlimRequest();
 
-		import('lib.pkp.classes.security.authorization.ContextRequiredPolicy');
-		$this->addPolicy(new ContextRequiredPolicy($request));
+        if (!is_null($slimRequest) && ($route = $slimRequest->getAttribute('route'))) {
+            $routeName = $route->getName();
+        }
 
-		import('lib.pkp.classes.security.authorization.ContextAccessPolicy');
-		$this->addPolicy(new ContextAccessPolicy($request, $roleAssignments));
+        $this->addPolicy(new ContextRequiredPolicy($request));
+        $this->addPolicy(new ContextAccessPolicy($request, $roleAssignments));
+        $this->addPolicy(new OjsJournalMustPublishPolicy($request));
 
-		import('classes.security.authorization.OjsJournalMustPublishPolicy');
-		$this->addPolicy(new OjsJournalMustPublishPolicy($request));
+        if ($routeName === 'get') {
+            $this->addPolicy(new OjsIssueRequiredPolicy($request, $args));
+        }
 
-		if ($routeName === 'get') {
-			import('classes.security.authorization.OjsIssueRequiredPolicy');
-			$this->addPolicy(new OjsIssueRequiredPolicy($request, $args));
-		}
+        return parent::authorize($request, $args, $roleAssignments);
+    }
 
-		return parent::authorize($request, $args, $roleAssignments);
-	}
+    //
+    // Public handler methods
+    //
+    /**
+     * Get a collection of issues
+     *
+     * @param $slimRequest Request Slim request object
+     * @param $response Response object
+     * @param array $args arguments
+     *
+     * @return Response
+     */
+    public function getMany($slimRequest, $response, $args)
+    {
+        $collector = Repo::issue()->getCollector()
+            ->limit(self::DEFAULT_COUNT)
+            ->offset(0);
 
-	//
-	// Public handler methods
-	//
-	/**
-	 * Get a collection of issues
-	 * @param $slimRequest Request Slim request object
-	 * @param $response Response object
-	 * @param array $args arguments
-	 * @return Response
-	 */
-	public function getMany($slimRequest, $response, $args) {
-		$request = $this->getRequest();
-		$currentUser = $request->getUser();
-		$context = $request->getContext();
+        $request = $this->getRequest();
+        $currentUser = $request->getUser();
+        $context = $request->getContext();
 
-		if (!$context) {
-			return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
-		}
+        if (!$context) {
+            return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
+        }
 
-		$defaultParams = array(
-			'count' => 20,
-			'offset' => 0,
-		);
+        // Process query params to format incoming data as needed
+        foreach ($slimRequest->getQueryParams() as $param => $val) {
+            switch ($param) {
 
-		$requestParams = array_merge($defaultParams, $slimRequest->getQueryParams());
+                case 'orderBy':
+                    if (in_array($val, [Collector::ORDERBY_DATE_PUBLISHED, Collector::ORDERBY_LAST_MODIFIED, Collector::ORDERBY_SEQUENCE])) {
+                        $collector->orderBy($val);
+                    }
+                    break;
 
-		$params = array();
+                // Enforce a maximum count to prevent the API from crippling the
+                // server
+                case 'count':
+                    $collector->limit(min((int) $val, self::MAX_COUNT));
+                    break;
 
-		// Process query params to format incoming data as needed
-		foreach ($requestParams as $param => $val) {
-			switch ($param) {
+                case 'offset':
+                    $collector->offset((int) $val);
+                    break;
 
-				case 'orderBy':
-					if (in_array($val, array('datePublished', 'lastModified', 'seq'))) {
-						$params[$param] = $val;
-					}
-					break;
+                // Always convert volume, number and year values to array
+                case 'volumes':
+                case 'volume':
+                case 'numbers':
+                case 'number':
+                case 'years':
+                case 'year':
 
-				case 'orderDirection':
-					$params[$param] = $val === 'ASC' ? $val : 'DESC';
-					break;
+                    // Support deprecated `year`, `number` and `volume` params
+                    if (substr($param, -1) !== 's') {
+                        $param .= 's';
+                    }
 
-				// Enforce a maximum count to prevent the API from crippling the
-				// server
-				case 'count':
-					$params[$param] = min(100, (int) $val);
-					break;
+                    if (is_string($val)) {
+                        $val = explode(',', $val);
+                    } elseif (!is_array($val)) {
+                        $val = [$val];
+                    }
+                    $values = array_map('intval', $val);
+                    switch ($param) {
+                        case 'volumes':
+                            $collector->filterByVolumes($values);
+                            break;
+                        case 'numbers':
+                            $collector->filterByNumbers($values);
+                            break;
+                        case 'years':
+                            $collector->filterByYears($values);
+                            break;
+                    }
 
-				case 'offset':
-					$params[$param] = (int) $val;
-					break;
+                    break;
 
-				// Always convert volume, number and year values to array
-				case 'volumes':
-				case 'volume':
-				case 'numbers':
-				case 'number':
-				case 'years':
-				case 'year':
+                case 'isPublished':
+                    $collector->filterByPublished((bool) $val);
+                    break;
 
-					// Support deprecated `year`, `number` and `volume` params
-					if (substr($param, -1) !== 's') {
-						$param .= 's';
-					}
+                case 'searchPhrase':
+                    $collector->searchPhrase($val);
+                    break;
+            }
+        }
 
-					if (is_string($val)) {
-						$val = explode(',', $val);
-					} elseif (!is_array($val)) {
-						$val = array($val);
-					}
-					$params[$param] = array_map('intval', $val);
-					break;
+        $collector->filterByContextIds([$context->getId()]);
 
-				case 'isPublished':
-					$params[$param] = $val ? true : false;
-					break;
+        HookRegistry::call('API::issues::params', [&$collector, $slimRequest]);
 
-				case 'searchPhrase':
-					$params[$param] = $val;
-					break;
-			}
-		}
+        // You must be a manager or site admin to access unpublished Issues
+        $isAdmin = $currentUser->hasRole([Role::ROLE_ID_MANAGER], $context->getId()) || $currentUser->hasRole([Role::ROLE_ID_SITE_ADMIN], \PKP\core\PKPApplication::CONTEXT_SITE);
+        if (isset($collector->isPublished) && !$collector->isPublished && !$isAdmin) {
+            return $response->withStatus(403)->withJsonError('api.submissions.403.unpublishedIssues');
+        } elseif (!$isAdmin) {
+            $collector->filterByPublished(true);
+        }
 
-		$params['contextId'] = $context->getId();
 
-		\HookRegistry::call('API::issues::params', array(&$params, $slimRequest));
+        $issues = Repo::issue()->getMany($collector);
 
-		// You must be a manager or site admin to access unpublished Issues
-		$isAdmin = $currentUser->hasRole(array(ROLE_ID_MANAGER), $context->getId()) || $currentUser->hasRole(array(ROLE_ID_SITE_ADMIN), CONTEXT_SITE);
-		if (isset($params['isPublished']) && !$params['isPublished'] && !$isAdmin) {
-			return $response->withStatus(403)->withJsonError('api.submissions.403.unpublishedIssues');
-		} elseif (!$isAdmin) {
-			$params['isPublished'] = true;
-		}
+        return $response->withJson([
+            'items' => Repo::issue()->getSchemaMap()->summarizeMany($issues),
+            'itemsMax' => Repo::issue()->getCount($collector->limit(null)->offset(null)),
+        ], 200);
+    }
 
-		$items = array();
-		$issuesIterator = Services::get('issue')->getMany($params);
-		$propertyArgs = array(
-			'request' => $request,
-			'slimRequest' => $slimRequest,
-		);
-		foreach ($issuesIterator as $issue) {
-			$items[] = Services::get('issue')->getSummaryProperties($issue, $propertyArgs);
-		}
+    /**
+     * Get the current issue
+     *
+     * @param $slimRequest Request Slim request object
+     * @param $response Response object
+     * @param array $args arguments
+     *
+     * @return Response
+     */
+    public function getCurrent($slimRequest, $response, $args)
+    {
+        $request = $this->getRequest();
+        $context = $request->getContext();
 
-		$data = array(
-			'itemsMax' => Services::get('issue')->getMax($params),
-			'items' => $items,
-		);
+        $issue = Repo::issue()->getCurrent($context->getId());
 
-		return $response->withJson($data, 200);
-	}
+        if (!$issue) {
+            return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
+        }
+        $data = Repo::issue()->getSchemaMap()->map($issue);
 
-	/**
-	 * Get the current issue
-	 *
-	 * @param $slimRequest Request Slim request object
-	 * @param $response Response object
-	 * @param array $args arguments
-	 *
-	 * @return Response
-	 */
-	public function getCurrent($slimRequest, $response, $args) {
+        return $response->withJson($data, 200);
+    }
 
-		$request = $this->getRequest();
-		$context = $request->getContext();
+    /**
+     * Get a single issue
+     *
+     * @param $slimRequest Request Slim request object
+     * @param $response Response object
+     * @param array $args arguments
+     *
+     * @return Response
+     */
+    public function get($slimRequest, $response, $args)
+    {
+        $request = $this->getRequest();
+        $issue = $this->getAuthorizedContextObject(ASSOC_TYPE_ISSUE);
 
-		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
-		$issue = $issueDao->getCurrent($context->getId());
+        if (!$issue) {
+            return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
+        }
 
-		if (!$issue) {
-			return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
-		}
+        $data = Repo::issue()->getSchemaMap()->map($issue);
 
-		$data = Services::get('issue')->getFullProperties($issue, array(
-			'request' => $request,
-			'slimRequest' => $slimRequest,
-		));
-
-		return $response->withJson($data, 200);
-	}
-
-	/**
-	 * Get a single issue
-	 *
-	 * @param $slimRequest Request Slim request object
-	 * @param $response Response object
-	 * @param array $args arguments
-	 *
-	 * @return Response
-	 */
-	public function get($slimRequest, $response, $args) {
-		$request = $this->getRequest();
-		$issue = $this->getAuthorizedContextObject(ASSOC_TYPE_ISSUE);
-
-		if (!$issue) {
-			return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
-		}
-
-		$data = Services::get('issue')->getFullProperties($issue, array(
-			'request' => $request,
-			'slimRequest' => $slimRequest,
-		));
-
-		return $response->withJson($data, 200);
-	}
+        return $response->withJson($data, 200);
+    }
 }

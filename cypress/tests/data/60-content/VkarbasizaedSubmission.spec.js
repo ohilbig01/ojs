@@ -58,8 +58,8 @@ describe('Data suite tests', function() {
 		cy.get('select[id=genreId]').select('Article Text');
 		cy.wait(250);
 		cy.fixture('dummy.pdf', 'base64').then(fileContent => {
-			cy.get('div[id^="fileUploadWizard"] input[type=file]').upload(
-				{fileContent, 'fileName': 'article.pdf', 'mimeType': 'application/pdf', 'encoding': 'base64'}
+			cy.get('div[id^="fileUploadWizard"] input[type=file]').attachFile(
+				{fileContent, 'filePath': 'article.pdf', 'mimeType': 'application/pdf', 'encoding': 'base64'}
 			);
 		});
 		cy.get('button').contains('Continue').click();
@@ -163,7 +163,7 @@ describe('Data suite tests', function() {
 		cy.get('#publication button:contains("Create New Version")');
 	});
 
-	it('Remove submisison from TOC', function() {
+	it('Remove submission from TOC', function() {
 		cy.login('dbarnes');
 		cy.visit('index.php/publicknowledge/manageIssues#back');
 		cy.get('span:contains("' + issueTitle + '")').prev('a.show_extras').click();

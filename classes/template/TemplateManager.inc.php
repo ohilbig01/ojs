@@ -15,139 +15,147 @@
  *
  */
 
-import('classes.search.ArticleSearch');
-import('classes.file.PublicFileManager');
-import('lib.pkp.classes.template.PKPTemplateManager');
+namespace APP\template;
 
-class TemplateManager extends PKPTemplateManager {
-	/**
-	 * Initialize template engine and assign basic template variables.
-	 * @param $request PKPRequest
-	 */
-	function initialize($request) {
-		parent::initialize($request);
+use APP\core\Application;
+use APP\file\PublicFileManager;
+use PKP\security\Role;
+use PKP\template\PKPTemplateManager;
 
-		// Pass app-specific details to template
-		$this->assign([
-			'brandImage' => 'templates/images/ojs_brand.png',
-		]);
+class TemplateManager extends PKPTemplateManager
+{
+    /**
+     * Initialize template engine and assign basic template variables.
+     *
+     * @param $request PKPRequest
+     */
+    public function initialize($request)
+    {
+        parent::initialize($request);
 
-		if (!defined('SESSION_DISABLE_INIT')) {
-			/**
-			 * Kludge to make sure no code that tries to connect to
-			 * the database is executed (e.g., when loading
-			 * installer pages).
-			 */
+        // Pass app-specific details to template
+        $this->assign([
+            'brandImage' => 'templates/images/ojs_brand.png',
+        ]);
 
-			$context = $request->getContext();
-			$site = $request->getSite();
+        if (!defined('SESSION_DISABLE_INIT')) {
+            /**
+             * Kludge to make sure no code that tries to connect to
+             * the database is executed (e.g., when loading
+             * installer pages).
+             */
 
-			$publicFileManager = new PublicFileManager();
-			$siteFilesDir = $request->getBaseUrl() . '/' . $publicFileManager->getSiteFilesPath();
-			$this->assign('sitePublicFilesDir', $siteFilesDir);
-			$this->assign('publicFilesDir', $siteFilesDir); // May be overridden by journal
+            $context = $request->getContext();
+            $site = $request->getSite();
 
-			if ($site->getData('styleSheet')) {
-				$this->addStyleSheet(
-					'siteStylesheet',
-					$request->getBaseUrl() . '/' . $publicFileManager->getSiteFilesPath() . '/' . $site->getData('styleSheet')['uploadName'],
-					['priority' => STYLE_SEQUENCE_LATE]
-				);
-			}
-			if (isset($context)) {
-				$this->assign([
-					'currentJournal' => $context,
-					'siteTitle' => $context->getLocalizedName(),
-					'publicFilesDir' => $request->getBaseUrl() . '/' . $publicFileManager->getContextFilesPath($context->getId()),
-					'primaryLocale' => $context->getPrimaryLocale(),
-					'supportedLocales' => $context->getSupportedLocaleNames(),
-					'numPageLinks' => $context->getData('numPageLinks'),
-					'itemsPerPage' => $context->getData('itemsPerPage'),
-					'enableAnnouncements' => $context->getData('enableAnnouncements'),
-					'disableUserReg' => $context->getData('disableUserReg'),
-					'pageFooter' => $context->getLocalizedData('pageFooter'),
-				]);
-			} else {
-				// Check if registration is open for any contexts
-				$contextDao = Application::getContextDAO();
-				$contexts = $contextDao->getAll(true)->toArray();
-				$contextsForRegistration = [];
-				foreach($contexts as $context) {
-					if (!$context->getData('disableUserReg')) {
-						$contextsForRegistration[] = $context;
-					}
-				}
+            $publicFileManager = new PublicFileManager();
+            $siteFilesDir = $request->getBaseUrl() . '/' . $publicFileManager->getSiteFilesPath();
+            $this->assign('sitePublicFilesDir', $siteFilesDir);
+            $this->assign('publicFilesDir', $siteFilesDir); // May be overridden by journal
 
-				$this->assign([
-					'contexts' => $contextsForRegistration,
-					'disableUserReg' => empty($contextsForRegistration),
-					'siteTitle' => $site->getLocalizedTitle(),
-					'primaryLocale' => $site->getPrimaryLocale(),
-					'supportedLocales' => $site->getSupportedLocaleNames(),
-					'pageFooter' => $site->getLocalizedData('pageFooter'),
-				]);
+            if ($site->getData('styleSheet')) {
+                $this->addStyleSheet(
+                    'siteStylesheet',
+                    $request->getBaseUrl() . '/' . $publicFileManager->getSiteFilesPath() . '/' . $site->getData('styleSheet')['uploadName'],
+                    ['priority' => self::STYLE_SEQUENCE_LATE]
+                );
+            }
+            if (isset($context)) {
+                $this->assign([
+                    'currentJournal' => $context,
+                    'siteTitle' => $context->getLocalizedName(),
+                    'publicFilesDir' => $request->getBaseUrl() . '/' . $publicFileManager->getContextFilesPath($context->getId()),
+                    'primaryLocale' => $context->getPrimaryLocale(),
+                    'supportedLocales' => $context->getSupportedLocaleNames(),
+                    'numPageLinks' => $context->getData('numPageLinks'),
+                    'itemsPerPage' => $context->getData('itemsPerPage'),
+                    'enableAnnouncements' => $context->getData('enableAnnouncements'),
+                    'disableUserReg' => $context->getData('disableUserReg'),
+                    'pageFooter' => $context->getLocalizedData('pageFooter'),
+                ]);
+            } else {
+                // Check if registration is open for any contexts
+                $contextDao = Application::getContextDAO();
+                $contexts = $contextDao->getAll(true)->toArray();
+                $contextsForRegistration = [];
+                foreach ($contexts as $context) {
+                    if (!$context->getData('disableUserReg')) {
+                        $contextsForRegistration[] = $context;
+                    }
+                }
 
-			}
-		}
-	}
+                $this->assign([
+                    'contexts' => $contextsForRegistration,
+                    'disableUserReg' => empty($contextsForRegistration),
+                    'siteTitle' => $site->getLocalizedTitle(),
+                    'primaryLocale' => $site->getPrimaryLocale(),
+                    'supportedLocales' => $site->getSupportedLocaleNames(),
+                    'pageFooter' => $site->getLocalizedData('pageFooter'),
+                ]);
+            }
+        }
+    }
 
-	/**
-	 * @copydoc PKPTemplateManager::setupBackendPage()
-	 */
-	function setupBackendPage() {
-		parent::setupBackendPage();
+    /**
+     * @copydoc PKPTemplateManager::setupBackendPage()
+     */
+    public function setupBackendPage()
+    {
+        parent::setupBackendPage();
 
-		$request = Application::get()->getRequest();
-		if (defined('SESSION_DISABLE_INIT')
-				|| !$request->getContext()
-				|| !$request->getUser()) {
-			return;
-		}
+        $request = Application::get()->getRequest();
+        if (defined('SESSION_DISABLE_INIT')
+                || !$request->getContext()
+                || !$request->getUser()) {
+            return;
+        }
 
-		$router = $request->getRouter();
-		$handler = $router->getHandler();
-		$userRoles = (array) $handler->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
+        $router = $request->getRouter();
+        $handler = $router->getHandler();
+        $userRoles = (array) $handler->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
 
-		$menu = (array) $this->getState('menu');
+        $menu = (array) $this->getState('menu');
 
-		// Add issues after submissions items
-		if (in_array(ROLE_ID_MANAGER, $userRoles)) {
-			$issuesLink = [
-				'name' => __('editor.navigation.issues'),
-				'url' => $router->url($request, null, 'manageIssues'),
-				'isCurrent' => $request->getRequestedPage() === 'manageIssues',
-			];
+        // Add issues after submissions items
+        if (in_array(Role::ROLE_ID_MANAGER, $userRoles)) {
+            $issuesLink = [
+                'name' => __('editor.navigation.issues'),
+                'url' => $router->url($request, null, 'manageIssues'),
+                'isCurrent' => $request->getRequestedPage() === 'manageIssues',
+            ];
 
-			$index = array_search('submissions', array_keys($menu));
-			if ($index === false || count($menu) <= ($index + 1)) {
-				$menu['issues'] = $issuesLink;
-			} else {
-				$menu = array_slice($menu, 0, $index + 1, true) +
-						['issues' => $issuesLink] +
-						array_slice($menu, $index + 1, null, true);
-			}
-		}
+            $index = array_search('submissions', array_keys($menu));
+            if ($index === false || count($menu) <= ($index + 1)) {
+                $menu['issues'] = $issuesLink;
+            } else {
+                $menu = array_slice($menu, 0, $index + 1, true) +
+                        ['issues' => $issuesLink] +
+                        array_slice($menu, $index + 1, null, true);
+            }
+        }
 
-		// Add payments link before settings
-		if ($request->getContext()->getData('paymentsEnabled') && array_intersect([ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUBSCRIPTION_MANAGER], $userRoles)) {
-			$paymentsLink = [
-				'name' => __('common.payments'),
-				'url' => $router->url($request, null, 'payments'),
-				'isCurrent' => $request->getRequestedPage() === 'payments',
-			];
+        // Add payments link before settings
+        if ($request->getContext()->getData('paymentsEnabled') && array_intersect([Role::ROLE_ID_SITE_ADMIN, Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUBSCRIPTION_MANAGER], $userRoles)) {
+            $paymentsLink = [
+                'name' => __('common.payments'),
+                'url' => $router->url($request, null, 'payments'),
+                'isCurrent' => $request->getRequestedPage() === 'payments',
+            ];
 
-			$index = array_search('settings', array_keys($menu));
-			if ($index === false || count($menu) === $index) {
-				$menu['payments'] = $paymentsLink;
-			} else {
-				$menu = array_slice($menu, 0, $index, true) +
-						['payments' => $paymentsLink] +
-						array_slice($menu, $index, null, true);
-			}
-		}
+            $index = array_search('settings', array_keys($menu));
+            if ($index === false || count($menu) === $index) {
+                $menu['payments'] = $paymentsLink;
+            } else {
+                $menu = array_slice($menu, 0, $index, true) +
+                        ['payments' => $paymentsLink] +
+                        array_slice($menu, $index, null, true);
+            }
+        }
 
-		$this->setState(['menu' => $menu]);
-	}
+        $this->setState(['menu' => $menu]);
+    }
 }
 
-
+if (!PKP_STRICT_MODE) {
+    class_alias('\APP\template\TemplateManager', '\TemplateManager');
+}

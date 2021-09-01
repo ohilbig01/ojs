@@ -9,36 +9,46 @@
  *
  * @class Publication
  * @ingroup publication
- * @see PublicationDAO
+ *
+ * @see DAO
  *
  * @brief Class for Publication.
  */
-import('lib.pkp.classes.publication.PKPPublication');
 
-class Publication extends PKPPublication {
+namespace APP\publication;
 
-	/**
-	 * Get the URL to a localized cover image
-	 *
-	 * @param int $contextId
-	 * @return string
-	 */
-	public function getLocalizedCoverImageUrl($contextId) {
-		$coverImage = $this->getLocalizedData('coverImage');
+use APP\core\Application;
 
-		if (!$coverImage) {
-			return '';
-		}
+use APP\file\PublicFileManager;
+use PKP\publication\PKPPublication;
 
-		import('classes.file.PublicFileManager');
-		$publicFileManager = new PublicFileManager();
+class Publication extends PKPPublication
+{
+    /**
+     * Get the URL to a localized cover image
+     *
+     * @param int $contextId
+     *
+     * @return string
+     */
+    public function getLocalizedCoverImageUrl($contextId)
+    {
+        $coverImage = $this->getLocalizedData('coverImage');
 
-		return join('/', [
-			Application::get()->getRequest()->getBaseUrl(),
-			$publicFileManager->getContextFilesPath($contextId),
-			$coverImage['uploadName'],
-		]);
-	}
+        if (!$coverImage) {
+            return '';
+        }
+
+        $publicFileManager = new PublicFileManager();
+
+        return join('/', [
+            Application::get()->getRequest()->getBaseUrl(),
+            $publicFileManager->getContextFilesPath($contextId),
+            $coverImage['uploadName'],
+        ]);
+    }
 }
 
-
+if (!PKP_STRICT_MODE) {
+    class_alias('\APP\publication\Publication', '\Publication');
+}

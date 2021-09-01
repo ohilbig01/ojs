@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:28+00:00\n"
-"PO-Revision-Date: 2020-10-19 15:21+0000\n"
+"PO-Revision-Date: 2021-06-09 13:28+0000\n"
 "Last-Translator: Hans Spijker <hans.spijker@huygens.knaw.nl>\n"
 "Language-Team: Dutch <http://translate.pkp.sfu.ca/projects/ojs/manager/nl/>\n"
 "Language: nl_NL\n"
@@ -789,14 +789,8 @@ msgstr "Publicatieplanning"
 msgid "manager.setup.publicIdentifier"
 msgstr "Identificatie van tijdschriftinhoud"
 
-msgid "manager.setup.publishing"
-msgstr "Publicatiegegevens"
-
 msgid "manager.setup.publisher"
 msgstr "Uitgever"
-
-msgid "manager.setup.publishingDescription"
-msgstr "Deze gegevens kunnen worden opgenomen in metadata voor externe archiveringsdiensten."
 
 msgid "manager.setup.referenceLinking"
 msgstr "Linken van referenties"
@@ -1042,7 +1036,7 @@ msgid "manager.statistics.reports.defaultReport.articleAbstractAndDownloads"
 msgstr "Artikel samenvatting en downloads"
 
 msgid "manager.statistics.reports.defaultReport.journalIndexPageViews"
-msgstr "Tijschrift voorpagina views"
+msgstr "Tijdschrift voorpagina views"
 
 msgid "manager.statistics.reports.defaultReport.issuePageViews"
 msgstr "Nummer inhoudsopgave views"
@@ -1725,12 +1719,6 @@ msgstr "Registratie succesvol!"
 
 msgid "plugins.importexport.common.senderTask.warning.noDOIprefix"
 msgstr "DOI prefix ontbreekt voor het tijdschrift met het pad {$path}."
-
-msgid "plugins.importexport.common.cliError"
-msgstr "FOUT:"
-
-msgid "plugins.importexport.common.error.unknownJournal"
-msgstr "Het opgegeven pad \"{$journalPath}\" bestaat niet."
 
 msgid "plugins.importexport.common.error.unknownObjects"
 msgstr "De opgegeven objecten konden niet worden gevonden."

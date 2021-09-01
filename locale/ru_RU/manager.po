@@ -1,9 +1,10 @@
+# Pavel Pisklakov <ppv1979@mail.ru>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:31+00:00\n"
-"PO-Revision-Date: 2021-01-17 14:53+0000\n"
+"PO-Revision-Date: 2021-06-27 04:03+0000\n"
 "Last-Translator: Pavel Pisklakov <ppv1979@mail.ru>\n"
 "Language-Team: Russian <http://translate.pkp.sfu.ca/projects/ojs/manager/"
 "ru_RU/>\n"
@@ -779,14 +780,8 @@ msgstr "Планирование выпусков"
 msgid "manager.setup.publicIdentifier"
 msgstr "Идентификация контента журнала"
 
-msgid "manager.setup.publishing"
-msgstr "Информация о публикации журнала"
-
 msgid "manager.setup.publisher"
 msgstr "Издатель"
-
-msgid "manager.setup.publishingDescription"
-msgstr "Эта информация может быть включена в метаданные, предоставляемые системам архивирования сторонних разработчиков."
 
 msgid "manager.setup.referenceLinking"
 msgstr "Вставка гиперссылок на источники"
@@ -903,7 +898,7 @@ msgid "manager.setup.submissions.description"
 msgstr "Руководство для авторов, авторские права и индексирование (включая регистрацию)."
 
 msgid "manager.setup.disableSubmissions.description"
-msgstr "Запрещает пользователям отправлять новые статьи в журнал. Отправка материалов может быть отключена для отдельных разделов журнала на странице настроек <a href="{$url}">разделов журнала</a>."
+msgstr "Запрещает пользователям отправлять новые статьи в журнал. Отправка материалов может быть отключена для отдельных разделов журнала на странице настроек <a href=\"{$url}\">разделов журнала</a>."
 
 msgid "manager.setup.disableSubmissions.notAccepting"
 msgstr "Этот журнал в данное время не принимает материалы. Зайдите в настройки рабочего процесса, чтобы разрешить отправку материалов."
@@ -1678,12 +1673,6 @@ msgstr "Проверка завершилась неудачей."
 msgid "plugins.importexport.common.senderTask.warning.noDOIprefix"
 msgstr "Отсутствует префикс DOI для журнала с адресом {$path}."
 
-msgid "plugins.importexport.common.cliError"
-msgstr "ОШИБКА:"
-
-msgid "plugins.importexport.common.error.unknownJournal"
-msgstr "Указанный путь журнала «{$journalPath}» не существует."
-
 msgid "plugins.importexport.common.error.unknownObjects"
 msgstr "Указанные объекты не удается найти."
 
@@ -1713,3 +1702,27 @@ msgstr "Аннотации"
 
 msgid "stats.publications.galleys"
 msgstr "Файлы"
+
+msgid "plugins.importexport.issueGalleys.exportFailed"
+msgstr "Процесс разбора гранок выпуска завершился с ошибкой"
+
+msgid "plugins.importexport.issue.cli.display"
+msgstr "«{$issueId}» — «{$issueIdentification}»"
+
+msgid "plugins.importexport.native.export.issues.results"
+msgstr "Результаты экспорта выпусков"
+
+msgid "manager.setup.notifications.copySubmissionAckPrimaryContact.disabled.description"
+msgstr ""
+"Основное контактное лицо для этого журнала не указано. Вы можете ввести "
+"основное контактное лицо в <a href=\"{$url}\">настройках журнала</a>."
+
+msgid "manager.setup.notifications.copySubmissionAckPrimaryContact.description"
+msgstr ""
+"Отправить копию письма-подтверждения отправки материала на адрес основного "
+"контактного лица журнала."
+
+msgid "manager.setup.selectCountry"
+msgstr ""
+"Выберите страну, в которой располагается данный журнал, или страну почтового "
+"адреса журнала или издателя."
