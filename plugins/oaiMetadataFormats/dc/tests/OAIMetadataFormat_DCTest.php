@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @defgroup plugins_oaiMetadataFormats_dc_tests Dublin Core OAI Plugin
  */
@@ -12,6 +11,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OAIMetadataFormat_DCTest
+ *
  * @ingroup plugins_oaiMetadataFormats_dc_tests
  *
  * @see OAIMetadataFormat_DC
@@ -19,120 +19,182 @@
  * @brief Test class for OAIMetadataFormat_DC.
  */
 
-require_mock_env('env2');
+namespace APP\plugins\oaiMetadataFormats\dc\tests;
 
-import('lib.pkp.tests.PKPTestCase');
-
+use APP\author\Author;
+use APP\core\Application;
+use APP\core\PageRouter;
+use APP\core\Request;
+use APP\facades\Repo;
+use APP\issue\Issue;
+use APP\journal\Journal;
+use APP\oai\ojs\OAIDAO;
+use APP\plugins\oaiMetadataFormats\dc\OAIMetadataFormat_DC;
+use APP\plugins\oaiMetadataFormats\dc\OAIMetadataFormatPlugin_DC;
+use APP\publication\Publication;
+use APP\section\Section;
+use APP\submission\Submission;
+use Illuminate\Support\LazyCollection;
+use PHPUnit\Framework\MockObject\MockObject;
+use PKP\author\Repository as AuthorRepository;
+use PKP\core\Registry;
+use PKP\db\DAORegistry;
+use PKP\doi\Doi;
+use PKP\galley\Collector as GalleyCollector;
+use PKP\galley\Galley;
 use PKP\oai\OAIRecord;
-
-import('plugins.oaiMetadataFormats.dc.OAIMetadataFormat_DC');
-import('plugins.oaiMetadataFormats.dc.OAIMetadataFormatPlugin_DC');
-
-import('lib.pkp.classes.services.PKPSchemaService'); // Constants
+use PKP\submission\SubmissionKeywordDAO;
+use PKP\submission\SubmissionSubjectDAO;
+use PKP\tests\PKPTestCase;
 
 class OAIMetadataFormat_DCTest extends PKPTestCase
 {
     /**
      * @see PKPTestCase::getMockedDAOs()
      */
-    protected function getMockedDAOs()
+    protected function getMockedDAOs(): array
     {
-        return ['AuthorDAO', 'OAIDAO', 'ArticleGalleyDAO'];
+        return [...parent::getMockedDAOs(), 'OAIDAO', 'SubmissionSubjectDAO', 'SubmissionKeywordDAO'];
     }
 
     /**
      * @see PKPTestCase::getMockedRegistryKeys()
      */
-    protected function getMockedRegistryKeys()
+    protected function getMockedRegistryKeys(): array
     {
-        return ['request'];
+        return [...parent::getMockedRegistryKeys(), 'request'];
+    }
+
+    /**
+     * @see PKPTestCase::getMockedContainerKeys()
+     */
+    protected function getMockedContainerKeys(): array
+    {
+        return [...parent::getMockedContainerKeys(), GalleyCollector::class, AuthorRepository::class];
     }
 
     /**
      * @covers OAIMetadataFormat_DC
-     * @covers Dc11SchemaArticleAdapter
+     * @covers \APP\plugins\metadata\dc11\filter\Dc11SchemaArticleAdapter
      */
     public function testToXml()
     {
-        $this->markTestSkipped('Skipped because of weird class interaction with ControlledVocabDAO.');
-
         //
         // Create test data.
         //
         $journalId = 1;
 
-        // Enable the DOI plugin.
-        $pluginSettingsDao = DAORegistry::getDAO('PluginSettingsDAO'); /* @var $pluginSettingsDao PluginSettingsDAO */
-        $pluginSettingsDao->updateSetting($journalId, 'doipubidplugin', 'enabled', 1);
-        $pluginSettingsDao->updateSetting($journalId, 'doipubidplugin', 'enableIssueDoi', 1);
-        $pluginSettingsDao->updateSetting($journalId, 'doipubidplugin', 'enablePublicationDoi', 1);
-        $pluginSettingsDao->updateSetting($journalId, 'doipubidplugin', 'enableRepresentationyDoi', 1);
-
         // Author
-        import('classes.article.Author');
         $author = new Author();
-        $author->setGivenName('author-firstname', 'en_US');
-        $author->setFamilyName('author-lastname', 'en_US');
-        $author->setAffiliation('author-affiliation', 'en_US');
+        $author->setGivenName('author-firstname', 'en');
+        $author->setFamilyName('author-lastname', 'en');
+        $author->setAffiliation('author-affiliation', 'en');
         $author->setEmail('someone@example.com');
 
+        // Publication
+        /** @var Doi|MockObject */
+        $publicationDoiObject = $this->getMockBuilder(Doi::class)
+            ->onlyMethods([])
+            ->getMock();
+        $publicationDoiObject->setData('doi', 'article-doi');
+
+        /** @var Publication|MockObject */
+        $publication = $this->getMockBuilder(Publication::class)
+            ->onlyMethods([])
+            ->getMock();
+        $publication->setData('issueId', 96);
+        $publication->setData('pages', 15);
+        $publication->setData('type', 'art-type', 'en');
+        $publication->setData('title', 'article-title-en', 'en');
+        $publication->setData('title', 'article-title-de', 'de');
+        $publication->setData('coverage', ['en' => ['article-coverage-geo', 'article-coverage-chron', 'article-coverage-sample']]);
+        $publication->setData('abstract', 'article-abstract', 'en');
+        $publication->setData('sponsor', 'article-sponsor', 'en');
+        $publication->setData('doiObject', $publicationDoiObject);
+        $publication->setData('languages', ['en' => ['en']]);
+        $publication->setData('copyrightHolder', 'article-copyright');
+        $publication->setData('copyrightYear', 'year');
+        $publication->setData('authors', collect([$author]));
+
         // Article
-        import('classes.submission.Submission');
+        /** @var Submission|MockObject */
         $article = $this->getMockBuilder(Submission::class)
-            ->setMethods(['getBestId'])
+            ->onlyMethods(['getBestId', 'getCurrentPublication'])
             ->getMock();
         $article->expects($this->any())
             ->method('getBestId')
             ->will($this->returnValue(9));
+        $article->setData('locale', 'en');
         $article->setId(9);
-        $article->setJournalId($journalId);
+        $article->setData('contextId', $journalId);
         $author->setSubmissionId($article->getId());
-        $article->setPages(15);
-        $article->setType('art-type', 'en_US');
-        $article->setTitle('article-title-en', 'en_US');
-        $article->setTitle('article-title-de', 'de_DE');
-        $article->setDiscipline('article-discipline', 'en_US');
-        $article->setSubject('article-subject', 'en_US');
-        $article->setAbstract('article-abstract', 'en_US');
-        $article->setSponsor('article-sponsor', 'en_US');
-        $article->setStoredPubId('doi', 'article-doi');
-        $article->setLanguage('en_US');
+        $article->expects($this->any())
+            ->method('getCurrentPublication')
+            ->will($this->returnValue($publication));
+
+        /** @var Doi|MockObject */
+        $galleyDoiObject = $this->getMockBuilder(Doi::class)
+            ->onlyMethods([])
+            ->getMock();
+        $galleyDoiObject->setData('doi', 'galley-doi');
 
         // Galleys
-        import('classes.article.ArticleGalley');
-        $galley = new ArticleGalley();
+        $galley = Repo::galley()->newDataObject();
+        /** @var Galley|MockObject */
+        $galley = $this->getMockBuilder(Galley::class)
+            ->onlyMethods(['getFileType', 'getBestGalleyId'])
+            ->setProxyTarget($galley)
+            ->getMock();
+        $galley->expects(self::any())
+            ->method('getFileType')
+            ->will($this->returnValue('galley-filetype'));
+        $galley->expects(self::any())
+            ->method('getBestGalleyId')
+            ->will($this->returnValue(98));
         $galley->setId(98);
-        $galley->setStoredPubId('doi', 'galley-doi');
+        $galley->setData('doiObject', $galleyDoiObject);
+
         $galleys = [$galley];
 
         // Journal
-        import('classes.journal.Journal');
+        /** @var Journal|MockObject */
         $journal = $this->getMockBuilder(Journal::class)
-            ->setMethods(['getSetting'])
+            ->onlyMethods(['getSetting'])
             ->getMock();
         $journal->expects($this->any())
-            ->method('getSetting') // includes getTitle()
-            ->will($this->returnCallback([$this, 'getJournalSetting']));
-        $journal->setPrimaryLocale('en_US');
+            ->method('getSetting')
+            ->with('publishingMode')
+            ->will($this->returnValue(Journal::PUBLISHING_MODE_OPEN));
+        $journal->setName('journal-title', 'en');
+        $journal->setData('publisherInstitution', 'journal-publisher');
+        $journal->setPrimaryLocale('en');
         $journal->setPath('journal-path');
+        $journal->setData('onlineIssn', 'onlineIssn');
+        $journal->setData('printIssn', null);
+        $journal->setData(Journal::SETTING_ENABLE_DOIS, true);
         $journal->setId($journalId);
 
         // Section
-        import('classes.journal.Section');
         $section = new Section();
-        $section->setIdentifyType('section-identify-type', 'en_US');
+        $section->setIdentifyType('section-identify-type', 'en');
+
+        /** @var Doi|MockObject */
+        $issueDoiObject = $this->getMockBuilder(Doi::class)
+            ->onlyMethods([])
+            ->getMock();
+        $issueDoiObject->setData('doi', 'issue-doi');
 
         // Issue
-        import('classes.issue.Issue');
+        /** @var Issue|MockObject */
         $issue = $this->getMockBuilder(Issue::class)
-            ->setMethods(['getIssueIdentification'])
+            ->onlyMethods(['getIssueIdentification'])
             ->getMock();
         $issue->expects($this->any())
             ->method('getIssueIdentification')
             ->will($this->returnValue('issue-identification'));
         $issue->setId(96);
         $issue->setDatePublished('2010-11-05');
-        $issue->setStoredPubId('doi', 'issue-doi');
+        $issue->setData('doiObject', $issueDoiObject);
         $issue->setJournalId($journalId);
 
 
@@ -141,45 +203,32 @@ class OAIMetadataFormat_DCTest extends PKPTestCase
         //
 
         // Router
-        import('lib.pkp.classes.core.PKPRouter');
-        $router = $this->getMockBuilder(PKPRouter::class)
-            ->setMethods(['url'])
+        /** @var PageRouter|MockObject */
+        $router = $this->getMockBuilder(PageRouter::class)
+            ->onlyMethods(['url'])
             ->getMock();
         $application = Application::get();
         $router->setApplication($application);
         $router->expects($this->any())
             ->method('url')
-            ->will($this->returnCallback([$this, 'routerUrl']));
+            ->will($this->returnCallback(fn ($request, $newContext = null, $handler = null, $op = null, $path = null) => $handler . '-' . $op . '-' . implode('-', $path)));
 
         // Request
-        import('classes.core.Request');
-        $request = $this->getMockBuilder(Request::class)
-            ->setMethods(['getRouter'])
+        $requestMock = $this->getMockBuilder(Request::class)
+            ->onlyMethods(['getRouter'])
             ->getMock();
-        $request->expects($this->any())
+        $requestMock->expects($this->any())
             ->method('getRouter')
             ->will($this->returnValue($router));
-        Registry::set('request', $request);
-
+        Registry::set('request', $requestMock);
 
         //
         // Create mock DAOs
         //
 
-        // Create a mocked AuthorDAO that returns our test author.
-        import('classes.article.AuthorDAO');
-        $authorDao = $this->getMockBuilder(AuthorDAO::class)
-            ->setMethods(['getBySubmissionId'])
-            ->getMock();
-        $authorDao->expects($this->any())
-            ->method('getBySubmissionId')
-            ->will($this->returnValue([$author]));
-        DAORegistry::registerDAO('AuthorDAO', $authorDao);
-
         // Create a mocked OAIDAO that returns our test data.
-        import('classes.oai.ojs.OAIDAO');
         $oaiDao = $this->getMockBuilder(OAIDAO::class)
-            ->setMethods(['getJournal', 'getSection', 'getIssue'])
+            ->onlyMethods(['getJournal', 'getSection', 'getIssue'])
             ->getMock();
         $oaiDao->expects($this->any())
             ->method('getJournal')
@@ -192,16 +241,34 @@ class OAIMetadataFormat_DCTest extends PKPTestCase
             ->will($this->returnValue($issue));
         DAORegistry::registerDAO('OAIDAO', $oaiDao);
 
-        // Create a mocked ArticleGalleyDAO that returns our test data.
-        import('classes.article.ArticleGalleyDAO');
-        $articleGalleyDao = $this->getMockBuilder(ArticleGalleyDAO::class)
-            ->setMethods(['getBySubmissionId'])
+        /** @var GalleyCollector|MockObject */
+        $mockGalleyCollector = $this->getMockBuilder(GalleyCollector::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getMany'])
             ->getMock();
-        $articleGalleyDao->expects($this->any())
-            ->method('getBySubmissionId')
-            ->will($this->returnValue($galleys));
-        DAORegistry::registerDAO('ArticleGalleyDAO', $articleGalleyDao);
-        // FIXME: ArticleGalleyDAO::getBySubmissionId returns iterator; array expected here. Fix expectations.
+        $mockGalleyCollector->expects($this->any())
+            ->method('getMany')
+            ->will($this->returnValue(LazyCollection::wrap($galleys)));
+        app()->instance(GalleyCollector::class, $mockGalleyCollector);
+
+        // Mocked DAO to return the subjects
+        $submissionSubjectDao = $this->getMockBuilder(SubmissionSubjectDAO::class)
+            ->onlyMethods(['getSubjects'])
+            ->getMock();
+        $submissionSubjectDao->expects($this->any())
+            ->method('getSubjects')
+            ->will($this->returnValue(['en' => ['article-subject', 'article-subject-class']]));
+        DAORegistry::registerDAO('SubmissionSubjectDAO', $submissionSubjectDao);
+
+        // Mocked DAO to return the keywords
+        $submissionKeywordDao = $this->getMockBuilder(SubmissionKeywordDAO::class)
+            ->onlyMethods(['getKeywords'])
+            ->getMock();
+        $submissionKeywordDao->expects($this->any())
+            ->method('getKeywords')
+            ->will($this->returnValue(['en' => ['article-keyword']]));
+        DAORegistry::registerDAO('SubmissionKeywordDAO', $submissionKeywordDao);
+
 
         //
         // Test
@@ -222,55 +289,6 @@ class OAIMetadataFormat_DCTest extends PKPTestCase
         $mdFormat = new OAIMetadataFormat_DC($prefix, $schema, $namespace);
 
         $xml = $mdFormat->toXml($record);
-        self::assertXmlStringEqualsXmlFile('tests/plugins/oaiMetadataFormats/dc/expectedResult.xml', $xml);
-    }
-
-
-    //
-    // Public helper methods
-    //
-    /**
-     * Callback for journal settings.
-     *
-     * @param $settingName string
-     */
-    public function getJournalSetting($settingName)
-    {
-        switch ($settingName) {
-            case 'name':
-                return ['en_US' => 'journal-title'];
-
-            case 'licenseTerms':
-                return ['en_US' => 'journal-copyright'];
-
-            case 'publisherInstitution':
-                return ['journal-publisher'];
-
-            case 'onlineIssn':
-                return 'onlineIssn';
-
-            case 'printIssn':
-                return null;
-
-            default:
-                self::fail('Required journal setting is not necessary for the purpose of this test.');
-        }
-    }
-
-
-    //
-    // Private helper methods
-    //
-    /**
-     * Callback for router url construction simulation.
-     *
-     * @param null|mixed $newContext
-     * @param null|mixed $handler
-     * @param null|mixed $op
-     * @param null|mixed $path
-     */
-    public function routerUrl($request, $newContext = null, $handler = null, $op = null, $path = null)
-    {
-        return $handler . '-' . $op . '-' . implode('-', $path);
+        self::assertXmlStringEqualsXmlFile('plugins/oaiMetadataFormats/dc/tests/expectedResult.xml', $xml);
     }
 }

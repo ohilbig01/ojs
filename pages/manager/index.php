@@ -12,6 +12,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_manager
+ *
  * @brief Handle requests for journal management functions.
  *
  */
@@ -22,9 +23,9 @@ switch ($op) {
     //
     case 'subscriptionPolicies':
     case 'saveSubscriptionPolicies':
-    //
-    // Subscription Types
-    //
+        //
+        // Subscription Types
+        //
     case 'subscriptionTypes':
     case 'deleteSubscriptionType':
     case 'createSubscriptionType':
@@ -32,27 +33,4 @@ switch ($op) {
     case 'editSubscriptionType':
     case 'updateSubscriptionType':
     case 'moveSubscriptionType':
-    //
-    // Subscriptions
-    //
-    case 'subscriptions':
-    case 'subscriptionsSummary':
-    case 'deleteSubscription':
-    case 'renewSubscription':
-    case 'createSubscription':
-    case 'editSubscription':
-    case 'updateSubscription':
-        define('HANDLER_CLASS', 'SubscriptionHandler');
-        import('pages.manager.SubscriptionHandler');
-        break;
-    //
-    // Payment
-    //
-    case 'payments':
-    case 'savePaymentSettings':
-    case 'viewPayments':
-    case 'viewPayment':
-        define('HANDLER_CLASS', 'ManagerPaymentHandler');
-        import('pages.manager.ManagerPaymentHandler');
-        break;
 }

@@ -12,6 +12,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_editor
+ *
  * @brief Handle requests for issue management functions.
  *
  */
@@ -22,7 +23,5 @@ switch ($op) {
     //
     case 'index':
     case 'issuesTabs':
-        define('HANDLER_CLASS', 'ManageIssuesHandler');
-        import('pages.manageIssues.ManageIssuesHandler');
-        break;
+        return new APP\pages\manageIssues\ManageIssuesHandler();
 }

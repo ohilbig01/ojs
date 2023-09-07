@@ -8,6 +8,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class upgradeTool
+ *
  * @ingroup tools
  *
  * @brief CLI tool for upgrading OJS.
@@ -15,7 +16,7 @@
  * Note: Some functions require fopen wrappers to be enabled.
  */
 
-require(dirname(__FILE__) . '/bootstrap.inc.php');
+require(dirname(__FILE__) . '/bootstrap.php');
 
 $tool = new \PKP\cliTool\UpgradeTool($argv ?? []);
 $tool->execute();

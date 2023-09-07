@@ -27,12 +27,12 @@
 
 <p>{if $prevYear !== null}<a href="{url op="clockss" year=$prevYear}" class="action">&lt;&lt; Previous</a>{else}<span class="disabled heading">&lt;&lt; Previous</span>{/if} | {if $nextYear !== null}<a href="{url op="clockss" year=$nextYear}" class="action">Next &gt;&gt;</a>{else}<span class="disabled heading">Next &gt;&gt;</span>{/if}</p>
 
-<h3>Archive of Published Issues: {$year|escape}</h3>
+<h3>Archive of Published Issues: {$year|default:''|escape}</h3>
 
 <ul>
-{iterate from=issues item=issue}
+{foreach from=$issues item=issue}
 	<li><a href="{url page="issue" op="view" path=$issue->getBestIssueId()}">{$issue->getIssueIdentification()|strip_unsafe_html|nl2br}</a></li>
-{/iterate}
+{/foreach}
 </ul>
 
 
@@ -117,7 +117,7 @@
 
 <p>CLOCKSS system has permission to ingest, preserve, and serve this Archival Unit.</p>
 
-<p><a href="http://pkp.sfu.ca/"><img src="{$baseUrl}/lib/pkp/templates/images/pkp.gif" style="border: 0;" alt="The Public Knowledge Project" /></a></p>
+<p><a href="https://pkp.sfu.ca/"><img src="{$baseUrl}/lib/pkp/templates/images/pkp.gif" style="border: 0;" alt="The Public Knowledge Project" /></a></p>
 <p>Open Journal Systems was developed by the Public Knowledge Project.</p>
 
 </div>

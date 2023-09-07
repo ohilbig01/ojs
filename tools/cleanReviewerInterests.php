@@ -8,19 +8,28 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewerInterestsDeletionTool
+ *
  * @ingroup tools
  *
  * @brief CLI tool to remove user interests that are not referenced by any user accounts.
  */
 
-require(dirname(__FILE__) . '/bootstrap.inc.php');
+require(dirname(__FILE__) . '/bootstrap.php');
+
+use PKP\cliTool\CommandLineTool;
+use PKP\controlledVocab\ControlledVocabDAO;
+use PKP\controlledVocab\ControlledVocabEntryDAO;
+use PKP\db\DAORegistry;
+use PKP\user\InterestDAO;
 
 class ReviewerInterestsDeletionTool extends CommandLineTool
 {
+    public array $parameters;
+
     /**
      * Constructor.
      *
-     * @param $argv array command-line arguments
+     * @param array $argv command-line arguments
      */
     public function __construct($argv = [])
     {
@@ -60,13 +69,14 @@ class ReviewerInterestsDeletionTool extends CommandLineTool
         switch ($command) {
             case '--show':
                 $interests = array_map(function ($entry) {
-                    return $entry->getData(\PKP\user\InterestDAO::CONTROLLED_VOCAB_INTEREST);
+                    return $entry->getData(InterestDAO::CONTROLLED_VOCAB_INTEREST);
                 }, $orphans);
                 echo "Below are the user interests that are not referenced by any user account.\n";
-                echo "\t" . join($interests, "\n\t") . "\n";
+                echo "\t" . join("\n\t", $interests) . "\n";
                 break;
 
             case '--remove':
+                /** @var ControlledVocabEntryDAO */
                 $vocabEntryDao = DAORegistry::getDAO('ControlledVocabEntryDAO');
                 foreach ($orphans as $orphanVocab) {
                     $vocabEntryDao->deleteObject($orphanVocab);
@@ -88,11 +98,14 @@ class ReviewerInterestsDeletionTool extends CommandLineTool
      */
     protected function _getOrphanVocabInterests()
     {
+        /** @var InterestDAO */
         $interestDao = DAORegistry::getDAO('InterestDAO');
+        /** @var ControlledVocabDAO */
         $vocabDao = DAORegistry::getDAO('ControlledVocabDAO');
+        /** @var ControlledVocabEntryDAO */
         $vocabEntryDao = DAORegistry::getDAO('ControlledVocabEntryDAO');
 
-        $interestVocab = $vocabDao->getBySymbolic(\PKP\user\InterestDAO::CONTROLLED_VOCAB_INTEREST);
+        $interestVocab = $vocabDao->getBySymbolic(InterestDAO::CONTROLLED_VOCAB_INTEREST);
         $vocabEntryIterator = $vocabEntryDao->getByControlledVocabId($interestVocab->getId());
         $vocabEntryList = $vocabEntryIterator->toArray();
 

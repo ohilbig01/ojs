@@ -33,15 +33,7 @@
 			>
 				{translate key="common.declined"}
 			</badge>
-			<span class="pkpWorkflow__identificationId">{{ submission.id }}</span>
-			<span class="pkpWorkflow__identificationDivider">/</span>
-			<span class="pkpWorkflow__identificationAuthor">
-				{{ currentPublication.authorsStringShort }}
-			</span>
-			<span class="pkpWorkflow__identificationDivider">/</span>
-			<span class="pkpWorkflow__identificationTitle">
-				{{ localizeSubmission(currentPublication.fullTitle, currentPublication.locale) }}
-			</span>
+			{include file="workflow/submissionIdentification.tpl"}
 		</h1>
 		<template slot="actions">
 			<pkp-button
@@ -98,6 +90,24 @@
 				{capture assign=submissionProgressBarUrl}{url op="submissionProgressBar" submissionId=$submission->getId() stageId=$requestedStageId contextId="submission" escape=false}{/capture}
 				{load_url_in_div id="submissionProgressBarDiv" url=$submissionProgressBarUrl}
 			</div>
+
+			{* Modal to select one of the revision decisions *}
+			<modal
+				:close-label="__('common.close')"
+				name="selectRevisionDecision"
+				title="Revisions"
+			>
+				<pkp-form v-bind="components.{$smarty.const.FORM_SELECT_REVISION_DECISION}" @set="set" @success="goToRevisionDecision" />
+			</modal>
+
+			{* Modal to select one of the revision recommendations *}
+			<modal
+				:close-label="__('common.close')"
+				name="selectRevisionRecommendation"
+				title="Revisions"
+			>
+				<pkp-form v-bind="components.{$smarty.const.FORM_SELECT_REVISION_RECOMMENDATION}" @set="set" @success="goToRevisionDecision" />
+			</modal>
 		</tab>
 		{if $canAccessPublication}
 			<tab id="publication" label="{translate key="submission.publication"}">
@@ -187,9 +197,16 @@
 							<pkp-form v-bind="components.{$smarty.const.FORM_TITLE_ABSTRACT}" @set="set" />
 						</tab>
 						<tab id="contributors" label="{translate key="publication.contributors"}">
-							<div id="contributors-grid" ref="contributors">
-								<spinner></spinner>
-							</div>
+							<contributors-list-panel
+								v-bind="components.contributors"
+								class="pkpWorkflow__contributors"
+								@set="set"
+								:items="workingPublication.authors"
+								:publication="workingPublication"
+								:publication-api-url="submissionApiUrl + '/publications/' + workingPublication.id"
+								@updated:publication="setWorkingPublication"
+								@updated:contributors="setContributors"
+							></contributors-list-panel>
 						</tab>
 						{if $metadataEnabled}
 							<tab id="metadata" label="{translate key="submission.informationCenter.metadata"}">

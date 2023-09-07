@@ -12,6 +12,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_gateway
+ *
  * @brief Handle gateway interaction requests.
  *
  */
@@ -21,7 +22,5 @@ switch ($op) {
     case 'lockss':
     case 'clockss':
     case 'plugin':
-        define('HANDLER_CLASS', 'GatewayHandler');
-        import('pages.gateway.GatewayHandler');
-        break;
+        return new APP\pages\gateway\GatewayHandler($request);
 }

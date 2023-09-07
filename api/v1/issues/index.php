@@ -12,9 +12,9 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup api_v1_issues
+ *
  * @brief Handle requests for issues API functions.
  *
  */
 
-import('api.v1.issues.IssueHandler');
-return new IssueHandler();
+return new \APP\API\v1\issues\IssueHandler();

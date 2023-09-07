@@ -36,6 +36,10 @@
 		> *:last-child {
 			margin-bottom: 0;
 		}
+
+		> h2 + p {
+			margin-top: 0;
+		}
 	}
 
 	.sub_item {
@@ -85,6 +89,9 @@
 			display: block;
 		}
 
+		.userGroup {
+			display: block;
+		}
 		.orcid {
 			display: block;
 			font-size: @font-sml;
@@ -127,9 +134,12 @@
 
 	.galleys_links {
 		&:extend(.pkp_unstyled_list);
+		display: flex;
+		flex-flow: row nowrap;
+		justify-content: start;
 
 		li {
-			display: inline-block;
+			margin-inline-end: 1rem;
 		}
 	}
 

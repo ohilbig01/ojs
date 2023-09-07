@@ -7,28 +7,17 @@
  * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
- * @class installTool
+ * @class OJSInstallTool
+ *
  * @ingroup tools
  *
  * @brief CLI tool for installing OJS.
  */
 
-require(dirname(__FILE__) . '/bootstrap.inc.php');
-
-import('lib.pkp.classes.cliTool.InstallTool');
+require(dirname(__FILE__) . '/bootstrap.php');
 
 class OJSInstallTool extends \PKP\cliTool\InstallTool
 {
-    /**
-     * Constructor.
-     *
-     * @param $argv array command-line arguments
-     */
-    public function __construct($argv = [])
-    {
-        parent::__construct($argv);
-    }
-
     /**
      * Read installation parameters from stdin.
      * FIXME: May want to implement an abstract "CLIForm" class handling input/validation.
@@ -36,7 +25,6 @@ class OJSInstallTool extends \PKP\cliTool\InstallTool
      */
     public function readParams()
     {
-        AppLocale::requireComponents(LOCALE_COMPONENT_PKP_INSTALLER, LOCALE_COMPONENT_APP_COMMON, LOCALE_COMPONENT_PKP_USER);
         printf("%s\n", __('installer.appInstallation'));
 
         parent::readParams();

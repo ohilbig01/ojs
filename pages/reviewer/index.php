@@ -12,6 +12,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_reviewer
+ *
  * @brief Handle requests for reviewer functions.
  *
  */
@@ -26,7 +27,5 @@ switch ($op) {
     case 'saveStep':
     case 'showDeclineReview':
     case 'saveDeclineReview':
-        define('HANDLER_CLASS', 'ReviewerHandler');
-        import('pages.reviewer.ReviewerHandler');
-        break;
+        return new APP\pages\reviewer\ReviewerHandler();
 }

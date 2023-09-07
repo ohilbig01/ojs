@@ -17,6 +17,11 @@
 				"$ref": "#/definitions/SubmissionSummary"
 			}
 		},
+		"coverImage": {
+			"type": "string",
+			"multilingual": true,
+			"apiSummary": true
+		},
 		"coverImageAltText": {
 			"type": "string",
 			"multilingual": true,
@@ -26,6 +31,7 @@
 			"type": "string",
 			"multilingual": true,
 			"apiSummary": true,
+			"readOnly": true,
 			"validation": [
 				"url"
 			]
@@ -45,11 +51,23 @@
 		},
 		"description": {
 			"type": "string",
-			"multilingual": "true",
+			"multilingual": true,
 			"apiSummary": true
 		},
-		"doi": {
-			"type": "string"
+		"doiObject": {
+			"type": "object",
+			"description": "DOI object for this galley",
+			"apiSummary": true,
+			"readOnly": true,
+			"$ref": "#/definitions/Doi"
+		},
+		"doiId": {
+			"type": "integer",
+			"description": "Reference to the DOI for this galley",
+			"writeOnly": true,
+			"validation": [
+				"nullable"
+			]
 		},
 		"galleys": {
 			"type": "array",
@@ -89,7 +107,7 @@
 			]
 		},
 		"originalStyleFileName": {
-		  "type": "string"
+			"type": "string"
 		},
 		"published": {
 			"type": "boolean",
@@ -110,10 +128,10 @@
 			}
 		},
 		"showNumber": {
-		  "type": "boolean"
+			"type": "boolean"
 		},
 		"showTitle": {
-		  	"type": "boolean"
+			"type": "boolean"
 		},
 		"showVolume": {
 			"type": "boolean"
@@ -126,7 +144,7 @@
 		},
 		"title": {
 			"type": "string",
-			"multilingual": "true",
+			"multilingual": true,
 			"apiSummary": true
 		},
 		"urlPath": {
@@ -134,7 +152,7 @@
 			"description": "An optional path to use in the URL instead of the ID.",
 			"validation": [
 				"nullable",
-				"regex:/^[-_a-z0-9]*$/"
+				"regex:/^[a-zA-Z0-9]+([\\.\\-_][a-zA-Z0-9]+)*$/"
 			]
 		},
 		"volume": {

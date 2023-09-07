@@ -12,6 +12,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_catalog
+ *
  * @brief Handle requests for the public catalog view.
  *
  */
@@ -20,7 +21,5 @@ switch ($op) {
     case 'category':
     case 'fullSize':
     case 'thumbnail':
-        define('HANDLER_CLASS', 'PKPCatalogHandler');
-        import('lib.pkp.pages.catalog.PKPCatalogHandler');
-        break;
+        return new PKP\pages\catalog\PKPCatalogHandler();
 }

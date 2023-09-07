@@ -12,6 +12,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_user
+ *
  * @brief Handle requests for user functions.
  *
  */
@@ -30,9 +31,7 @@ switch ($op) {
     case 'payRenewSubscription':
     case 'payMembership':
     case 'getInterests':
-        define('HANDLER_CLASS', 'UserHandler');
-        import('pages.user.UserHandler');
-        break;
+        return new APP\pages\user\UserHandler();
     default:
-        require_once('lib/pkp/pages/user/index.php');
+        return require_once('lib/pkp/pages/user/index.php');
 }

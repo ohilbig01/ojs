@@ -1,9 +1,6 @@
 [submodule "lib/pkp"]
 	path = lib/pkp
 	url = https://github.com/pkp/pkp-lib.git
-[submodule "plugins/generic/usageStats"]
-        path = plugins/generic/usageStats
-        url = https://github.com/pkp/usageStats.git
 [submodule "plugins/generic/customBlockManager"]
 	path = plugins/generic/customBlockManager
 	url = https://github.com/pkp/customBlockManager.git
@@ -50,6 +47,12 @@
 [submodule "plugins/generic/googleScholar"]
 	path = plugins/generic/googleScholar
 	url = https://github.com/pkp/googleScholar
-[submodule "plugins/importexport/crossref"]
-	path = plugins/importexport/crossref
-	url = https://github.com/pkp/crossref-ojs.git
+[submodule "plugins/generic/crossref"]
+	path = plugins/generic/crossref
+	url = https://github.com/pkp/crossref-ojs
+[submodule "plugins/generic/acron"]
+	path = plugins/generic/acron
+	url = https://github.com/pkp/acron
+[submodule "plugins/generic/webFeed"]
+	path = plugins/generic/webFeed
+	url = https://github.com/pkp/webFeed.git

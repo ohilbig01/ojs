@@ -12,6 +12,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_subscriptions
+ *
  * @brief Handle requests for payment management functions.
  *
  */
@@ -28,7 +29,5 @@ switch ($op) {
     case 'paymentTypes':
     case 'savePaymentTypes':
     case 'payments':
-        define('HANDLER_CLASS', 'PaymentsHandler');
-        import('pages.payments.PaymentsHandler');
-        break;
+        return new APP\pages\payments\PaymentsHandler();
 }

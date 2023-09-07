@@ -10,21 +10,28 @@
 <record
 	xmlns="http://www.loc.gov/MARC21/slim"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">
+	xsi:schemaLocation="http://www.loc.gov/MARC21/slim https://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">
 	<leader>     nmb a2200000Iu 4500</leader>
 	{if $article->getDatePublished()}
 		<controlfield tag="008">"{$article->getDatePublished()|strtotime|date_format:"%y%m%d %Y"}                        eng  "</controlfield>
 	{/if}
 	{if $journal->getData('onlineIssn')}
 		<datafield tag="022" ind1="#" ind2="#">
-			<subfield code="$a">{$journal->getData('onlineIssn')|escape}</subfield>
+			<subfield code="a">{$journal->getData('onlineIssn')|escape}</subfield>
 		</datafield>
 	{/if}
 	{if $journal->getData('printIssn')}
 		<datafield tag="022" ind1="#" ind2="#">
-			<subfield code="$a">{$journal->getData('printIssn')|escape}</subfield>
+			<subfield code="a">{$journal->getData('printIssn')|escape}</subfield>
 		</datafield>
 	{/if}
+	{if $article->getStoredPubId('doi')}
+	<datafield tag="024" ind1="7" ind2="#">
+		<subfield code="a">{$article->getStoredPubId('doi')|escape}</subfield>
+		<subfield code="2">doi</subfield>
+	</datafield>
+	{/if}
+
 	<datafield tag="042" ind1=" " ind2=" ">
 		<subfield code="a">dc</subfield>
 	</datafield>
@@ -32,10 +39,10 @@
 		<subfield code="a">{$article->getTitle($journal->getPrimaryLocale())|escape}</subfield>
 	</datafield>
 
-	{assign var=authors value=$article->getAuthors()}
+	{assign var=authors value=$article->getCurrentPublication()->getData('authors')}
 	{foreach from=$authors item=author}
 		<datafield tag="{if $authors|@count==1}100{else}720{/if}" ind1="1" ind2=" ">
-			<subfield code="a">{$author->getFullName(false, true)|escape}</subfield>
+			<subfield code="a">{$author->getFullName(false, true, $journal->getPrimaryLocale())|escape}</subfield>
 			{assign var=affiliation value=$author->getAffiliation($journal->getPrimaryLocale())}
 			{if $affiliation}<subfield code="u">{$affiliation|escape}</subfield>{/if}
 			{if $author->getUrl()}<subfield code="0">{$author->getUrl()|escape}</subfield>{/if}

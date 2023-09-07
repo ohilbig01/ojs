@@ -12,6 +12,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_workflow
+ *
  * @brief Handle requests for workflow functions.
  *
  */
@@ -25,7 +26,5 @@ switch ($op) {
     case 'production':
     case 'editorDecisionActions':
     case 'submissionProgressBar':
-        define('HANDLER_CLASS', 'WorkflowHandler');
-        import('pages.workflow.WorkflowHandler');
-        break;
+        return new APP\pages\workflow\WorkflowHandler();
 }

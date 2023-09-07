@@ -8,12 +8,20 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class rebuildSearchIndex
+ *
  * @ingroup tools
  *
  * @brief CLI tool to rebuild the article keyword search database.
  */
 
-require(dirname(__FILE__) . '/bootstrap.inc.php');
+require(dirname(__FILE__) . '/bootstrap.php');
+
+use APP\core\Application;
+use APP\journal\JournalDAO;
+use PKP\cliTool\CommandLineTool;
+use PKP\config\Config;
+use PKP\db\DAORegistry;
+use PKP\plugins\Hook;
 
 class rebuildSearchIndex extends CommandLineTool
 {
@@ -46,16 +54,17 @@ class rebuildSearchIndex extends CommandLineTool
         $journal = null;
         if (count($this->argv)) {
             $journalPath = array_shift($this->argv);
+            /** @var JournalDAO */
             $journalDao = DAORegistry::getDAO('JournalDAO');
             $journal = $journalDao->getByPath($journalPath);
             if (!$journal) {
-                die(__('search.cli.rebuildIndex.unknownJournal', ['journalPath' => $journalPath]) . "\n");
+                exit(__('search.cli.rebuildIndex.unknownJournal', ['journalPath' => $journalPath]) . "\n");
             }
         }
 
         // Register a router hook so that we can construct
         // useful URLs to journal content.
-        HookRegistry::register('Request::getBaseUrl', [$this, 'callbackBaseUrl']);
+        Hook::add('Request::getBaseUrl', $this->callbackBaseUrl(...));
 
         // Let the search implementation re-build the index.
         $articleSearchIndex = Application::getSubmissionSearchIndex();
@@ -66,7 +75,7 @@ class rebuildSearchIndex extends CommandLineTool
      * Callback to patch the base URL which will be required
      * when constructing galley/supp file download URLs.
      *
-     * @see PKPRequest::getBaseUrl()
+     * @see \APP\core\Request::getBaseUrl()
      */
     public function callbackBaseUrl($hookName, $params)
     {

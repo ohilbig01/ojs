@@ -11,7 +11,8 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup api_v1_contexts
+ *
  * @brief Handle API requests for contexts (journals/presses).
  */
-import('api.v1.contexts.ContextHandler');
-return new ContextHandler();
+
+return new \APP\API\v1\contexts\ContextHandler();

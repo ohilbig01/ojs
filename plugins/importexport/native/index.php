@@ -8,10 +8,9 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup plugins_importexport_native
+ *
  * @brief Wrapper for XML native import/export plugin.
  *
  */
 
-require_once('NativeImportExportPlugin.inc.php');
-
-return new NativeImportExportPlugin();
+return new \APP\plugins\importexport\native\NativeImportExportPlugin();

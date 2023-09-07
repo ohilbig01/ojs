@@ -11,7 +11,8 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup api_v1_vocabs
+ *
  * @brief Handle API requests for vocabs.
  */
-import('lib.pkp.api.v1.vocabs.PKPVocabHandler');
-return new PKPVocabHandler();
+
+return new \PKP\API\v1\vocabs\PKPVocabHandler();

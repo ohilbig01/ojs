@@ -12,14 +12,13 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup api_v1_submissions
+ *
  * @brief Handle requests for submission API functions.
  *
  */
 $urlParts = explode('/', trim($_SERVER['PATH_INFO'], '/'));
 if (count($urlParts) >= 6 && $urlParts[5] == 'files') {
-    import('lib.pkp.api.v1.submissions.PKPSubmissionFileHandler');
-    return new PKPSubmissionFileHandler();
+    return new \PKP\API\v1\submissions\PKPSubmissionFileHandler();
 } else {
-    import('api.v1.submissions.SubmissionHandler');
-    return new SubmissionHandler();
+    return new \APP\API\v1\submissions\SubmissionHandler();
 }

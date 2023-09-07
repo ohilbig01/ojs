@@ -12,6 +12,7 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_authorDashboard
+ *
  * @brief Handle requests for the author dashboard.
  *
  */
@@ -24,6 +25,5 @@ switch ($op) {
     case 'submission':
     case 'readSubmissionEmail':
     case 'reviewRoundInfo':
-        import('pages.authorDashboard.AuthorDashboardHandler');
-        define('HANDLER_CLASS', 'AuthorDashboardHandler');
+        return new APP\pages\authorDashboard\AuthorDashboardHandler();
 }

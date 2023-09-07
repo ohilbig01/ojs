@@ -41,12 +41,12 @@
 		{* Issue cover image *}
 		{assign var=issueCover value=$issue->getLocalizedCoverImageUrl()}
 		{if $issueCover}
-			<a class="cover" href="{url op="view" page="issue" path=$issue->getBestIssueId()}">
+			<div class="cover">
 				{capture assign="defaultAltText"}
 					{translate key="issue.viewIssueIdentification" identification=$issue->getIssueIdentification()|escape}
 				{/capture}
 				<img src="{$issueCover|escape}" alt="{$issue->getLocalizedCoverImageAltText()|escape|default:$defaultAltText}">
-			</a>
+			</div>
 		{/if}
 
 		{* Description *}
@@ -56,19 +56,19 @@
 			</div>
 		{/if}
 
-		{* PUb IDs (eg - DOI) *}
+		{* PUb IDs (eg - URN) *}
 		{foreach from=$pubIdPlugins item=pubIdPlugin}
 			{assign var=pubId value=$issue->getStoredPubId($pubIdPlugin->getPubIdType())}
 			{if $pubId}
-				{assign var="doiUrl" value=$pubIdPlugin->getResolvingURL($currentJournal->getId(), $pubId)|escape}
+				{assign var="resolvingUrl" value=$pubIdPlugin->getResolvingURL($currentJournal->getId(), $pubId)|escape}
 				<div class="pub_id {$pubIdPlugin->getPubIdType()|escape}">
 					<span class="type">
 						{$pubIdPlugin->getPubIdDisplayType()|escape}:
 					</span>
 					<span class="id">
-						{if $doiUrl}
-							<a href="{$doiUrl|escape}">
-								{$doiUrl}
+						{if $resolvingUrl}
+							<a href="{$resolvingUrl|escape}">
+								{$resolvingUrl}
 							</a>
 						{else}
 							{$pubId}
@@ -78,8 +78,24 @@
 			{/if}
 		{/foreach}
 
+		{* DOI *}
+		{assign var=doiObject value=$issue->getData('doiObject')}
+		{if $doiObject}
+			{assign var="doiUrl" value=$doiObject->getData('resolvingUrl')|escape}
+			<div class="pub_id doi">
+				<span class="type">
+					DOI:
+				</span>
+				<span class="id">
+					<a href="{$doiUrl|escape}">
+						{$doiUrl}
+					</a>
+				</span>
+			</div>
+		{/if}
+
 		{* Published date *}
-		{if $issue->getDatePublished()}
+		{if $includeIssuePublishDate && $issue->getDatePublished()}
 			<div class="published">
 				<span class="label">
 					{translate key="submissions.published"}:

@@ -12,13 +12,12 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_oai
+ *
  * @brief Handle Open Archives Initiative protocol interaction requests.
  *
  */
 
 switch ($op) {
     case 'index':
-        define('HANDLER_CLASS', 'OAIHandler');
-        import('pages.oai.OAIHandler');
-        break;
+        return new APP\pages\oai\OAIHandler();
 }

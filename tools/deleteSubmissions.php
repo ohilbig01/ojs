@@ -7,24 +7,26 @@
  * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
- * @class deleteSubmissions
+ * @class SubmissionDeletionTool
+ *
  * @ingroup tools
  *
  * @brief CLI tool to delete submissions
  */
 
 use APP\facades\Repo;
+use PKP\cliTool\CommandLineTool;
 
-require(dirname(__FILE__) . '/bootstrap.inc.php');
+require(dirname(__FILE__) . '/bootstrap.php');
 
 class SubmissionDeletionTool extends CommandLineTool
 {
-    public $articleIds;
+    public array $parameters;
 
     /**
      * Constructor.
      *
-     * @param $argv array command-line arguments
+     * @param array $argv command-line arguments
      */
     public function __construct($argv = [])
     {
@@ -55,7 +57,7 @@ class SubmissionDeletionTool extends CommandLineTool
         foreach ($this->parameters as $articleId) {
             $article = Repo::submission()->get($articleId);
             if (!isset($article)) {
-                printf("Error: Skipping ${articleId}. Unknown submission.\n");
+                printf("Error: Skipping {$articleId}. Unknown submission.\n");
                 continue;
             }
             Repo::submission()->delete($article);

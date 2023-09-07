@@ -88,12 +88,12 @@
 	{/if}
 
 	<h1 class="page_title">
-		{$publication->getLocalizedTitle()|escape}
+		{$publication->getLocalizedTitle(null, 'html')|strip_unsafe_html}
 	</h1>
 
 	{if $publication->getLocalizedData('subtitle')}
 		<h2 class="subtitle">
-			{$publication->getLocalizedData('subtitle')|escape}
+			{$publication->getLocalizedSubTitle(null, 'html')|strip_unsafe_html}
 		</h2>
 	{/if}
 
@@ -117,9 +117,17 @@
 									{/if}
 								</span>
 							{/if}
+							{assign var=authorUserGroup value=$userGroupsById[$author->getData('userGroupId')]}
+							{if $authorUserGroup->getShowTitle()}
+								<span class="userGroup">
+									{$authorUserGroup->getLocalizedName()|escape}
+								</span>
+							{/if}
 							{if $author->getData('orcid')}
 								<span class="orcid">
-									{$orcidIcon}
+									{if $author->getData('orcidAccessToken')}
+										{$orcidIcon}
+									{/if}
 									<a href="{$author->getData('orcid')|escape}" target="_blank">
 										{$author->getData('orcid')|escape}
 									</a>
@@ -131,27 +139,23 @@
 				</section>
 			{/if}
 
-			{* DOI (requires plugin) *}
-			{foreach from=$pubIdPlugins item=pubIdPlugin}
-				{if $pubIdPlugin->getPubIdType() != 'doi'}
-					{continue}
-				{/if}
-				{assign var=pubId value=$article->getStoredPubId($pubIdPlugin->getPubIdType())}
-				{if $pubId}
-					{assign var="doiUrl" value=$pubIdPlugin->getResolvingURL($currentJournal->getId(), $pubId)|escape}
-					<section class="item doi">
-						<h2 class="label">
-							{capture assign=translatedDOI}{translate key="plugins.pubIds.doi.readerDisplayName"}{/capture}
-							{translate key="semicolon" label=$translatedDOI}
-						</h2>
-						<span class="value">
-							<a href="{$doiUrl}">
-								{$doiUrl}
-							</a>
-						</span>
-					</section>
-				{/if}
-			{/foreach}
+			{* DOI *}
+			{assign var=doiObject value=$article->getCurrentPublication()->getData('doiObject')}
+			{if $doiObject}
+				{assign var="doiUrl" value=$doiObject->getData('resolvingUrl')|escape}
+				<section class="item doi">
+					<h2 class="label">
+						{capture assign=translatedDOI}{translate key="doi.readerDisplayName"}{/capture}
+						{translate key="semicolon" label=$translatedDOI}
+					</h2>
+					<span class="value">
+						<a href="{$doiUrl}">
+							{$doiUrl}
+						</a>
+					</span>
+				</section>
+			{/if}
+
 
 			{* Keywords *}
 			{if !empty($publication->getLocalizedData('keywords'))}
@@ -178,6 +182,22 @@
 
 			{call_hook name="Templates::Article::Main"}
 
+			{* Usage statistics chart*}
+			{if $activeTheme->getOption('displayStats') != 'none'}
+				{$activeTheme->displayUsageStatsGraph($article->getId())}
+				<section class="item downloads_chart">
+					<h2 class="label">
+						{translate key="plugins.themes.default.displayStats.downloads"}
+					</h2>
+					<div class="value">
+						<canvas class="usageStatsGraph" data-object-type="Submission" data-object-id="{$article->getId()|escape}"></canvas>
+						<div class="usageStatsUnavailable" data-object-type="Submission" data-object-id="{$article->getId()|escape}">
+							{translate key="plugins.themes.default.displayStats.noStats"}
+						</div>
+					</div>
+				</section>
+			{/if}
+
 			{* Author biographies *}
 			{assign var="hasBiographies" value=0}
 			{foreach from=$publication->getData('authors') item=author}
@@ -194,24 +214,26 @@
 							{translate key="submission.authorBiography"}
 						{/if}
 					</h2>
+					<ul class="authors">
 					{foreach from=$publication->getData('authors') item=author}
 						{if $author->getLocalizedData('biography')}
-							<section class="sub_item">
-								<h3 class="label">
+							<li class="sub_item">
+								<div class="label">
 									{if $author->getLocalizedData('affiliation')}
 										{capture assign="authorName"}{$author->getFullName()|escape}{/capture}
-										{capture assign="authorAffiliation"}<span class="affiliation">{$author->getLocalizedData('affiliation')|escape}</span>{/capture}
+										{capture assign="authorAffiliation"} {$author->getLocalizedData('affiliation')|escape} {/capture}
 										{translate key="submission.authorWithAffiliation" name=$authorName affiliation=$authorAffiliation}
 									{else}
 										{$author->getFullName()|escape}
 									{/if}
-								</h3>
+								</div>
 								<div class="value">
 									{$author->getLocalizedData('biography')|strip_unsafe_html}
 								</div>
-							</section>
+							</li>
 						{/if}
 					{/foreach}
+					</ul>
 				</section>
 			{/if}
 
@@ -326,56 +348,12 @@
 			</div>
 			{/if}
 
-			{* How to cite *}
-			{if $citation}
-				<div class="item citation">
-					<section class="sub_item citation_display">
-						<h2 class="label">
-							{translate key="submission.howToCite"}
-						</h2>
-						<div class="value">
-							<div id="citationOutput" role="region" aria-live="polite">
-								{$citation}
-							</div>
-							<div class="citation_formats">
-								<button class="cmp_button citation_formats_button" aria-controls="cslCitationFormats" aria-expanded="false" data-csl-dropdown="true">
-									{translate key="submission.howToCite.citationFormats"}
-								</button>
-								<div id="cslCitationFormats" class="citation_formats_list" aria-hidden="true">
-									<ul class="citation_formats_styles">
-										{foreach from=$citationStyles item="citationStyle"}
-											<li>
-												<a
-													aria-controls="citationOutput"
-													href="{url page="citationstylelanguage" op="get" path=$citationStyle.id params=$citationArgs}"
-													data-load-citation
-													data-json-href="{url page="citationstylelanguage" op="get" path=$citationStyle.id params=$citationArgsJson}"
-												>
-													{$citationStyle.title|escape}
-												</a>
-											</li>
-										{/foreach}
-									</ul>
-									{if count($citationDownloads)}
-										<div class="label">
-											{translate key="submission.howToCite.downloadCitation"}
-										</div>
-										<ul class="citation_formats_styles">
-											{foreach from=$citationDownloads item="citationDownload"}
-												<li>
-													<a href="{url page="citationstylelanguage" op="download" path=$citationDownload.id params=$citationArgs}">
-														<span class="fa fa-download"></span>
-														{$citationDownload.title|escape}
-													</a>
-												</li>
-											{/foreach}
-										</ul>
-									{/if}
-								</div>
-							</div>
-						</div>
-					</section>
-				</div>
+			{* Data Availability Statement *}
+			{if $publication->getLocalizedData('dataAvailability')}
+				<section class="item dataAvailability">
+					<h2 class="label">{translate key="submission.dataAvailability"}</h2>
+					{$publication->getLocalizedData('dataAvailability')|strip_unsafe_html}
+				</section>
 			{/if}
 
 			{* Issue article appears in *}
