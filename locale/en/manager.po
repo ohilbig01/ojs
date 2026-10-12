@@ -1,19 +1,20 @@
 # Jonas Raoni Soares da Silva <weblate@raoni.org>, 2022.
+# Elisabeth Sawatzky <ejournals.ojs@uni-muenster.de>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27T09:54:39-07:00\n"
-"PO-Revision-Date: 2022-07-02 13:32+0000\n"
-"Last-Translator: Jonas Raoni Soares da Silva <weblate@raoni.org>\n"
-"Language-Team: English (United States) <http://translate.pkp.sfu.ca/projects/"
-"ojs/manager/en_US/>\n"
-"Language: en_US\n"
+"PO-Revision-Date: 2026-09-07 14:43+0000\n"
+"Last-Translator: Elisabeth Sawatzky <ejournals.ojs@uni-muenster.de>\n"
+"Language-Team: English <http://translate.pkp.sfu.ca/projects/ojs/manager/en/>"
+"\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "Access"
@@ -53,6 +54,12 @@ msgstr "Use default patterns.<br />%j.v%vi%i for issues<br />%j.v%vi%i.%a for ar
 
 msgid "doi.manager.settings.doiCreationTime.copyedit"
 msgstr "Upon reaching the copyediting stage"
+
+msgid "manager.dois.filters.workflow"
+msgstr "Workflow"
+
+msgid "manager.dois.filters.inEditingOrPublished"
+msgstr "In Copyediting, Production, Published or with DOIs"
 
 msgid "manager.website.archiving"
 msgstr "Archiving"
@@ -338,12 +345,6 @@ msgstr "Limit abstract word counts for this section (0 for no limit)"
 msgid "manager.setup"
 msgstr "Journal Settings"
 
-msgid "manager.setup.masthead"
-msgstr "Masthead"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Editorial Team"
-
 msgid "manager.setup.homepageContent"
 msgstr "Journal Homepage Content"
 
@@ -400,9 +401,6 @@ msgstr "Enter any information you would like to appear on your announcements pag
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(To appear in About the Journal) "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr "Require submitting Authors to file a Competing Interest (CI) statement with their submission."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr "Require Reviewers to file a CI statement with each peer review they submit."
@@ -582,6 +580,24 @@ msgstr "Journal Archiving"
 msgid "manager.setup.contextSummary"
 msgstr "Journal Summary"
 
+msgid "manager.setup.contextSummary.description"
+msgstr "Offer a brief description of your journal to provide insight into its content and purpose."
+
+msgid "manager.setup.journalContentOrganization"
+msgstr "Journal Content Organization"
+
+msgid "manager.setup.journalContentOrganization.description"
+msgstr "Choose how your journal's content will be organized on the homepage."
+
+msgid "manager.setup.journalContentOrganization.option.issueToc"
+msgstr "Include the current issue's table of contents"
+
+msgid "manager.setup.journalContentOrganization.option.recentPublished"
+msgstr "Include recent most published articles"
+
+msgid "manager.setup.journalContentOrganization.option.categoryListing"
+msgstr "Include a listing of categories"
+
 msgid "manager.setup.contextAbout"
 msgstr "About the Journal"
 
@@ -604,7 +620,7 @@ msgid "manager.setup.journalHomepageHeaderDescription"
 msgstr "A graphic version of the journal's title and logo (as a .gif, .jpg, or .png file) can be uploaded for the homepage, which will replace the text version that otherwise appears."
 
 msgid "manager.setup.contextInitials"
-msgstr "Journal initials"
+msgstr "Journal Initials"
 
 msgid "manager.setup.selectCountry"
 msgstr "Select the country where this journal is located, or the country of the mailing address for the journal or publisher."
@@ -649,13 +665,7 @@ msgid "manager.setup.journalThumbnail.description"
 msgstr "A small logo or representation of the journal that can be used in lists of journals."
 
 msgid "manager.setup.contextTitle"
-msgstr "Journal title"
-
-msgid "manager.setup.keyInfo"
-msgstr "Key Information"
-
-msgid "manager.setup.keyInfo.description"
-msgstr "Provide a short description of your journal and identify editors, managing directors and other members of your editorial team."
+msgstr "Journal Title"
 
 msgid "manager.setup.labelName"
 msgstr "Label name"
@@ -684,9 +694,6 @@ msgstr "LOCKSS and CLOCKSS"
 msgid "manager.setup.lockssEnable"
 msgstr "Enable LOCKSS to store and distribute journal content at participating libraries via a LOCKSS <a href=\"{$lockssUrl}\" target=\"_blank\">Publisher Manifest</a> page."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr "A LOCKSS license will appear in About the Journal under Archiving: <a href=\"http://www.lockss.org/community/publishers-titles-gln/\" target=\"_blank\">LOCKSS License</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "LOCKSS License Description"
 
@@ -703,11 +710,6 @@ msgstr "LOCKSS"
 
 msgid "manager.setup.clockssEnable"
 msgstr "Enable CLOCKSS to store and distribute journal content at participating libraries via a CLOCKSS <a href=\"{$clockssUrl}\" target=\"_blank\">Publisher Manifest</a> page."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"A CLOCKSS license will appear in About the Journal under Archiving: <a href="
-"\"https://clockss.org\" target=\"_blank\">CLOCKSS License</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "CLOCKSS License Description"
@@ -824,9 +826,6 @@ msgstr "Review Options"
 
 msgid "manager.setup.reviewOptions.automatedReminders"
 msgstr "Automated Email Reminders"
-
-msgid "manager.setup.reviewOptions.automatedRemindersDisabled"
-msgstr "To send automated email reminders, the site administrator must enable the <tt>scheduled_tasks</tt> option in the OJS configuration file. Additional server configuration may be required as indicated in the OJS documentation."
 
 msgid "manager.setup.reviewOptions.numWeeksPerReview"
 msgstr "Weeks allowed to complete the review"
@@ -957,6 +956,19 @@ msgstr "User Registration"
 msgid "manager.setup.useTextTitle"
 msgstr "Title text"
 
+msgid "manager.setup.continuousPublication"
+msgstr "Continuous Publication"
+
+msgid "manager.setup.issuelessPublication"
+msgstr "Issueless Publication"
+
+msgid "manager.setup.metadata.articleNumber.description"
+msgstr ""
+"The article number can be used in citations and other metadata instead of page numbers."
+
+msgid "manager.setup.metadata.articleNumber.enable"
+msgstr "Enable article number metadata"
+
 msgid "manager.statistics.statistics"
 msgstr "Journal Statistics"
 
@@ -1086,9 +1098,6 @@ msgstr "Subscription Expiry Reminders"
 msgid "manager.subscriptionPolicies.expiryRemindersDescription"
 msgstr "Automated email reminders (available for editing by Journal Managers in OJS's Emails) can be sent to subscribers both before and after a subscription has expired."
 
-msgid "manager.subscriptionPolicies.expiryRemindersDisabled"
-msgstr "<strong>Note:</strong> To activate these options, the site administrator must enable the <tt>scheduled_tasks</tt> option in the OJS configuration file. Additional server configuration may be required to support this functionality (which may not be possible on all servers), as indicated in the OJS documentation."
-
 msgid "manager.subscriptionPolicies.expirySelectOne"
 msgstr "Select one of the following:"
 
@@ -1109,9 +1118,6 @@ msgstr "Please select a valid value for the number of weeks before subscription 
 
 msgid "manager.subscriptionPolicies.openAccessNotificationDescription"
 msgstr "Registered readers will have the option of receiving the table of contents by email when an issue becomes open access."
-
-msgid "manager.subscriptionPolicies.openAccessNotificationDisabled"
-msgstr "<strong>Note:</strong> To activate this option, the site administrator must enable the <tt>scheduled_tasks</tt> option in the OJS configuration file. Additional server configuration may be required to support this functionality (which may not be possible on all servers), as indicated in the OJS documentation."
 
 msgid "manager.subscriptionPolicies.onlinePaymentNotifications"
 msgstr "Online Payment Notifications"
@@ -1602,6 +1608,9 @@ msgstr "DOI Plugin Settings"
 msgid "plugins.importexport.common.export.articles"
 msgstr "Articles"
 
+msgid "plugins.importexport.common.export.publications"
+msgstr "Publications"
+
 msgid "plugins.importexport.common.export.issues"
 msgstr "Issues"
 
@@ -1632,9 +1641,6 @@ msgstr "The cover image of the issue {$id} was not exported, its file was not fo
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Password"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr "Please note that the password will be saved as plain text, i.e. not encrypted."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Any Issue"
 
@@ -1650,6 +1656,18 @@ msgstr "Marked registered"
 msgid "plugins.importexport.common.status.registered"
 msgstr "Registered"
 
+msgid "plugins.importexport.common.status.submitted"
+msgstr "Submitted"
+
+msgid "plugins.importexport.common.status.stale"
+msgstr "Needs Sync"
+
+msgid "plugins.importexport.common.status.error"
+msgstr "Error"
+
+msgid "plugins.importexport.common.status.failed"
+msgstr "Failed"
+
 msgid "plugins.importexport.common.action"
 msgstr "Action"
 
@@ -1661,9 +1679,6 @@ msgstr "Mark registered"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Register"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Validate XML before the export and registration."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "No objects selected."
@@ -1968,6 +1983,17 @@ msgstr "Assign DOIs to all published journal objects that have not been assigned
 msgid "doi.manager.settings.doiAssignJournalWide.confirm"
 msgstr "Are you sure you wish to assign DOIs to all published objects that have not been assigned DOIs?"
 
+msgid "doi.manager.settings.doiVersioning.description"
+msgstr ""
+"Assign a new DOI to each publication version? Most users will "
+"want to use the default option (no), as it was until now."
+
+msgid "doi.manager.settings.doiVersioning.yes"
+msgstr "Yes, assign a unique DOI to every version of an article."
+
+msgid "doi.manager.settings.doiVersioning.no"
+msgstr "No, all versions of an article should have the same DOI."
+
 msgid "doi.manager.settings.registrationAgency"
 msgstr "Registration Agency"
 
@@ -2097,21 +2123,20 @@ msgstr "This email notifies a registered reader that the Manager has created a s
 msgid "mailable.subscriptionExpiresSoon.name"
 msgstr "Subscription Expires Soon"
 
-#, fuzzy
 msgid "mailable.subscriptionExpiresSoon.description"
 msgstr "This email is sent automatically to notify a subscriber that their subscription expires soon."
 
 msgid "mailable.subscriptionExpired.name"
 msgstr "Subscription Expired"
 
-#, fuzzy
 msgid "mailable.subscriptionExpired.description"
-msgstr "This Email sent automatically to notify a subscriber that their subscription has expired"
+msgstr ""
+"This Email sent automatically to notify a subscriber that their subscription "
+"has expired."
 
 msgid "mailable.subscriptionExpiredLast.name"
 msgstr "Subscription Expired Last"
 
-#, fuzzy
 msgid "mailable.subscriptionExpiredLast.description"
 msgstr "This email sent automatically to notify a subscriber the second time that their subscription has expired"
 
@@ -2154,6 +2179,45 @@ msgstr "This email is automatically sent to registered users when the new issue 
 msgid "manager.manageEmails.description"
 msgstr "Edit the messages sent in emails from this journal."
 
+msgid "manager.reviewerRecommendations"
+msgstr "Reviewer Recommendations"
+
+msgid "manager.reviewerRecommendations.title.label"
+msgstr "Review Recommendations"
+
+msgid "manager.reviewerRecommendations.title.description"
+msgstr "e.g. accept, reject"
+
+msgid "manager.reviewerRecommendations.activateUponSaving.label"
+msgstr "Active Upon Saving"
+
+msgid "manager.reviewerRecommendations.activateUponSaving.deactivate"
+msgstr "Deactivate"
+
+msgid "manager.reviewerRecommendations.confirmDelete"
+msgstr "Are you sure you want to delete the recommendation <b>{$title}</b>"
+
+msgid "manager.reviewerRecommendations.confirmActivate"
+msgstr "Are you sure you want to activate the recommendation <b>{$title}</b>"
+
+msgid "manager.reviewerRecommendations.activate.title"
+msgstr "Activate Reviewer Recommendation"
+
+msgid "manager.reviewerRecommendations.confirmDeactivate"
+msgstr "Are you sure you want to deactivate the recommendation <b>{$title}</b>"
+
+msgid "manager.reviewerRecommendations.deactivate.title"
+msgstr "Deactivate Reviewer Recommendation"
+
+msgid "manager.reviewerRecommendations.list.name.title"
+msgstr "Recommendations"
+
+msgid "manager.reviewerRecommendations.list.status.title"
+msgstr "Activate"
+
+msgid "manager.reviewerRecommendations.context.restriction"
+msgstr "Journal does not have access to this reviewer recommendation"
+
 msgid "mailable.layoutComplete.name"
 msgstr "Galleys Complete"
 
@@ -2172,3 +2236,6 @@ msgstr "Payment Request"
 
 msgid "mailable.paymentRequest.description"
 msgstr "This automated email is sent to the author to request payment of the publication fee when their submission is accepted."
+
+msgid "manager.setup.enableEnrollmentMasthead.description"
+msgstr "If desired, a masthead can be generated automatically based on user enrollments, including start and end dates. See also Settings > Journal > Masthead."

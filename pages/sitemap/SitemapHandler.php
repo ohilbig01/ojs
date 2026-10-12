@@ -18,7 +18,6 @@ namespace APP\pages\sitemap;
 
 use APP\facades\Repo;
 use APP\issue\Collector;
-use APP\submission\Submission;
 use PKP\pages\sitemap\PKPSitemapHandler;
 use PKP\plugins\Hook;
 
@@ -26,6 +25,8 @@ class SitemapHandler extends PKPSitemapHandler
 {
     /**
      * @copydoc PKPSitemapHandler_createContextSitemap()
+     *
+     * @hook SitemapHandler::createJournalSitemap [[&$doc]]
      */
     public function _createContextSitemap($request)
     {
@@ -47,13 +48,13 @@ class SitemapHandler extends PKPSitemapHandler
                 ->orderBy(Collector::ORDERBY_PUBLISHED_ISSUES)
                 ->getMany();
             foreach ($publishedIssues as $issue) {
-                $root->appendChild($this->_createUrlTree($doc, $request->url($journal->getPath(), 'issue', 'view', $issue->getId())));
+                $root->appendChild($this->_createUrlTree($doc, $request->url($journal->getPath(), 'issue', 'view', [$issue->getId()])));
                 // Articles for issue
                 $submissions = Repo::submission()
                     ->getCollector()
                     ->filterByContextIds([$journal->getId()])
                     ->filterByIssueIds([$issue->getId()])
-                    ->filterByStatus([Submission::STATUS_PUBLISHED])
+                    ->filterByLatestPublished(true)
                     ->getMany();
 
                 foreach ($submissions as $submission) {

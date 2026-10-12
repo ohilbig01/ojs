@@ -1,0 +1,235 @@
+# Kittiphun Ruttanakorn <kittiphun.rut@mcu.ac.th>, 2023.
+# Apichaya <apichaya_cc@thonburi-u.ac.th>, 2024, 2026.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2026-09-14 11:53+0000\n"
+"Last-Translator: Apichaya <apichaya_cc@thonburi-u.ac.th>\n"
+"Language-Team: Thai <http://translate.pkp.sfu.ca/projects/ojs/admin/th/>\n"
+"Language: th\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.18.2\n"
+
+msgid "admin.hostedContexts"
+msgstr "วารสารในระบบ"
+
+msgid "admin.settings.redirect"
+msgstr "การเปลี่ยนเส้นทางไปยังวารสาร"
+
+msgid "admin.settings.redirectInstructions"
+msgstr ""
+"คำขอที่มายังหน้าหลักของเว็บไซต์จะถูกเปลี่ยนเส้นทางไปยังวารสารนี้ "
+"เหมาะสำหรับเว็บไซต์ที่มีวารสารเพียงรายการเดียว เช่น "
+"กรณีที่เว็บไซต์นี้ใช้เผยแพร่วารสารเพียงวารสารเดียว"
+
+msgid "admin.languages.confirmDisable"
+msgstr ""
+"คุณแน่ใจหรือไม่ว่าต้องการปิดใช้งานภาษานี้? "
+"การดำเนินการนี้อาจส่งผลต่อวารสารที่กำลังใช้ภาษานี้อยู่"
+
+msgid "admin.locale.maybeIncomplete"
+msgstr "ภาษาที่มีเครื่องหมายกำกับอาจมีคำแปลไม่ครบถ้วน"
+
+msgid "admin.languages.confirmUninstall"
+msgstr ""
+"คุณแน่ใจหรือไม่ว่าต้องการถอนการติดตั้งภาษานี้? "
+"การดำเนินการนี้อาจส่งผลต่อวารสารที่กำลังใช้ภาษานี้อยู่"
+
+msgid "admin.systemVersion"
+msgstr "เวอร์ชัน OJS"
+
+msgid "admin.systemConfiguration"
+msgstr "การตั้งค่า OJS"
+
+msgid "admin.systemConfigurationDescription"
+msgstr "การตั้งค่า OJS จากไฟล์ <tt>config.inc.php</tt>"
+
+msgid "admin.journals.journalSettings"
+msgstr "การตั้งค่าวารสาร"
+
+msgid "admin.journals.noneCreated"
+msgstr "ยังไม่มีวารสารในระบบ"
+
+msgid "admin.contexts.create"
+msgstr "สร้างวารสาร"
+
+msgid "admin.journals.urlWillBe"
+msgstr ""
+"ควรเป็นคำสั้น ๆ เพียงคำเดียวหรือตัวย่อที่ใช้ระบุวารสาร โดย URL ของวารสารจะเป็"
+"น {$sampleUrl}"
+
+msgid "admin.contexts.form.titleRequired"
+msgstr "จำเป็นต้องระบุชื่อวารสาร"
+
+msgid "admin.contexts.form.pathRequired"
+msgstr "จำเป็นต้องระบุที่อยู่ของวารสาร"
+
+msgid "admin.contexts.form.pathExists"
+msgstr "ที่อยู่วารสารที่ระบุมีวารสารอื่นใช้งานอยู่แล้ว"
+
+msgid "admin.journals.enableJournalInstructions"
+msgstr "เปิดใช้งานวารสารนี้ให้แสดงบนเว็บไซต์แบบสาธารณะ"
+
+msgid "admin.contexts.contextDescription"
+msgstr "คําอธิบายวารสาร"
+
+msgid "admin.journal.pathImportInstructions"
+msgstr "ที่อยู่วารสารเดิม หรือที่อยู่ที่ต้องการสร้าง (เช่น \"ojs\")"
+
+msgid "admin.journals.importSubscriptions"
+msgstr "นำเข้าข้อมูลการสมัครสมาชิก"
+
+msgid "admin.journals.redirect"
+msgstr "สร้างโค้ดสำหรับเชื่อมโยง URL จาก OJS 1 ไปยัง OJS 2"
+
+msgid "admin.journals.form.importPathRequired"
+msgstr "จำเป็นต้องระบุที่อยู่สำหรับนำเข้า"
+
+msgid "admin.mergeUsers"
+msgstr "รวมบัญชีผู้ใช้"
+
+msgid "admin.mergeUsers.mergeUser"
+msgstr "รวมบัญชีผู้ใช้"
+
+msgid "admin.mergeUsers.allUsers"
+msgstr "ผู้ใช้ทั้งหมดในระบบ"
+
+msgid "admin.mergeUsers.noneEnrolled"
+msgstr "ไม่มีผู้ใช้ในระบบ"
+
+msgid "admin.scheduledTask.subscriptionExpiryReminder"
+msgstr "แจ้งเตือนการหมดอายุสมาชิก"
+
+msgid "admin.scheduledTask.openAccessNotification"
+msgstr "แจ้งเตือนการเปิดให้เข้าถึงแบบเสรี"
+
+msgid "admin.scheduledTask.reviewReminder"
+msgstr "แจ้งเตือนการประเมินบทความ"
+
+msgid ""
+"admin.scheduledTask.usageStatsLoader.invalidLogEntry.issueAssocTypeNoMatch"
+msgstr "รหัสฉบับวารสารไม่ตรงกับรหัสที่เกี่ยวข้อง"
+
+msgid "admin.settings.disableBulkEmailRoles.contextDisabled"
+msgstr ""
+"คุณสมบัติการส่งอีเมลจำนวนมากถูกปิดใช้งานสำหรับวารสารนี้ "
+"สามารถเปิดใช้งานได้ที่ <a href=\"{$siteSettingsUrl}\">ผู้ดูแลระบบ > "
+"การตั้งค่าเว็บไซต์</a>"
+
+msgid "admin.siteManagement.description"
+msgstr ""
+"เพิ่ม แก้ไข หรือลบวารสารในเว็บไซต์นี้ "
+"และจัดการการตั้งค่าที่ใช้ร่วมกันทั้งเว็บไซต์"
+
+msgid "admin.settings.statistics.geo.description"
+msgstr ""
+"เลือกประเภทสถิติการใช้งานตามพื้นที่ทางภูมิศาสตร์ที่อนุญาตให้วารสารในเว็บไซต์น"
+"ี้เก็บรวบรวมได้ ยิ่งเก็บข้อมูลทางภูมิศาสตร์ละเอียดมากเท่าใด "
+"ขนาดฐานข้อมูลก็อาจเพิ่มขึ้นอย่างมาก และในบางกรณีที่พบไม่บ่อย "
+"อาจกระทบต่อการไม่เปิดเผยตัวตนของผู้เข้าชม "
+"แต่ละวารสารสามารถกำหนดค่านี้ได้แตกต่างกัน "
+"แต่จะไม่สามารถเก็บข้อมูลได้ละเอียดเกินกว่าที่กำหนดไว้ที่นี่ ตัวอย่างเช่น "
+"หากเว็บไซต์รองรับเฉพาะข้อมูลระดับประเทศและภูมิภาค "
+"วารสารสามารถเลือกเก็บข้อมูลทั้งประเทศและภูมิภาค หรือเฉพาะประเทศได้ "
+"แต่จะไม่สามารถติดตามข้อมูลในระดับประเทศ ภูมิภาค และเมืองได้"
+
+msgid "admin.settings.statistics.institutions.description"
+msgstr ""
+"เปิดใช้งานสถิติระดับสถาบัน "
+"หากต้องการให้วารสารในเว็บไซต์นี้สามารถเก็บสถิติการใช้งานแยกตามสถาบันได้ "
+"วารสารจะต้องเพิ่มข้อมูลสถาบันและช่วง IP ของสถาบันก่อนจึงจะใช้คุณสมบัตินี้ได้ "
+"การเปิดใช้งานสถิติระดับสถาบันอาจทำให้ขนาดฐานข้อมูลเพิ่มขึ้นอย่างมาก"
+
+msgid "admin.settings.statistics.sushiPlatform.isSiteSushiPlatform"
+msgstr "ใช้เว็บไซต์นี้เป็นแพลตฟอร์มสำหรับทุกวารสาร"
+
+msgid "admin.job.processLogFile.invalidLogEntry.issueId"
+msgstr "รหัสฉบับวารสารต้องเป็นตัวเลขจำนวนเต็ม"
+
+msgid "admin.job.processLogFile.invalidLogEntry.issueGalleyId"
+msgstr "รหัสไฟล์ฉบับวารสารต้องเป็นตัวเลขจำนวนเต็ม"
+
+msgid "admin.journals.transcode"
+msgstr "แปลงรหัสอักขระข้อมูลเมตาของบทความจาก ISO-8859-1"
+
+msgid "admin.languages.primaryLocaleInstructions"
+msgstr "ภาษานี้จะถูกใช้เป็นภาษาเริ่มต้นสำหรับเว็บไซต์และวารสารทั้งหมดในระบบ"
+
+msgid "admin.journals.importErrors"
+msgstr "นำเข้าข้อมูลไม่สำเร็จ"
+
+msgid "admin.mergeUsers.into.description"
+msgstr ""
+"เลือกผู้ใช้ที่จะรับข้อมูลผลงาน การมอบหมายงานบรรณาธิการ และข้อมูลอื่น ๆ "
+"ของผู้ใช้เดิม"
+
+msgid "admin.contexts.form.pathAlphaNumeric"
+msgstr ""
+"ที่อยู่วารสารใช้ได้เฉพาะตัวอักษร ตัวเลข เครื่องหมาย _ และ - เท่านั้น "
+"และต้องขึ้นต้นและลงท้ายด้วยตัวอักษรหรือตัวเลข"
+
+msgid "admin.contexts.form.primaryLocaleNotSupported"
+msgstr "ภาษาหลักต้องเป็นหนึ่งในภาษาที่วารสารรองรับ"
+
+msgid "admin.languages.supportedLocalesInstructions"
+msgstr ""
+"เลือกภาษาทั้งหมดที่ต้องการให้เว็บไซต์รองรับ ภาษาที่เลือกจะสามารถใช้ได้กับทุ"
+"กวารสารในระบบ และจะแสดงในเมนูเลือกภาษาบนแต่ละหน้าของเว็บไซต์ "
+"โดยสามารถกำหนดแตกต่างกันสำหรับแต่ละวารสารได้ หากเลือกเพียงภาษาเดียว "
+"เมนูเปลี่ยนภาษาจะไม่แสดง และวารสารจะไม่สามารถใช้การตั้งค่าภาษาเพิ่มเติมได้"
+
+msgid "admin.languages.installNewLocalesInstructions"
+msgstr ""
+"เลือกภาษาเพิ่มเติมที่ต้องการติดตั้งในระบบ "
+"ต้องติดตั้งภาษาก่อนจึงจะสามารถนำไปใช้กับวารสารในระบบได้ "
+"สำหรับวิธีเพิ่มการรองรับภาษาใหม่ โปรดดูเอกสารประกอบของ OJS"
+
+msgid "admin.journals.createInstructions"
+msgstr ""
+"คุณจะได้รับสิทธิ์เป็นผู้จัดการวารสารนี้โดยอัตโนมัติ หลังจากสร้างวารสารแล้ว "
+"ระบบจะนำคุณไปยังขั้นตอนการตั้งค่า "
+"เพื่อดำเนินการตั้งค่าเริ่มต้นของวารสารให้เสร็จสมบูรณ์"
+
+msgid "admin.mergeUsers.from.description"
+msgstr ""
+"เลือกผู้ใช้หนึ่งรายหรือหลายรายที่ต้องการรวมเข้ากับบัญชีผู้ใช้อื่น เช่น "
+"กรณีที่ผู้ใช้มีมากกว่าหนึ่งบัญชี บัญชีที่เลือกในขั้นตอนแรกจะถูกลบ "
+"และข้อมูลการส่งบทความ งานที่ได้รับมอบหมาย และข้อมูลอื่น ๆ "
+"จะถูกย้ายไปยังบัญชีที่เลือกในขั้นตอนถัดไป"
+
+msgid "admin.mergeUsers.confirm"
+msgstr ""
+"คุณแน่ใจหรือไม่ว่าต้องการรวมบัญชีที่เลือกจำนวน {$oldAccountCount} "
+"บัญชีเข้ากับบัญชีชื่อผู้ใช้ \"{$newUsername}\"? หลังจากดำเนินการแล้ว "
+"บัญชีที่เลือกจำนวน {$oldAccountCount} บัญชีจะถูกลบ "
+"และไม่สามารถย้อนกลับการดำเนินการนี้ได้"
+
+msgid "admin.settings.disableBulkEmailRoles.description"
+msgstr ""
+"ผู้จัดการวารสารจะไม่สามารถส่งอีเมลจำนวนมากไปยังผู้ใช้ในบทบาทที่เลือกด้านล่างไ"
+"ด้ ใช้การตั้งค่านี้เพื่อช่วยลดการใช้งานระบบแจ้งเตือนทางอีเมลในทางที่ไม่"
+"เหมาะสม ตัวอย่างเช่น อาจปลอดภัยกว่าหากปิดการส่งอีเมลจำนวนมากถึงผู้อ่าน ผู้เขี"
+"ยน หรือกลุ่มผู้ใช้ขนาดใหญ่ที่ไม่ได้ยินยอมรับอีเมลดังกล่าว<br><br>สามารถปิดคุณ"
+"สมบัติการส่งอีเมลจำนวนมากสำหรับวารสารนี้ทั้งหมดได้ที่ <a href=\""
+"{$siteSettingsUrl}\">ผู้ดูแลระบบ > การตั้งค่าเว็บไซต์</a>"
+
+msgid "admin.settings.enableBulkEmails.description"
+msgstr ""
+"เลือกวารสารในระบบที่อนุญาตให้ส่งอีเมลจำนวนมาก เมื่อเปิดใช้งานคุณสมบัตินี้ ผู้"
+"จัดการวารสารจะสามารถส่งอีเมลถึงผู้ใช้ทุกคนที่ลงทะเบียนกับวารสารของตนได้<br><b"
+"r>การใช้คุณสมบัตินี้ในทางที่ไม่เหมาะสมเพื่อส่งอีเมลที่ผู้รับไม่ได้ร้องขอ "
+"อาจขัดต่อกฎหมายป้องกันสแปมในบางประเทศหรือบางพื้นที่ "
+"และอาจทำให้อีเมลจากเซิร์ฟเวอร์ของคุณถูกบล็อกเป็นสแปม "
+"ควรขอคำแนะนำด้านเทคนิคก่อนเปิดใช้งาน และควรหารือกับผู้จัดการวารสารเพื่อให้แน่"
+"ใจว่ามีการใช้งานอย่างเหมาะสม<br><br>สามารถกำหนดข้อจำกัดเพิ่มเติมสำหรับแต่ละวา"
+"รสารได้จากขั้นตอนการตั้งค่าของวารสารในรายการ <a href=\"{$hostedContextsUrl}\""
+">วารสารในระบบ</a>"
+
+msgid "admin.settings.statistics.sushi.public.description"
+msgstr ""
+"กำหนดว่าจะเปิดให้เข้าถึง SUSHI API ของทุกวารสารในเว็บไซต์นี้แบบสาธารณะหรือไม่"
+" หากเปิดใช้งาน API แบบสาธารณะ "
+"แต่ละวารสารสามารถกำหนดให้สถิติของตนเป็นแบบส่วนตัวได้ อย่างไรก็ตาม หากปิดใช้"
+"งาน API แบบสาธารณะ วารสารจะไม่สามารถเปิด API ของตนให้สาธารณะเข้าถึงได้"

@@ -15,7 +15,7 @@ describe('Data suite tests', function() {
 
 		cy.get('li.profile a:contains("' + username + '")').click();
 		cy.get('li.profile a:contains("Dashboard")').click();
-		cy.get('.app__nav a').contains('Tools').click();
+		cy.get('nav').contains('Tools').click();
 		cy.get('a:contains("Native XML Plugin")').click();
 		cy.get('a:contains("Export Issues")').click();
 		cy.waitJQuery({timeout:20000});
@@ -43,7 +43,7 @@ describe('Data suite tests', function() {
 
 		cy.get('li.profile a:contains("' + username + '")').click();
 		cy.get('li.profile a:contains("Dashboard")').click();
-		cy.get('.app__nav a').contains('Tools').click();
+		cy.get('nav').contains('Tools').click();
 		// The a:contains(...) syntax ensures that it will wait for the
 		// tab to load. Do not convert to cy.get('a').contains('Native XML Plugin')
 		cy.get('a:contains("Native XML Plugin")').click();
@@ -53,10 +53,17 @@ describe('Data suite tests', function() {
 		cy.readFile(downloadedIssuePath).then(fileContent => {
 			// Setup year in the future to avoid conflicts
 			fileContent = fileContent.replace(/<year>\d+<\/year>/g, `<year>${issueYear}</year>`);
+
+			// FIX: Hard wait required for CI stability.
+			// The uploader initializes asynchronously.
+			// DOM presence checks (e.g. moxie-shim) pass before event listeners are fully bound.
+			// This wait ensures the file is uploaded as 'multipart/form-data' instead of failing as 'application/octet-stream'.
+			cy.wait(1000);
 			cy.get('input[type=file]').attachFile({fileContent, filePath: downloadedIssuePath, mimeType: 'text/xml', encoding: 'utf8'});
 		});
 
-		cy.get('input[name="temporaryFileId"][value!=""]', {timeout:20000});
+		cy.get('input[name="temporaryFileId"]', { timeout: 20000 }).invoke('val').should('not.be.empty');
+
 		cy.get('form#importXmlForm button[type="submit"]').click();
 		cy.contains('The import completed successfully.', {timeout:20000});
 		cy.contains(`Vol. 1 No. 2 (${issueYear})`);

@@ -23,6 +23,7 @@ use APP\template\TemplateManager;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
+use PKP\components\forms\context\PKPPaymentSettingsForm;
 use PKP\components\forms\FormComponent;
 use PKP\db\DAORegistry;
 use PKP\form\Form;
@@ -30,7 +31,6 @@ use PKP\install\Installer;
 use PKP\payment\QueuedPaymentDAO;
 use PKP\plugins\Hook;
 use PKP\plugins\PaymethodPlugin;
-use Slim\Http\Request as SlimRequest;
 
 class ManualPaymentPlugin extends PaymethodPlugin
 {
@@ -83,8 +83,7 @@ class ManualPaymentPlugin extends PaymethodPlugin
      */
     public function addSettings($hookName, $form)
     {
-        import('lib.pkp.classes.components.forms.context.PKPPaymentSettingsForm'); // Load constant
-        if ($form->id !== FORM_PAYMENT_SETTINGS) {
+        if ($form->id !== PKPPaymentSettingsForm::FORM_PAYMENT_SETTINGS) {
             return;
         }
 
@@ -112,11 +111,11 @@ class ManualPaymentPlugin extends PaymethodPlugin
      */
     public function saveSettings(string $hookname, array $args)
     {
-        $slimRequest = $args[0]; /** @var SlimRequest $slimRequest */
+        $illuminateRequest = $args[0]; /** @var \Illuminate\Http\Request $illuminateRequest */
         $request = $args[1]; /** @var Request $request */
         $updatedSettings = $args[3]; /** @var Collection $updatedSettings */
 
-        $allParams = $slimRequest->getParsedBody();
+        $allParams = $illuminateRequest->input();
         $manualInstructions = isset($allParams['manualInstructions']) ? (string) $allParams['manualInstructions'] : '';
         $this->updateSetting($request->getContext()->getId(), 'manualInstructions', $manualInstructions);
         $updatedSettings->put('manualInstructions', $manualInstructions);
@@ -146,7 +145,7 @@ class ManualPaymentPlugin extends PaymethodPlugin
         }
 
         $paymentForm = new Form($this->getTemplateResource('paymentForm.tpl'));
-        $paymentManager = Application::getPaymentManager($context);
+        $paymentManager = Application::get()->getPaymentManager($context);
         $paymentForm->setData([
             'itemName' => $paymentManager->getPaymentName($queuedPayment),
             'itemAmount' => $queuedPayment->getAmount() > 0 ? $queuedPayment->getAmount() : null,
@@ -193,7 +192,7 @@ class ManualPaymentPlugin extends PaymethodPlugin
                 Mail::send($mailable);
 
                 $templateMgr->assign([
-                    'currentUrl' => $request->url(null, null, 'payment', 'plugin', ['notify', $queuedPaymentId]),
+                    'currentUrl' => $request->url(null, 'payment', 'plugin', ['notify', $queuedPaymentId]),
                     'pageTitle' => 'plugins.paymethod.manual.paymentNotification',
                     'message' => 'plugins.paymethod.manual.notificationSent',
                     'backLink' => $queuedPayment->getRequestUrl(),
@@ -239,8 +238,4 @@ class ManualPaymentPlugin extends PaymethodPlugin
 
         return false;
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\plugins\paymethod\manual\ManualPaymentPlugin', '\ManualPaymentPlugin');
 }

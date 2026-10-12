@@ -1,11 +1,11 @@
 # Viveka Svensson <viveka.svensson@lnu.se>, 2021, 2022.
-# Magnus Annemark <magnus.annemark@ub.lu.se>, 2022, 2023.
+# Magnus Annemark <magnus.annemark@ub.lu.se>, 2022, 2023, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:35+00:00\n"
-"PO-Revision-Date: 2023-04-20 10:06+0000\n"
+"PO-Revision-Date: 2026-09-09 11:59+0000\n"
 "Last-Translator: Magnus Annemark <magnus.annemark@ub.lu.se>\n"
 "Language-Team: Swedish <http://translate.pkp.sfu.ca/projects/ojs/manager/sv/>"
 "\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "Tillgång"
@@ -404,12 +404,6 @@ msgstr ""
 msgid "manager.setup"
 msgstr "Tidskriftsinställningar"
 
-msgid "manager.setup.masthead"
-msgstr "Redaktionsruta"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Redaktion"
-
 msgid "manager.setup.homepageContent"
 msgstr "Innehåll på tidskriftens förstasida"
 
@@ -472,11 +466,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Kommer att visas under Om tidskriften) "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Författare måste skicka in en intressekonfliktsförklaring i samband med att "
-"bidraget skickas in."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -781,14 +770,6 @@ msgstr "En liten logotyp för tidskriften som kan användas i tidskriftslistan."
 msgid "manager.setup.contextTitle"
 msgstr "Tidskriftens titel"
 
-msgid "manager.setup.keyInfo"
-msgstr "Översiktsinformation"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"En kort beskrivning av din tidskrift samt information om redaktörer, "
-"tidskriftsansvariga och andra medlemmar av din redaktion."
-
 msgid "manager.setup.labelName"
 msgstr "Etikettsnamn"
 
@@ -828,12 +809,6 @@ msgstr ""
 "deltagande bibliotek via LOCKSS <a href=\"{$lockssUrl}\" target=\"_blank"
 "\">Utgivarmanifest</a> sida."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"En LOCKSS-licens kommer då att visas i ”Om tidskriften” under ”Arkivering”: "
-"<a href=\"http://www.lockss.org/community/publishers-titles-gln/\" target="
-"\"_blank\">LOCKSS License</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "Beskrivning av LOCKSS-licensen"
 
@@ -853,11 +828,6 @@ msgstr ""
 "Aktivera CLOCKSS för att arkivera och distribuera tidskriftens innehåll till "
 "deltagande bibliotek via CLOCKSS <a href=\"{$clockssUrl}\" target=\"_blank"
 "\">Utgivarmanifest</a> sida."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"En CLOCKSS-licens kommer då att visas i \"Om\" tidskriften under \"Arkivering"
-"\": <a href=\"https://clockss.org\" target=\"_blank\">CLOCKSS Licens</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "Beskrivning av CLOCKSS-licensen"
@@ -1984,9 +1954,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Lösenord"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr "Lösenordet kommer att sparas i text, det är alltså inte krypterad."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Något nummer"
 
@@ -2013,9 +1980,6 @@ msgstr "Markera som registrerad"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Registrera"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Validera XML före export och registrering."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Inga objekt har valts."
@@ -2525,15 +2489,15 @@ msgstr "Utgången prenumeration"
 msgid "mailable.subscriptionExpired.description"
 msgstr ""
 "Det här e-postmeddelandet meddelar en prenumerant att prenumerationen har "
-"förfallit. Det inkluderar tidskriftens URL samt instruktioner för tillgång."
+"förfallit."
 
 msgid "mailable.subscriptionExpiredLast.name"
 msgstr "Utgången prenumeration"
 
 msgid "mailable.subscriptionExpiredLast.description"
 msgstr ""
-"Det här e-postmeddelandet meddelar en prenumerant att prenumerationen har "
-"gått ut. Det inkluderar tidskriftens URL samt instruktioner för tillgång."
+"Det här e-postmeddelandet meddelar ytterligare en gång en prenumerant att "
+"prenumerationen har gått ut"
 
 msgid "mailable.subscriptionPurchaseIndividual.name"
 msgstr "Köp individuell prenumeration"
@@ -2659,3 +2623,11 @@ msgid "plugins.importexport.common.error.issueCoverImageMissing"
 msgstr ""
 "Omslagsbilden till nummer {$id} kunde inte exporteras, filen hittades inte i "
 "\"{$path}\"."
+
+msgid "manager.setup.contextSummary.description"
+msgstr "Ange en kort beskrivning av tidskriftens innehåll och syfte."
+
+msgid "emailTemplate.variable.issue.issueTableOfContents"
+msgstr ""
+"Numrets innehållsförteckning, en lista över alla bidrag som är knutna till "
+"numret."

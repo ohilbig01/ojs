@@ -1,8 +1,8 @@
 {**
  * plugins/generic/announcementFeed/templates/rss2.tpl
  *
- * Copyright (c) 2014-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2014-2025 Simon Fraser University
+ * Copyright (c) 2003-2025 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * RSS 2 feed template
@@ -22,10 +22,9 @@
 		<description>{$description|strip|escape:"html"}</description>
 
 		{* optional elements *}
-		{if $journal->getPrimaryLocale()}
-			<language>{$journal->getPrimaryLocale()|replace:'_':'-'|strip|escape:"html"}</language>
-		{/if}
-		{capture assign="dateUpdated"}{$dateUpdated|strtotime}{/capture}
+		<language>{$language|escape}</language>
+
+	{capture assign="dateUpdated"}{$dateUpdated|strtotime}{/capture}
 		<pubDate>{$smarty.const.DATE_RSS|date:$dateUpdated}</pubDate>
 		<generator>OJS {$ojsVersion|escape}</generator>
 		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
@@ -34,13 +33,13 @@
 		{foreach from=$announcements item=announcement}
 			<item>
 				{* required elements *}
-				<title>{$announcement->getLocalizedTitleFull()|strip|escape:"html"}</title>
-				<link>{url page="announcement" op="view" path=$announcement->getId()}</link>
-				<description>{$announcement->getLocalizedDescription()|strip|escape:"html"}</description>
+				<title>{$announcement->getLocalizedData('fullTitle')|strip|escape:"html"}</title>
+				<link>{url page="announcement" op="view" path=$announcement->id}</link>
+				<description>{$announcement->getLocalizedData('description')|strip|escape:"html"}</description>
 
 				{* optional elements *}
-				<guid isPermaLink="true">{url page="announcement" op="view" path=$announcement->getId()}</guid>
-				{capture assign="datePosted"}{$announcement->getDatetimePosted()|strtotime}{/capture}
+				<guid isPermaLink="true">{url page="announcement" op="view" path=$announcement->id}</guid>
+				{capture assign="datePosted"}{$announcement->datePosted|strtotime}{/capture}
 				<pubDate>{$smarty.const.DATE_RSS|date:$datePosted}</pubDate>
 			</item>
 		{/foreach}

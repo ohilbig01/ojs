@@ -19,7 +19,6 @@
 namespace APP\subscription;
 
 use Illuminate\Support\Facades\DB;
-use PKP\db\DAORegistry;
 use PKP\db\DAOResultFactory;
 use PKP\db\DBResultRange;
 use PKP\facades\Locale;
@@ -159,6 +158,8 @@ class SubscriptionTypeDAO extends \PKP\db\DAO
      * @param array $row
      *
      * @return SubscriptionType
+     *
+     * @hook SubscriptionTypeDAO::_fromRow [[&$subscriptionType, &$row]]
      */
     public function _fromRow($row)
     {
@@ -183,10 +184,8 @@ class SubscriptionTypeDAO extends \PKP\db\DAO
 
     /**
      * Get the list of field names for which localized data is used.
-     *
-     * @return array
      */
-    public function getLocaleFieldNames()
+    public function getLocaleFieldNames(): array
     {
         return ['name', 'description'];
     }
@@ -274,20 +273,18 @@ class SubscriptionTypeDAO extends \PKP\db\DAO
     /**
      * Delete a subscription type by ID. Note that all subscriptions with this
      * type ID are also deleted.
-     *
-     * @param int $typeId Subscription type ID
-     * @param int $journalId Optional journal ID
      */
-    public function deleteById($typeId, $journalId = null)
+    public function deleteById(int $typeId, ?int $journalId = null): int
     {
         $subscriptionType = $this->getById($typeId, $journalId);
-        if ($subscriptionType) {
-            /** @var InstitutionalSubscriptionDAO|IndividualSubscriptionDAO */
-            $subscriptionDao = DAORegistry::getDAO($subscriptionType->getInstitutional() ? 'InstitutionalSubscriptionDAO' : 'IndividualSubscriptionDAO');
-            $subscriptionDao->deleteById($typeId);
-            $this->update('DELETE FROM subscription_types WHERE type_id = ?', [(int) $typeId]);
-            $this->update('DELETE FROM subscription_type_settings WHERE type_id = ?', [(int) $typeId]);
+        if (!$subscriptionType) {
+            return 0;
         }
+
+        // Allow subscription_types to cascade to subscriptions, institutional_subscriptions, subscription_type_settings, ...
+        return DB::table('subscription_types')
+            ->where('type_id', '=', $typeId)
+            ->delete();
     }
 
     /**
@@ -320,12 +317,12 @@ class SubscriptionTypeDAO extends \PKP\db\DAO
      */
     public function getByJournalId($journalId, $rangeInfo = null)
     {
-        $result = $this->retrieveRange(
-            $sql = 'SELECT * FROM subscription_types WHERE journal_id = ? ORDER BY seq',
-            $params = [(int) $journalId],
-            $rangeInfo
-        );
-        return new DAOResultFactory($result, $this, '_fromRow', [], $sql, $params, $rangeInfo); // Counted in subscription type grid paging
+        $q = DB::table('subscription_types', 'st')
+            ->where('journal_id', '=', $journalId)
+            ->orderBy('st.seq')
+            ->select('st.*');
+        $result = $this->retrieveRange($q, [], $rangeInfo);
+        return new DAOResultFactory($result, $this, '_fromRow', [], $q, [], $rangeInfo); // Counted in subscription type grid paging
     }
 
     /**
@@ -385,8 +382,4 @@ class SubscriptionTypeDAO extends \PKP\db\DAO
             $result->next();
         }
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\subscription\SubscriptionTypeDAO', '\SubscriptionTypeDAO');
 }

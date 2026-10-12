@@ -50,22 +50,9 @@ class Journal extends Context
 
     /**
      * @copydoc \PKP\core\DataObject::getDAO()
-     *
-     * @return JournalDAO
      */
-    public function getDAO()
+    public function getDAO(): JournalDAO
     {
         return DAORegistry::getDAO('JournalDAO');
-    }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\journal\Journal', '\Journal');
-    foreach ([
-        'PUBLISHING_MODE_OPEN',
-        'PUBLISHING_MODE_SUBSCRIPTION',
-        'PUBLISHING_MODE_NONE',
-    ] as $constantName) {
-        define($constantName, constant('\Journal::' . $constantName));
     }
 }

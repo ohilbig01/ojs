@@ -86,10 +86,10 @@ class OJSPaymentManager extends PaymentManager
 
         switch ($type) {
             case self::PAYMENT_TYPE_PURCHASE_ARTICLE:
-                $payment->setRequestUrl($dispatcher->url($request, Application::ROUTE_PAGE, null, 'article', 'view', $assocId));
+                $payment->setRequestUrl($dispatcher->url($request, Application::ROUTE_PAGE, null, 'article', 'view', [$assocId]));
                 break;
             case self::PAYMENT_TYPE_PURCHASE_ISSUE:
-                $payment->setRequestUrl($dispatcher->url($request, Application::ROUTE_PAGE, null, 'issue', 'view', $assocId));
+                $payment->setRequestUrl($dispatcher->url($request, Application::ROUTE_PAGE, null, 'issue', 'view', [$assocId]));
                 break;
             case self::PAYMENT_TYPE_PURCHASE_SUBSCRIPTION:
                 $payment->setRequestUrl($dispatcher->url($request, Application::ROUTE_PAGE, null, 'issue', 'current'));
@@ -99,10 +99,10 @@ class OJSPaymentManager extends PaymentManager
                 break;
             case self::PAYMENT_TYPE_PUBLICATION:
                 $submission = Repo::submission()->get($assocId);
-                if ($submission->getSubmissionProgress()) {
+                if ($submission->getData('submissionProgress')) {
                     $payment->setRequestUrl($dispatcher->url($request, Application::ROUTE_PAGE, null, 'submission', null, null, ['id' => $assocId]));
                 } else {
-                    $payment->setRequestUrl($dispatcher->url($request, Application::ROUTE_PAGE, null, 'authorDashboard', 'submission', $submission->getId()));
+                    $payment->setRequestUrl($dispatcher->url($request, Application::ROUTE_PAGE, null, 'dashboard', 'mySubmissions', null, ['workflowSubmissionId' => $submission->getId()]));
                 }
                 break;
             case self::PAYMENT_TYPE_MEMBERSHIP: // Deprecated
@@ -233,7 +233,7 @@ class OJSPaymentManager extends PaymentManager
             switch ($queuedPayment->getType()) {
                 case self::PAYMENT_TYPE_MEMBERSHIP:
                     $user = Repo::user()->get($queuedPayment->getUserId(), true);
-                    $dateEnd = $user->getSetting('dateEndMembership', 0);
+                    $dateEnd = $user->getData('dateEndMembership', 0);
                     if (!$dateEnd) {
                         $dateEnd = 0;
                     }
@@ -245,7 +245,8 @@ class OJSPaymentManager extends PaymentManager
                     }
 
                     $dateEnd = mktime(23, 59, 59, date('m', $dateEnd), date('d', $dateEnd), date('Y', $dateEnd) + 1);
-                    $user->updateSetting('dateEndMembership', $dateEnd, 'date', 0);
+                    $user->setData('dateEndMembership', $dateEnd);
+                    Repo::user()->edit($user);
                     $returner = true;
                     break;
                 case self::PAYMENT_TYPE_PURCHASE_SUBSCRIPTION:
@@ -261,8 +262,7 @@ class OJSPaymentManager extends PaymentManager
                         $institutional = false;
                     }
                     if (!$subscription || $subscription->getUserId() != $queuedPayment->getUserId() || $subscription->getJournalId() != $queuedPayment->getContextId()) {
-                        fatalError('Subscription integrity checks fail!');
-                        return false;
+                        throw new \Exception('Subscription integrity checks fail!');
                     }
                     $subscriptionType = $subscriptionTypeDao->getById($subscription->getTypeId(), $journal->getId());
                     // Update subscription end date now that payment is completed
@@ -356,7 +356,7 @@ class OJSPaymentManager extends PaymentManager
             }
         }
         $completedPaymentDao = DAORegistry::getDAO('OJSCompletedPaymentDAO'); /** @var OJSCompletedPaymentDAO $completedPaymentDao */
-        $completedPayment = $this->createCompletedPayment($queuedPayment, $payMethodPluginName, $request->getUser()->getId());
+        $completedPayment = $this->createCompletedPayment($queuedPayment, $payMethodPluginName, $queuedPayment->getUserId());
         $completedPaymentDao->insertObject($completedPayment);
 
         $queuedPaymentDao = DAORegistry::getDAO('QueuedPaymentDAO'); /** @var QueuedPaymentDAO $queuedPaymentDao */
@@ -412,22 +412,5 @@ class OJSPaymentManager extends PaymentManager
                 // Invalid payment type
                 assert(false);
         }
-    }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\payment\ojs\OJSPaymentManager', '\OJSPaymentManager');
-    foreach ([
-        'PAYMENT_TYPE_MEMBERSHIP',
-        'PAYMENT_TYPE_RENEW_SUBSCRIPTION',
-        'PAYMENT_TYPE_PURCHASE_ARTICLE',
-        'PAYMENT_TYPE_DONATION',
-        'PAYMENT_TYPE_SUBMISSION',
-        'PAYMENT_TYPE_FASTTRACK',
-        'PAYMENT_TYPE_PUBLICATION',
-        'PAYMENT_TYPE_PURCHASE_SUBSCRIPTION',
-        'PAYMENT_TYPE_PURCHASE_ISSUE',
-    ] as $constantName) {
-        define($constantName, constant('\OJSPaymentManager::' . $constantName));
     }
 }

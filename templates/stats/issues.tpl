@@ -16,7 +16,7 @@
 		<pkp-header>
 			<h1>{translate key="issue.issues"}</h1>
 			<spinner v-if="isLoadingTimeline"></spinner>
-			<template slot="actions">
+			<template #actions>
 				<date-range
 					unique-id="issue-stats-date-range"
 					:date-start="dateStart"
@@ -87,31 +87,33 @@
 							</div>
 						</div>
 					</div>
-					<table class="-screenReader" role="region" aria-live="polite">
-						<caption v-if="timelineType === 'files'">{translate key="stats.downloads.timelineInterval"}</caption>
-						<caption v-else>{translate key="stats.views.timelineInterval"}</caption>
-						<thead>
-							<tr>
-								<th scope="col">{translate key="common.date"}</th>
-								<th v-if="timelineType === 'files'" scope="col">{translate key="stats.downloads"}</th>
-								<th v-else scope="col">{translate key="stats.views"}</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr	v-for="segment in timeline" :key="segment.date">
-								<th scope="row">{{ segment.label }}</th>
-								<td>{{ segment.value }}</td>
-							</tr>
-						</tbody>
-					</table>
-					<line-chart :chart-data="chartData" aria-hidden="true"></line-chart>
+					<div class="sr-only">
+						<table class="-screenReader" role="region" aria-live="polite">
+							<caption v-if="timelineType === 'files'">{translate key="stats.downloads.timelineInterval"}</caption>
+							<caption v-else>{translate key="stats.views.timelineInterval"}</caption>
+							<thead>
+								<tr>
+									<th scope="col">{translate key="common.date"}</th>
+									<th v-if="timelineType === 'files'" scope="col">{translate key="stats.downloads"}</th>
+									<th v-else scope="col">{translate key="stats.views"}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr	v-for="segment in timeline" :key="segment.date">
+									<th scope="row">{{ segment.label }}</th>
+									<td>{{ segment.value }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<line-chart :chart-data="chartData"></line-chart>
 					<span v-if="isLoadingTimeline" class="pkpStats__loadingCover">
 						<spinner></spinner>
 					</span>
 				</div>
 				<div class="pkpStats__panel" role="region" aria-live="polite">
 					<pkp-header>
-						<h2>
+						<h2 id="issueDetailTableLabel">
 							{translate key="stats.issues.details"}
 							<tooltip
 								tooltip="{translate key="stats.issues.tooltip.text"}"
@@ -119,7 +121,7 @@
 							></tooltip>
 							<spinner v-if="isLoadingItems"></spinner>
 						</h2>
-						<template slot="actions">
+						<template #actions>
 							<div class="pkpStats__itemsOfTotal">
 								{{
 									replaceLocaleParams(itemsOfTotalLabel, {
@@ -136,104 +138,62 @@
 								</a>
 							</div>
 							<pkp-button
-								ref="downloadReportModalButton"
-								@click="$modal.show('downloadReport')"
+								@click="openDownloadReportModal"
 							>
 								{translate key="common.downloadReport"}
 							</pkp-button>
-							<modal
-								close-label="{translate key="common.close"}"
-								name="downloadReport"
-								title={translate key="common.download"}
-								@closed="setFocusToRef('downloadReportModalButton')"
-							>
-								<p>{translate key="stats.issues.downloadReport.description"}</p>
-								<table class="pkpTable pkpStats__reportParams">
-									<tr class="pkpTable__row">
-										<th>{translate key="stats.dateRange"}</th>
-										<td>{{ getDateRangeDescription() }}</th>
-									</tr>
-									<tr
-										v-if="searchPhrase"
-										class="pkpTable__row">
-										<th>{translate key="common.searchPhrase"}</th>
-										<td>{{ searchPhrase }}</th>
-									</tr>
-								</table>
-								<action-panel class="pkpStats__reportAction">
-									<h2>{translate key="issue.issues"}</h2>
-									<p>
-										{translate key="stats.issues.downloadReport.downloadIssues.description"}
-									</p>
-									<template slot="actions">
-										<pkp-button
-											@click="downloadReport"
-										>
-											{translate key="stats.issues.downloadReport.downloadIssues"}
-										</pkp-button>
-									</template>
-								</action-panel>
-								<action-panel class="pkpStats__reportAction">
-									<h2>{translate key="stats.timeline"}</h2>
-									<p>
-										{{ getTimelineDescription() }}
-									</p>
-									<template slot="actions">
-										<pkp-button
-											@click="downloadReport('timeline')"
-										>
-											{translate key="stats.timeline.downloadReport.downloadTimeline"}
-										</pkp-button>
-									</template>
-								</action-panel>
-							</modal>
 						</template>
 					</pkp-header>
 					<pkp-table
 						labelled-by="issueDetailTableLabel"
-						:class="tableClasses"
-						:columns="tableColumns"
-						:rows="items"
-						:order-by="orderBy"
-						:order-direction="orderDirection"
-						@order-by="setOrderBy"
+						@sort="setOrderBy"
 					>
-						<search
-							slot="thead-title"
-							class="pkpStats__titleSearch"
-							:search-phrase="searchPhrase"
-							search-label="{translate key="stats.issues.searchIssueDescription"}"
-							@search-phrase-changed="setSearchPhrase"
-						></search>
-						<template slot-scope="{ row, rowIndex }">
-							<table-cell
-								v-for="(column, columnIndex) in tableColumns"
+						<table-header>
+							<table-column
+								v-for="column in tableColumns"
 								:key="column.name"
-								:column="column"
-								:row="row"
-								:tabindex="!rowIndex && !columnIndex ? 0 : -1"
+								:id="column.name"
+								:allows-sorting="column.name === 'total'"
 							>
 								<template v-if="column.name === 'title'">
+									{{ column.label }}
+									<search
+										class="pkpStats__titleSearch"
+										:search-phrase="searchPhrase"
+										search-label="{translate key="stats.issues.searchIssueDescription"}"
+										@search-phrase-changed="setSearchPhrase"
+									></search>
+								</template>
+								<template v-else>
+									{{ column.label }}
+								</template>
+							</table-column>
+						</table-header>
+						<table-body>
+							<table-row v-for="(row) in items" :key="row.key">
+								<table-cell>
 									<a
 										:href="row.issue.publishedUrl"
 										class="pkpStats__itemLink"
 										target="_blank"
 									>
-										<span class="pkpStats__itemTitle" v-html="row.issue.identification"></span>
+										<span class="pkpStats__itemTitle">{{ row.issue.identification }}</span>
 									</a>
+								</table-cell>
+								<table-cell>{{ row.tocViews }}</table-cell>
+								<table-cell>{{ row.issueGalleyViews }}</table-cell>
+								<table-cell>{{ row.totalViews }}</table-cell>
+							</table-row>
+							<template #no-content v-if="!items.length">
+								<template v-if="isLoadingItems">
+									{translate key="common.loading"}
 								</template>
-							</table-cell>
-						</template>
+								<template v-else>
+									{translate key="stats.issues.none"}
+								</template>
+							</template>
+						</table-body>
 					</pkp-table>
-					<div v-if="!items.length" class="pkpStats__noRecords">
-						<template v-if="isLoadingItems">
-							<spinner></spinner>
-							{translate key="common.loading"}
-						</template>
-						<template v-else>
-							{translate key="stats.issues.none"}
-						</template>
-					</div>
 					<pagination
 						v-if="lastPage > 1"
 						id="issueDetailTablePagination"
@@ -247,4 +207,3 @@
 		</div>
 	</div>
 {/block}
-

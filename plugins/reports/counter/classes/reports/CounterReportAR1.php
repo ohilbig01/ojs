@@ -14,7 +14,6 @@
 namespace APP\plugins\reports\counter\classes\reports;
 
 use APP\core\Application;
-use APP\core\Services;
 use APP\facades\Repo;
 use APP\journal\JournalDAO;
 use APP\plugins\reports\counter\classes\CounterReport;
@@ -33,7 +32,7 @@ class CounterReportAR1 extends CounterReport
     /**
      * Get the report title
      *
-     * @return $string
+     * @return string
      */
     public function getTitle()
     {
@@ -100,7 +99,7 @@ class CounterReportAR1 extends CounterReport
             $issueIdsSubmissionIds = Repo::submission()
                 ->getCollector()
                 ->filterByContextIds([Application::get()->getRequest()->getContext()->getId()])
-                ->filterByStatus([\APP\submission\Submission::STATUS_PUBLISHED])
+                ->filterByLatestPublished(true)
                 ->filterByIssueIds($validFilters['issueIds'])
                 ->getIds()
                 ->toArray();
@@ -118,7 +117,7 @@ class CounterReportAR1 extends CounterReport
             }
         }
         // TODO: range
-        $results = Services::get('publicationStats')
+        $results = app()->get('publicationStats')
             ->getQueryBuilder($validFilters)
             ->getSum($defaultColumns)
             ->orderBy(StatisticsHelper::STATISTICS_DIMENSION_SUBMISSION_ID, StatisticsHelper::STATISTICS_ORDER_DESC)

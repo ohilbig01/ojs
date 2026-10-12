@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @defgroup controllers_grid_issues Issues Grid
  * The Issues Grid implements the management interface allowing editors to
@@ -21,6 +22,7 @@
 
 namespace APP\controllers\grid\issues;
 
+use APP\article\ArticleTombstoneManager;
 use APP\controllers\grid\issues\form\IssueAccessForm;
 use APP\controllers\grid\issues\form\IssueForm;
 use APP\controllers\grid\pubIds\form\AssignPublicIdentifiersForm;
@@ -49,9 +51,10 @@ use PKP\facades\Locale;
 use PKP\file\TemporaryFileManager;
 use PKP\mail\Mailer;
 use PKP\notification\NotificationSubscriptionSettingsDAO;
-use PKP\notification\PKPNotification;
+use PKP\observers\events\MetadataChanged;
 use PKP\plugins\Hook;
 use PKP\plugins\PluginRegistry;
+use PKP\publication\PKPPublication;
 use PKP\security\authorization\ContextAccessPolicy;
 use PKP\security\Role;
 
@@ -378,7 +381,15 @@ class IssueGridHandler extends GridHandler
             $publications = $submission->getData('publications');
             foreach ($publications as $publication) {
                 if ($publication->getData('issueId') === (int) $issue->getId()) {
-                    Repo::publication()->edit($publication, ['issueId' => '', 'status' => Submission::STATUS_QUEUED]);
+                    $wasCurrentPublication = $publication->getId() == $submission->getData('currentPublicationId');
+                    Repo::publication()->edit(
+                        $publication,
+                        ['issueId' => null, 'status' => Publication::STATUS_QUEUED]
+                    );
+                    // edit() bypasses unpublish(), so tombstone the OAI identifier(s)
+                    // this now-offline publication was exposing.
+                    $unpublishedPublication = Repo::publication()->get($publication->getId());
+                    (new ArticleTombstoneManager())->reconcileTombstonesOnUnpublish($unpublishedPublication, $wasCurrentPublication, $submission, $journal);
                 }
             }
             $newSubmission = Repo::submission()->get($submission->getId());
@@ -386,8 +397,7 @@ class IssueGridHandler extends GridHandler
         }
 
         Repo::issue()->delete($issue);
-        $currentIssue = Repo::issue()->getCurrent($issue->getJournalId());
-        if ($currentIssue != null && $issue->getId() == $currentIssue->getId()) {
+        if ($journal->getData('currentIssueId') == $issue->getId()) {
             $issues = Repo::issue()->getCollector()
                 ->filterByContextIds([$journal->getId()])
                 ->filterByPublished(true)
@@ -398,7 +408,7 @@ class IssueGridHandler extends GridHandler
             }
         }
 
-        return DAO::getDataChangedEvent($issue->getId());
+        return DAO::getDataChangedEvent();
     }
 
     /**
@@ -528,9 +538,12 @@ class IssueGridHandler extends GridHandler
      *
      * @param array $args
      * @param Request $request
+     *
+     * @hook IssueGridHandler::publishIssue [[&$issue]]
      */
     public function publishIssue($args, $request)
     {
+        /** @var \APP\issue\Issue $issue */
         $issue = $this->getAuthorizedContextObject(Application::ASSOC_TYPE_ISSUE);
         $context = $request->getContext();
         $contextId = $context->getId();
@@ -547,12 +560,28 @@ class IssueGridHandler extends GridHandler
             }
             // Assign pub ids
             $assignPublicIdentifiersForm->readInputData();
+            if (!$assignPublicIdentifiersForm->validate()) {
+                return new JSONMessage(true, $assignPublicIdentifiersForm->fetch($request));
+            }
             $assignPublicIdentifiersForm->execute();
             Repo::issue()->createDoi($issue);
+
+            // Stamp only on first publish, so a republished issue keeps its identity
+            if (!$issue->hasContextIdentity()) {
+                $issue->stampContextIdentity($context);
+            }
+        }
+
+        if (!$request->checkCSRF()) {
+            return new JSONMessage(false);
         }
 
         $issue->setPublished(1);
-        $issue->setDatePublished(Core::getCurrentDate());
+
+        // If no datePublished was given, use current date
+        if (!$issue->getData('datePublished')) {
+            $issue->setDatePublished(Core::getCurrentDate());
+        }
 
         // If subscriptions with delayed open access are enabled then
         // update open access date according to open access delay policy
@@ -586,15 +615,23 @@ class IssueGridHandler extends GridHandler
             $submissions = Repo::submission()->getCollector()
                 ->filterByContextIds([$issue->getJournalId()])
                 ->filterByIssueIds([$issue->getId()])
-                ->filterByStatus([Submission::STATUS_SCHEDULED, Submission::STATUS_PUBLISHED])
+                ->filterByCurrentPublicationStatus([PKPPublication::STATUS_SCHEDULED, PKPPublication::STATUS_PUBLISHED])
                 ->getMany();
 
             foreach ($submissions as $submission) { /** @var Submission $submission */
                 $publications = $submission->getData('publications');
 
                 foreach ($publications as $publication) { /** @var Publication $publication */
-                    if ($publication->getData('status') === Submission::STATUS_SCHEDULED && $publication->getData('issueId') === (int) $issue->getId()) {
+
+                    if ((int) $publication->getData('issueId') !== (int) $issue->getId()) {
+                        continue;
+                    }
+
+                    if ($publication->getData('status') === Publication::STATUS_SCHEDULED) {
                         Repo::publication()->publish($publication);
+
+                        // dispatch the MetadataChanged event after publishing
+                        event(new MetadataChanged($submission));
                     }
                 }
             }
@@ -625,7 +662,7 @@ class IssueGridHandler extends GridHandler
             $userIdsToNotify = $userIdsToNotify->diff($userIdsToMail);
 
             $jobs = [];
-            foreach ($userIdsToNotify->chunk(PKPNotification::NOTIFICATION_CHUNK_SIZE_LIMIT) as $notifyUserIds) {
+            foreach ($userIdsToNotify->chunk(Notification::NOTIFICATION_CHUNK_SIZE_LIMIT) as $notifyUserIds) {
                 $jobs[] = new IssuePublishedNotifyUsers(
                     $notifyUserIds,
                     $contextId,
@@ -656,9 +693,12 @@ class IssueGridHandler extends GridHandler
      *
      * @param array $args
      * @param Request $request
+     *
+     * @hook IssueGridHandler::unpublishIssue [[&$issue]]
      */
     public function unpublishIssue($args, $request)
     {
+        /** @var \APP\issue\Issue $issue */
         $issue = $this->getAuthorizedContextObject(Application::ASSOC_TYPE_ISSUE);
         $journal = $request->getJournal();
 
@@ -666,11 +706,8 @@ class IssueGridHandler extends GridHandler
             return new JSONMessage(false);
         }
 
-        // NB: Data set via params because setData('datePublished', null)
-        // removes the entry into _data rather than updating 'datePublished' to null.
         $updateParams = [
-            'published' => 0,
-            'datePublished' => null
+            'published' => 0
         ];
 
         Hook::call('IssueGridHandler::unpublishIssue', [&$issue]);
@@ -689,10 +726,10 @@ class IssueGridHandler extends GridHandler
         foreach ($submissions as $submission) { /** @var Submission $submission */
             $publications = $submission->getData('publications');
             foreach ($publications as $publication) { /** @var Publication $publication */
-                if ($publication->getData('status') === Submission::STATUS_PUBLISHED && $publication->getData('issueId') === (int) $issue->getId()) {
+                if ($publication->getData('status') === Publication::STATUS_PUBLISHED && $publication->getData('issueId') === (int) $issue->getId()) {
                     // Republish the publication in the issue, now that it's status has changed,
-                    // to ensure the publication's status is restored to Submission::STATUS_SCHEDULED
-                    // rather than Submission::STATUS_QUEUED
+                    // to ensure the publication's status is restored to Publication::STATUS_SCHEDULED
+                    // rather than Publication::STATUS_QUEUED
                     Repo::publication()->unpublish($publication);
                     Repo::publication()->publish($publication);
                 }

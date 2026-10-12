@@ -1,12 +1,12 @@
 # IgorVeha <igor.veha@gmail.com>, 2022.
 # Pavel Usenko <mail@openscience.in.ua>, 2022.
-# Petro Bilous <petrobilous@ukr.net>, 2023.
+# Petro Bilous <petrobilous@ukr.net>, 2023, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:37+00:00\n"
-"PO-Revision-Date: 2023-06-03 04:23+0000\n"
+"PO-Revision-Date: 2026-09-07 14:43+0000\n"
 "Last-Translator: Petro Bilous <petrobilous@ukr.net>\n"
 "Language-Team: Ukrainian <http://translate.pkp.sfu.ca/projects/ojs/manager/"
 "uk/>\n"
@@ -14,9 +14,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.13.1\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "Доступ"
@@ -411,12 +411,6 @@ msgstr ""
 msgid "manager.setup"
 msgstr "Налаштування журналу"
 
-msgid "manager.setup.masthead"
-msgstr "Вихідні данні"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Редакційний штат"
-
 msgid "manager.setup.homepageContent"
 msgstr "Вміст головної сторінки журналу"
 
@@ -483,11 +477,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(показувати на сторінці \"Про журнал\") "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Вимагати від авторів декларувати відсутність конфлікту інтересів щодо "
-"поданих матеріалів."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -799,14 +788,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Назва журналу"
 
-msgid "manager.setup.keyInfo"
-msgstr "Ключова інформація"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Надайте короткий опис вашого журналу і вкажіть редакторів, керуючих "
-"директорів та інших членів вашої редакційної команди."
-
 msgid "manager.setup.labelName"
 msgstr "Назва елементу"
 
@@ -846,12 +827,6 @@ msgstr ""
 "бібліотеками, що беруть участь у проєкті, через сторінку <a href=\""
 "{$lockssUrl}\" target=\"_blank\">Видавничий маніфест LOCKSS</a>."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"Ліцензія LOCKSS з'явиться в розділі \"Про журнал\" під заголовком \"Архівація"
-" журналу\": <a href=\"http://www.lockss.org/community/publishers-titles-gln/"
-"\" target=\"_blank\">Ліцензія LOCKSS</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "Опис ліцензії LOCKSS"
 
@@ -871,12 +846,6 @@ msgstr ""
 "Дозволити CLOCKSS для збереження та розповсюдження змісту журналу "
 "бібліотеками, що беруть участь у проєкті, через сторінку <a href=\""
 "{$clockssUrl}\" target=\"_blank\">Видавничий маніфест CLOCKSS</a>."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"Ліцензія CLOCKSS з'явиться в розділі \"Про журнал\" під заголовком "
-"\"Архівація журналу\": <a href=\"http://clockss.org/\" target=\"_blank\""
-">Ліцензія CLOCKSS</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "Опис ліцензії CLOCKSS"
@@ -2029,11 +1998,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Пароль"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Зверніть увагу, що пароль буде збережений у вигляді звичайного тексту, тобто "
-"не буде зашифрований."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Будь-який випуск"
 
@@ -2060,9 +2024,6 @@ msgstr "Відмітити зареєстрованим"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Зареєструвати"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Перевіряти XML перед експортом та реєстрацією."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Немає обраних об'єктів."
@@ -2573,16 +2534,16 @@ msgstr "Підписка закінчилася"
 
 msgid "mailable.subscriptionExpired.description"
 msgstr ""
-"Цей лист сповіщає передплатника про те, що його передплата закінчилась. У "
-"листі міститься URL-адреса журналу та інструкції щодо отримання доступу."
+"Цей електронний лист надсилається автоматично, щоб повідомити передплатника "
+"про закінчення строку дії його підписки."
 
 msgid "mailable.subscriptionExpiredLast.name"
 msgstr "Термін дії передплати минув востаннє"
 
 msgid "mailable.subscriptionExpiredLast.description"
 msgstr ""
-"Цей лист сповіщає передплатника про те, що його передплата закінчилась. У "
-"листі міститься URL-адреса журналу та інструкції щодо отримання доступу."
+"Цей електронний лист надсилається автоматично, щоб сповістити передплатника "
+"вдруге про закінчення строку дії його підписки"
 
 msgid "mailable.subscriptionPurchaseIndividual.name"
 msgstr "Придбайте індивідуальну підписку"
@@ -2712,3 +2673,10 @@ msgid "plugins.importexport.common.error.issueCoverImageMissing"
 msgstr ""
 "Зображення обкладинки випуску {$id} не було експортовано, його файл не "
 "знайдено за шляхом \"{$path}\"."
+
+msgid "manager.setup.contextSummary.description"
+msgstr ""
+"Запропонуйте короткий опис свого журналу, щоб зрозуміти його зміст і мету."
+
+msgid "emailTemplate.variable.issue.issueTableOfContents"
+msgstr "Зміст випуску, наприклад список усіх пов’язаних подань."

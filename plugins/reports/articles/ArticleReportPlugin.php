@@ -3,8 +3,8 @@
 /**
  * @file plugins/reports/articles/ArticleReportPlugin.php
  *
- * Copyright (c) 2014-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2014-2025 Simon Fraser University
+ * Copyright (c) 2003-2025 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArticleReportPlugin
@@ -18,17 +18,12 @@ namespace APP\plugins\reports\articles;
 
 use APP\decision\Decision;
 use APP\facades\Repo;
-use PKP\core\PKPString;
-use PKP\db\DAORegistry;
 use PKP\facades\Locale;
 use PKP\plugins\ReportPlugin;
 use PKP\security\Role;
-use PKP\stageAssignment\StageAssignmentDAO;
+use PKP\stageAssignment\StageAssignment;
 use PKP\submission\PKPSubmission;
-use PKP\submission\SubmissionAgencyDAO;
-use PKP\submission\SubmissionDisciplineDAO;
-use PKP\submission\SubmissionKeywordDAO;
-use PKP\submission\SubmissionSubjectDAO;
+use PKP\userGroup\UserGroup;
 
 class ArticleReportPlugin extends ReportPlugin
 {
@@ -77,7 +72,7 @@ class ArticleReportPlugin extends ReportPlugin
     public function display($args, $request)
     {
         $context = $request->getContext();
-        $acronym = PKPString::regexp_replace('/[^A-Za-z0-9 ]/', '', $context->getLocalizedAcronym());
+        $acronym = preg_replace('/[^A-Za-z0-9 ]/', '', $context->getLocalizedAcronym());
 
         // Prepare for UTF8-encoded CSV output.
         header('content-type: text/comma-separated-values');
@@ -86,21 +81,14 @@ class ArticleReportPlugin extends ReportPlugin
         // Add BOM (byte order mark) to fix UTF-8 in Excel
         fprintf($fp, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-        $stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO'); /** @var StageAssignmentDAO $stageAssignmentDao */
-        $submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO'); /** @var SubmissionKeywordDAO $submissionKeywordDao */
-        $submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /** @var SubmissionSubjectDAO $submissionSubjectDao */
-        $submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO'); /** @var SubmissionDisciplineDAO $submissionDisciplineDao */
-        $submissionAgencyDao = DAORegistry::getDAO('SubmissionAgencyDAO'); /** @var SubmissionAgencyDAO $submissionAgencyDao */
-
-        $userGroups = Repo::userGroup()->getCollector()
-            ->filterByContextIds([$context->getId()])
-            ->getMany()
-            ->toArray();
+        $userGroups = UserGroup::withContextIds([$context->getId()])
+            ->get()
+            ->all();
 
         $editorUserGroupIds = array_map(function ($userGroup) {
-            return $userGroup->getId();
+            return $userGroup->id;
         }, array_filter($userGroups, function ($userGroup) {
-            return in_array($userGroup->getRoleId(), [Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUB_EDITOR]);
+            return in_array($userGroup->roleId, [Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUB_EDITOR]);
         }));
 
         // Load the data from the database and store it in an array.
@@ -128,11 +116,14 @@ class ArticleReportPlugin extends ReportPlugin
             }
 
             // Load editor and decision information
-            $stageAssignmentsFactory = $stageAssignmentDao->getBySubmissionAndStageId($submission->getId());
+            // Replaces StageAssignmentDAO::getBySubmissionAndStageId
+            $stageAssignments = StageAssignment::withSubmissionIds([$submission->getId()])
+                ->get();
+
             $editors = $editorsById = [];
-            while ($stageAssignment = $stageAssignmentsFactory->next()) {
-                $userId = $stageAssignment->getUserId();
-                if (!in_array($stageAssignment->getUserGroupId(), $editorUserGroupIds)) {
+            foreach ($stageAssignments as $stageAssignment) {
+                $userId = $stageAssignment->userId;
+                if (!in_array($stageAssignment->userGroupId, $editorUserGroupIds)) {
                     continue;
                 }
                 if (isset($editors[$userId])) {
@@ -158,10 +149,37 @@ class ArticleReportPlugin extends ReportPlugin
                 $sectionTitles[$sectionId] = $section->getLocalizedTitle();
             }
 
-            $subjects = $submissionSubjectDao->getSubjects($submission->getCurrentPublication()->getId());
-            $disciplines = $submissionDisciplineDao->getDisciplines($submission->getCurrentPublication()->getId());
-            $keywords = $submissionKeywordDao->getKeywords($submission->getCurrentPublication()->getId());
-            $agencies = $submissionAgencyDao->getAgencies($submission->getCurrentPublication()->getId());
+            $subjects = collect($publication->getData('subjects') ?? [])
+                ->map(
+                    fn (array $items): array => collect($items)
+                        ->pluck('name')
+                        ->all()
+                )
+                ->all();
+
+            $disciplines = collect($publication->getData('disciplines') ?? [])
+                ->map(
+                    fn (array $items): array => collect($items)
+                        ->pluck('name')
+                        ->all()
+                )
+                ->all();
+
+            $keywords = collect($publication->getData('keywords') ?? [])
+                ->map(
+                    fn (array $items): array => collect($items)
+                        ->pluck('name')
+                        ->all()
+                )
+                ->all();
+
+            $supportingAgencies = collect($publication->getData('supportingAgencies') ?? [])
+                ->map(
+                    fn (array $items): array => collect($items)
+                        ->pluck('name')
+                        ->all()
+                )
+                ->all();
 
             // Store the submission results
             $results[] = [
@@ -174,7 +192,7 @@ class ArticleReportPlugin extends ReportPlugin
                         $author->getLocalizedFamilyName(),
                         $author->getData('orcid'),
                         $author->getData('country'),
-                        $author->getLocalizedData('affiliation'),
+                        $author->getLocalizedAffiliationNamesAsString(),
                         $author->getData('email'),
                         $author->getData('url'),
                         html_entity_decode(strip_tags($author->getLocalizedData('biography'))),
@@ -185,16 +203,16 @@ class ArticleReportPlugin extends ReportPlugin
                 'coverage' => $publication->getLocalizedData('coverage'),
                 'rights' => $publication->getLocalizedData('rights'),
                 'source' => $publication->getLocalizedData('source'),
-                'subjects' => join(', ', $subjects[Locale::getLocale()] ?? $subjects[$submission->getLocale()] ?? []),
+                'subjects' => join(', ', $subjects[Locale::getLocale()] ?? $subjects[$submission->getData('locale')] ?? []),
                 'type' => $publication->getLocalizedData('type'),
-                'disciplines' => join(', ', $disciplines[Locale::getLocale()] ?? $disciplines[$submission->getLocale()] ?? []),
-                'keywords' => join(', ', $keywords[Locale::getLocale()] ?? $keywords[$submission->getLocale()] ?? []),
-                'agencies' => join(', ', $agencies[Locale::getLocale()] ?? $agencies[$submission->getLocale()] ?? []),
-                'status' => $submission->getStatus() == PKPSubmission::STATUS_QUEUED ? $this->getStageLabel($submission->getStageId()) : __($statusMap[$submission->getStatus()]),
-                'url' => $request->url(null, 'workflow', 'access', $submission->getId()),
-                'doi' => $submission->getStoredPubId('doi'),
-                'dateSubmitted' => $submission->getDateSubmitted(),
-                'lastModified' => $submission->getLastModified(),
+                'disciplines' => join(', ', $disciplines[Locale::getLocale()] ?? $disciplines[$submission->getData('locale')] ?? []),
+                'keywords' => join(', ', $keywords[Locale::getLocale()] ?? $keywords[$submission->getData('locale')] ?? []),
+                'agencies' => join(', ', $agencies[Locale::getLocale()] ?? $agencies[$submission->getData('locale')] ?? []),
+                'status' => $submission->getData('status') == PKPSubmission::STATUS_QUEUED ? $this->getStageLabel($submission->getData('stageId')) : __($statusMap[$submission->getData('status')]),
+                'url' => $request->url(null, 'dashboard', 'editorial', null, ['workflowSubmissionId' => $submission->getId()]),
+                'doi' => $publication->getDoi(),
+                'dateSubmitted' => $submission->getData('dateSubmitted'),
+                'lastModified' => $submission->getData('lastModified'),
                 'firstPublished' => $submission->getOriginalPublication()?->getData('datePublished') ?? '',
                 'editors' => $editors,
                 'decisions' => $editDecisions->toArray(),
@@ -355,7 +373,7 @@ class ArticleReportPlugin extends ReportPlugin
             case Decision::EXTERNAL_REVIEW:
                 return __('editor.submission.decision.sendExternalReview');
             case Decision::INITIAL_DECLINE:
-                return __('editor.submission.decision.decline');
+                return __('plugins.reports.articles.initialDecline');
             case Decision::RECOMMEND_ACCEPT:
                 return __('editor.submission.recommendation.display', ['recommendation' => __('editor.submission.decision.accept')]);
             case Decision::RECOMMEND_DECLINE:

@@ -95,12 +95,12 @@ describe('Data suite: Amwandenga', function() {
 
 
 		// The submission wizard has loaded
-		cy.contains('Make a Submission: Details');
+		cy.contains('Make a Submission: Upload Files');
 		cy.get('.submissionWizard__submissionDetails').contains('Mwandenga');
 		cy.get('.submissionWizard__submissionDetails').contains(submission.title);
 		cy.contains('Submitting to the Articles section in English');
-		cy.get('.pkpSteps__step__label--current').contains('Details');
-		cy.get('.pkpSteps__step__label').contains('Upload Files');
+		cy.get('.pkpSteps__step__label--current').contains('Upload Files');
+		cy.get('.pkpSteps__step__label').contains('Details');
 		cy.get('.pkpSteps__step__label').contains('Contributors');
 		cy.get('.pkpSteps__step__label').contains('For the Editors');
 		cy.get('.pkpSteps__step__label').contains('Review');
@@ -110,13 +110,6 @@ describe('Data suite: Amwandenga', function() {
 			.then(search => {
 				submission.id = parseInt(search.split('=')[1]);
 			});
-
-		// Enter details
-		cy.get('h2').contains('Submission Details');
-		cy.setTinyMceContent('titleAbstract-abstract-control-en', submission.abstract);
-		cy.get('#titleAbstract-title-control-en').click({force: true}); // Ensure blur event is fired
-
-		cy.get('.submissionWizard__footer button').contains('Continue').click();
 
 		// Upload files and set file genres
 		cy.contains('Make a Submission: Upload Files');
@@ -132,8 +125,15 @@ describe('Data suite: Amwandenga', function() {
 			'genre': Cypress.env('defaultGenre')
 		}]);
 		cy.get('.listPanel__item:contains("delete-this-file.pdf")').find('button').contains('Remove').click();
-		cy.get('.modal__panel:contains("Are you sure you want to remove this file?")').find('button').contains('Yes').click();
+		cy.get('div[role=dialog]:contains("Are you sure you want to remove this file?")').find('button').contains('Yes').click();
 		cy.get('.listPanel__item:contains("delete-this-file.pdf")').should('not.exist');
+
+		cy.get('.submissionWizard__footer button').contains('Continue').click();
+
+		// Enter details
+		cy.get('h2').contains('Submission Details');
+		cy.setTinyMceContent('titleAbstract-abstract-control-en', submission.abstract);
+		cy.get('#titleAbstract-title-control-en').click({force: true}); // Ensure blur event is fired
 
 		cy.get('.submissionWizard__footer button').contains('Continue').click();
 
@@ -143,7 +143,7 @@ describe('Data suite: Amwandenga', function() {
 		cy.get('h2').contains('Contributors');
 		cy.get('.listPanel__item:contains("Alan Mwandenga")');
 		cy.get('button').contains('Add Contributor').click();
-		cy.get('.modal__panel:contains("Add Contributor")').find('button').contains('Save').click();
+		cy.get('div[role=dialog]:contains("Add Contributor")').find('button').contains('Save').click();
 		cy.get('#contributor-givenName-error-en').contains('This field is required.');
 		cy.get('#contributor-email-error').contains('This field is required.');
 		cy.get('#contributor-country-error').contains('This field is required.');
@@ -151,35 +151,39 @@ describe('Data suite: Amwandenga', function() {
 		cy.get('.pkpFormField:contains("Family Name")').find('input[name*="-en"]').type(submission.authors[0].familyName);
 		cy.get('.pkpFormField:contains("Country")').find('select').select(submission.authors[0].country)
 		cy.get('.pkpFormField:contains("Email")').find('input').type('notanemail');
-		cy.get('.modal__panel:contains("Add Contributor")').find('button').contains('Save').click();
+		cy.get(`input[name=contributorRoles][value="${Cypress.env('contributorRoleAuthor')}"]`).check();
+		cy.get('div[role=dialog]:contains("Add Contributor")').find('button').contains('Save').click();
 		cy.get('#contributor-email-error').contains('This is not a valid email address.');
 		cy.get('.pkpFormField:contains("Email")').find('input').type(submission.authors[0].email);
-		cy.get('.modal__panel:contains("Add Contributor")').find('button').contains('Save').click();
-		cy.get('button').contains('Order').click();
+		cy.get('div[role=dialog]:contains("Add Contributor")').find('button').contains('Save').click();
+		cy.wait(3000);
+		cy.get('.contributorsListPanel button:contains("Order")').click();
+		cy.wait(3000);
 		cy.get('button:contains("Decrease position of Alan Mwandenga")').click();
 		cy.get('button').contains('Save Order').click();
 		cy.get('button:contains("Preview")').click(); // Will only appear after order is saved
-		cy.get('.modal__panel:contains("List of Contributors")').find('tr:contains("Abbreviated")').contains('Mansour et al.');
-		cy.get('.modal__panel:contains("List of Contributors")').find('tr:contains("Publication Lists")').contains('Amina Mansour, Alan Mwandenga (Author)');
-		cy.get('.modal__panel:contains("List of Contributors")').find('tr:contains("Full")').contains('Amina Mansour, Alan Mwandenga (Author)');
-		cy.get('.modal__panel:contains("List of Contributors")').find('.modal__closeButton').click();
+		cy.get('div[role=dialog]:contains("List of Contributors")').find('tr:contains("Abbreviated")').contains('Mansour et al.');
+		cy.get('div[role=dialog]:contains("List of Contributors")').find('tr:contains("Publication Lists")').contains('Amina Mansour (Author); Alan Mwandenga (Author)');
+		cy.get('div[role=dialog]:contains("List of Contributors")').find('tr:contains("Full")').contains('Amina Mansour (Author); Alan Mwandenga (Author)');
+		cy.get('div[role=dialog]:contains("List of Contributors")').find('button:contains("Close")').click();
 		cy.get('.listPanel:contains("Contributors")').find('button').contains('Order').click();
 		cy.get('button:contains("Increase position of Alan Mwandenga")').click();
 		cy.get('.listPanel:contains("Contributors")').find('button').contains('Save Order').click();
 		cy.get('.listPanel:contains("Contributors") button:contains("Preview")').click(); // Will only appear after order is saved
-		cy.get('.modal__panel:contains("List of Contributors")').find('tr:contains("Abbreviated")').contains('Mwandenga et al.');
-		cy.get('.modal__panel:contains("List of Contributors")').find('tr:contains("Publication Lists")').contains('Alan Mwandenga, Amina Mansour (Author)');
-		cy.get('.modal__panel:contains("List of Contributors")').find('tr:contains("Full")').contains('Alan Mwandenga, Amina Mansour (Author)');
-		cy.get('.modal__panel:contains("List of Contributors")').find('.modal__closeButton').click();
+		cy.get('div[role=dialog]:contains("List of Contributors")').find('tr:contains("Abbreviated")').contains('Mwandenga et al.');
+		cy.get('div[role=dialog]:contains("List of Contributors")').find('tr:contains("Publication Lists")').contains('Alan Mwandenga (Author); Amina Mansour (Author)');
+		cy.get('div[role=dialog]:contains("List of Contributors")').find('tr:contains("Full")').contains('Alan Mwandenga (Author); Amina Mansour (Author)');
+		cy.get('div[role=dialog]:contains("List of Contributors")').find('button:contains("Close")').click();
 
 		// Delete a contributor
 		cy.get('.listPanel:contains("Contributors")').find('button').contains('Add Contributor').click();
 		cy.get('.pkpFormField:contains("Given Name")').find('input[name*="-en"]').type('Fake Author Name');
 		cy.get('.pkpFormField:contains("Email")').find('input').type('delete@mailinator.com');
 		cy.get('.pkpFormField:contains("Country")').find('select').select('Barbados');
-		cy.get('.modal__panel:contains("Add Contributor")').find('button').contains('Save').click();
+		cy.get(`input[name=contributorRoles][value="${Cypress.env('contributorRoleAuthor')}"]`).check();
+		cy.get('div[role=dialog]:contains("Add Contributor")').find('button').contains('Save').click();
 		cy.get('.listPanel__item:contains("Fake Author Name")').find('button').contains('Delete').click();
-		cy.get('.modal__panel:contains("Are you sure you want to remove Fake Author Name as a contributor?")').find('button').contains('Delete Contributor').click();
+		cy.get('div[role=dialog]:contains("Are you sure you want to remove Fake Author Name as a contributor?")').find('button').contains('Delete Contributor').click();
 		cy.get('.listPanel__item:contains("Fake Author Name")').should('not.exist');
 
 		cy.get('.submissionWizard__footer button').contains('Continue').click();
@@ -222,7 +226,7 @@ describe('Data suite: Amwandenga', function() {
 			.find('h4').contains('Keywords').siblings('.submissionWizard__reviewPanel__item__value').contains('None provided')
 			.parents('.submissionWizard__reviewPanel')
 			.find('h4').contains('Abstract').siblings('.submissionWizard__reviewPanel__item__value').contains(submission.abstract);
-		cy.get('h3').contains('Details (French)')
+		cy.get('h3').contains('Details (French (Canada))')
 			.parents('.submissionWizard__reviewPanel')
 			.find('h4').contains('Title').siblings('.submissionWizard__reviewPanel__item__value').contains('None provided')
 			.parents('.submissionWizard__reviewPanel')
@@ -232,7 +236,7 @@ describe('Data suite: Amwandenga', function() {
 		cy.get('h3').contains('For the Editors (English)')
 			.parents('.submissionWizard__reviewPanel')
 			.find('h4').contains('Comments for the Editor').siblings('.submissionWizard__reviewPanel__item__value').contains('None');
-		cy.get('h3').contains('For the Editors (French)') // FIXME: Should be French
+		cy.get('h3').contains('For the Editors (French (Canada))')
 
 		// Save for later
 		cy.get('button').contains('Save for Later').click();
@@ -245,12 +249,13 @@ describe('Data suite: Amwandenga', function() {
 		cy.contains('Make a Submission: Review');
 		cy.get('button:contains("Submit")').click();
 		const message = 'The submission, ' + submission.title + ', will be submitted to ' + Cypress.env('contextTitles').en + ' for editorial review';
-		cy.get('.modal__panel:contains("' + message + '")').find('button').contains('Submit').click();
+		cy.get('div[role=dialog]:contains("' + message + '")').find('button').contains('Submit').click();
 		cy.contains('Submission complete');
 		cy.get('a').contains('Create a new submission');
 		cy.get('a').contains('Return to your dashboard');
 		cy.get('a').contains('Review this submission').click();
-		cy.get('h1:contains("' + submission.title + '")');
+		cy.get('[data-cy="active-modal"] p:contains("' + submission.title + '")');
+		cy.logout();
 	});
 
 	it('Sends a submission to review, assigns reviewers, accepts a submission, and sends to production', function() {
@@ -270,38 +275,41 @@ describe('Data suite: Amwandenga', function() {
 		cy.isActiveStageTab('Production');
 		cy.assignParticipant('Layout Editor', 'Stephen Hellier');
 		cy.assignParticipant('Proofreader', 'Sabine Kumar');
+		cy.logout();
 	});
 
 	it('Editor can edit publication details', function() {
 		cy.login('dbarnes');
 		cy.visit('/index.php/publicknowledge/workflow/access/' + submission.id);
-		cy.get('#publication-button').click();
+		cy.openWorkflowMenu('Unassigned version', 'Title & Abstract')
 
 		// Title and abstract
 		submission.prefix = 'The';
 		submission.title = 'Signalling Theory Dividends';
 		submission.subtitle = 'A Review Of The Literature And Empirical Evidence';
-		cy.get('#titleAbstract input[name=prefix-en]').type(submission.prefix, {delay: 0});
+		cy.get('input[name=prefix-en]').type(submission.prefix, {delay: 0});
 		cy.setTinyMceContent('titleAbstract-subtitle-control-en', submission.subtitle);
 		cy.setTinyMceContent('titleAbstract-title-control-en', '');
 		cy.setTinyMceContent('titleAbstract-abstract-control-en', submission.abstract.repeat(10));
 		cy.get('#titleAbstract-title-control-en').click({force:true}); // Ensure blur event is fired
 		cy.get('#titleAbstract-subtitle-control-en').click({force: true});
-		cy.get('#titleAbstract button').contains('Save').click();
+		cy.get('button').contains('Save').click();
 
-		cy.get('#titleAbstract [id*=title-error-en]').find('span').contains('This field is required.');
+		cy.get('[id*=title-error-en]').find('span').contains('This field is required.');
 		cy.setTinyMceContent('titleAbstract-title-control-en', submission.title);
-		cy.get('#titleAbstract button').contains('Save').click();
+		cy.get('button').contains('Save').click();
 
-		cy.get('#titleAbstract [id*=abstract-error-en]').find('span').contains('The abstract is too long.');
+		cy.get('[id*=abstract-error-en]').find('span').contains('The abstract is too long.');
 		cy.setTinyMceContent('titleAbstract-abstract-control-en', submission.abstract);
 		cy.get('#titleAbstract-title-control-en').click({force:true}); // Ensure blur event is fired
 		cy.get('#titleAbstract-subtitle-control-en').click({force:true});
-		cy.get('#titleAbstract button').contains('Save').click();
-		cy.get('#titleAbstract [role="status"]').contains('Saved');
+		cy.get('button').contains('Save').click();
+		cy.get('[role="status"]').contains('Saved');
+		//cy.wait(1000);
 
 		// Metadata
-		cy.get('#metadata-button').click();
+		cy.openWorkflowMenu('Unassigned version', 'Metadata')
+
 		cy.get('#metadata-keywords-control-en').type('Professional Development', {delay: 0});
 		cy.get('.autosuggest__results-item').contains('Professional Development');
 		cy.get('#metadata-keywords-control-en').type('{enter}', {delay: 0});
@@ -310,45 +318,52 @@ describe('Data suite: Amwandenga', function() {
 		cy.get('.autosuggest__results-item').contains('Social Transformation');
 		cy.get('#metadata-keywords-control-en').type('{enter}', {delay: 0});
 		cy.get('#metadata-keywords-selected-en').contains('Social Transformation');
-		cy.get('#metadata button').contains('Save').click();
-		cy.get('#metadata [role="status"]').contains('Saved');
+		cy.get('button').contains('Save').click();
+		cy.get('[role="status"]').contains('Saved');
+		//cy.wait(1000);
 
 		// Permissions & Disclosure
-		cy.get('#license-button').click();
-		cy.get('#license button').contains('Save').click();
-		cy.get('#license [role="status"]').contains('Saved');
+		cy.openWorkflowMenu('Unassigned version', 'Permissions & Disclosure')
+		cy.get('button').contains('Save').click();
+		cy.get('[role="status"]').contains('Saved');
+		//cy.wait(1000);
 
-		// Issue
-		cy.get('#issue-button').click();
-		cy.get('#issue [name="sectionId"]').select('Reviews');
-		cy.get('#issue [name="sectionId"]').select('Articles');
-		cy.get('#issue [name="pages"]').type('71-98', {delay: 0});
-		cy.get('#issue [name="urlPath"]').type('mwandenga-signalling-theory space error');
-		cy.get('#issue button').contains('Save').click();
+		// Publication Settings
+		cy.openWorkflowMenu('Unassigned version', 'Publication Settings')
 
-		cy.get('#issue [id*="urlPath-error"]').contains('This may only contain letters, numbers, dashes, underscores and periods.');
-		cy.get('#issue [name="urlPath"]').clear().type('mwandenga-signalling-theory');
-		cy.get('#issue button').contains('Save').click();
-		cy.get('#issue [role="status"]').contains('Saved');
+		// Initially set to no issue
+		cy.get('label:Contains("Don\'t Assign To An Issue")').click();
+
+		cy.get('[name="sectionId"]').select('Reviews');
+		cy.get('[name="sectionId"]').select('Articles');
+		cy.get('[name="pages"]').type('71-98', {delay: 0});
+		cy.get('[name="urlPath"]').type('mwandenga-signalling-theory space error');
+		cy.get('button').contains('Save').click();
+
+		cy.get('[id*="urlPath-error"]').contains('This may only contain letters, numbers, dashes, underscores and periods.');
+		cy.get('[name="urlPath"]').clear().type('mwandenga-signalling-theory');
+		cy.get('button').contains('Save').click();
+		cy.get('[role="status"]').contains('Saved');
+		//cy.wait(1000);
 
 		// Contributors
-		cy.wait(1500);
-		cy.get('#contributors-button').click();
+		cy.openWorkflowMenu('Unassigned version', 'Contributors')
 
-		cy.get('#contributors button').contains('Add Contributor').click();
+		cy.get('button').contains('Add Contributor').click();
 
-		cy.get('#contributors [name="givenName-en"]').type('Nicolas', {delay: 0});
-		cy.get('#contributors [name="familyName-en"]').type('Riouf', {delay: 0});
-		cy.get('#contributors [name="email"]').type('nriouf@mailinator.com', {delay: 0});
-		cy.get('#contributors [name="country"]').select('South Africa');
-		cy.get('#contributors button').contains('Save').click();
-		cy.wait(500);
-		cy.get('#contributors div').contains('Nicolas Riouf');
+		cy.get('div[role="dialog"] [name="givenName-en"]').type('Nicolas', {delay: 0});
+		cy.get('div[role="dialog"] [name="familyName-en"]').type('Riouf', {delay: 0});
+		cy.get('div[role="dialog"] [name="email"]').type('nriouf@mailinator.com', {delay: 0});
+		cy.get('div[role="dialog"] [name="country"]').select('South Africa');
+		cy.get(`input[name=contributorRoles][value="${Cypress.env('contributorRoleAuthor')}"]`).check();
+		cy.get('div[role="dialog"] button').contains('Save').click();
+		//cy.wait(1000);
+		cy.get('div').contains('Nicolas Riouf');
 
 		// Create a galley
-		cy.get('button#publication-button').click();
-		cy.get('button#galleys-button').click();
-		cy.get('a[id^="component-grid-articlegalleys-articlegalleygrid-addGalley-button-"]').click();
+		cy.openWorkflowMenu('Unassigned version', 'Galleys')
+
+		cy.get('button:contains("Add galley")').click();
 		cy.wait(1000); // Wait for the form to settle
 		cy.get('input[id^=label-]').type('PDF', {delay: 0});
 		cy.get('form#articleGalleyForm button:contains("Save")').click();
@@ -362,31 +377,33 @@ describe('Data suite: Amwandenga', function() {
 		cy.get('button').contains('Continue').click();
 		cy.get('button').contains('Continue').click();
 		cy.get('button').contains('Complete').click();
+		cy.logout();
 	});
 
 	it('Author can not edit publication details', function() {
 		cy.login('amwandenga');
-		cy.visit('/index.php/publicknowledge/submissions');
-		cy.contains('View Mwandenga').click({force: true});
-		cy.get('#publication-button').click();
-		cy.get('#titleAbstract button').contains('Save').should('be.disabled');
+		cy.visit('/index.php/publicknowledge/dashboard/mySubmissions');
+		cy.openSubmission('Mwandenga');
 
-		cy.get('#contributors-button').click();
+		cy.openWorkflowMenu('Unassigned version', 'Title & Abstract')
+		cy.get('button').contains('Save').should('be.disabled');
 
-		cy.get('#contributors button').contains('Add Contributor').should('not.exist');
-		cy.get('#contributors button').contains('Edit').should('not.exist');
+		cy.openWorkflowMenu('Unassigned version', 'Contributors')
+		cy.get('button').contains('Add Contributor').should('not.exist');
+		cy.get('button').contains('Edit').should('not.exist');
 
-		cy.get('#galleys-button').click();
-		cy.get('[id*="addGalley-button"]').should('not.exist');
-		cy.get('[id*="editGalley-button"]').contains('View').should('exist');
+
+		cy.openWorkflowMenu('Unassigned version', 'Galleys')
+		cy.get('button:contains("Add galley")').should('not.exist');
+		cy.get('[data-cy="active-modal"] button[aria-label="More Actions"]').should('not.exist')
+		cy.logout();
 	});
 
 	it('Allow author to edit publication details', function() {
 		cy.login('dbarnes');
 		cy.visit('/index.php/publicknowledge/workflow/access/' + submission.id);
-		cy.get('#stageParticipantGridContainer .label').contains('Alan Mwandenga')
-			.parent().parent().find('.show_extras').click()
-			.parent().parent().siblings().find('a').contains('Edit').click();
+		cy.get('button[aria-label="Alan Mwandenga More Actions"]').scrollIntoView().should('be.visible').click();
+		cy.get('button:contains("Edit")').click();
 		cy.get('[name="canChangeMetadata"]').check();
 		cy.get('[id^="submitFormButton"]').contains('OK').click();
 		cy.contains('The stage assignment has been changed.');
@@ -395,16 +412,17 @@ describe('Data suite: Amwandenga', function() {
 		cy.wait(1000);
 
 		cy.login('amwandenga');
-		cy.visit('/index.php/publicknowledge/authorDashboard/submission/' + submission.id);
-		cy.get('#publication-button').click();
-		cy.get('#titleAbstract button').contains('Save').click();
-		cy.get('#titleAbstract [role="status"]').contains('Saved');
+		cy.visit(`/index.php/publicknowledge/dashboard/mySubmissions?workflowSubmissionId=${submission.id}`);
+		cy.openWorkflowMenu('Unassigned version', 'Title & Abstract')
+		cy.get('button').contains('Save').click();
+		cy.get('[role="status"]').contains('Saved');
+		cy.logout();
 	});
 
 	it('Publish submission', function() {
 		cy.login('dbarnes');
 		cy.visit('/index.php/publicknowledge/workflow/access/' + submission.id);
-		cy.publish('1', 'Vol. 1 No. 2 (2014)');
+		cy.publish('Assign To Current/Back Issue', '1', 'Vol. 1 No. 2 (2014)');
 		cy.isInIssue(submission.title, 'Vol. 1 No. 2 (2014)');
 		cy.contains(submission.title).click();
 		cy.get('h1:contains("' + submission.title + '")');
@@ -416,15 +434,16 @@ describe('Data suite: Amwandenga', function() {
 		cy.contains('Nicolas Riouf');
 		cy.contains('Professional Development');
 		cy.contains('Social Transformation');
+		cy.logout();
 	});
 
 	it('Article is not available when unpublished', function() {
 		cy.login('dbarnes');
 		cy.visit('/index.php/publicknowledge/workflow/access/' + submission.id);
-		cy.get('#publication-button').click();
+		cy.openWorkflowMenu('Version of Record 1.0', 'Title & Abstract')
 		cy.get('button').contains('Unpublish').click();
 		cy.contains('Are you sure you don\'t want this to be published?');
-		cy.get('.modal__panel button').contains('Unpublish').click();
+		cy.get('[data-cy="dialog"] button').contains('Unpublish').click();
 		cy.wait(1000);
 		cy.visit('/index.php/publicknowledge/issue/current');
 		cy.contains('Signalling Theory Dividends').should('not.exist');
@@ -440,55 +459,54 @@ describe('Data suite: Amwandenga', function() {
 		// Re-publish it
 		cy.login('dbarnes');
 		cy.visit('/index.php/publicknowledge/workflow/access/' + submission.id);
-		cy.get('#publication-button').click();
-		cy.get('.pkpPublication button').contains('Schedule For Publication').click();
+		cy.openWorkflowMenu('Version of Record 1.0', 'Title & Abstract')
+		cy.get('button').contains('Schedule For Publication').click();
+		cy.wait(1000);
+		
+		// Reconfirm the version stage and issue selection
+		cy.get('[data-cy="active-modal"]').find('select[name="issueId"]').select('Vol. 1 No. 2 (2014)');
+		cy.get('[data-cy="active-modal"] button:Contains("Confirm")').click();
+		cy.wait(1000);
+		
 		cy.contains('All publication requirements have been met.');
 		cy.get('.pkpWorkflow__publishModal button').contains('Publish').click();
+		cy.logout();
 	});
 
 	it('Editor must create version to make changes', function() {
 		cy.login('dbarnes');
 		cy.visit('/index.php/publicknowledge/workflow/access/' + submission.id);
-		cy.get('#publication-button').click();
-		cy.get('#titleAbstract button').contains('Save').should('be.disabled');
-		cy.get('#publication button').contains('Create New Version').click();
-		cy.contains('Are you sure you want to create a new version?');
-		cy.get('.modal__panel:contains("Create New Version")').get('button').contains('Yes').click();
-		cy.wait(3000);
+		cy.openWorkflowMenu('Title & Abstract')
+		cy.get('a').contains('Create New Version').click();
+		cy.get('div[role="dialog"]').should('contain', 'Create New Version');
+		cy.get('div[role="dialog"]').contains('Confirm').click();
 
-		// Toggle between versions
-		cy.get('#publication button').contains('All Versions').click();
-		cy.get('.pkpPublication__versions .pkpDropdown__action').eq(0).click();
-		cy.wait(3000);
-		cy.contains('This version has been published and can not be edited.');
-		cy.get('#titleAbstract button').contains('Save').should('be.disabled');
-		cy.get('#publication button').contains('All Versions').click();
-		cy.get('.pkpPublication__versions .pkpDropdown__action').eq(1).click();
-		cy.wait(3000);
-		cy.get('#publication button').contains('Publish');
-		cy.contains('This version has been published and can not be edited.').should('not.exist');
+		cy.openWorkflowMenu('Version of Record 1.0', 'Title & Abstract');
+		// check for the warning text on published version
+		cy.contains('Warning: This version has been published. Editing it may impact the published content.');
 
-		// Edit unpublished version's title
+		cy.openWorkflowMenu('Version of Record 1.1', 'Title & Abstract');
+		cy.get('button').contains('Publish');
+
+		// Edit new published version's title
 		cy.setTinyMceContent('titleAbstract-title-control-en', 'The Signalling Theory Dividends Version 2');
-		cy.get('#titleAbstract button').contains('Save').click();
-		cy.get('#titleAbstract [role="status"]').contains('Saved');
+		cy.get('button').contains('Save').click();
+		cy.get('[role="status"]').contains('Saved');
 
 		// Edit Contributor
-		cy.wait(1500);
-		cy.get('#contributors-button').click();
+		cy.openWorkflowMenu('Version of Record 1.1', 'Contributors')
 
-		cy.get('#contributors div').contains('Alan Mwandenga').parent().parent().find('button').contains('Edit').click();
-		cy.get('#contributors [name="familyName-en"]').type(' Version 2', {delay: 0});
-		cy.get('#contributors button').contains('Save').click();
-		// cy.get('#contributors button').contains('Save').should("not.be.visible");
-		cy.wait(1500); // Wait for the grid to reload
-		cy.get('#contributors div').contains('Alan Mwandenga Version 2');
+		cy.get('[data-cy="contributor-manager"]').contains('li','Alan Mwandenga').find('button').contains('Edit').click();
+
+		cy.get('div[role="dialog"] [name="familyName-en"]').type(' Version 2', {delay: 0});
+		cy.get('div[role="dialog"] button').contains('Save').click();
+		cy.get('[data-cy="contributor-manager"]').contains('Alan Mwandenga Version 2');
 
 		// Edit Galley
-		cy.get('#galleys-button').click();
+		cy.openWorkflowMenu('Version of Record 1.1', 'Galleys')
 		cy.contains('Add galley');
-		cy.get('#representations-grid .show_extras').click();
-		cy.get('[id*="editGalley-button"]').click();
+		cy.get('[data-cy="active-modal"] button[aria-label="More Actions"]').click();
+		cy.get('button:contains("Edit")').click();
 		cy.waitJQuery(); // Wait for the form initialization
 		cy.wait(1000); // Additional wait needed to reduce failures
 		cy.get('#articleGalleyForm').within(() => {
@@ -497,30 +515,43 @@ describe('Data suite: Amwandenga', function() {
 			cy.get('button').contains('Save').click();
 		});
 		cy.wait(3000);
-		cy.get('#representations-grid [id*="downloadFile-button"]:contains("PDF Version 2")');
+		cy.get('[data-cy="galley-manager"]').contains("PDF Version 2");
 
-		// Edit url path
-		cy.get('#issue-button').click();
-		cy.get('#issue [name="urlPath"]').clear().type('mwandenga');
-		cy.get('#issue button').contains('Save').click();
-		cy.get('#issue [role="status"]').contains('Saved');
+		// Edit url path and select issue
+		cy.openWorkflowMenu('Version of Record 1.1', 'Publication Settings')
+		cy.wait(2000);
+		cy.get('select[name="issueId"]').select('Vol. 1 No. 2 (2014)');
+		cy.get('[name="urlPath"]').clear();
+		cy.wait(500);
+		cy.get('[name="urlPath"]').type('mwandenga');
+		cy.get('button').contains('Save').click();
+		cy.get('[role="status"]').contains('Saved');
 
 		// Publish version
-		cy.get('#publication button').contains('Publish').click();
+		cy.get('button').contains('Publish').click();
+		cy.wait(1000);
+		cy.get('[data-cy="active-modal"]').find('select[name="issueId"]').select('Vol. 1 No. 2 (2014)');
+		cy.get('[data-cy="active-modal"] button:Contains("Confirm")').click();
+		cy.wait(1000);
 		cy.contains('All publication requirements have been met.');
 		cy.get('.pkpWorkflow__publishModal button').contains('Publish').click();
+		cy.logout();
 	});
 
 	it('Article landing page displays versions at correct url path', function() {
-		cy.visit('/index.php/publicknowledge/article/view/mwandenga');
+		// using the localized route because our site redirects to '/en/'
+		cy.visit('/index.php/publicknowledge/en/article/view/mwandenga');
 		cy.get('h1').contains('The Signalling Theory Dividends Version 2');
 		cy.contains('Alan Mwandenga Version 2');
 		cy.checkViewableGalley('PDF Version 2');
+
 		cy.contains('The Signalling Theory Dividends Version 2').click();
-		cy.get('.versions a').contains('(1)').click();
+		cy.get('.versions a').contains('(Version of Record 1.0)').click();
 		cy.contains('This is an outdated version');
 		cy.checkViewableGalley('PDF');
 		cy.contains('This is an outdated version');
+
+		// switch back to the new version
 		cy.get('.galley_view_notice a').click();
 		cy.get('h1').contains('The Signalling Theory Dividends Version 2');
 		cy.contains('This is an outdated version').should('not.exist');
@@ -529,47 +560,70 @@ describe('Data suite: Amwandenga', function() {
 	it('Article landing page displays correct version after version is unpublished', function() {
 		cy.login('dbarnes');
 		cy.visit('/index.php/publicknowledge/workflow/access/' + submission.id);
-		cy.get('#publication-button').click();
-		cy.get('button').contains('Unpublish').click();
+		cy.openWorkflowMenu('Version of Record 1.1', 'Title & Abstract')
+		cy.get('button').contains('Unpublish').should('exist').click();
 		cy.contains('Are you sure you don\'t want this to be published?');
-		cy.get('.modal__panel button').contains('Unpublish').click();
+		cy.get('[data-cy="dialog"] button').contains('Unpublish').click();
 		cy.wait(1000);
-		cy.get('.pkpWorkflow__header a').contains('View').click();
+		cy.get('button').contains('View').click();
 		cy.contains('The Signalling Theory Dividends Version 2').should('not.exist');
-		cy.get('.versions').should('not.exist');
+		cy.logout();
 	});
 
 	it('Recommend-only editors can not publish, unpublish or create versions', function() {
 		cy.login('dbarnes');
 		cy.visit('/index.php/publicknowledge/workflow/access/' + submission.id);
 		cy.wait(1000);
+		cy.openWorkflowMenu('Production');
 		cy.clickStageParticipantButton('Stephanie Berardo', 'Edit');
 		cy.get('[name="recommendOnly"]').check();
 		cy.get('[id^="submitFormButton"]').contains('OK').click();
 		cy.contains('The stage assignment has been changed.');
 		cy.waitJQuery();
 		cy.clickStageParticipantButton('Stephanie Berardo', 'Login As');
-		cy.get('.pkpModalConfirmButton').contains('OK').click();
-		cy.get('#publication-button').click();
-		cy.get('.pkpPublication .pkpHeader__actions button:contains("Publish")').should('not.exist');
-		cy.get('.pkpPublication .pkpHeader__actions button:contains("Create Version")').should('not.exist');
-		cy.contains('All Versions').click();
-		cy.get('.pkpPublication__versions .pkpDropdown__action').eq(0).click();
-		cy.contains('This version has been published and can not be edited.');
-		cy.get('.pkpPublication .pkpHeader__actions button:contains("Unpublish")').should('not.exist');
+		cy.get('button').contains('OK').click();
+		cy.openWorkflowMenu('Version of Record 1.1', 'Title & Abstract');
+		cy.wait(1000); // let the UI load fully
+	  
+		cy.get('button:contains("Publish")').should('not.exist');
+		cy.get('button:contains("Create Version")').should('not.exist');
+		cy.get('button:contains("Unpublish")').should('not.exist');
+		cy.openWorkflowMenu('Version of Record 1.0', 'Title & Abstract');
+		cy.contains('Warning: This version has been published. Editing it may impact the published content.');
 	});
 
 	it('Section editors can have their permission to edit publication data revoked', function() {
 		cy.login('dbarnes');
 		cy.visit('/index.php/publicknowledge/workflow/access/' + submission.id);
+		cy.openWorkflowMenu('Production');
 		cy.clickStageParticipantButton('Stephanie Berardo', 'Edit');
 		cy.get('[name="canChangeMetadata"]').uncheck();
 		cy.get('[id^="submitFormButton"]').contains('OK').click();
 		cy.contains('The stage assignment has been changed.');
 		cy.waitJQuery();
 		cy.clickStageParticipantButton('Stephanie Berardo', 'Login As');
-		cy.get('.pkpModalConfirmButton').contains('OK').click();
-		cy.get('#publication-button').click();
-		cy.get('#titleAbstract button').contains('Save').should('be.disabled');
+		cy.get('button').contains('OK').click();
+		cy.openWorkflowMenu('Version of Record 1.1', 'Title & Abstract');
+		cy.get('button').contains('Save').should('be.disabled');
+		cy.logout();
+	});
+
+	it('Logout as should redirect to the same submission workflow', function() {
+		cy.login('dbarnes');
+		cy.visit('/index.php/publicknowledge/workflow/access/' + submission.id);
+		cy.openWorkflowMenu('Submission');
+		cy.clickStageParticipantButton('Stephanie Berardo', 'Login As');
+		cy.get('button').contains('OK').click();
+		cy.openWorkflowMenu('Submission');
+		cy.contains('Logout as Stephanie Berardo').should('exist').click();
+		cy.location('search').should('include', `workflowSubmissionId=${submission.id}`);
+
+		cy.openWorkflowMenu('Submission');
+		cy.clickStageParticipantButton('Alan Mwandenga', 'Login As');
+		cy.get('button').contains('OK').click();
+		cy.get('[data-cy="active-modal"] [data-cy="app-user-nav"] button').click();
+		cy.get('[data-cy="active-modal"] a:contains("Logout as amwandenga")').first().click();
+		cy.location('search').should('include', `workflowSubmissionId=${submission.id}`);
+		cy.logout();
 	});
 });

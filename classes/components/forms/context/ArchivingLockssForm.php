@@ -1,9 +1,10 @@
 <?php
+
 /**
  * @file classes/components/form/context/ArchivingLockssForm.php
  *
- * Copyright (c) 2014-2021 Simon Fraser University
- * Copyright (c) 2000-2021 John Willinsky
+ * Copyright (c) 2014-2026 Simon Fraser University
+ * Copyright (c) 2000-2026 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArchivingLockssForm
@@ -19,14 +20,10 @@ use APP\journal\Journal;
 use PKP\components\forms\FieldOptions;
 use PKP\components\forms\FormComponent;
 
-define('FORM_ARCHIVING_LOCKSS', 'archivingLockss');
-
 class ArchivingLockssForm extends FormComponent
 {
-    /** @copydoc FormComponent::$id */
-    public $id = FORM_ARCHIVING_LOCKSS;
-
-    /** @copydoc FormComponent::$method */
+    public const FORM_ARCHIVING_LOCKSS = 'archivingLockss';
+    public $id = self::FORM_ARCHIVING_LOCKSS;
     public $method = 'PUT';
 
     /**
@@ -45,7 +42,6 @@ class ArchivingLockssForm extends FormComponent
 
         $this->addField(new FieldOptions('enableLockss', [
             'label' => __('manager.setup.lockssTitle'),
-            'description' => __('manager.setup.lockssLicenseDescription'),
             'options' => [
                 [
                     'value' => true,
@@ -56,7 +52,6 @@ class ArchivingLockssForm extends FormComponent
         ]))
             ->addField(new FieldOptions('enableClockss', [
                 'label' => __('manager.setup.clockssTitle'),
-                'description' => __('manager.setup.clockssLicenseDescription'),
                 'options' => [
                     [
                         'value' => true,

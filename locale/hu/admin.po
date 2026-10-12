@@ -177,10 +177,10 @@ msgstr "Open Access Értesítés"
 msgid "admin.scheduledTask.reviewReminder"
 msgstr "Lektori emlékeztető"
 
-msgid "admin.scheduledTask.usageStatsLoader.invalidLogEntry.issueId"
+msgid "admin.job.processLogFile.invalidLogEntry.issueId"
 msgstr "A folyóiratszám azonosító nem egész szám."
 
-msgid "admin.scheduledTask.usageStatsLoader.invalidLogEntry.issueGalleyId"
+msgid "admin.job.processLogFile.invalidLogEntry.issueGalleyId"
 msgstr "A kézirat kefelenyomat azonosító nem egész szám."
 
 msgid ""
@@ -324,3 +324,6 @@ msgstr ""
 #~ "\">Automatikusan hozzáadásra kerül ehhez a folyóirathoz, mint folyóirat "
 #~ "menedzser. Miután létrehoz egy új folyóiratot, átkerül annak beállítási "
 #~ "oldalára, hogy befejezze a folyóirat beállításait."
+
+msgid "admin.settings.statistics.sushiPlatform.isSiteSushiPlatform"
+msgstr ""

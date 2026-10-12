@@ -16,12 +16,29 @@
 
 namespace APP\pages\management;
 
+use APP\core\Application;
+use APP\API\v1\reviewers\recommendations\resources\ReviewerRecommendationResource;
+use APP\components\forms\context\AccessForm;
+use APP\components\forms\context\ArchivingLockssForm;
+use APP\components\listPanels\ReviewerRecommendationsListPanel;
 use APP\template\TemplateManager;
+use PKP\components\forms\context\PKPContextStatisticsForm;
+use PKP\components\forms\context\PKPDisableSubmissionsForm;
+use PKP\components\forms\context\PKPDoiRegistrationSettingsForm;
+use PKP\components\forms\context\PKPDoiSetupSettingsForm;
+use PKP\components\forms\context\PKPLicenseForm;
+use PKP\components\forms\context\PKPMetadataSettingsForm;
+use PKP\components\forms\context\PKPPaymentSettingsForm;
+use PKP\components\forms\context\PKPReviewGuidanceForm;
+use PKP\components\forms\context\PKPReviewSetupForm;
+use PKP\components\forms\context\PKPSearchIndexingForm;
 use PKP\core\PKPApplication;
+use PKP\core\PKPRequest;
 use PKP\pages\management\ManagementHandler;
 use PKP\plugins\Hook;
 use PKP\plugins\PluginRegistry;
 use PKP\security\Role;
+use PKP\submission\reviewer\recommendation\ReviewerRecommendation;
 
 class SettingsHandler extends ManagementHandler
 {
@@ -57,7 +74,41 @@ class SettingsHandler extends ManagementHandler
 
         $this->addReviewFormWorkflowSupport($request);
 
-        TemplateManager::getManager($request)->display('management/workflow.tpl');
+        $templateMgr = TemplateManager::getManager($request);
+        $templateMgr->registerClass(PKPReviewGuidanceForm::class, PKPReviewGuidanceForm::class); // FORM_REVIEW_GUIDANCE
+        $templateMgr->registerClass(PKPReviewSetupForm::class, PKPReviewSetupForm::class); // FORM_REVIEW_SETUP
+        $templateMgr->registerClass(PKPMetadataSettingsForm::class, PKPMetadataSettingsForm::class); // FORM_METADATA_SETTINGS
+        $templateMgr->registerClass(PKPDisableSubmissionsForm::class, PKPDisableSubmissionsForm::class); // FORM_DISABLE_SUBMISSIONS
+        $templateMgr->display('management/workflow.tpl');
+    }
+
+    /**
+     * Add support for review related forms in workflow.
+     */
+    protected function addReviewFormWorkflowSupport(PKPRequest $request): void
+    {
+        parent::addReviewFormWorkflowSupport($request);
+
+        $templateManager = TemplateManager::getManager($request);
+        $components = $templateManager->getState('components');
+
+        $context = $request->getContext();
+        $recommendations = ReviewerRecommendation::query()->withContextId($context->getId())->get();
+
+        $reviewerRecommendationsListPanel = new ReviewerRecommendationsListPanel(
+            __('manager.reviewerRecommendations'),
+            $context,
+            $this->getSupportedFormLocales($context),
+            array_values(
+                ReviewerRecommendationResource::collection($recommendations)
+                    ->toArray(app()->get('request'))
+            ),
+            $recommendations->count()
+        );
+
+        $components[$reviewerRecommendationsListPanel->id] = $reviewerRecommendationsListPanel->getConfig();
+        $templateManager->setState(['components' => $components]);
+        $templateManager->assign('hasCustomizableRecommendation', Application::get()->hasCustomizableReviewerRecommendation());
     }
 
     /**
@@ -81,8 +132,8 @@ class SettingsHandler extends ManagementHandler
 
         $locales = $this->getSupportedFormLocales($context);
 
-        $accessForm = new \APP\components\forms\context\AccessForm($apiUrl, $locales, $context);
-        $archivingLockssForm = new \APP\components\forms\context\ArchivingLockssForm($apiUrl, $locales, $context, $lockssUrl, $clockssUrl);
+        $accessForm = new AccessForm($apiUrl, $locales, $context);
+        $archivingLockssForm = new ArchivingLockssForm($apiUrl, $locales, $context, $lockssUrl, $clockssUrl);
 
         // Create a dummy "form" for the PKP Preservation Network settings. This
         // form loads a single field which enables/disables the plugin, and does
@@ -119,7 +170,7 @@ class SettingsHandler extends ManagementHandler
                 'enablePluginUrl' => $pnEnablePluginUrl,
                 'disablePluginUrl' => $pnDisablePluginUrl,
                 'settingsUrl' => $pnSettingsUrl,
-                'csrfToken' => $request->getSession()->getCSRFToken(),
+                'csrfToken' => $request->getSession()->token(),
                 'groupId' => 'default',
                 'enablePluginSuccess' => __('common.pluginEnabled', ['pluginName' => __('manager.setup.plnPluginArchiving')]),
                 'disablePluginSuccess' => __('common.pluginDisabled', ['pluginName' => __('manager.setup.plnPluginArchiving')]),
@@ -151,11 +202,19 @@ class SettingsHandler extends ManagementHandler
         // Hook into the settings templates to add the appropriate tabs
         Hook::add('Template::Settings::distribution', function ($hookName, $args) {
             $templateMgr = $args[1];
+            $templateMgr->registerClass(AccessForm::class, AccessForm::class); // FORM_ACCESS
+            $templateMgr->registerClass(ArchivingLockssForm::class, ArchivingLockssForm::class); // FORM_ARCHIVING_LOCKSS
             $output = &$args[2];
             $output .= $templateMgr->fetch('management/additionalDistributionTabs.tpl');
             return false;
         });
 
+        $templateMgr->registerClass(PKPLicenseForm::class, PKPLicenseForm::class); // FORM_LICENSE
+        $templateMgr->registerClass(PKPContextStatisticsForm::class, PKPContextStatisticsForm::class); // FORM_CONTEXT_STATISTICS
+        $templateMgr->registerClass(PKPPaymentSettingsForm::class, PKPPaymentSettingsForm::class); // FORM_CONTEXT_STATISTICS
+        $templateMgr->registerClass(PKPSearchIndexingForm::class, PKPSearchIndexingForm::class); // FORM_SEARCH_INDEXING
+        $templateMgr->registerClass(PKPDoiRegistrationSettingsForm::class, PKPDoiRegistrationSettingsForm::class); // FORM_DOI_REGISTRATION_SETTINGS
+        $templateMgr->registerClass(PKPDoiSetupSettingsForm::class, PKPDoiSetupSettingsForm::class); // FORM_DOI_SETUP_SETTINGS
         $templateMgr->display('management/distribution.tpl');
     }
 

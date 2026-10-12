@@ -21,7 +21,9 @@ use APP\issue\Issue;
 use APP\plugins\PubIdPlugin;
 use APP\plugins\pubIds\urn\classes\form\FieldPubIdUrn;
 use APP\plugins\pubIds\urn\classes\form\FieldTextUrn;
+use APP\plugins\pubIds\urn\classes\form\URNSettingsForm;
 use APP\template\TemplateManager;
+use Illuminate\Support\Str;
 use PKP\components\forms\FormComponent;
 use PKP\components\forms\publication\PKPPublicationIdentifiersForm;
 use PKP\linkAction\LinkAction;
@@ -157,7 +159,7 @@ class URNPubIdPlugin extends PubIdPlugin
      */
     public function instantiateSettingsForm($contextId)
     {
-        return new classes\form\URNSettingsForm($this, $contextId);
+        return new URNSettingsForm($this, $contextId);
     }
 
     /**
@@ -210,7 +212,7 @@ class URNPubIdPlugin extends PubIdPlugin
                 __('plugins.pubIds.urn.editor.clearObjectsURN.confirm'),
                 __('common.delete'),
                 $request->url(null, null, 'clearPubId', null, $userVars),
-                'modal_delete'
+                'negative'
             ),
             __('plugins.pubIds.urn.editor.clearObjectsURN'),
             'delete',
@@ -226,7 +228,7 @@ class URNPubIdPlugin extends PubIdPlugin
                     __('plugins.pubIds.urn.editor.clearIssueObjectsURN.confirm'),
                     __('common.delete'),
                     $request->url(null, null, 'clearIssueObjectsPubIds', null, $userVars),
-                    'modal_delete'
+                    'negative'
                 ),
                 __('plugins.pubIds.urn.editor.clearIssueObjectsURN'),
                 'delete',
@@ -312,7 +314,7 @@ class URNPubIdPlugin extends PubIdPlugin
         if (strpos($props['pub-id::other::urn'], $urnPrefix) !== 0) {
             $urnErrors[] = __('plugins.pubIds.urn.editor.missingPrefix', ['urnPrefix' => $urnPrefix]);
         }
-        if (!$this->checkDuplicate($props['pub-id::other::urn'], 'Publication', $submission->getId(), $contextId)) {
+        if (!$this->checkDuplicate($props['pub-id::other::urn'], $publication, $contextId)) {
             $urnErrors[] = $this->getNotUniqueErrorMsg();
         }
         if (!empty($urnErrors)) {
@@ -345,10 +347,6 @@ class URNPubIdPlugin extends PubIdPlugin
 
         $appyCheckNumber = $this->getSetting($form->submissionContext->getId(), 'urnCheckNo');
 
-        if ($appyCheckNumber) {
-            // Load the checkNumber.js file that is required for URN fields
-            $this->addJavaScript(Application::get()->getRequest(), TemplateManager::getManager(Application::get()->getRequest()));
-        }
         // If a pattern exists, use a DOI-like field to generate the URN
         if ($pattern) {
             $fieldData = [
@@ -356,7 +354,7 @@ class URNPubIdPlugin extends PubIdPlugin
                 'value' => $form->publication->getData('pub-id::other::urn'),
                 'prefix' => $prefix,
                 'pattern' => $pattern,
-                'contextInitials' => $form->submissionContext->getData('acronym', $form->submissionContext->getData('primaryLocale')) ?? '',
+                'contextInitials' => preg_replace('/[^-._;()\/A-Za-z0-9]/', '', Str::lower($form->submissionContext->getData('acronym', $form->submissionContext->getData('primaryLocale')) ?? '')),
                 'submissionId' => $form->publication->getData('submissionId'),
                 'assignIdLabel' => __('plugins.pubIds.urn.editor.urn.assignUrn'),
                 'clearIdLabel' => __('plugins.pubIds.urn.editor.clearObjectsURN'),
@@ -470,12 +468,20 @@ class URNPubIdPlugin extends PubIdPlugin
         $templateMgr = $args[0];
         $template = $args[1];
 
-        if ($template !== 'workflow/workflow.tpl') {
+        if ($template !== 'dashboard/editors.tpl') {
             return;
         }
 
         $context = Application::get()->getRequest()->getContext();
         $suffixType = $this->getSetting($context->getId(), 'urnSuffix');
+
+        $appyCheckNumber = $this->getSetting($context->getId(), 'urnCheckNo');
+
+        if ($appyCheckNumber) {
+            // Load the checkNumber.js file that is required for URN fields
+            $this->addJavaScript(Application::get()->getRequest(), TemplateManager::getManager(Application::get()->getRequest()));
+        }
+
         if ($suffixType === 'default' || $suffixType === 'pattern') {
             $templateMgr->addJavaScript(
                 'field-pub-id-urn-component',
@@ -499,11 +505,6 @@ class URNPubIdPlugin extends PubIdPlugin
                 '
                     .pkpFormField--urn__input {
                         display: inline-block;
-                    }
-
-                    .pkpFormField--urn__button {
-                        margin-left: 0.25rem;
-                        height: 2.5rem; // Match input height
                     }
                 ',
                 [
@@ -529,7 +530,7 @@ class URNPubIdPlugin extends PubIdPlugin
      */
     public function _calculateCheckNo($urn)
     {
-        $urnLower = strtolower_codesafe($urn);
+        $urnLower = strtolower($urn);
 
         $conversionTable = ['9' => '41', '8' => '9', '7' => '8', '6' => '7', '5' => '6', '4' => '5', '3' => '4', '2' => '3', '1' => '2', '0' => '1', 'a' => '18', 'b' => '14', 'c' => '19', 'd' => '15', 'e' => '16', 'f' => '21', 'g' => '22', 'h' => '23', 'i' => '24', 'j' => '25', 'k' => '42', 'l' => '26', 'm' => '27', 'n' => '13', 'o' => '28', 'p' => '29', 'q' => '31', 'r' => '12', 's' => '32', 't' => '33', 'u' => '11', 'v' => '34', 'w' => '35', 'x' => '36', 'y' => '37', 'z' => '38', '-' => '39', ':' => '17', '_' => '43', '/' => '45', '.' => '47', '+' => '49'];
 
@@ -550,8 +551,4 @@ class URNPubIdPlugin extends PubIdPlugin
 
         return $quotString[strlen($quotString) - 1];
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\plugins\pubIds\urn\URNPubIdPlugin', '\URNPubIdPlugin');
 }

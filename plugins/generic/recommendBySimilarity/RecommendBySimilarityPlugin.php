@@ -17,10 +17,12 @@ namespace APP\plugins\generic\recommendBySimilarity;
 use APP\core\Application;
 use APP\facades\Repo;
 use APP\handler\Handler;
-use APP\search\ArticleSearch;
 use APP\submission\Collector;
 use APP\submission\Submission;
 use APP\template\TemplateManager;
+use PKP\controlledVocab\ControlledVocab;
+use PKP\core\PKPApplication;
+use PKP\facades\Locale;
 use PKP\plugins\GenericPlugin;
 use PKP\plugins\Hook;
 
@@ -51,17 +53,57 @@ class RecommendBySimilarityPlugin extends GenericPlugin
     }
 
     /**
+     * Identify similarity terms for a given submission.
+     *
+     * @hook RecommendBySimilarityPlugin::getSimilarityTerms [$submissionId, &$searchTerms]
+     *
+     * @return array[] An array of string keywords.
+     */
+    public function getSimilarityTerms(int $submissionId): array
+    {
+        // Check whether a search plugin provides terms for a similarity search.
+        $searchTerms = [];
+        $result = Hook::run('RecommendBySimilarityPlugin::getSimilarityTerms', [$submissionId, &$searchTerms]);
+
+        // If a plugin implements the hook then respect its search terms.
+        if ($result === Hook::ABORT) {
+            return $searchTerms;
+        }
+
+        // Retrieve the article.
+        $submission = Repo::submission()->get($submissionId);
+        if ($submission->getData('status') != Submission::STATUS_PUBLISHED) {
+            return $searchTerms;
+        }
+
+        // Retrieve keywords (if any).
+        $allSearchTerms = array_filter(
+            Repo::controlledVocab()->getBySymbolic(
+                ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_KEYWORD,
+                Application::ASSOC_TYPE_PUBLICATION,
+                $submission->getCurrentPublication()->getId(),
+                [Locale::getLocale(), $submission->getData('locale'), Locale::getPrimaryLocale()]
+            )
+        );
+        foreach ($allSearchTerms as $localeSearchTerms) {
+            $searchTerms += $localeSearchTerms;
+        }
+
+        return $searchTerms;
+    }
+
+    /**
      * Builds the template with the recommended submissions or null if the linked submission has no keywords
      *
      * @see templates/article/footer.tpl
      */
     private function buildTemplate(): ?string
     {
-        $templateManager = TemplateManager::getManager();
+        $templateManager = TemplateManager::getManager(Application::get()->getRequest());
         $submissionId = $templateManager->getTemplateVars('article')->getId();
 
         // If there's no keywords, quit
-        if (!strlen($searchPhrase = implode(' ', (new ArticleSearch())->getSimilarityTerms($submissionId)))) {
+        if (!strlen($searchPhrase = implode(' ', $this->getSimilarityTerms($submissionId)))) {
             return null;
         }
 
@@ -77,7 +119,7 @@ class RecommendBySimilarityPlugin extends GenericPlugin
             ->getCollector()
             ->excludeIds([$submissionId])
             ->filterByContextIds([$context->getId()])
-            ->filterByStatus([Submission::STATUS_PUBLISHED])
+            ->filterByLatestPublished(true)
             ->searchPhrase($searchPhrase, static::MAX_SEARCH_KEYWORDS);
 
         $offset = ($rangeInfo->getPage() - 1) * $rangeInfo->getCount();
@@ -86,7 +128,6 @@ class RecommendBySimilarityPlugin extends GenericPlugin
         $submissions = $collector
             ->limit($rangeInfo->getCount())
             ->offset($offset)
-            ->orderBy(Collector::ORDERBY_SEARCH_RANKING)
             ->getMany();
 
         // Load the linked issues
@@ -100,10 +141,10 @@ class RecommendBySimilarityPlugin extends GenericPlugin
             ->getMany();
 
         $nextPage = $rangeInfo->getPage() * $rangeInfo->getCount() < $submissionCount
-            ? $request->url(path: $submissionId, params: ['articlesBySimilarityPage' => $rangeInfo->getPage() + 1])
+            ? $request->getDispatcher()->url($request, PKPApplication::ROUTE_PAGE, path: [$submissionId], params: ['articlesBySimilarityPage' => $rangeInfo->getPage() + 1], urlLocaleForPage: '')
             : null;
         $previousPage = $rangeInfo->getPage() > 1
-            ? $request->url(path: $submissionId, params: ['articlesBySimilarityPage' => $rangeInfo->getPage() - 1])
+            ? $request->getDispatcher()->url($request, PKPApplication::ROUTE_PAGE, path: [$submissionId], params: ['articlesBySimilarityPage' => $rangeInfo->getPage() - 1], urlLocaleForPage: '')
             : null;
 
         $templateManager->assign('articlesBySimilarity', (object) [

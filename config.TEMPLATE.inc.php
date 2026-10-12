@@ -7,8 +7,8 @@
 ;
 ; config.TEMPLATE.inc.php
 ;
-; Copyright (c) 2014-2021 Simon Fraser University
-; Copyright (c) 2003-2021 John Willinsky
+; Copyright (c) 2014-2024 Simon Fraser University
+; Copyright (c) 2003-2024 John Willinsky
 ; Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
 ;
 ; OJS Configuration settings.
@@ -24,6 +24,10 @@
 
 [general]
 
+; An application-specific key that is required for the app to run
+; Internally this is used for any encryption (specifically cookie encryption if enabled)
+app_key =
+
 ; Set this to On once the system has been installed
 ; (This is generally done automatically by the installer)
 installed = Off
@@ -35,25 +39,25 @@ base_url = "https://pkp.sfu.ca/ojs"
 ; deprecated behaviour exists in the codebase.
 strict = Off
 
+; Sentry error logging support (see https://sentry.io)
+; To enable Sentry support, configure the Sentry DSN here.
+; sentry_dsn = ""
+
 ; Session cookie name
 session_cookie_name = OJSSID
 
 ; Session cookie path; if not specified, defaults to the detected base path
 ; session_cookie_path = /
 
-; Number of days to save login cookie for if user selects to remember
-; (set to 0 to force expiration at end of current session)
-session_lifetime = 30
+; Number of days a session remains valid while idle. Fractional days are allowed
+; (e.g. 0.5 = 12 hours, 0.0833 ~ 2 hours); the value is clamped to a minimum of 1 minute.
+; To expire sessions when the browser closes, use session_expire_on_close in [security]
+session_lifetime = 7
 
 ; SameSite configuration for the cookie, see possible values and explanations
 ; at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
 ; To set the "Secure" attribute for the cookie see the setting force_ssl at the [security] group
 session_samesite = Lax
-
-; Enable support for running scheduled tasks
-; Set this to On if you have set up the scheduled tasks script to
-; execute periodically
-scheduled_tasks = Off
 
 ; Site time zone
 ; Please refer to https://www.php.net/timezones for a full list of supported
@@ -87,7 +91,7 @@ allow_url_fopen = Off
 ; Example3: URLs that map to a subdomain.
 ;    Example3: base_url[myOtherJournal] = http://myOtherJournal.example.com
 
-; Generate RESTful URLs using mod_rewrite.  This requires the
+; Generate RESTful URLs using mod_rewrite. This requires the
 ; rewrite directive to be enabled in your .htaccess or httpd.conf.
 ; See FAQ for more details.
 restful_urls = Off
@@ -100,16 +104,10 @@ restful_urls = Off
 allowed_hosts = ''
 
 ; Allow the X_FORWARDED_FOR header to override the REMOTE_ADDR as the source IP
-; Set this to "On" if you are behind a reverse proxy and you control the X_FORWARDED_FOR
+; Set this to "On" if you are behind a reverse proxy and you control the
+; X_FORWARDED_FOR header.
 ; Warning: This defaults to "On" if unset for backwards compatibility.
 trust_x_forwarded_for = Off
-
-; Set the maximum number of citation checking processes that may run in parallel.
-; Too high a value can increase server load and lead to too many parallel outgoing
-; requests to citation checking web services. Too low a value can lead to significantly
-; slower citation checking performance. A reasonable value is probably between 3
-; and 10. The more your connection bandwidth allows the better.
-citation_checking_max_processes = 3
 
 ; Display a message on the site admin and journal manager user home pages if there is an upgrade available
 show_upgrade_warning = On
@@ -128,11 +126,15 @@ enable_beacon = On
 ; as separate Privacy Statements for each journal.
 sitewide_privacy_statement = Off
 
-; The number of days a new user has to validate their account
-; A new user account will be expired and removed if this many days have passed since the user registered
-; their account, and they have not validated their account or logged in. If the user_validation_period is set to
-; 0, unvalidated accounts will never be removed. Use this setting to automatically remove bot registrations.
+; The number of days a new user has to validate their account.
+; A new user account will be removed if this many days have passed since the user registered
+; their account, and they have not validated their account or logged in. If set to 0,
+; unvalidated accounts will never be removed. Use this setting to automatically remove bot registrations.
 user_validation_period = 28
+
+; Turn sandbox mode to On in order to prevent the software from interacting with outside systems.
+; Use this for development or testing purposes.
+sandbox = Off
 
 
 ;;;;;;;;;;;;;;;;;;;;;
@@ -154,8 +156,32 @@ name = ojs
 ; Database collation
 ; collation = utf8_general_ci
 
+; SSL/TLS Database Connection
+; NOTE: The web installer does not provide options to configure SSL/TLS.
+; If your database server requires encrypted connections, uncomment and
+; configure the settings below BEFORE running the web installer.
+
+; Enable SSL/TLS for the database connection
+; secure = Off
+
+; Path to the CA certificate file for SSL/TLS verification
+; For MySQL/MariaDB: path to the CA certificate (PEM format)
+; For PostgreSQL: path to the root certificate
+; capath = /path/to/ca-cert.pem
+
+; Verify the server's SSL/TLS certificate (default to On when secure is enabled)
+; Set to Off to connect with encryption but skip certificate verification (not recommended for production)
+; verify = On
+
+; Keep the database connection open and reuse it across requests served by
+; the same PHP process (PDO persistent connection). The primary purpose is to
+; run the end-to-end test suites efficiently, where many short requests are
+; served by long-lived PHP processes. Not recommended for production.
+; persistent = Off
+
 ; Enable database debug output (very verbose!)
 debug = Off
+
 
 ;;;;;;;;;;;;;;;;;;
 ; Cache Settings ;
@@ -163,16 +189,12 @@ debug = Off
 
 [cache]
 
-; Choose the type of object data caching to use. Options are:
-; - memcache: Use the memcache server configured below
-; - xcache: Use the xcache variable store
-; - apc: Use the APC variable store
-; - none: Use no caching.
-object_cache = none
+; Default driver for Laravel-based caching. Currently supports opcache and file drivers.
+; By default, the file is used.
+; default = file
 
-; Enable memcache support
-memcache_hostname = localhost
-memcache_port = 11211
+; Path to store cache contents for file or opcode based caches.
+; path = cache/opcache
 
 ; For site visitors who are not logged in, many pages are often entirely
 ; static (e.g. About, the home page, etc). If the option below is enabled,
@@ -232,10 +254,6 @@ public_user_dir_size = 5000
 ; Permissions mask for created files and directories
 umask = 0022
 
-; The minimum percentage similarity between filenames that should be considered
-; a possible revision
-filename_revision_match = 70
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Fileinfo (MIME) Settings ;
@@ -251,6 +269,14 @@ filename_revision_match = 70
 
 [security]
 
+; Cipher algorithm used to generate the app key and encryption purpose
+; Available options: aes-128-cbc, aes-128-gcm, aes-256-cbc, aes-256-gcm
+; cipher = aes-256-cbc
+
+; Whether cookies will be encrypted.
+; Changing this setting will log out all users.
+; cookie_encryption = On
+
 ; Force SSL connections site-wide and also sets the "Secure" flag for session cookies
 ; See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#secure
 force_ssl = Off
@@ -259,8 +285,9 @@ force_ssl = Off
 force_login_ssl = Off
 
 ; This check will invalidate a session if the user's IP address changes.
-; Enabling this option provides some amount of additional security, but may
-; cause problems for users behind a proxy farm (e.g., AOL).
+; Enabling this option provides some additional security, but may cause
+; login problems for some users (e.g. if a user IP is changed frequently
+; by a server or network configuration).
 session_check_ip = On
 
 ; The encryption (hashing) algorithm to use for encrypting user passwords
@@ -268,6 +295,17 @@ session_check_ip = On
 ; NOTE: This hashing method is deprecated, but necessary to permit gradual
 ; migration of old password hashes.
 encryption = sha1
+
+; When set to On, the session cookie expires when the browser is closed.
+; The server-side session data still persists for session_lifetime days
+; and is cleaned up by garbage collection.
+session_expire_on_close = Off
+
+; Number of days the "remember me" persistent-login cookie remains valid. Fractional
+; days are allowed. Only applies when the user ticks "remember me" at login.
+; To extend login beyond the idle session, set this greater than session_lifetime in
+; [general]; it is an absolute window measured from login (not refreshed on activity).
+remember_me_lifetime = 30
 
 ; The unique salt to use for generating password reset hashes
 salt = "YouMustSetASecretKeyHere!!"
@@ -289,6 +327,35 @@ allowed_html = "a[href|target|title],em,strong,cite,code,ul,ol,li[class],dl,dt,d
 allowed_title_html = "b,i,u,sup,sub"
 
 ;N.b.: The implicit_auth parameter has been removed in favor of plugin implementations such as shibboleth
+
+; This setting allows control over how new plugins can be installed. Supported options:
+;  on: Plugins can be installed by upload and through the Plugin Gallery. (This is the default.)
+;  gallery_only: Plugins can only be installed through the Plugin Gallery.
+;  upgrade_only: Plugins can be upgraded only through the Plugin Gallery; no new plugins can be installed
+;  off: Plugins cannot be installed.
+allow_plugin_install = on
+
+; The URLs to use to fetch the plugin gallery plugin list
+; BEWARE: You should not extend the gallery with custom plugin gallery listing that collide with the official ones!
+;plugin_gallery_urls = '["https://pkp.sfu.ca/ojs/xml/plugins.xml"]'
+
+; When set to a value greater than 0, admins must re-authenticate to access the administration area.
+; The authentication remains valid for the specified number of minutes before re-authentication is required again.
+; Set to 0 to disable re-authentication.
+;password_timeout = 0
+
+; When set to On, pass article galley HTML through a filter to remove potentially malicious content.
+filter_galley_html = Off
+
+; When the filter_galley_html option is turned On, only allowed "safe" elements will be permitted.
+; Use the following setting to allow additional elements and attributes.
+; Use e.g. "img[id|style],math" to allow "id" and "style" attributes to the "img"
+; tag, and also to permit the "math" tag. Unspecified attributes will be stripped.
+; allowed_galley_html = "img[id|style],math"
+
+; When the filter_galley_html option is turned On, only specified allowed media hosts are allowed.
+; allowed_media_hosts = '["doi.org", "wikipedia.org"]'
+
 
 ;;;;;;;;;;;;;;;;;;
 ; Email Settings ;
@@ -352,7 +419,7 @@ sendmail_path = "/usr/sbin/sendmail -bs"
 ; If enabled, email addresses must be validated before login is possible.
 require_validation = Off
 
-; Maximum number of days before an unvalidated account expires and is deleted
+; The number of days a user has to validate their account before their access key expires.
 validation_timeout = 14
 
 
@@ -361,6 +428,19 @@ validation_timeout = 14
 ;;;;;;;;;;;;;;;;;;;
 
 [search]
+
+; The search driver to use. Options: database, opensearch
+driver = database
+
+; For indexing engines supporting it, provide a name for the submission index.
+search_index_name = "submissions"
+
+; When using the OpenSearch driver, the following must be specified...
+;opensearch_hosts = "[\"https://localhost:9200\"]"
+;opensearch_username = "admin"
+;opensearch_password = "password"
+;opensearch_ssl_verification = On
+;opensearch_debug = Off
 
 ; Minimum indexed word length
 min_word_length = 3
@@ -406,6 +486,7 @@ repository_id = ojs.pkp.sfu.ca
 ; Maximum number of records per request to serve via OAI
 oai_max_records = 100
 
+
 ;;;;;;;;;;;;;;;;;;;;;;
 ; Interface Settings ;
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -417,6 +498,9 @@ items_per_page = 25
 
 ; Number of page links to display; can be overridden on a per-journal basis
 page_links = 10
+
+; Maximum nesting depth for navigation menu items (default: 2)
+navigation_menu_max_depth = 2
 
 
 ;;;;;;;;;;;;;;;;;;;;
@@ -443,6 +527,28 @@ captcha_on_login = on
 ; Validate the hostname in the ReCaptcha response
 recaptcha_enforce_hostname = Off
 
+; ALTCHA is a free and open-source alternative to Google's ReCaptcha
+; The options below will manage all the required configurations used to
+; work with ALTCHA instead of ReCaptcha on system
+
+; Whether or not to enable ALTCHA
+altcha = off
+
+; Private key for ALTCHA
+altcha_hmackey = 'Example key'
+
+; Whether or not to use ALTCHA on user registration
+altcha_on_register = on
+
+; Whether or not to use ALTCHA on user login
+altcha_on_login = on
+
+; Whether or not to use ALTCHA on user lost password
+altcha_on_lost_password = on
+
+; The quantity of encryption cycles performed by the ALTCHA system
+altcha_encrypt_number = 10000
+
 ;;;;;;;;;;;;;;;;;;;;;
 ; External Commands ;
 ;;;;;;;;;;;;;;;;;;;;;
@@ -451,7 +557,6 @@ recaptcha_enforce_hostname = Off
 
 ; These are paths to (optional) external binaries used in
 ; certain plug-ins or advanced program features.
-
 ; Using full paths to the binaries is recommended.
 
 ; tar (used in backup plugin, translation packaging)
@@ -464,6 +569,7 @@ tar = /bin/tar
 ; source file; eg:
 ; /usr/bin/java -jar ~/java/xalan.jar -HTML -IN %xml -XSL %xsl
 xslt_command = ""
+
 
 ;;;;;;;;;;;;;;;;;;
 ; Proxy Settings ;
@@ -496,10 +602,53 @@ deprecation_warnings = Off
 ; Log web service request information for debugging
 log_web_service_info = Off
 
-; declare a cainfo path if a certificate other than PHP's default should be used for curl calls.
-; This setting overrides the 'curl.cainfo' parameter of the php.ini configuration file.
-[curl]
-; cainfo = ""
+
+;;;;;;;;;;;;;;;;
+; Log Settings ;
+;;;;;;;;;;;;;;;;
+
+[logs]
+
+; Default logging channel. Available channels:
+;   - stack: Combines multiple channels (configurable via log_stacks; defaults to daily)
+;   - single: Single log file ({files_dir}/logs/app.log)
+;   - daily: Daily rotating log files
+;   - stderr: Output to stderr
+;   - syslog: System log
+;   - errorlog: PHP error log
+;   - null: Discard all logs
+log_channel = daily
+
+; Minimum log level to record. Available levels (in order of severity):
+;   - debug: Detailed debug information
+;   - info: Interesting events
+;   - notice: Normal but significant events
+;   - warning: Exceptional occurrences that are not errors
+;   - error: Runtime errors that do not require immediate action
+;   - critical: Critical conditions
+;   - alert: Action must be taken immediately
+;   - emergency: System is unusable
+log_level = debug
+
+; Channels the 'stack' channel fans out to (comma-separated). Only used when
+; log_channel = stack. Each entry must be one of the channels listed above
+; (single, daily, stderr, syslog, errorlog). Defaults to single.
+log_stacks = daily
+
+; Number of daily log files to retain before rotation deletes the oldest
+; (only applies to the 'daily' channel). Defaults to 30.
+; log_daily_days = 30
+
+; Monolog formatter class for the file/stream channels (single, daily, stderr,
+; syslog). Leave unset for the default human-readable line format (stack traces
+; included). Has no effect on the errorlog or stack channels. See available formatters
+; at https://github.com/Seldaek/monolog/blob/main/doc/02-handlers-formatters-processors.md#formatters
+; log_formatter = Monolog\Formatter\JsonFormatter
+
+; Enable application-level security audit logging (authentication events, privilege
+; and configuration changes, plugin lifecycle, etc.). Disabled by default, set to On
+; to record all audit-log output.
+; log_audit = Off
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -514,17 +663,13 @@ default_connection = "database"
 ; Default queue to use when a job is added to the queue
 default_queue = "queue"
 
-; Whether or not to turn on the built-in job runner
-;
+; Whether or not to turn on the built-in job runner.
 ; When enabled, jobs will be processed at the end of each web
 ; request to the application.
-;
 ; Use of the built-in job runner is highly discouraged for high-volume
 ; sites. Instead, a worker daemon or cron job should be configured
 ; to process jobs off the application's main thread.
-;
 ; See: https://docs.pkp.sfu.ca/admin-guide/en/deploy-jobs
-;
 job_runner = On
 
 ; The maximum number of jobs to run in a single request when using
@@ -533,40 +678,82 @@ job_runner_max_jobs = 30
 
 ; The maximum number of seconds the built-in job runner should spend
 ; running jobs in a single request.
-;
 ; This should be less than the max_execution_time the server has
 ; configured for PHP.
-;
 ; Lower this setting if jobs are failing due to timeouts.
 job_runner_max_execution_time = 30
 
-; The maximum consumerable memory that should be spent by the built-in
+; The maximum consumable memory that should be spent by the built-in
 ; job runner when running jobs.
 ;
 ; Set as a percentage, such as 80%:
-;
 ; job_runner_max_memory = 80
 ;
 ; Or set as a fixed value in megabytes:
-;
 ; job_runner_max_memory = 128M
 ;
 ; When setting a fixed value in megabytes, this should be less than the
 ; memory_limit the server has configured for PHP.
 job_runner_max_memory = 80
 
+; Prevent multiple web requests from running JobRunner simultaneously.
+; Recommended On for shared/weak hosting. Dedicated servers can disable for throughput.
+job_runner_cross_request_lock = On
+
+; Controls whether queued jobs should be processed by the task scheduler.
+; This setting has no effect when the job_runner and the [schedule].task_runner are enabled,
+; on this situation the jobs will be processed solely by the job runner.
+process_jobs_at_task_scheduler = Off
+
 ; Remove failed jobs from the database after the following number of days.
 ; Remove this setting to leave failed jobs in the database.
 delete_failed_jobs_after = 180
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Scheduled Task Settings ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[schedule]
+
+; Whether or not to turn on the built-in scheduled task runner.
+; When enabled, scheduled tasks will be processed at the end of each web
+; request to the application.
+; Use of the built-in scheduled task runner is strongly discouraged for high-volume
+; sites. Use your operating system's task scheduler instead, and configure
+; it to run the task scheduler every minute.
+;
+; Sample for the *nix crontab:
+; * * * * * php lib/pkp/tools/scheduler.php run >> /dev/null 2>&1
+;
+; See: https://docs.pkp.sfu.ca/admin-guide/en/deploy-scheduled-tasks
+task_runner = On
+
+; How often the built-in scheduled task runner should run at the
+; end of web request life cycle (value defined in seconds).
+; This configuration will only affect the built-in task runner, it doesn't apply
+; to the system crontab configuration.
+; The default value is 60 seconds (a value smaller than that might affect the
+; application performance negatively).
+task_runner_interval = 60
+
+; When enabled, an email with the scheduled task result will only be sent when an error
+; has occurred. Otherwise, all tasks will generate a notification.
+scheduled_tasks_report_error_only = On
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+; Invitations Settings  ;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
 [invitations]
+
+; The number of days a user has to accept an invitation before it expires.
 expiration_days = 3
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ; New Features Settings ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [features]
-
-enable_new_submission_listing = Off
-

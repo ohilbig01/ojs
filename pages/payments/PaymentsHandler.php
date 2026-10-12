@@ -22,7 +22,6 @@ use APP\notification\NotificationManager;
 use APP\subscription\form\PaymentTypesForm;
 use APP\subscription\form\SubscriptionPolicyForm;
 use APP\template\TemplateManager;
-use PKP\config\Config;
 use PKP\core\JSONMessage;
 use PKP\core\PKPApplication;
 use PKP\security\authorization\PKPSiteAccessPolicy;
@@ -104,7 +103,7 @@ class PaymentsHandler extends Handler
                     )
                 );
         }
-        $dispatcher->handle404();
+        throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
     }
 
     /**
@@ -142,11 +141,7 @@ class PaymentsHandler extends Handler
 
         $templateMgr = TemplateManager::getManager($request);
 
-        if (Config::getVar('general', 'scheduled_tasks')) {
-            $templateMgr->assign('scheduledTasksEnabled', true);
-        }
-
-        $paymentManager = Application::getPaymentManager($request->getJournal());
+        $paymentManager = Application::get()->getPaymentManager($request->getJournal());
         $templateMgr->assign('acceptSubscriptionPayments', $paymentManager->isConfigured());
 
         $subscriptionPolicyForm = new SubscriptionPolicyForm();

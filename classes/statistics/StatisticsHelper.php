@@ -16,6 +16,7 @@
 
 namespace APP\statistics;
 
+use APP\core\Application;
 use PKP\statistics\PKPStatisticsHelper;
 
 class StatisticsHelper extends PKPStatisticsHelper
@@ -41,9 +42,14 @@ class StatisticsHelper extends PKPStatisticsHelper
             self::STATISTICS_METRIC_REQUESTS_UNIQUE,
         ];
     }
-}
 
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\statistics\StatisticsHelper', '\StatisticsHelper');
-    define('STATISTICS_DIMENSION_ISSUE_ID', StatisticsHelper::STATISTICS_DIMENSION_ISSUE_ID);
+    /**
+     * @copydoc PKPStatisticsHelper::getItemRequestAssocTypes()
+     *
+     * Also counts JATS XML full-text downloads.
+     */
+    public static function getItemRequestAssocTypes(): array
+    {
+        return array_merge(parent::getItemRequestAssocTypes(), [Application::ASSOC_TYPE_JATS]);
+    }
 }

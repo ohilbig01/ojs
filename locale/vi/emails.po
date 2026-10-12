@@ -1,16 +1,18 @@
 # Bùi Văn Khôi <buivankhoi@gmail.com>, 2022.
+# Đoàn Dự <doandu2520@yopmail.com>, 2024.
+# Thuan Huynh <verypro.vn@gmail.com>, 2024.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2022-03-16 18:38+0000\n"
-"Last-Translator: Bùi Văn Khôi <buivankhoi@gmail.com>\n"
+"PO-Revision-Date: 2024-02-19 11:07+0000\n"
+"Last-Translator: Thuan Huynh <verypro.vn@gmail.com>\n"
 "Language-Team: Vietnamese <http://translate.pkp.sfu.ca/projects/ojs/emails/"
-"vi_VN/>\n"
-"Language: vi_VN\n"
+"vi/>\n"
+"Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "emails.passwordResetConfirm.subject"
 msgstr "Xác nhận đặt lại mật khẩu"
@@ -24,7 +26,7 @@ msgstr ""
 "của bạn sẽ không bị thay đổi. Nếu bạn muốn đặt lại mật khẩu của mình, nhấp "
 "vào URL bên dưới.<br />\n"
 "<br />\n"
-"Đặt lại mật khẩu của tôi: {$passwordResetUrl}<br />\n"
+"Đặt lại mật khẩu của tôi: <a href=\"{$passwordResetUrl}\">{$passwordResetUrl}</a><br />\n"
 "<br />\n"
 "{$siteContactName}"
 
@@ -47,11 +49,9 @@ msgstr ""
 "Trân trọng,<br />\n"
 "{$signature}"
 
-#, fuzzy
 msgid "emails.userValidateContext.subject"
 msgstr "Xác thực tài khoản của bạn"
 
-#, fuzzy
 msgid "emails.userValidateContext.body"
 msgstr ""
 "{$recipientName}<br />\n"
@@ -60,7 +60,7 @@ msgstr ""
 "đầu sử dụng nó, bạn cần xác thực tài khoản email của mình. Để làm điều này, "
 "chỉ cần truy cập liên kết dưới đây:<br />\n"
 "<br />\n"
-"{$activateUrl}<br />\n"
+"<a href=\"{$activateUrl}\">{$activateUrl}</a><br />\n"
 "<br />\n"
 "Trân trọng,<br />\n"
 "{$contextSignature}"
@@ -75,7 +75,7 @@ msgstr ""
 "Bạn đã tạo 1 tài khoản với {$siteTitle}, nhưng trước khi bắt đầu sử dụng, "
 "bạn cần phải xác nhận email. Để xác nhận, hãy click link dưới đây:<br />\n"
 "<br />\n"
-"{$activateUrl}<br />\n"
+"<a href=\"{$activateUrl}\">{$activateUrl}</a><br />\n"
 "<br />\n"
 "Cảm ơn,<br />\n"
 "{$siteSignature}"
@@ -83,7 +83,6 @@ msgstr ""
 msgid "emails.reviewerRegister.subject"
 msgstr "Đăng ký làm Người phản biện cho {$contextName}"
 
-#, fuzzy
 msgid "emails.reviewerRegister.body"
 msgstr ""
 "Dựa theo chuyên môn của bạn, chúng tôi đã tự đăng ký tên của bạn trong cơ sở "
@@ -104,11 +103,9 @@ msgstr ""
 "Trân trọng,<br />\n"
 "{$signature}"
 
-#, fuzzy
 msgid "emails.issuePublishNotify.subject"
-msgstr "Số mới được xuất bản: {$issueIdentification}"
+msgstr "Số vừa được xuất bản: {$issueIdentification}"
 
-#, fuzzy
 msgid "emails.issuePublishNotify.body"
 msgstr ""
 "Kính gửi quý độc giả:<br />\n"
@@ -121,11 +118,9 @@ msgstr ""
 "với các ấn phẩm của chúng tôi,<br />\n"
 "{$signature}"
 
-#, fuzzy
 msgid "emails.editorAssign.subject"
 msgstr "Bạn đã được chỉ định là người biên tập cho bài gửi {$contextName}"
 
-#, fuzzy
 msgid "emails.editorAssign.body"
 msgstr ""
 "Kính gửi {$recipientName},<br />\n"
@@ -141,11 +136,17 @@ msgstr ""
 
 msgid "emails.editorAssignReview.body"
 msgstr ""
+"<p>Kính gửi {$recipientName},</p><p>Bài gửi sau đây đã được giao cho bạn để "
+"tổ chức phản biện kín.</p><p><a href=\"{$submissionUrl}\"> "
+"{$submissionTitle</a><br />{$authors</p><p><b>Tóm tắt</b></p>{$"
+"submissionAbstract<p>Vui lòng đăng nhập vào <a href=\" {$submissionUrl}\""
+">xem nội dung gửi</a> và chỉ định người đánh giá đủ tiêu chuẩn. Bạn có thể "
+"chỉ định người đánh giá bằng cách nhấp vào \"Thêm người đánh giá\".</"
+"p><p>Cảm ơn bạn trước.</p><p>Trân trọng,</p>{$signature}"
 
 msgid "emails.editorAssignProduction.body"
 msgstr ""
 
-#, fuzzy
 msgid "emails.reviewRequest.subject"
 msgstr "Mời review bài báo"
 
@@ -180,18 +181,16 @@ msgstr ""
 "<br />\n"
 "{$submissionAbstract}"
 
-#, fuzzy
 msgid "emails.reviewResponseOverdueAuto.subject"
 msgstr "Yều cầu đánh giá bài báo"
 
-#, fuzzy
 msgid "emails.reviewResponseOverdueAuto.body"
 msgstr ""
 "Kính gửi {$recipientName},<br />\n"
-"Đây là email để nhắc bạn về việc đánh giá bài gửi, &quot;{$submissionTitle},"
-"&quot; cho {$contextName}. Chúng tôi hy vọng sẽ có phản hồi của bạn vào ngày "
-"{$responseDueDate}, và email này đã được tự động tạo và gửi cùng với ngày "
-"đó.\n"
+"Đây là email để nhắc bạn về việc đánh giá bài gửi, "
+"&quot;{$submissionTitle},&quot; cho {$contextName}. Chúng tôi hy vọng sẽ có "
+"phản hồi của bạn vào ngày {$responseDueDate}, và email này đã được tự động "
+"tạo và gửi cùng với ngày đó.\n"
 "<br />\n"
 "Tôi tin rằng bạn là một người phản biện phù hợp của bản thảo này. Bản tóm "
 "tắt của bài gửi được chèn bên dưới và tôi hy vọng rằng bạn sẽ xem xét thực "
@@ -217,11 +216,9 @@ msgstr ""
 "<br />\n"
 "{$submissionAbstract}"
 
-#, fuzzy
 msgid "emails.reviewRequestSubsequent.subject"
 msgstr "Yêu cầu review một bài báo được gửi lại"
 
-#, fuzzy
 msgid "emails.reviewRequestSubsequent.body"
 msgstr ""
 "Kính gửi {$recipientName},<br />\n"
@@ -235,8 +232,8 @@ msgstr ""
 "<br />\n"
 "Vui lòng đăng nhập vào trang web tạp chí trước ngày {$responseDueDate} để "
 "cho biết liệu bạn sẽ thực hiện đánh giá hay không, cũng như truy cập vào bài "
-"gửi và ghi lại đánh giá và đề xuất của bạn. Trang web là {$contextUrl}<br /"
-">\n"
+"gửi và ghi lại đánh giá và đề xuất của bạn. Trang web là {$contextUrl}<br />"
+"\n"
 "<br />\n"
 "Thời hạn đánh giá là ngày {$reviewDueDate}.<br />\n"
 "<br />\n"
@@ -257,7 +254,6 @@ msgstr ""
 msgid "emails.reviewCancel.subject"
 msgstr "Hủy yêu cầu đánh giá bài báo"
 
-#, fuzzy
 msgid "emails.reviewCancel.body"
 msgstr ""
 "Kính gửi {$recipientName},<br />\n"
@@ -273,7 +269,6 @@ msgstr ""
 msgid "emails.reviewReinstate.subject"
 msgstr "Bạn vẫn còn đang review thêm gì đó cho {$contextName}?"
 
-#, fuzzy
 msgid "emails.reviewReinstate.body"
 msgstr ""
 "Kính gửi {$recipientName},<br />\n"
@@ -297,19 +292,17 @@ msgstr ""
 "<br />\n"
 "{$senderName}"
 
-#, fuzzy
 msgid "emails.reviewRemind.subject"
 msgstr "Nhắc việc hoàn thành review"
 
-#, fuzzy
 msgid "emails.reviewRemind.body"
 msgstr ""
 "Kính gửi {$recipientName},<br />\n"
 "<br />\n"
-"Đây là nhắc nhở về yêu cầu của chúng tôi để bạn xem xét bài gửi, &quot;"
-"{$submissionTitle},&quot; for {$contextName}. Chúng tôi hy vọng sẽ có đánh "
-"giá này vào ngày {$reviewDueDate}, và sẽ rất vui khi nhận được nó ngay khi "
-"bạn có thể gửi nó.<br />\n"
+"Đây là nhắc nhở về yêu cầu của chúng tôi để bạn xem xét bài gửi, "
+"&quot;{$submissionTitle},&quot; for {$contextName}. Chúng tôi hy vọng sẽ có "
+"đánh giá này vào ngày {$reviewDueDate}, và sẽ rất vui khi nhận được nó ngay "
+"khi bạn có thể gửi nó.<br />\n"
 "<br />\n"
 "Nếu bạn không có username và mật khẩu cho trang web của tạp chí, bạn có thể "
 "sử dụng liên kết này để đặt lại mật khẩu của mình (sau đó sẽ được gửi qua "
@@ -322,11 +315,9 @@ msgstr ""
 "<br />\n"
 "{$signature}"
 
-#, fuzzy
 msgid "emails.reviewRemindAuto.subject"
 msgstr "Nhắc việc hoàn thành review"
 
-#, fuzzy
 msgid "emails.reviewRemindAuto.body"
 msgstr ""
 "Kính gửi {$recipientName},<br />\n"
@@ -348,7 +339,6 @@ msgstr ""
 "<br />\n"
 "{$contextSignature}"
 
-#, fuzzy
 msgid "emails.editorDecisionAccept.subject"
 msgstr "Bài gửi của bạn đã được chấp nhận cho {$contextName}"
 
@@ -363,16 +353,14 @@ msgstr ""
 "Quyết định của chúng tôi là: Chấp nhận cho đăng"
 
 msgid "emails.editorDecisionSkipReview.subject"
-msgstr ""
+msgstr "Bài gửi của bạn đã được gửi để sao chép"
 
 msgid "emails.editorDecisionSkipReview.body"
 msgstr ""
 
-#, fuzzy
 msgid "emails.layoutRequest.subject"
 msgstr "Bài gửi {$submissionId} đã sẵn sàng xuất bản ở {$contextAcronym}"
 
-#, fuzzy
 msgid "emails.layoutRequest.body"
 msgstr ""
 "Kính gửi {$recipientName},<br />\n"
@@ -393,11 +381,9 @@ msgstr ""
 "Nếu bạn không thể thực hiện công việc này vào lúc này hoặc có bất kỳ câu hỏi "
 "nào, xin vui lòng liên hệ với tôi. Cảm ơn bạn đã đóng góp cho tạp chí này."
 
-#, fuzzy
 msgid "emails.layoutComplete.subject"
 msgstr "Hoàn thành bản in"
 
-#, fuzzy
 msgid "emails.layoutComplete.body"
 msgstr ""
 "Kính gửi {$recipientName},<br />\n"
@@ -409,7 +395,6 @@ msgstr ""
 "<br />\n"
 "{$senderName}"
 
-#, fuzzy
 msgid "emails.emailLink.subject"
 msgstr "Bài báo quan tâm"
 
@@ -451,9 +436,10 @@ msgstr ""
 "<br />\n"
 "{$subscriptionSignature}"
 
-#, fuzzy
 msgid "emails.openAccessNotify.subject"
-msgstr "Truy cập mở"
+msgstr ""
+"Đọc miễn phí: {$issueIdentification} của {$contextName} hiện có quyền truy "
+"cập mở"
 
 msgid "emails.openAccessNotify.body"
 msgstr ""
@@ -547,7 +533,7 @@ msgstr ""
 "<br />\n"
 "Để xem hoặc chỉnh sửa đăng ký này, vui lòng sử dụng URL sau.<br />\n"
 "<br />\n"
-"URL thuê bao: {$subscriptionUrl}<br />\n"
+"URL thuê bao: <a href=\"{$subscriptionUrl}\">{$subscriptionUrl}</a><br />\n"
 
 msgid "emails.subscriptionPurchaseInstl.subject"
 msgstr "Đăng ký mua: Tổ chức"
@@ -579,7 +565,7 @@ msgstr ""
 "<br />\n"
 "Để xem hoặc chỉnh sửa đăng ký này, vui lòng sử dụng URL sau.<br />\n"
 "<br />\n"
-"URL thuê bao: {$subscriptionUrl}<br />\n"
+"URL thuê bao: <a href=\"{$subscriptionUrl}\">{$subscriptionUrl}</a><br />\n"
 
 msgid "emails.subscriptionRenewIndl.subject"
 msgstr "Gia hạn thuê bao: Cá nhân"
@@ -600,7 +586,7 @@ msgstr ""
 "<br />\n"
 "Để xem hoặc chỉnh sửa đăng ký này, vui lòng sử dụng URL sau.<br />\n"
 "<br />\n"
-"URL thuê bao: {$subscriptionUrl}<br />\n"
+"URL thuê bao: <a href=\"{$subscriptionUrl}\">{$subscriptionUrl}</a><br />\n"
 
 msgid "emails.subscriptionRenewInstl.subject"
 msgstr "Gia hạn thuê bao: Tổ chức"
@@ -631,7 +617,7 @@ msgstr ""
 "<br />\n"
 "Để xem hoặc chỉnh sửa đăng ký này, vui lòng sử dụng URL sau.<br />\n"
 "<br />\n"
-"URL thuê bao: {$subscriptionUrl}<br />\n"
+"URL thuê bao: <a href=\"{$subscriptionUrl}\">{$subscriptionUrl}</a><br />\n"
 
 msgid "emails.revisedVersionNotify.subject"
 msgstr "Tải lên bản sửa chữa"
@@ -686,10 +672,12 @@ msgstr ""
 "báo đầy đủ</a>."
 
 msgid "emails.paymentRequestNotification.subject"
-msgstr ""
+msgstr "Thông báo yêu cầu thanh toán"
 
 msgid "emails.paymentRequestNotification.body"
 msgstr ""
 
 msgid "emails.paymentRequestNotification.footer"
 msgstr ""
+"<br><br>—<br>Đây là tin nhắn tự động từ <a href=\"{$contextUrl}\""
+">{$contextName}</a>."

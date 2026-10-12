@@ -1166,9 +1166,6 @@ msgstr ""
 "atau tidak (lihat <a target=\"_new\" class=\"action\" href="
 "\"{$competingInterestGuidelinesUrl}\"> CI&nbsp; Polisi </a>)."
 
-msgid "reviewer.competingInterests"
-msgstr "Konflik Kepentingan"
-
 msgid "reviewer.article.enterReviewA"
 msgstr ""
 "Klik pada ikon untuk memasukkan (atau menampal) ulasan anda mengenai "
@@ -1644,12 +1641,6 @@ msgstr "Mengenai Jurnal"
 msgid "about.history"
 msgstr "Sejarah Jurnal"
 
-msgid "about.editorialTeam"
-msgstr "Kumpulan Editorial"
-
-msgid "about.editorialTeam.biography"
-msgstr "Biografi"
-
 msgid "about.editorialPolicies"
 msgstr "Polisi Editorial"
 
@@ -1945,7 +1936,7 @@ msgstr ""
 "\n"
 "<p>Terima kasih kerana memuat turun <strong>Sistem Jurnal Terbuka</strong> "
 "Projek Pengetahuan Awam. Sebelum meneruskan, sila baca fail <a href="
-"\"{$baseUrl}/docs/README.md\">README</a> yang disertakan dengan perisian "
+"\"{$baseUrl}/README.md\">README</a> yang disertakan dengan perisian "
 "ini. Untuk mendapatkan maklumat lanjut tentang Projek Pengetahuan Awam dan "
 "projek perisiannya, sila lawati <a href=\"https://pkp.sfu.ca/\" target="
 "\"_blank\">tapak web PKP</a>. Jika anda mempunyai laporan pepijat atau "
@@ -2015,6 +2006,7 @@ msgstr ""
 "<p> 2. Direktori untuk menyimpan fail yang diunggah mesti dibuat dan dapat "
 "ditulis (lihat \"Tetapan Fail\" di bawah). </p>"
 
+#, fuzzy
 msgid "installer.upgradeInstructions"
 msgstr ""
 "<h4>Versi OJS {$version}</h4>\n"
@@ -2175,11 +2167,13 @@ msgstr ""
 msgid "log.review.resubmit"
 msgstr "Penyerahan {$submissionId} telah diserah semula untuk ulasan."
 
+#, fuzzy
 msgid "log.review.reviewDeclined"
 msgstr ""
 "{$reviewerName} telah menolak ulasan pusingan {$round} untuk penyerahan "
 "{$submissionId}."
 
+#, fuzzy
 msgid "log.review.reviewAccepted"
 msgstr ""
 "{$reviewerName} telah menerima ulasan pusingan {$round} untuk penyerahan "
@@ -2400,10 +2394,6 @@ msgstr "<p> Buang kelulusan galley ini. </p>"
 
 msgid "search.cli.rebuildIndex.indexing"
 msgstr "Pengindeksan \"{$journalName}\""
-
-msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
-msgstr ""
-"Pelaksanaan carian ini tidak membenarkan pengindeksan semula setiap jurnal."
 
 msgid "search.cli.rebuildIndex.unknownJournal"
 msgstr ""

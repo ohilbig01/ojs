@@ -102,13 +102,13 @@ class NavigationMenuService extends \PKP\services\PKPNavigationMenuService
                 break;
             case self::NMI_TYPE_SUBSCRIPTIONS:
                 if ($context) {
-                    $paymentManager = Application::getPaymentManager($context);
+                    $paymentManager = Application::get()->getPaymentManager($context);
                     $navigationMenuItem->setIsDisplayed($context->getData('paymentsEnabled') && $paymentManager->isConfigured());
                 }
                 break;
             case self::NMI_TYPE_MY_SUBSCRIPTIONS:
                 if ($context) {
-                    $paymentManager = Application::getPaymentManager($context);
+                    $paymentManager = Application::get()->getPaymentManager($context);
                     $navigationMenuItem->setIsDisplayed(Validation::isLoggedIn() && $context->getData('paymentsEnabled') && $paymentManager->isConfigured() && $context->getData('publishingMode') == \APP\journal\Journal::PUBLISHING_MODE_SUBSCRIPTION);
                 }
                 break;
@@ -159,16 +159,5 @@ class NavigationMenuService extends \PKP\services\PKPNavigationMenuService
                     break;
             }
         }
-    }
-}
-
-if (!PKP_STRICT_MODE) {
-    foreach ([
-        'NMI_TYPE_SUBSCRIPTIONS',
-        'NMI_TYPE_MY_SUBSCRIPTIONS',
-        'NMI_TYPE_CURRENT',
-        'NMI_TYPE_ARCHIVES',
-    ] as $constantName) {
-        define($constantName, constant('\APP\services\NavigationMenuService::' . $constantName));
     }
 }

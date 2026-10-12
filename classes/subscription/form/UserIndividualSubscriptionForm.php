@@ -177,7 +177,7 @@ class UserIndividualSubscriptionForm extends Form
             $subscription = $this->subscription;
         }
 
-        $paymentManager = Application::getPaymentManager($journal);
+        $paymentManager = Application::get()->getPaymentManager($journal);
         $paymentPlugin = $paymentManager->getPaymentPlugin();
 
         if ($paymentPlugin->getName() == 'ManualPayment') {
@@ -203,8 +203,4 @@ class UserIndividualSubscriptionForm extends Form
         $paymentForm = $paymentManager->getPaymentForm($queuedPayment);
         $paymentForm->display($this->request);
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\subscription\form\UserIndividualSubscriptionForm', '\UserIndividualSubscriptionForm');
 }

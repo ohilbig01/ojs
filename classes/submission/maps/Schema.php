@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file classes/submission/maps/Schema.php
  *
@@ -14,16 +15,46 @@
 namespace APP\submission\maps;
 
 use APP\core\Application;
+use APP\decision\types\Accept;
+use APP\decision\types\SkipExternalReview;
+use APP\facades\Repo;
+use APP\issue\Issue;
+use APP\publication\Publication;
 use APP\submission\Submission;
+use Illuminate\Support\Enumerable;
+use PKP\db\DAORegistry;
+use PKP\decision\DecisionType;
+use PKP\decision\types\BackFromCopyediting;
+use PKP\decision\types\BackFromProduction;
+use PKP\decision\types\CancelReviewRound;
+use PKP\decision\types\Decline;
+use PKP\decision\types\InitialDecline;
+use PKP\decision\types\NewExternalReviewRound;
+use PKP\decision\types\RequestRevisions;
+use PKP\decision\types\Resubmit;
+use PKP\decision\types\ReturnToDone;
+use PKP\decision\types\ReturnToWorkflow;
+use PKP\decision\types\RevertDecline;
+use PKP\decision\types\RevertInitialDecline;
+use PKP\decision\types\SendExternalReview;
+use PKP\decision\types\SendToProduction;
+use PKP\plugins\Hook;
+use PKP\security\Role;
+use PKP\stageAssignment\StageAssignment;
+use PKP\submission\PKPSubmission;
+use PKP\submission\reviewRound\ReviewRoundDAO;
 
 class Schema extends \PKP\submission\maps\Schema
 {
+    /** @var Enumerable<int, Issue[]> Issues associated with submissions. Keyed by submission ID. **/
+    public Enumerable $submissionsIssues;
+
     /**
      * @copydoc \PKP\submission\maps\Schema::mapByProperties()
      */
-    protected function mapByProperties(array $props, Submission $submission): array
+    protected function mapByProperties(array $props, Submission $submission, array $reviewsToAnonymize = [], array $submissionsToAnonymizeByAuthor = []): array
     {
-        $output = parent::mapByProperties($props, $submission);
+        $output = parent::mapByProperties($props, $submission, $reviewsToAnonymize, $submissionsToAnonymizeByAuthor);
 
         if (in_array('urlPublished', $props)) {
             $output['urlPublished'] = $this->request->getDispatcher()->url(
@@ -32,14 +63,200 @@ class Schema extends \PKP\submission\maps\Schema
                 $this->context->getPath(),
                 'article',
                 'view',
-                $submission->getBestId()
+                [$submission->getBestId()]
             );
         }
 
-        $output = $this->schemaService->addMissingMultilingualValues($this->schemaService::SCHEMA_SUBMISSION, $output, $this->context->getSupportedSubmissionLocales());
+        if (in_array('scheduledIn', $props)) {
+            $output['scheduledIn'] = $submission->getData('status') == PKPSubmission::STATUS_SCHEDULED ?
+                $submission->getCurrentPublication()->getData('issueId') : null;
+        }
+
+        $locales = $this->context->getSupportedSubmissionMetadataLocales();
+
+        if (!in_array($primaryLocale = $submission->getData('locale'), $locales)) {
+            $locales[] = $primaryLocale;
+        }
+
+        if (in_array('issueToBePublished', $props)) {
+            $output['issueToBePublished'] = $this->getPropertyIssueToBePublished($submission->getData('publications'));
+        }
+
+        $output = $this->schemaService->addMissingMultilingualValues($this->schemaService::SCHEMA_SUBMISSION, $output, $locales);
 
         ksort($output);
 
         return $this->withExtensions($output, $submission);
+    }
+
+    protected function appSpecificProps(): array
+    {
+        return [
+            'scheduledIn',
+            'issueToBePublished'
+        ];
+    }
+
+    /**
+     * Gets the Editorial decisions available to editors for a given stage of a submission
+     *
+     * This method returns decisions only for active stages. For inactive stages, it returns an empty array.
+     *
+     * @return DecisionType[]
+     *
+     * @hook Workflow::Decisions [[&$decisionTypes, $stageId]]
+     */
+    protected function getAvailableEditorialDecisions(int $stageId, Submission $submission): array
+    {
+        $request = Application::get()->getRequest();
+        $user = $request->getUser();
+        $isActiveStage = $submission->getData('stageId') == $stageId;
+        $permissions = $this->checkDecisionPermissions($stageId, $submission, $user, $request->getContext()->getId());
+        $userHasAccessibleRoles = $user->hasRole([Role::ROLE_ID_SUB_EDITOR, Role::ROLE_ID_MANAGER, Role::ROLE_ID_SITE_ADMIN, Role::ROLE_ID_ASSISTANT], $request->getContext()->getId());
+
+        // Done has no stage assignments, so checkDecisionPermissions returns false for canMakeDecision
+        // for assigned sub-editors. Grant decision access to any editor assigned to this submission.
+        if ($stageId === WORKFLOW_STAGE_ID_DONE && !$permissions['canMakeDecision']) {
+            $isAssignedEditor = StageAssignment::withSubmissionIds([$submission->getId()])
+                ->withUserId($user->getId())
+                ->withRoleIds([Role::ROLE_ID_MANAGER, Role::ROLE_ID_SUB_EDITOR])
+                ->exists();
+            if ($isAssignedEditor) {
+                $permissions['canMakeDecision'] = true;
+            }
+        }
+
+        if (!$userHasAccessibleRoles || !$isActiveStage || !$permissions['canMakeDecision']) {
+            return [];
+        }
+
+        $decisionTypes = []; /** @var DecisionType[] $decisionTypes */
+        $isOnlyRecommending = $permissions['isOnlyRecommending'];
+
+        if ($isOnlyRecommending && $stageId == WORKFLOW_STAGE_ID_SUBMISSION) {
+            $decisionTypes = Repo::decision()->getDecisionTypesMadeByRecommendingUsers($stageId);
+        } else {
+            switch ($stageId) {
+                case WORKFLOW_STAGE_ID_SUBMISSION:
+                    $decisionTypes = [
+                        new SendExternalReview(),
+                        new SkipExternalReview(),
+                    ];
+                    if ($submission->getData('status') === Submission::STATUS_DECLINED) {
+                        // when the submission is declined, allow only reverting declined status
+                        $decisionTypes = [new RevertInitialDecline()];
+                    } elseif ($submission->getData('status') === Submission::STATUS_QUEUED) {
+                        $decisionTypes[] = new InitialDecline();
+                    }
+                    break;
+                case WORKFLOW_STAGE_ID_EXTERNAL_REVIEW:
+                    $decisionTypes = [
+                        new RequestRevisions(),
+                        new Resubmit(),
+                        new Accept(),
+                        new NewExternalReviewRound()
+                    ];
+                    $cancelReviewRound = new CancelReviewRound();
+                    $reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO'); /** @var ReviewRoundDAO $reviewRoundDao */
+                    $reviewRound = $reviewRoundDao->getLastReviewRoundBySubmissionId($submission->getId(), $stageId);
+
+                    if ($cancelReviewRound->canRetract($submission, $reviewRound->getId())) {
+                        $decisionTypes[] = $cancelReviewRound;
+                    }
+                    if ($submission->getData('status') === Submission::STATUS_DECLINED) {
+                        // when the submission is declined, allow only reverting declined status
+                        $decisionTypes = [new RevertDecline()];
+                    } elseif ($submission->getData('status') === Submission::STATUS_QUEUED) {
+                        $decisionTypes[] = new Decline();
+                    }
+                    break;
+                case WORKFLOW_STAGE_ID_EDITING:
+                    $decisionTypes = [
+                        new SendToProduction(),
+                        new BackFromCopyediting(),
+                    ];
+                    break;
+                case WORKFLOW_STAGE_ID_PRODUCTION:
+                    $decisionTypes[] = new BackFromProduction();
+                    break;
+                case WORKFLOW_STAGE_ID_DONE:
+                    $decisionTypes = [new ReturnToWorkflow()];
+                    break;
+            }
+        }
+
+        // Offer ReturnToDone in any active stage when the submission was previously in Done
+        // and currently has a published publication (any version stage) for Done to represent.
+        if ($stageId !== WORKFLOW_STAGE_ID_DONE && $submission->getData('stageId') === $stageId) {
+            $hasPublishedPublication = collect($submission->getData('publications'))
+                ->contains(fn (Publication $publication) => $publication->getData('status') === Publication::STATUS_PUBLISHED);
+
+            if ($hasPublishedPublication && Repo::decision()->hasDoneHistory($submission->getId())) {
+                $decisionTypes[] = new ReturnToDone();
+            }
+        }
+
+        Hook::call('Workflow::Decisions', [&$decisionTypes, $stageId]);
+
+        return $decisionTypes;
+    }
+
+    /**
+     * Get issues associated with submissions. Results are keyed by submission ID.
+     *
+     * @return Enumerable<int, Issue[]>
+     */
+    protected function getSubmissionsIssues(Enumerable $submissions): Enumerable
+    {
+        $submissionIds = $submissions->map(fn (Submission $submission) => $submission->getId())->all();
+        $publications = Repo::publication()->getCollector()->filterBySubmissionIds($submissionIds)->getMany();
+        $issues = Repo::issue()->getCollector()
+            ->filterByContextIds([$this->context->getId()])
+            ->filterBySubmissionIds($submissionIds)
+            ->getMany();
+
+        $issueIdsGroupedBySubmission = $publications->groupBy(fn (Publication $publication) => $publication->getData('submissionId'))
+            ->map(fn ($entry) => $entry->map(fn (Publication $publication) => $publication->getData('issueId'))
+                ->filter())->toArray(); // Filter to remove any entry where `$publication->getData('issueId')` returned null
+
+        return $submissions->mapWithKeys(function ($submission) use ($issues, $publications, $issueIdsGroupedBySubmission) {
+            $submissionIssueIds = collect($issueIdsGroupedBySubmission[$submission->getId()] ?? []);
+            return [$submission->getId() => $submissionIssueIds->mapWithKeys(fn ($id) => [$id => $issues->get($id)])];
+        });
+    }
+
+    /**
+     * Get details about the issue a submission will be published in.
+     *
+     * @param Enumerable<int, Publication> $publications Publications, keyed by publication ID.
+     */
+    protected function getPropertyIssueToBePublished(Enumerable $publications): ?array
+    {
+        /** @var Publication $latestScheduledPublication */
+        $latestScheduledPublication = $publications
+            ->filter(fn ($publication) => $publication->getData('status') === Submission::STATUS_SCHEDULED)
+            ->sortByDesc(fn (Publication $publication) => $publication->getData('version'))
+            ->first();
+
+        if (!$latestScheduledPublication) {
+            return null;
+        }
+
+        $submissionId = $latestScheduledPublication->getData('submissionId');
+        $issueId = $latestScheduledPublication->getData('issueId');
+        $issue = $this->submissionsIssues->get($submissionId)?->get($issueId);
+
+        return $issue ? [
+            'id' => $issueId,
+            'label' => $issue->getIssueIdentification()
+        ] : null;
+    }
+
+    /**
+     * Populate class properties specific to OJS.
+     */
+    protected function addAppSpecificData(Enumerable $submissions): void
+    {
+        $this->submissionsIssues ??= $this->getSubmissionsIssues($submissions);
     }
 }

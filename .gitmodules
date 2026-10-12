@@ -13,19 +13,12 @@
 [submodule "plugins/generic/pdfJsViewer"]
 	path = plugins/generic/pdfJsViewer
 	url = https://github.com/pkp/pdfJsViewer.git
-[submodule "docs/manual"]
-	path = docs/manual
-	url = https://github.com/pkp/ojs-user-guide
 [submodule "plugins/generic/lensGalley"]
 	path = plugins/generic/lensGalley
 	url = https://github.com/asmecher/lensGalley
-	branch = i1472-fix
 [submodule "plugins/generic/googleAnalytics"]
 	path = plugins/generic/googleAnalytics
 	url = https://github.com/pkp/googleAnalytics.git
-[submodule "plugins/generic/orcidProfile"]
-	path = plugins/generic/orcidProfile
-	url = https://github.com/pkp/orcidProfile.git
 [submodule "plugins/blocks/makeSubmission"]
 	path = plugins/blocks/makeSubmission
 	url = https://github.com/pkp/makeSubmission.git
@@ -50,9 +43,16 @@
 [submodule "plugins/generic/crossref"]
 	path = plugins/generic/crossref
 	url = https://github.com/pkp/crossref-ojs
-[submodule "plugins/generic/acron"]
-	path = plugins/generic/acron
-	url = https://github.com/pkp/acron
 [submodule "plugins/generic/webFeed"]
 	path = plugins/generic/webFeed
 	url = https://github.com/pkp/webFeed.git
+[submodule "plugins/generic/jatsTemplate"]
+	path = plugins/generic/jatsTemplate
+	url = https://github.com/pkp/jatsTemplate
+[submodule "plugins/oaiMetadataFormats/oaiJats"]
+	path = plugins/oaiMetadataFormats/oaiJats
+	url = https://github.com/pkp/oaiJats
+[submodule "plugins/generic/pflPlugin"]
+	path = plugins/generic/pflPlugin
+	url = https://github.com/pkp/pflPlugin
+	branch = main

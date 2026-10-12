@@ -3,13 +3,15 @@
 # Diego José Macêdo <diegojmacedo@gmail.com>, 2021, 2022, 2023.
 # cicilia conceiçao de maria <ccmaria@uem.br>, 2022, 2023.
 # William Costa Rodrigues <webmaster@antsoft.com.br>, 2023.
+# Rodrigo Emmanuel Santana Borges <rodrigo@borges.net.br>, 2025.
+# Lívia Carolina Gouvêa de Faria <livia@mail.mayfirst.org>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-30T11:58:53-07:00\n"
-"PO-Revision-Date: 2023-04-24 20:16+0000\n"
-"Last-Translator: Diego José Macêdo <diegojmacedo@gmail.com>\n"
+"PO-Revision-Date: 2025-11-07 19:54+0000\n"
+"Last-Translator: Lívia Carolina Gouvêa de Faria <livia@mail.mayfirst.org>\n"
 "Language-Team: Portuguese (Brazil) <http://translate.pkp.sfu.ca/projects/ojs/"
 "manager/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -17,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "Acesso"
@@ -413,12 +415,6 @@ msgstr ""
 msgid "manager.setup"
 msgstr "Configuração"
 
-msgid "manager.setup.masthead"
-msgstr "Expediente"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Equipe Editorial"
-
 msgid "manager.setup.homepageContent"
 msgstr "Página Inicial da Revista"
 
@@ -482,11 +478,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Para inclusão na página Sobre a Revista) "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Exigir dos autores o registro de conflito de interesses (CI) junto com a "
-"submissão."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -798,15 +789,7 @@ msgstr ""
 "de revistas."
 
 msgid "manager.setup.contextTitle"
-msgstr "Título"
-
-msgid "manager.setup.keyInfo"
-msgstr "Informação chave"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Forneça uma breve descrição da sua revista e identifique editores, diretores "
-"administrativos e outros membros da sua equipe editorial."
+msgstr "Nome da Revista"
 
 msgid "manager.setup.labelName"
 msgstr "Rótulo"
@@ -847,12 +830,6 @@ msgstr ""
 "bibliotecas participantes por meio de uma página LOCKSS <a href="
 "\"{$lockssUrl}\" target=\"_blank\">Manifesto do Publicador</a>."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"Uma licença LOCKSS aparecerá na seção Sobre a Revista sob Arquivamento: <a "
-"href=\"http://www.lockss.org/community/publishers-titles-gln/\" target="
-"\"_blank\"> Licença LOCKSS </a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "Descrição da Licença LOCKSS"
 
@@ -872,11 +849,6 @@ msgstr ""
 "Ativar CLOCKSS para armazenar e distribuir conteúdo da revista em "
 "bibliotecas participantes através de um <a href=\"{$clockssUrl}\" target="
 "\"_blank\">Manifesto do Editor</a> page."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"Uma licença CLOCKSS aparecerá na seção Sobre a Revista sob Arquivamento: <a "
-"href=\"http://clockss.org/\" target=\"_blank\">Licença CLOCKSS </a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "Descrição da Licença CLOCKSS"
@@ -2027,11 +1999,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Senha"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Por favor, note que a senha será guardada como texto simples, isto é, não "
-"criptografado."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Qualquer Edição"
 
@@ -2058,9 +2025,6 @@ msgstr "Marcar como registrado"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Registrar"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Valide o XML antes da exportação e registro."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Sem objetos selecionados."
@@ -2752,3 +2716,12 @@ msgid "plugins.importexport.common.error.issueCoverImageMissing"
 msgstr ""
 "A imagem da capa da edição {$id} não foi exportada, seu arquivo não foi "
 "encontrado no caminho \"{$path}\"."
+
+msgid "emailTemplate.variable.issue.issueTableOfContents"
+msgstr ""
+"O índice do número tal como uma lista de todas as submissões associadas."
+
+msgid "manager.setup.contextSummary.description"
+msgstr ""
+"Forneça uma breve descrição de sua revista para dar uma ideia de seu "
+"conteúdo e propósito."

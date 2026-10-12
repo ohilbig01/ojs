@@ -3,8 +3,8 @@
 /**
  * @file pages/index/IndexHandler.php
  *
- * Copyright (c) 2014-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2014-2025 Simon Fraser University
+ * Copyright (c) 2003-2025 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class IndexHandler
@@ -18,6 +18,7 @@ namespace APP\pages\index;
 
 use APP\core\Application;
 use APP\facades\Repo;
+use APP\journal\enums\JournalContentOption;
 use APP\journal\JournalDAO;
 use APP\observers\events\UsageEvent;
 use APP\pages\issue\IssueHandler;
@@ -58,9 +59,50 @@ class IndexHandler extends PKPIndexHandler
         }
 
         $this->setupTemplate($request);
-        $router = $request->getRouter();
         $templateMgr = TemplateManager::getManager($request);
+        $templateMgr->assign([
+            'highlights' => $this->getHighlights($journal),
+        ]);
+
+        $this->_setupAnnouncements($journal ?? $request->getSite(), $templateMgr);
+
         if ($journal) {
+            $activeTheme = $templateMgr->getTemplateVars('activeTheme');
+            $journalContentOptions = $activeTheme->getOption('journalContentOrganization');
+            if (!is_array($journalContentOptions)) {
+                $journalContentOptions = JournalContentOption::default($journal);
+            }
+
+            if (in_array(JournalContentOption::CATEGORY_LISTING->value, $journalContentOptions)) {
+                $categories = Repo::category()
+                    ->getCollector()
+                    ->filterByContextIds([$journal->getId()])
+                    ->getMany();
+
+                $templateMgr->assign(['categories' => $categories]);
+            }
+
+            if (in_array(JournalContentOption::RECENT_PUBLISHED->value, $journalContentOptions)) {
+                $rangeInfo = $this->getRangeInfo($request, 'publishedPublications');
+                $itemsPerPage = $journal->getData('itemsPerPage');
+
+                $collector = Repo::submission()
+                    ->getCollector()
+                    ->filterByContextIds([$journal->getId()])
+                    ->filterByLatestPublished(true);
+
+                $totalPublications = $collector->getCount();
+                $templateMgr->assign('publishedPublications', new \Illuminate\Pagination\LengthAwarePaginator(
+                    $collector
+                        ->offset(max(0, $rangeInfo->page - 1) * $itemsPerPage)
+                        ->limit($itemsPerPage)
+                        ->getMany(),
+                    $totalPublications,
+                    $itemsPerPage,
+                    $rangeInfo->page
+                ));
+            }
+
             // Assign header and content for home page
             $templateMgr->assign([
                 'additionalHomeContent' => $journal->getLocalizedData('additionalHomeContent'),
@@ -69,16 +111,16 @@ class IndexHandler extends PKPIndexHandler
                 'journalDescription' => $journal->getLocalizedData('description'),
             ]);
 
-            $issue = Repo::issue()->getCurrent($journal->getId(), true);
-            if (isset($issue) && $journal->getData('publishingMode') != \APP\journal\Journal::PUBLISHING_MODE_NONE) {
-                // The current issue TOC/cover page should be displayed below the custom home page.
-                IssueHandler::_setupIssueTemplate($request, $issue);
+            if (in_array(JournalContentOption::ISSUE_TOC->value, $journalContentOptions)) {
+                $issue = Repo::issue()->getCurrent($journal->getId(), true);
+                if (isset($issue) && $journal->getData('publishingMode') != \APP\journal\Journal::PUBLISHING_MODE_NONE) {
+                    // The current issue TOC/cover page should be displayed below the custom home page.
+                    IssueHandler::setupIssueTemplate($request, $issue);
+                }
             }
 
-            $this->_setupAnnouncements($journal, $templateMgr);
-
             $templateMgr->display('frontend/pages/indexJournal.tpl');
-            event(new UsageEvent(Application::ASSOC_TYPE_JOURNAL, $journal));
+            event(new UsageEvent(assocType: Application::ASSOC_TYPE_JOURNAL, context: $journal));
             return;
         } else {
             $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */

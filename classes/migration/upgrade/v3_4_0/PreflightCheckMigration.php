@@ -14,13 +14,28 @@
 
 namespace APP\migration\upgrade\v3_4_0;
 
+use Exception;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Throwable;
 
 class PreflightCheckMigration extends \PKP\migration\upgrade\v3_4_0\PreflightCheckMigration
 {
+    public function up(): void
+    {
+        parent::up();
+        try {
+            $this->checkDuplicateDoiRegistrationAgencies();
+        } catch (Throwable $e) {
+            if ($fallbackVersion = $this->setFallbackVersion()) {
+                $this->_installer->log("A pre-flight check failed. The software was successfully upgraded to {$fallbackVersion} but could not be upgraded further (to " . $this->_installer->newVersion->getVersionString() . '). Check and correct the error, then try again.');
+            }
+            throw $e;
+        }
+    }
+
     protected function getContextTable(): string
     {
         return 'journals';
@@ -219,7 +234,7 @@ class PreflightCheckMigration extends \PKP\migration\upgrade\v3_4_0\PreflightChe
             $affectedRows = 0;
             $rows = DB::table('publications AS p')
                 ->join('publication_settings AS ps', 'ps.publication_id', '=', 'p.publication_id')
-                ->leftJoin('issues AS i', DB::raw('CAST(i.issue_id AS CHAR(20))'), '=', 'ps.setting_value')
+                ->leftJoin('issues AS i', 'ps.setting_value', '=', DB::raw('CAST(i.issue_id AS CHAR(20))'))
                 ->where('ps.setting_name', 'issueId')
                 ->whereNull('i.issue_id')
                 ->get(['p.submission_id', 'p.publication_id', 'ps.setting_value']);
@@ -286,8 +301,43 @@ class PreflightCheckMigration extends \PKP\migration\upgrade\v3_4_0\PreflightChe
     protected function dropForeignKeys(): void
     {
         parent::dropForeignKeys();
-        if (DB::getDoctrineSchemaManager()->introspectTable('publication_galleys')->hasForeignKey('publication_galleys_submission_file_id_foreign')) {
+        if ($this->hasForeignKey('publication_galleys', 'publication_galleys_submission_file_id_foreign')) {
             Schema::table('publication_galleys', fn (Blueprint $table) => $table->dropForeign('publication_galleys_submission_file_id_foreign'));
+        }
+    }
+
+    /**
+     * Checks if DOIs have been marked registered with more than one registration agency.
+     *
+     * @throws Exception
+     */
+    protected function checkDuplicateDoiRegistrationAgencies(): void
+    {
+        $agencies = ['crossref::status', 'datacite::status', 'medra::status'];
+
+        $submissionIds = DB::table('submission_settings')
+            ->whereIn('setting_name', $agencies)
+            ->groupBy('submission_id')
+            ->havingRaw('COUNT(submission_id) > 1')
+            ->select(['submission_id'])
+            ->get();
+
+        $galleyIds = DB::table('publication_galley_settings')
+            ->whereIn('setting_name', $agencies)
+            ->groupBy('galley_id')
+            ->havingRaw('COUNT(galley_id) > 1')
+            ->select(['galley_id'])
+            ->get();
+
+        $issueIds = DB::table('issue_settings')
+            ->whereIn('setting_name', $agencies)
+            ->groupBy('issue_id')
+            ->havingRaw('COUNT(issue_id) > 1')
+            ->select(['issue_id'])
+            ->get();
+
+        if ($submissionIds->count() > 0 || $galleyIds->count() > 0 || $issueIds->count() > 0) {
+            throw new Exception('Some DOIs have been registered with multiple registration agencies. Resolve duplicates before continuing by running `php tools/resolveAgencyDuplicates.php`.');
         }
     }
 }

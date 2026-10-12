@@ -372,12 +372,6 @@ msgstr ""
 msgid "manager.setup"
 msgstr "Stillingar tímarits"
 
-msgid "manager.setup.masthead"
-msgstr "Síðuhaus"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Ritstjórnarteymi"
-
 msgid "manager.setup.homepageContent"
 msgstr "Innihald forsíðu tímarits"
 
@@ -439,11 +433,6 @@ msgstr "Settu inn þær upplýsingar sem þú vilt að birtist á tilkynningasí
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Sem á að birtast í \"Um tímaritið\") "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Biðja höfunda sem senda inn efni að skrá um leið yfirlýsingu vegna "
-"hagsmunaárekstra."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -742,14 +731,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Titill tímarits"
 
-msgid "manager.setup.keyInfo"
-msgstr "Lykilupplýsingar"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Skráðu stutta lýsingu á tímaritinu og einnig hverjir eru ritstjórar, "
-"framkvæmdastjórar og aðrir í ritstjórnarteyminu."
-
 msgid "manager.setup.labelName"
 msgstr "Titill merkimiða"
 
@@ -779,9 +760,6 @@ msgstr "LOCKSS og CLOCKSS"
 msgid "manager.setup.lockssEnable"
 msgstr ""
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "Lýsing á LOCKSS leyfi"
 
@@ -792,9 +770,6 @@ msgid "manager.setup.lockssTitle"
 msgstr "LOCKSS"
 
 msgid "manager.setup.clockssEnable"
-msgstr ""
-
-msgid "manager.setup.clockssLicenseDescription"
 msgstr ""
 
 msgid "manager.setup.clockssLicenseLabel"
@@ -1826,11 +1801,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Lykilorð"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Vinsamlega athugaðu að lykilorðið verður vistað sem texti, þ.e.a.s. ekki "
-"dulkóðað."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Hvaða tölublað sem er"
 
@@ -1857,9 +1827,6 @@ msgstr "Merkja sem skráð"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Skrá"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Staðfestu XML áður en það er flutt út og skráð."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Ekkert valið."

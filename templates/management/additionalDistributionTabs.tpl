@@ -6,17 +6,17 @@
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief OJS-specific tabs for the distribution settings page
+ *
+ * @hook Template::Settings::distribution::archiving []
  *}
 
 <tab id="access" label="{translate key="manager.distribution.access"}">
-	{help file="settings/distribution-settings" section="access" class="pkp_help_tab"}
 	<pkp-form
-		v-bind="components.{$smarty.const.FORM_ACCESS}"
+		v-bind="components.{APP\components\forms\context\AccessForm::FORM_ACCESS}"
 		@set="set"
 	/>
 </tab>
 <tab id="archive" label="{translate key="manager.website.archiving"}">
-	{help file="settings/distribution-settings" section="archiving" class="pkp_help_tab"}
 	<tabs :is-side-tabs="true" :track-history="true">
 		<tab id="pln" label="{translate key="manager.setup.plnPluginArchiving"}">
 			<pkp-form
@@ -26,7 +26,7 @@
 		</tab>
 		<tab id="lockss" label="{translate key="manager.setup.otherLockss"}">
 			<pkp-form
-				v-bind="components.{$smarty.const.FORM_ARCHIVING_LOCKSS}"
+				v-bind="components.{APP\components\forms\context\ArchivingLockssForm::FORM_ARCHIVING_LOCKSS}"
 				@set="set"
 			/>
 		</tab>

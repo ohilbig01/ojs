@@ -12,11 +12,17 @@
 
 <div class="page_index_site">
 
+	{if $highlights->count()}
+		{include file="frontend/components/highlights.tpl" highlights=$highlights}
+	{/if}
+
 	{if $about}
 		<div class="about_site">
 			{$about}
 		</div>
 	{/if}
+
+	{include file="frontend/objects/announcements_list.tpl" numAnnouncements=$numAnnouncementsHomepage}
 
 	<div class="journals">
 		<h2>
@@ -42,7 +48,7 @@
 						<div class="body">
 							<h3>
 								<a href="{$url}" rel="bookmark">
-									{$journal->getLocalizedName()}
+									{$journal->getLocalizedName()|escape}
 								</a>
 							</h3>
 							{if $description}

@@ -19,7 +19,6 @@ namespace APP\subscription\form;
 use APP\core\Application;
 use APP\journal\JournalDAO;
 use APP\template\TemplateManager;
-use PKP\config\Config;
 use PKP\db\DAORegistry;
 use PKP\form\Form;
 
@@ -98,14 +97,13 @@ class SubscriptionPolicyForm extends Form
      */
     public function fetch($request, $template = null, $display = false)
     {
-        $paymentManager = Application::getPaymentManager($request->getContext());
+        $paymentManager = Application::get()->getPaymentManager($request->getContext());
         $templateMgr = TemplateManager::getManager();
         $templateMgr->assign([
             'validNumMonthsBeforeExpiry' => $this->validNumMonthsBeforeExpiry,
             'validNumWeeksBeforeExpiry' => $this->validNumWeeksBeforeExpiry,
             'validNumMonthsAfterExpiry' => $this->validNumMonthsAfterExpiry,
             'validNumWeeksAfterExpiry' => $this->validNumWeeksAfterExpiry,
-            'scheduledTasksEnabled' => (bool) Config::getVar('general', 'scheduled_tasks'),
             'paymentsEnabled' => $paymentManager->isConfigured(),
         ]);
 
@@ -148,10 +146,8 @@ class SubscriptionPolicyForm extends Form
 
     /**
      * Get the names of the fields for which localized settings are used
-     *
-     * @return array
      */
-    public function getLocaleFieldNames()
+    public function getLocaleFieldNames(): array
     {
         return ['subscriptionAdditionalInformation'];
     }
@@ -185,8 +181,4 @@ class SubscriptionPolicyForm extends Form
         $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
         $journalDao->updateObject($journal);
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\subscription\form\SubscriptionPolicyForm', '\SubscriptionPolicyForm');
 }

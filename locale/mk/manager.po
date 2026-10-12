@@ -1,10 +1,10 @@
-# Mirko Spiroski <mspiroski@id-press.eu>, 2021.
+# Mirko Spiroski <mspiroski@id-press.eu>, 2021, 2025, 2026.
 # Teodora Fildishevska <t.fildishevska@gmail.com>, 2022, 2023.
 # Ana Vucurevic <ana.vucurevic97@yahoo.com>, 2023.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2023-03-16 10:25+0000\n"
-"Last-Translator: Ana Vucurevic <ana.vucurevic97@yahoo.com>\n"
+"PO-Revision-Date: 2026-09-15 04:51+0000\n"
+"Last-Translator: Mirko Spiroski <mspiroski@id-press.eu>\n"
 "Language-Team: Macedonian <http://translate.pkp.sfu.ca/projects/ojs/manager/"
 "mk/>\n"
 "Language: mk\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n==1 || n%10==1 ? 0 : 1;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "Пристап"
@@ -411,12 +411,6 @@ msgstr ""
 msgid "manager.setup"
 msgstr "Поставки за весник"
 
-msgid "manager.setup.masthead"
-msgstr "Мајстор"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Уреднички тим"
-
 msgid "manager.setup.homepageContent"
 msgstr "Содржина на почетна страница за весник"
 
@@ -481,11 +475,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Да се појави во За весникот) "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Потребно е да ги доставите авторите да поднесат изјава за натпреварувачки "
-"интерес (КИ) со нивно поднесување."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -801,14 +790,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Наслов на весник"
 
-msgid "manager.setup.keyInfo"
-msgstr "Клучни информации"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Обезбедете краток опис на вашето списание и идентификувајте ги уредниците, "
-"управните директори и другите членови на вашиот уреднички тим."
-
 msgid "manager.setup.labelName"
 msgstr "Име на етикета"
 
@@ -847,12 +828,6 @@ msgstr ""
 "учесничките библиотеки преку страницата LOCKSS <a href=\"{$lockssUrl}\" "
 "target=\"_blank\">Publisher Manifest</a>."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"Лиценца за LOCKSS ќе се појави во За списанието под Архивирање:\n"
-"<a href=\"http://www.lockss.org/community/publishers-titles-gln/\" target="
-"\"_blank\">LOCKSS Лиценца</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "Опис на лиценцата за LOCKSS"
 
@@ -872,12 +847,6 @@ msgstr ""
 "Овозможете CLOCKSS да складира и дистрибуира содржина на дневник во "
 "учесничките библиотеки преку страница на CLOCKSS <a href=\"{$clockssUrl}\" "
 "target=\"_blank\">Publisher Manifest</a>."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"Лиценца за CLOCKSS ќе се појави во За списанието под Архивирање: <a href="
-"\"https://clockss.org\" target=\"_blank\">\n"
-"CLOCKSS Лиценца</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "Опис на лиценцата на CLOCKSS"
@@ -2021,11 +1990,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Лозинка"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Имајте предвид дека лозинката ќе биде зачувана како обичен текст, т.е. не "
-"криптирана."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Било кое издание"
 
@@ -2052,9 +2016,6 @@ msgstr "Означи регистриран"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Регистрирај се"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Потврдете го XML пред извозот и регистрацијата."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Не се избрани објекти."
@@ -2565,16 +2526,16 @@ msgstr "Претплатата е Доспеана"
 
 msgid "mailable.subscriptionExpired.description"
 msgstr ""
-"Овој и-меил го известува претплатникот дека нивната претплата е истечена. Ги "
-"обезбедува URL-адресата на списанието и насоки за пристап до истото."
+"Оваа е-пошта е испратена автоматски за да го извести претплатникот дека "
+"неговата претплата е истечена."
 
 msgid "mailable.subscriptionExpiredLast.name"
 msgstr "Претплатат е Последно Доспеана"
 
 msgid "mailable.subscriptionExpiredLast.description"
 msgstr ""
-"Овој и-меил го известува претплатникот дека нивната претплата е истечена. Ја "
-"обезбедува URL-адресата на списанието заедно со упатства за пристап."
+"Оваа е-пошта е испратена автоматски за да го извести претплатникот вториот "
+"пат кога неговата претплата ќе истече"
 
 msgid "mailable.subscriptionPurchaseIndividual.name"
 msgstr "Претплатете се Индивидуално"
@@ -2676,3 +2637,11 @@ msgid "plugins.importexport.common.error.issueCoverImageMissing"
 msgstr ""
 "Не можевме да ја експортираме насловната страна на изданието {$id}, не беше "
 "пронајдена неговата датотека на \"{$path}\"."
+
+msgid "manager.setup.contextSummary.description"
+msgstr ""
+"Понуди краток опис на вашето списание за да се добие претстава за содржината "
+"и намерата."
+
+msgid "emailTemplate.variable.issue.issueTableOfContents"
+msgstr "Содржина на бројот како листа од сите придружни поднесоци."

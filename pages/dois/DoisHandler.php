@@ -33,7 +33,14 @@ class DoisHandler extends PKPDoisHandler
         $stateComponents = [];
 
         // Publication and Galley DOIs
-        if (count(array_intersect($enabledDoiTypes, [Repo::doi()::TYPE_PUBLICATION, Repo::doi()::TYPE_REPRESENTATION])) > 0) {
+        if (count(
+            array_intersect($enabledDoiTypes, [
+                Repo::doi()::TYPE_PUBLICATION,
+                Repo::doi()::TYPE_REPRESENTATION,
+                Repo::doi()::TYPE_PEER_REVIEW,
+                Repo::doi()::TYPE_AUTHOR_RESPONSE,
+            ])
+        ) > 0) {
             $submissionDoiListPanel = new DoiListPanel(
                 'submissionDoiListPanel',
                 __('doi.manager.submissionDois'),
@@ -42,7 +49,7 @@ class DoisHandler extends PKPDoisHandler
                     [
                         'apiUrl' => $request->getDispatcher()->url($request, PKPApplication::ROUTE_API, $context->getPath(), 'submissions'),
                         'getParams' => [
-                            'stageIds' => [WORKFLOW_STAGE_ID_EDITING, WORKFLOW_STAGE_ID_PRODUCTION],
+                            'onDoiPage' => true,
                         ],
                         'isSubmission' => true,
                         'includeIssuesFilter' => true,
@@ -83,7 +90,14 @@ class DoisHandler extends PKPDoisHandler
         return array_merge(
             $templateVariables,
             [
-                'displaySubmissionsTab' => count(array_intersect($enabledDoiTypes, [Repo::doi()::TYPE_PUBLICATION, Repo::doi()::TYPE_REPRESENTATION])) > 0,
+                'displaySubmissionsTab' => count(
+                    array_intersect($enabledDoiTypes, [
+                        Repo::doi()::TYPE_PUBLICATION,
+                        Repo::doi()::TYPE_REPRESENTATION,
+                        Repo::doi()::TYPE_PEER_REVIEW,
+                        Repo::doi()::TYPE_AUTHOR_RESPONSE,
+                    ])
+                ) > 0,
                 'displayIssuesTab' => in_array(Repo::doi()::TYPE_ISSUE, $enabledDoiTypes),
             ]
         );

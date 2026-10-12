@@ -180,6 +180,8 @@ class IssueFileManager extends FileManager
      * @param int $contentType Issue file content type
      *
      * @return ?IssueFile|false the resulting issue file
+     *
+     * @hook IssueFileManager::fromTemporaryFile [[&$temporaryFile, &$contentType, &$result]]
      */
     public function fromTemporaryFile($temporaryFile, $contentType = IssueFile::ISSUE_FILE_PUBLIC)
     {
@@ -224,8 +226,4 @@ class IssueFileManager extends FileManager
 
         return $issueFile;
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\file\IssueFileManager', '\IssueFileManager');
 }

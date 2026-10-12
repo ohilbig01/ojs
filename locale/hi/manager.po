@@ -497,13 +497,6 @@ msgstr "इस सेक्शन के लिए सीमित सार श
 msgid "manager.setup"
 msgstr "जर्नल सेटिंग्स"
 
-msgid "manager.setup.masthead"
-msgstr "मास्टहेड"
-
-# (pofilter) simplecaps: Different capitalization
-msgid "manager.setup.editorialTeam"
-msgstr "संपादकीय टीम"
-
 # (pofilter) simplecaps: Different capitalization
 msgid "manager.setup.homepageContent"
 msgstr "जर्नल मुखपृष्ठ सामग्री"
@@ -586,11 +579,6 @@ msgstr "(जर्नल के बारे में प्रकट करन
 
 # (pofilter) brackets: Added '(', ')'
 # (pofilter) endpunc: Different punctuation at the end
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"अपने जमा करने के साथ एक प्रतियोगी ब्याज (CI) बयान दर्ज करने के लिए लेखकों को प्रस्तुत करने "
-"की आवश्यकता है।"
-
 # (pofilter) endpunc: Different punctuation at the end
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -985,17 +973,6 @@ msgid "manager.setup.contextTitle"
 msgstr "जर्नल का शीर्षक"
 
 # (pofilter) simplecaps: Different capitalization
-msgid "manager.setup.keyInfo"
-msgstr "महत्वपूर्ण जानकारी"
-
-# (pofilter) endpunc: Different punctuation at the end
-# (pofilter) simplecaps: Different capitalization
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"अपनी जर्नल का संक्षिप्त विवरण प्रदान करें और संपादकों, प्रबंध निदेशकों और अपनी संपादकीय "
-"टीम के अन्य सदस्यों की पहचान करें।"
-
-# (pofilter) simplecaps: Different capitalization
 msgid "manager.setup.labelName"
 msgstr "लेबल का नाम"
 
@@ -1059,14 +1036,6 @@ msgstr ""
 
 # (pofilter) urls: Different URLs
 # (pofilter) xmltags: Added XML tags
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"एक LOCKSS लाइसेंस जर्नल के बारे में अभिलेखागार में दिखाई देगा:<a href=\"http://www."
-"lockss.org/community/publishers-titles-gln/\" target=\"_blank\">LOCKSS "
-"License</a>"
-
-# (pofilter) simplecaps: Different capitalization
-# (pofilter) startcaps: Different capitalization at the start
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "LOCKSS लाइसेंस का विवरण"
 
@@ -1102,13 +1071,6 @@ msgstr ""
 
 # (pofilter) urls: Different URLs
 # (pofilter) xmltags: Added XML tags
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"एक CLOCKSS जर्नल लाइसेंस के तहत जर्नल के बारे में दिखाई देगा: <a href=\"http://clockss."
-"org/\" target=\"_blank\">CLOCKSS License</a>"
-
-# (pofilter) simplecaps: Different capitalization
-# (pofilter) startcaps: Different capitalization at the start
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "CLOCKSS लाइसेंस का विवरण"
 
@@ -2530,10 +2492,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "पासवर्ड"
 
-# (pofilter) endpunc: Different punctuation at the end
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr "कृपया ध्यान दें कि पासवर्ड सादे पाठ के रूप में सहेजा जाएगा, अर्थात् एन्क्रिप्टेड नहीं।"
-
 # (pofilter) endwhitespace: Different whitespace at the end
 msgid "plugins.importexport.common.filter.issue"
 msgstr "कोई अंक"
@@ -2567,10 +2525,6 @@ msgstr "रजिस्टर करें"
 
 # (pofilter) endpunc: Different punctuation at the end
 # (pofilter) simplecaps: Different capitalization
-msgid "plugins.importexport.common.validation"
-msgstr "निर्यात और पंजीकरण से पहले XML सत्यापित करें।"
-
-# (pofilter) endpunc: Different punctuation at the end
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "कोई ऑब्जेक्ट नहीं चुना गया।"
 

@@ -1,8 +1,8 @@
 # Artashes Mirzoyan <amirzoyan@sci.am>, 2022.
-# Tigran Zargaryan <tigran@flib.sci.am>, 2022, 2023.
+# Tigran Zargaryan <tigran@flib.sci.am>, 2022, 2023, 2025, 2026.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2023-04-04 23:00+0000\n"
+"PO-Revision-Date: 2026-09-08 10:13+0000\n"
 "Last-Translator: Tigran Zargaryan <tigran@flib.sci.am>\n"
 "Language-Team: Armenian <http://translate.pkp.sfu.ca/projects/ojs/manager/hy/"
 ">\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "Մուտք"
@@ -409,12 +409,6 @@ msgstr ""
 msgid "manager.setup"
 msgstr "Ամսագրի կարգավորումներ"
 
-msgid "manager.setup.masthead"
-msgstr "Մասթհեդ"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Խմբագրական կազմ"
-
 msgid "manager.setup.homepageContent"
 msgstr "Ամսագրի գլխավոր էջի բովանդակությունը"
 
@@ -479,11 +473,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(կհայտնվի \"Ամսագրի մասին\" բաժնում) "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Ներկայացնող Հեղինակներից պահանջեք տրամադրել Շահերի բախման (CI) "
-"հայտարարությունը իրենց առաքած նյութերի հետ միասին:"
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -796,14 +785,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Ամսագրի անվանումը"
 
-msgid "manager.setup.keyInfo"
-msgstr "Հիմնական տեղեկատվություն"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Տրամադրեք ձեր ամսագրի կարճ նկարագրությունը և բացահայտեք խմբագիրներին, "
-"գործադիր տնօրեններին և ձեր խմբագրական թիմի այլ անդամներին:"
-
 msgid "manager.setup.labelName"
 msgstr "Պիտակի անվանումը"
 
@@ -843,12 +824,6 @@ msgstr ""
 "գրադարաններում LOCKSS <a href=\"{$lockssUrl}\" target=\"_blank\">Հրատարակչի "
 "մանիֆեստ</a> էջի միջոցով:"
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"LOCKSS արտոնագիրը կհայտնվի Ամսագրի մասին՝ Արխիվացման ներքո՝ <a href=\"http://"
-"www.lockss.org/community/publishers-titles-gln/\" target=\"_blank\">LOCKSS "
-"արտոնագիր</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "LOCKSS արտոնագրի նկարագրություն"
 
@@ -868,11 +843,6 @@ msgstr ""
 "Միացրեք CLOCKSS-ը` պահելու և տարածելու ամսագրի բովանդակությունը մասնակից "
 "գրադարաններում CLOCKSS <a href=\"{$clockssUrl}\" target=\"_blank"
 "\">Հրատարակչի մանիֆեստ</a> էջի միջոցով:"
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"CLOCKSS արտոնագիրը կհայտնվի Ամսագրի մասին՝ Արխիվացման ներքո՝ <a href="
-"\"https://clockss.org\" target=\"_blank\">CLOCKSS արտոնագիր</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "CLOCKSS արտոնագրի նկարագրություն"
@@ -2025,11 +1995,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Գաղտնաբառ"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Խնդրում ենք նկատի ունենալ, որ գաղտնաբառը կպահվի որպես պարզ տեքստ, այսինքն՝ "
-"կոդավորված չէ:"
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Ցանկացած թողարկում"
 
@@ -2056,9 +2021,6 @@ msgstr "Նշեք գրանցված"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Գրանցել"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Վավերացրեք XML-ը մինչև արտահանումը և գրանցումը:"
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Ընտրված օբյեկտներ չկան:"
@@ -2573,16 +2535,16 @@ msgstr "Բաժանորդագրության ժամկետը սպառվել է"
 
 msgid "mailable.subscriptionExpired.description"
 msgstr ""
-"Այս էլ․ նամակը ծանուցում է բաժանորդին, որ նրա բաժանորդագրության ժամկետը "
-"լրացել է: Այն տրամադրում է ամսագրի URL-ը և մուտքի հրահանգները:"
+"Այս էլ. նամակն ուղարկվում է ինքնաշխատ կերպով՝ բաժանորդին տեղեկացնելու համար, "
+"որ նրանց բաժանորդագրությունը լրացել է։"
 
 msgid "mailable.subscriptionExpiredLast.name"
 msgstr "Բաժանորդագրության ժամկետը վերջացել է"
 
 msgid "mailable.subscriptionExpiredLast.description"
 msgstr ""
-"Այս էլ․ նամակը ծանուցում է բաժանորդին, որ նրանց բաժանորդագրության ժամկետը "
-"լրացել է: Այն տրամադրում է ամսագրի URL-ը և մուտքի հրահանգները:"
+"Այս էլ. նամակն ուղարկվում է ինքնաշխատ կերպով՝ բաժանորդին երկրորդ անգամ "
+"տեղեկացնելու համար, որ նրա բաժանորդագրությունը լրացել է"
 
 msgid "mailable.subscriptionPurchaseIndividual.name"
 msgstr "Գնեք անհատական բաժանորդագրություն"
@@ -2722,3 +2684,13 @@ msgid "plugins.importexport.common.error.issueCoverImageMissing"
 msgstr ""
 "{$id} թողարկման շապիկի պատկերը չի արտահանվել, դրա ֆայլը չի գտնվել \"{$path}\""
 " ուղու վրա."
+
+msgid "manager.setup.contextSummary.description"
+msgstr ""
+"Առաջարկեք ձեր ամսագրի համառոտ նկարագրությունը՝ դրա բովանդակության և նպատակի "
+"մասին պատկերացում կազմելու համար:"
+
+msgid "emailTemplate.variable.issue.issueTableOfContents"
+msgstr ""
+"Թողարկման բովանդակության աղյուսակը` ինչպիսին է բոլոր առնչվող ներկայացումների "
+"ցանկը:"

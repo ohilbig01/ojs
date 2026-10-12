@@ -1121,9 +1121,6 @@ msgstr ""
 msgid "reviewer.article.enterCompetingInterests"
 msgstr ""
 
-msgid "reviewer.competingInterests"
-msgstr ""
-
 msgid "reviewer.article.enterReviewA"
 msgstr ""
 
@@ -1520,12 +1517,6 @@ msgstr ""
 msgid "about.history"
 msgstr ""
 
-msgid "about.editorialTeam"
-msgstr ""
-
-msgid "about.editorialTeam.biography"
-msgstr ""
-
 msgid "about.editorialPolicies"
 msgstr ""
 
@@ -1858,9 +1849,11 @@ msgstr ""
 msgid "log.review.resubmit"
 msgstr ""
 
+#, fuzzy
 msgid "log.review.reviewDeclined"
 msgstr ""
 
+#, fuzzy
 msgid "log.review.reviewAccepted"
 msgstr ""
 
@@ -2042,9 +2035,6 @@ msgid "grid.catalogEntry.approvedRepresentation.removeMessage"
 msgstr ""
 
 msgid "search.cli.rebuildIndex.indexing"
-msgstr ""
-
-msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
 msgstr ""
 
 msgid "search.cli.rebuildIndex.unknownJournal"

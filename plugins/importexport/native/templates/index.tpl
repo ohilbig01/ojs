@@ -74,7 +74,7 @@
 					@set="set"
 				>
 
-					<template v-slot:item="{ldelim}item{rdelim}">
+					<template #item="{ldelim}item{rdelim}">
 						<div class="listPanel__itemSummary">
 							<label>
 								<input
@@ -85,7 +85,7 @@
 								/>
 								<span
 									class="listPanel__itemSubTitle"
-									v-html="localize(
+									v-strip-unsafe-html="localize(
 										item.publications.find(p => p.id == item.currentPublicationId).fullTitle,
 										item.publications.find(p => p.id == item.currentPublicationId).locale
 									)"
@@ -93,7 +93,7 @@
 								</span>
 							</label>
 							<pkp-button element="a" :href="item.urlWorkflow" style="margin-left: auto;">
-								{{ __('common.view') }}
+								{{ t('common.view') }}
 							</pkp-button>
 						</div>
 					</template>
@@ -124,7 +124,7 @@
 		<form id="exportIssuesXmlForm" class="pkp_form" action="{plugin_url path="exportIssuesBounce"}" method="post">
 			{csrf}
 			{fbvFormArea id="issuesXmlForm"}
-				{capture assign="issuesListGridUrl"}{url router=\PKP\core\PKPApplication::ROUTE_COMPONENT component="grid.issues.ExportableIssuesListGridHandler" op="fetchGrid" escape=false}{/capture}
+				{capture assign="issuesListGridUrl"}{url router=PKP\core\PKPApplication::ROUTE_COMPONENT component="grid.issues.ExportableIssuesListGridHandler" op="fetchGrid" escape=false}{/capture}
 				{load_url_in_div id="issuesListGridContainer" url=$issuesListGridUrl}
 
 				{fbvFormButtons submitText="plugins.importexport.native.exportIssues" hideCancel="true"}

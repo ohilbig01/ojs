@@ -31,18 +31,15 @@ use PKP\controllers\grid\GridHandler;
 use PKP\core\JSONMessage;
 use PKP\core\PKPApplication;
 use PKP\db\DAO;
-use PKP\db\DAORegistry;
 use PKP\galley\Galley;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
-use PKP\notification\NotificationDAO;
-use PKP\notification\PKPNotification;
+use PKP\notification\Notification;
 use PKP\plugins\PluginRegistry;
-use PKP\security\authorization\internal\RepresentationRequiredPolicy;
 use PKP\security\authorization\PublicationAccessPolicy;
+use PKP\security\authorization\RepresentationRequiredPolicy;
 use PKP\security\authorization\WorkflowStageAccessPolicy;
 use PKP\security\Role;
-use PKP\submission\PKPSubmission;
 
 class ArticleGalleyGridHandler extends GridHandler
 {
@@ -150,13 +147,20 @@ class ArticleGalleyGridHandler extends GridHandler
             $cellProvider
         ));
 
+        $this->addColumn(new GridColumn(
+            'language',
+            'common.language',
+            null,
+            null,
+            $cellProvider
+        ));
+
         if ($this->canEdit()) {
             $this->addAction(new LinkAction(
                 'addGalley',
                 new AjaxModal(
                     $request->getRouter()->url($request, null, null, 'addGalley', null, $this->getRequestArgs()),
                     __('submission.layout.newGalley'),
-                    'modal_add_item'
                 ),
                 __('grid.action.addGalley'),
                 'add_item'
@@ -334,15 +338,14 @@ class ArticleGalleyGridHandler extends GridHandler
         }
         Repo::galley()->delete($galley);
 
-        $notificationDao = DAORegistry::getDAO('NotificationDAO'); /** @var NotificationDAO $notificationDao */
-        $notificationDao->deleteByAssoc(Application::ASSOC_TYPE_REPRESENTATION, $galley->getId());
+        Notification::withAssoc(Application::ASSOC_TYPE_REPRESENTATION, $galley->getId())->delete();
 
-        if ($this->getSubmission()->getStageId() == WORKFLOW_STAGE_ID_EDITING ||
-            $this->getSubmission()->getStageId() == WORKFLOW_STAGE_ID_PRODUCTION) {
+        if ($this->getSubmission()->getData('stageId') == WORKFLOW_STAGE_ID_EDITING ||
+            $this->getSubmission()->getData('stageId') == WORKFLOW_STAGE_ID_PRODUCTION) {
             $notificationMgr = new NotificationManager();
             $notificationMgr->updateNotification(
                 $request,
-                [PKPNotification::NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER, PKPNotification::NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS],
+                [Notification::NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER, Notification::NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS],
                 null,
                 Application::ASSOC_TYPE_SUBMISSION,
                 $this->getSubmission()->getId()
@@ -426,12 +429,12 @@ class ArticleGalleyGridHandler extends GridHandler
         if ($galleyForm->validate()) {
             $galley = $galleyForm->execute();
 
-            if ($this->getSubmission()->getStageId() == WORKFLOW_STAGE_ID_EDITING ||
-                $this->getSubmission()->getStageId() == WORKFLOW_STAGE_ID_PRODUCTION) {
+            if ($this->getSubmission()->getData('stageId') == WORKFLOW_STAGE_ID_EDITING ||
+                $this->getSubmission()->getData('stageId') == WORKFLOW_STAGE_ID_PRODUCTION) {
                 $notificationMgr = new NotificationManager();
                 $notificationMgr->updateNotification(
                     $request,
-                    [PKPNotification::NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER, PKPNotification::NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS],
+                    [Notification::NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER, Notification::NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS],
                     null,
                     Application::ASSOC_TYPE_SUBMISSION,
                     $this->getSubmission()->getId()
@@ -451,7 +454,7 @@ class ArticleGalleyGridHandler extends GridHandler
         $json = parent::fetchRow($args, $request);
         if ($row = $this->getRequestedRow($request, $args)) {
             $galley = $row->getData();
-            if (!$galley->getRemoteUrl() && !$galley->getData('submissionFileId')) {
+            if (!$galley->getData('urlRemote') && !$galley->getData('submissionFileId')) {
                 $json->setEvent('uploadFile', $galley->getId());
             }
         }
@@ -470,12 +473,11 @@ class ArticleGalleyGridHandler extends GridHandler
      */
     public function canEdit()
     {
-        return $this->getPublication()->getData('status') !== PKPSubmission::STATUS_PUBLISHED &&
-            Repo::user()->canUserAccessStage(
-                WORKFLOW_STAGE_ID_PRODUCTION,
-                PKPApplication::WORKFLOW_TYPE_EDITORIAL,
-                $this->getAuthorizedContextObject(Application::ASSOC_TYPE_ACCESSIBLE_WORKFLOW_STAGES),
-                $this->getAuthorizedContextObject(Application::ASSOC_TYPE_USER_ROLES)
-            );
+        return Repo::user()->canUserAccessStage(
+            WORKFLOW_STAGE_ID_PRODUCTION,
+            PKPApplication::WORKFLOW_TYPE_EDITORIAL,
+            $this->getAuthorizedContextObject(Application::ASSOC_TYPE_ACCESSIBLE_WORKFLOW_STAGES),
+            $this->getAuthorizedContextObject(Application::ASSOC_TYPE_USER_ROLES)
+        );
     }
 }

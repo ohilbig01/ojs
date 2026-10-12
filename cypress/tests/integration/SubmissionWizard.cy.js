@@ -63,19 +63,16 @@ describe('Submission Wizard', function() {
         cy.contains(comments);
         cy.get('button:contains("Submit")').click();
         cy.contains('The submission, ' + title + ', will be submitted to Journal of Public Knowledge for editorial review.');
-        cy.get('.modal__footer button:contains("Submit")').click();
+        cy.get('div[role="dialog"] button:contains("Submit")').click();
         cy.get('h1:contains("Submission complete")');
 
         // View submission discussion and check participants
         cy.get('a:contains("Review this submission")').click();
-        cy.get('h4:contains("Pre-Review Discussions")')
-            .parents('.pkp_controllers_grid')
-            .find('a:contains("Comments for the Editor")')
-            .click();
-        cy.get('#participantsListPlaceholder li:contains("Daniel Barnes")');
-        cy.get('#participantsListPlaceholder li:contains("Minoti Inoue")');
-        cy.get('#participantsListPlaceholder li:contains("Carlo Corino")');
-        cy.get('#queryNotesGrid .gridCellContainer').contains(comments);
+        cy.get('[data-cy="discussion-manager"]').contains('button', 'Comments for the Editor').click();
+        cy.get('[data-cy="active-modal"]').contains('Daniel Barnes').should('exist');
+        cy.get('[data-cy="active-modal"]').contains('Minoti Inoue').should('exist');
+        cy.get('[data-cy="active-modal"]').contains('Carlo Corino').should('exist');
+        cy.get('[data-cy="active-modal"]').contains(comments).should('exist');
 
         cy.logout();
     });
@@ -84,7 +81,9 @@ describe('Submission Wizard', function() {
 
         // Make all sections editor-restricted
         cy.login('dbarnes', null, 'publicknowledge');
-        cy.get('.app__navGroup:contains("Settings") a:contains("Journal")').click();
+        cy.get('nav').contains('Settings').click();
+        // Ensure submenu item click despite animation
+        cy.get('nav').contains('Journal').click({ force: true });
         cy.get('.pkpTabs__buttons button:contains("Sections")').click();
         cy.get('#sectionsGridContainer a.show_extras')
             .each(($showExtras) => {
@@ -96,8 +95,8 @@ describe('Submission Wizard', function() {
                     .click();
                 cy.wait(1500); // Let modal render. Fixes console error, maybe with TinyMCE init
                 cy.get('label:contains("Items can only be submitted by Editors and Section Editors.")').click();
-                cy.get('.pkp_modal button:contains("Save")').click();
-                cy.get('.pkp_modal').should('not.exist');
+                cy.get('[role="dialog"] button:contains("Save")').click();
+                cy.get('[role="dialog"]').should('not.exist');
             });
 
         // Can't submit as author
@@ -109,10 +108,12 @@ describe('Submission Wizard', function() {
         // Make Articles inactive and leave Reviews editor-restricted
         cy.logout();
         cy.login('dbarnes', null, 'publicknowledge');
-        cy.get('.app__navGroup:contains("Settings") a:contains("Journal")').click();
+        cy.get('nav').contains('Settings').click();
+        // Ensure submenu item click despite animation
+        cy.get('nav').contains('Journal').click({ force: true });
         cy.get('.pkpTabs__buttons button:contains("Sections")').click();
         cy.get('#sectionsGridContainer tr:contains("Articles") input').check();
-        cy.get('.pkp_modal_confirmation button:contains("OK")').click();
+        cy.get('[role="dialog"] button:contains("OK")').click();
         cy.get('.pkpNotification:contains("Your changes have been saved")');
 
         // Still can't submit as author
@@ -124,7 +125,9 @@ describe('Submission Wizard', function() {
         // Make Reviews not editor-restricted
         cy.logout();
         cy.login('dbarnes', null, 'publicknowledge');
-        cy.get('.app__navGroup:contains("Settings") a:contains("Journal")').click();
+        cy.get('nav').contains('Settings').click();
+        // Ensure submenu item click despite animation
+        cy.get('nav').contains('Journal').click({ force: true });
         cy.get('.pkpTabs__buttons button:contains("Sections")').click();
         cy.get('#sectionsGridContainer tr:contains("Reviews")')
             .then(($tr) => {
@@ -137,8 +140,8 @@ describe('Submission Wizard', function() {
             });
         cy.wait(1500); // Let modal render. Fixes console error, maybe with TinyMCE init
         cy.get('label:contains("Items can only be submitted by Editors and Section Editors.")').click();
-        cy.get('.pkp_modal button:contains("Save")').click();
-        cy.get('.pkp_modal').should('not.exist');
+        cy.get('[role="dialog"] button:contains("Save")').click();
+        cy.get('[role="dialog"]').should('not.exist');
 
         // Can submit to only one section (no option to choose section)
         cy.logout();
@@ -150,7 +153,9 @@ describe('Submission Wizard', function() {
         // Reactivate Articles section to restore test data conditions
         cy.logout();
         cy.login('dbarnes', null, 'publicknowledge');
-        cy.get('.app__navGroup:contains("Settings") a:contains("Journal")').click();
+        cy.get('nav').contains('Settings').click();
+        // Ensure submenu item click despite animation
+        cy.get('nav').contains('Journal').click({ force: true });
         cy.get('.pkpTabs__buttons button:contains("Sections")').click();
         cy.get('#sectionsGridContainer tr:contains("Articles")')
             .then(($tr) => {
@@ -163,9 +168,9 @@ describe('Submission Wizard', function() {
             });
         cy.wait(1500); // Let modal render. Fixes console error, maybe with TinyMCE init
         cy.get('label:contains("Items can only be submitted by Editors and Section Editors.")').click();
-        cy.get('label:contains("Deactivate this section")').click();
-        cy.get('.pkp_modal button:contains("Save")').click();
-        cy.get('.pkp_modal').should('not.exist');
+        cy.get('label:contains("Mark this section as inactive")').click();
+        cy.get('[role="dialog"] button:contains("Save")').click();
+        cy.get('[role="dialog"]').should('not.exist');
 
         cy.logout();
     });
@@ -223,7 +228,7 @@ describe('Submission Wizard', function() {
                 cy.get('button:contains("Submit")').should('be.enabled');
             });
 
-        cy.changeLanguage('Français');
+        cy.changeLanguage('français');
         cy.get('button:contains("Continuer")').click();
         cy.get('button:contains("Continuer")').click();
         cy.get('button:contains("Continuer")').click();
@@ -262,6 +267,7 @@ describe('Submission Wizard', function() {
             }).then(xhr => {
                 expect(xhr.status).to.eq(200);
             });
+		cy.logout();
     });
 
     it('When I try to submit without required data, it throws a validation error. I can submit after clearing all visible validation errors.', function() {
@@ -270,10 +276,10 @@ describe('Submission Wizard', function() {
             title: 'Massa tincidunt dui ut ornare lectus sit amet est',
             keywords: 'Social Transformation',
             citations: 'Massa tincidunt dui ut ornare lectus sit amet est',
+            dataAvailability: 'Viverra',
             metadata: {
                 autosuggest: {
                     disciplines: 'Faucibus',
-                    languages: 'Ornare',
                     subjects: 'Suspendisse',
                     supportingAgencies: 'Porttitor',
                 },
@@ -282,9 +288,6 @@ describe('Submission Wizard', function() {
                     rights: 'Aliquet',
                     source: 'Condimentum',
                     type: 'Tincidunt',
-                },
-                tinyMce: {
-                    dataAvailability: 'Viverra',
                 },
             }
         };
@@ -299,9 +302,7 @@ describe('Submission Wizard', function() {
         const forTheEditorFields = [
             'Supporting Agencies',
             'Coverage',
-            'Data Availability Statement',
             'Disciplines',
-            'Languages',
             'Rights',
             'Source',
             'Subjects',
@@ -323,10 +324,9 @@ describe('Submission Wizard', function() {
                         agencies: 'require',
                         citations: 'require',
                         coverage: 'require',
-                        dataAvailability: 'require',
+                        dataAvailability: 'request',
                         disciplines: 'require',
                         keywords: 'require',
-                        languages: 'require',
                         rights: 'require',
                         source: 'require',
                         subjects: 'require',
@@ -343,8 +343,8 @@ describe('Submission Wizard', function() {
         cy.contains('Submitting to the Articles section in English');
 
         // Remove title and go to review
-        cy.setTinyMceContent('titleAbstract-title-control-en', '');
         cy.get('button:contains("Continue")').click();
+        cy.setTinyMceContent('titleAbstract-title-control-en', '');
         cy.get('button:contains("Continue")').click();
         cy.get('button:contains("Continue")').click();
         cy.get('button:contains("Continue")').click();
@@ -375,15 +375,7 @@ describe('Submission Wizard', function() {
             });
 
         // Add missing data
-        cy.get('.pkpSteps button:contains("Details")').click();
-        cy.setTinyMceContent('titleAbstract-title-control-en', submission.title);
-        cy.setTinyMceContent('titleAbstract-abstract-control-en', submission.abstract);
-        cy.get('#titleAbstract-keywords-control-en').type(submission.keywords, {delay: 0});
-        cy.get('li:contains("' + submission.keywords + '")');
-        cy.get('#titleAbstract-keywords-control-en').type('{downarrow}{enter}', {delay: 0});
-        cy.get('#citations-citationsRaw-control').type(submission.citations);
-
-        cy.get('.pkpSteps button:contains("Upload Files")').click();
+        cy.get('.pkpSteps button:contains("Upload Files")').click({ force: true });
         cy.uploadSubmissionFiles([
             {
                 'file': 'dummy.pdf',
@@ -393,21 +385,27 @@ describe('Submission Wizard', function() {
             }
         ]);
 
-        cy.get('.pkpSteps button:contains("For the Editors")').click();
+        cy.get('.pkpSteps button:contains("Details")').click({ force: true });
+        cy.setTinyMceContent('titleAbstract-title-control-en', submission.title);
+        cy.setTinyMceContent('titleAbstract-abstract-control-en', submission.abstract);
+        cy.get('#titleAbstract-keywords-control-en').type(submission.keywords, {delay: 0});
+        cy.get('li:contains("' + submission.keywords + '")');
+        cy.get('#titleAbstract-keywords-control-en').type('{downarrow}{enter}');
+        cy.get('#citations-citationsRaw-control').type(submission.citations);
+        cy.setTinyMceContent('dataAvailability-dataAvailability-control-en', submission.dataAvailability);
+
+        cy.get('.pkpSteps button:contains("For the Editors")').click({ force: true });
         Object.keys(submission.metadata.autosuggest).forEach(field => {
             cy.get('#forTheEditors-' + field + '-control-en').type(submission.metadata.autosuggest[field], {delay: 0});
             cy.get('li:contains("' + submission.metadata.autosuggest[field] + '")');
-            cy.get('#forTheEditors-' + field + '-control-en').type('{downarrow}{enter}', {delay: 0});
+            cy.get('#forTheEditors-' + field + '-control-en').type('{downarrow}{enter}');
         });
         Object.keys(submission.metadata.string).forEach(field => {
             cy.get('#forTheEditors-' + field + '-control-en').type(submission.metadata.string[field]);
         });
-        Object.keys(submission.metadata.tinyMce).forEach(field => {
-            cy.setTinyMceContent('forTheEditors-' + field + '-control-en', submission.metadata.tinyMce[field]);
-        });
 
         // All errors should be gone and submit should be allowed.
-        cy.get('.pkpSteps button:contains("Review")').click();
+        cy.get('.pkpSteps button:contains("Review")').click({ force: true });
         cy.get('*:contains("There are one or more problems")').should('not.exist');
         cy.get('button:contains("Submit")').should('be.enabled');
         cy.get('*:contains("You must upload at least one Article Text file.")').should('not.exist');
@@ -437,7 +435,7 @@ describe('Submission Wizard', function() {
         // Submit
         cy.get('button:contains("Submit")').click();
         cy.contains('The submission, ' + submission.title + ', will be submitted to Journal of Public Knowledge for editorial review.');
-        cy.get('.modal__footer button:contains("Submit")').click();
+        cy.get('div[role="dialog"] button:contains("Submit")').click();
         cy.get('h1:contains("Submission complete")');
 
         cy.logout();
@@ -463,7 +461,6 @@ describe('Submission Wizard', function() {
                         dataAvailability: 'request',
                         disciplines: 'request',
                         keywords: 'require',
-                        languages: 'request',
                         rights: 'request',
                         source: 'request',
                         subjects: 'require',
@@ -483,34 +480,16 @@ describe('Submission Wizard', function() {
         cy.get('label:contains("Abstract *")');
         cy.contains('Word Count: 0/500');
 
-        // Change submission language to French and section to Reviews
+        // Change submission language to French (Canada) and section to Reviews
         cy.contains('Submitting to the Articles section in English');
         cy.get('button:contains("Change")').click();
-        cy.get('h2:contains("Change Submission Settings")')
-            .parents('.modal')
+        cy.get('h1:contains("Change Submission Settings")')
+            .parents('[role=dialog]')
             .within(() => {
-                cy.get('label:contains("French")').click();
+                cy.get('label:contains("French (Canada)")').click();
                 cy.get('label:contains("Reviews")').click();
                 cy.get('button:contains("Save")').click();
             });
-
-        // Forms load with French fields displayed instead of English
-        cy.contains('Submitting to the Reviews section in French');
-        cy.get('span.pkpFormLocales__locale:contains("French")');
-        cy.get('#titleAbstract-keywords-control-fr_CA').type('Transformation Sociale', {delay: 0});
-        cy.get('li:contains("Transformation Sociale")');
-        cy.get('#titleAbstract-keywords-control-fr_CA').type('{downarrow}{enter}', {delay: 0});
-        cy.setTinyMceContent('titleAbstract-abstract-control-fr_CA', submission.abstract.fr_CA);
-
-        // No abstract requirements in Reviews section
-        cy.get('label:contains("Abstract *")').should('not.exist');
-        cy.get('*:contains("Word Count: 0/500")').should('not.exist');
-
-        // Show English fields alongside French fields
-        cy.get('.pkpStep:contains("Submission Details") button.pkpFormLocales__locale:contains("English")').click();
-        cy.get('label:contains("Title in English")');
-        cy.get('label:contains("Keywords in English")');
-        cy.get('label:contains("Abstract in English")');
 
         // Upload a file
         cy.get('button:contains("Continue")').click();
@@ -523,46 +502,67 @@ describe('Submission Wizard', function() {
             }
         ]);
 
+        // Forms load with French (Canada) fields displayed instead of English
+        cy.contains('Submitting to the Reviews section in French (Canada)');
+        cy.get('span.pkpFormLocales__locale:contains("French (Canada)")');
+        cy.get('#titleAbstract-keywords-control-fr_CA').type('Transformation Sociale', {delay: 0});
+        cy.get('li:contains("Transformation Sociale")');
+        cy.get('#titleAbstract-keywords-control-fr_CA').type('{downarrow}{enter}');
+        cy.setTinyMceContent('titleAbstract-abstract-control-fr_CA', submission.abstract.fr_CA);
+
+        cy.get('label[for="dataAvailability-dataAvailability-control-fr_CA"]:contains("Data Availability Statement")');
+
+        // No abstract requirements in Reviews section
+        cy.get('label:contains("Abstract *")').should('not.exist');
+        cy.get('*:contains("Word Count: 0/500")').should('not.exist');
+
+        // Show English fields alongside French (Canada) fields
+        cy.get('.pkpStep:contains("Submission Details") button.pkpFormLocales__locale:contains("English")').click();
+        cy.get('label:contains("Title in English")');
+        cy.get('label:contains("Keywords in English")');
+        cy.get('label:contains("Abstract in English")');
+
         // Skip contributors
         cy.get('button:contains("Continue")').click();
         cy.get('button:contains("Continue")').click();
 
-        // Check metadata form shows in French only at first
+        // Check metadata form shows in French (Canada) only at first
         const metadata = {
             subjects: "Subjects",
             disciplines: "Disciplines",
-            languages: "Languages",
             supportingAgencies: "Supporting Agencies",
             coverage: "Coverage",
             rights: "Rights",
             source: "Source",
             type: "Type",
-            dataAvailability: "Data Availability Statement",
         }
         Object.keys(metadata).forEach((prop) => {
             cy.get('label[for="forTheEditors-' + prop + '-control-fr_CA"]:contains("' + metadata[prop] + '")');
             cy.get('label:contains("' + metadata[prop] + ' in English")').should('not.be.visible');
         });
 
-        // Show English fields alongside French fields
+        // Show English fields alongside French (Canada) fields
         cy.get('.pkpStep:contains("For the Editors") button.pkpFormLocales__locale:contains("English")').click();
         Object.keys(metadata).forEach((prop) => {
             cy.get('label:contains("' + metadata[prop] + ' in English")');
         });
 
         // Categories should appear in UI language (English)
-        cy.get('label:contains("Social Sciences > Sociology")').click();
+        cy.get('button').contains('Select Categories').click();
+        // Social Sciences > Sociology
+        cy.get('label:contains("Sociology")').click();
+		cy.get('[data-cy="active-modal"] button').contains('Save').click();
 
         // Errors in review
         cy.get('button:contains("Continue")').click();
         cy.contains('There are one or more problems');
-        cy.get('h3:contains("Details (French)")')
+        cy.get('h3:contains("Details (French (Canada))")')
             .parents('.submissionWizard__reviewPanel')
             .find('h4:contains("Title")')
             .parent()
             .contains('This field is required.');
-        cy.contains('The given name is missing in French for one or more of the contributors.');
-        cy.get('h3:contains("For the Editors (French)")')
+        cy.contains('The given name is missing in French (Canada) for one or more of the contributors.');
+        cy.get('h3:contains("For the Editors (French (Canada))")')
             .parents('.submissionWizard__reviewPanel')
             .find('h4:contains("Subjects")')
             .parent()
@@ -582,28 +582,32 @@ describe('Submission Wizard', function() {
             .contains('Social Sciences > Sociology');
 
         // Add missing data
-        cy.get('.pkpSteps button:contains("Details")').click();
+        cy.get('.pkpSteps button:contains("Details")').click({ force: true });
         cy.setTinyMceContent('titleAbstract-title-control-fr_CA', submission.title.fr_CA);
-        cy.get('.pkpSteps button:contains("Contributors")').click();
+        cy.get('.pkpSteps button:contains("Contributors")').click({ force: true });
         cy.get('.listPanel__itemTitle:contains("Carlo Corino")')
             .parents('.listPanel__item')
             .find('button:contains("Edit")')
             .click();
         cy.get('input[name="givenName-fr_CA"]').type('Carlo', {delay: 0});
         cy.get('input[name="familyName-fr_CA"]').type('Carlo', {delay: 0});
-        cy.get('.modal').find('button:contains("Save")').click();
-        cy.get('.pkpSteps button:contains("For the Editors")').click();
+        cy.contains('a', 'languages completed').click();
+        cy.contains('.pkpFormField--text', 'Type the institution name in French (Canada)')
+            .find('input[name="name"]')
+            .type('University of Bologna', {delay: 0});
+        cy.get('[role=dialog]').find('button:contains("Save")').click();
+        cy.get('.pkpSteps button:contains("For the Editors")').click({ force: true });
         cy.get('#forTheEditors-subjects-control-fr_CA').type('Sociologie française', {delay: 0});
         cy.get('li:contains("Sociologie française")');
-        cy.get('#forTheEditors-subjects-control-fr_CA').type('{downarrow}{enter}', {delay: 0});
+        cy.get('#forTheEditors-subjects-control-fr_CA').type('{downarrow}{enter}');
 
         // Should be able to submit!
-        cy.get('.pkpSteps button:contains("Review")').click();
+        cy.get('.pkpSteps button:contains("Review")').click({ force: true });
         cy.get('button:contains("Submit")').click();
         cy.contains('The submission, ' + submission.title.en + ', will be submitted to Journal of Public Knowledge for editorial review.');
         // delay is needed so previous changes gets pushed, before the submit should be triggered
         cy.wait(500);
-        cy.get('.modal__footer button:contains("Submit")').click();
+        cy.get('div[role="dialog"] button:contains("Submit")').click();
         cy.get('h1:contains("Submission complete")');
 
         cy.logout();
@@ -629,7 +633,6 @@ describe('Submission Wizard', function() {
                         dataAvailability: '0',
                         disciplines: '0',
                         keywords: 'request',
-                        languages: '0',
                         rights: '0',
                         source: '0',
                         subjects: '0',
@@ -640,5 +643,6 @@ describe('Submission Wizard', function() {
             }).then(xhr => {
                 expect(xhr.status).to.eq(200);
             });
+		cy.logout();
     });
 })

@@ -7,7 +7,7 @@
  *
  * Result of operations this plugin performed
  *}
-
+<div class="semantic-defaults">
 {if $submissionsWarnings || $issuesWarnings || $sectionWarnings}
 	<h2>{translate key="plugins.importexport.common.warningsEncountered"}</h2>
 	{foreach from=$issuesWarnings item=issuesWarningMessages name=issuesWarnings}
@@ -85,7 +85,7 @@
 	<ul>
 		{foreach from=$content item=contentItem}
 			<li>
-				{if $contentItem instanceof \APP\submission\Submission}
+				{if $contentItem instanceof APP\submission\Submission}
 					{$contentItem->getLocalizedTitle()|strip_unsafe_html}</li>
 				{else}
 					{$contentItem->getIssueIdentification()|escape}
@@ -94,3 +94,4 @@
 		{/foreach}
 	</ul>
 {/if}
+</div>

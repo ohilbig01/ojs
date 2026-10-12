@@ -36,6 +36,9 @@ msgstr "Click on icon to fill in the review form."
 msgid "reviewer.submission.reviewFormResponse.form.responseRequired"
 msgstr "Please fill in required fields."
 
+msgid "reviewer.submission.reviewFormResponse.form.recommendationRequired"
+msgstr "Must select a recommendation associated with journal"
+
 msgid "common.software"
 msgstr "Open Journal Systems"
 
@@ -330,6 +333,9 @@ msgstr "In Review"
 msgid "submissions.published"
 msgstr "Published"
 
+msgid "submissions.published.latest"
+msgstr "Latest Publications"
+
 msgid "submissions.initial"
 msgstr "Initial"
 
@@ -368,6 +374,12 @@ msgstr "Proofread"
 
 msgid "submission.search"
 msgstr "Article Search"
+
+msgid "submission.task.validation.error.headnote.author"
+msgstr "You can only edit your own discussion message."
+
+msgid "submission.task.validation.error.headnote.editExpired"
+msgstr "This discussion message can only be edited within 1 hour of creation."
 
 msgid "journal.currentIssue"
 msgstr "Current Issue"
@@ -1083,9 +1095,6 @@ msgstr "Click on file names to download and review (on screen or by printing) th
 msgid "reviewer.article.enterCompetingInterests"
 msgstr "Declare whether or not you have competing interests with regard to this research (see <a target=\"_new\" class=\"action\" href=\"{$competingInterestGuidelinesUrl}\">CI&nbsp;Policy</a>)."
 
-msgid "reviewer.competingInterests"
-msgstr "Competing Interests"
-
 msgid "reviewer.article.enterReviewA"
 msgstr "Click on icon to enter (or paste) your review of this submission."
 
@@ -1415,6 +1424,9 @@ msgstr "Search articles for"
 msgid "search.withinJournal"
 msgstr "Within"
 
+msgid "search.journal"
+msgstr "By Journal"
+
 msgid "search.allJournals"
 msgstr "All Journals"
 
@@ -1502,12 +1514,6 @@ msgstr "About the Journal"
 
 msgid "about.history"
 msgstr "Journal History"
-
-msgid "about.editorialTeam"
-msgstr "Editorial Team"
-
-msgid "about.editorialTeam.biography"
-msgstr "Biography"
 
 msgid "about.editorialPolicies"
 msgstr "Editorial Policies"
@@ -1783,7 +1789,7 @@ msgstr ""
 "\n"
 "<p>Thank you for downloading the Public Knowledge Project's <strong>Open "
 "Journal Systems</strong>. Before proceeding, please read the <a href=\""
-"{$baseUrl}/docs/README.md\">README</a> file included with this software. For "
+"{$baseUrl}/README.md\">README</a> file included with this software. For "
 "more information about the Public Knowledge Project and its software "
 "projects, please visit the <a href=\"https://pkp.sfu.ca/\" target=\"_blank\">"
 "PKP web site</a>. If you have bug reports or technical support inquiries "
@@ -1853,9 +1859,8 @@ msgstr ""
 "\n"
 "<p>Thank you for downloading the Public Knowledge Project's <strong>Open "
 "Journal Systems</strong>. Before proceeding, please read the <a href=\""
-"{$baseUrl}/docs/README.md\">README</a> and <a href=\"{$baseUrl}/docs/UPGRADE."
-"md\">UPGRADE</a> files included with this software. For more information "
-"about the Public Knowledge Project and its software projects, please visit "
+"{$baseUrl}/README.md\">README</a> and <a href=\"https://docs.pkp.sfu.ca/dev/upgrade-guide)\">the Upgrade Guide</a>. "
+"For more information about the Public Knowledge Project and its software projects, please visit "
 "the <a href=\"https://pkp.sfu.ca/\" target=\"_blank\">PKP web site</a>. If "
 "you have bug reports or technical support inquiries about Open Journal "
 "Systems, see the <a href=\"https://forum.pkp.sfu.ca\" target=\"_blank\">"
@@ -1966,10 +1971,10 @@ msgid "log.review.resubmit"
 msgstr "The submission {$submissionId} has been resubmitted for review."
 
 msgid "log.review.reviewDeclined"
-msgstr "{$reviewerName} has declined the round {$round} review for submission {$submissionId}."
+msgstr "The round {$round} review assigned to {$reviewerName} for submission {$submissionId} has been declined."
 
 msgid "log.review.reviewAccepted"
-msgstr "{$reviewerName} has accepted the round {$round} review for submission {$submissionId}."
+msgstr "The round {$round} review assigned to {$reviewerName} for submission {$submissionId} has been accepted."
 
 msgid "log.review.reviewDeclinedByProxy"
 msgstr "{$userName} has declined the round {$round} review for submission {$submissionId} on behalf of {$reviewerName}."
@@ -2153,9 +2158,6 @@ msgstr "<p>Remove approval of this galley.</p>"
 
 msgid "search.cli.rebuildIndex.indexing"
 msgstr "Indexing \"{$journalName}\""
-
-msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
-msgstr "This search implementation does not allow per-journal re-indexing."
 
 msgid "search.cli.rebuildIndex.unknownJournal"
 msgstr "The given journal path \"{$journalPath}\" could not be resolved to a journal."

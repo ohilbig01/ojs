@@ -1,12 +1,14 @@
 # Lucia Steele <lucia.steele@aboutscience.eu>, 2022.
 # Stefan Schneider <mail@stefan-schneider.at>, 2023.
+# Leonardo Mancini <leonardo.mancini@unito.it>, 2024.
+# Martina Marafioti <martina.marafioti3@unibo.it>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:27+00:00\n"
-"PO-Revision-Date: 2023-06-19 15:18+0000\n"
-"Last-Translator: Stefan Schneider <mail@stefan-schneider.at>\n"
+"PO-Revision-Date: 2024-08-23 13:09+0000\n"
+"Last-Translator: Martina Marafioti <martina.marafioti3@unibo.it>\n"
 "Language-Team: Italian <http://translate.pkp.sfu.ca/projects/ojs/submission/"
 "it/>\n"
 "Language: it\n"
@@ -14,10 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "submission.submit.userGroup"
-msgstr "Invia usando il mio ruolo come ..."
+msgstr "Invia usando il mio ruolo come..."
 
 msgid "submission.upload.selectComponent"
 msgstr "Selezionare il tipo di proposta"
@@ -27,12 +29,12 @@ msgstr "Titolo dell'articolo"
 
 msgid "submission.title.tip"
 msgstr ""
-"Il tipo di proposta è di solito  'immagine', 'testo', o un altro tipo "
+"Il tipo di proposta è di solito 'immagine', 'testo', o un altro tipo "
 "multimediale come 'software' o 'interativo'. Per favore scegli il più "
-"rilevante per la tua propostoa. Esempio possono essere trovati qui: <a "
-"target=\"_blank\" href=\"http://dublincore.org/documents/2001/04/12/"
-"usageguide/generic.shtml#type\">http://dublincore.org/documents/2001/04/12/"
-"usageguide/generic.shtml#type</a>"
+"rilevante per la tua proposta. Esempi possono essere trovati qui: <a target="
+"\"_blank\" href=\"http://dublincore.org/documents/2001/04/12/usageguide/"
+"generic.shtml#type\">http://dublincore.org/documents/2001/04/12/usageguide/"
+"generic.shtml#type</a>"
 
 msgid "submission.submit.newSubmissionMultiple"
 msgstr "Inizia una nuova proposta in"
@@ -90,7 +92,7 @@ msgid "grid.action.availableArticleGalley"
 msgstr "Rendi questa gabbia disponibile"
 
 msgid "submission.galleyFiles"
-msgstr "Files di pubblicazione"
+msgstr "File di pubblicazione"
 
 msgid "submission.proofReadingDescription"
 msgstr ""
@@ -155,10 +157,10 @@ msgid "submission.sectionOptions"
 msgstr "Opzioni di sezione"
 
 msgid "catalog.browseTitles"
-msgstr "{$numTitles} items"
+msgstr "{$numTitles} elementi"
 
 msgid "catalog.category.heading"
-msgstr "Tutti gli items"
+msgstr "Tutti gli elementi"
 
 msgid "galley.editPublishedDisabled"
 msgstr ""
@@ -169,11 +171,11 @@ msgid "galley.publicationNotFound"
 msgstr "Non è possibile trovare l'articolo per questi file di stampa."
 
 msgid "publication.assignToissue"
-msgstr "Assegna ad un'uscita"
+msgstr "Assegna a un'uscita"
 
 msgid "publication.assignedToIssue"
 msgstr ""
-"Assegnato all'uscita<a href=\"{$issueUrl}\">{$issueName}</a> ma non ancora "
+"Assegnato all'uscita <a href=\"{$issueUrl}\">{$issueName}</a> ma non ancora "
 "pianificato per la pubblicazione."
 
 msgid "publication.changeIssue"
@@ -183,7 +185,7 @@ msgid "publication.datePublished.description"
 msgstr ""
 "La data di pubblicazione verrà assegnata in automatico quando l'uscita sarà "
 "pubblicata. Non inserire una data di pubblicazione a meno che l'articolo non "
-"sia già stato pubblicato ed hai necessità di retrodatarlo."
+"sia già stato pubblicato e hai necessità di retrodatarlo."
 
 msgid "publication.invalidSection"
 msgstr "Non è possibile trovare la sezione per questo articolo."
@@ -219,16 +221,16 @@ msgstr ""
 
 msgid "publication.required.issue"
 msgstr ""
-"Questo articolo deve essere assegnato ad un'uscita prima di poter essere "
+"Questo articolo deve essere assegnato a un'uscita prima di poter essere "
 "pubblicato."
 
 msgid "publication.publishedIn"
-msgstr "Pubblicato in <a href=\"{$issueUrl}\">{$issueName}2</a>."
+msgstr "Pubblicato in <a href=\"{$issueUrl}\">{$issueName}</a>."
 
 msgid "publication.scheduledIn"
 msgstr ""
-"Pianificato per la pubblicazione nell'uscita <a href="
-"\"{$issueUrl}\">{$issueName}2</a>."
+"Pianificato per la pubblicazione nell'uscita <a href=\"{$issueUrl}\""
+">{$issueName}</a>."
 
 msgid "publication.unscheduledIn"
 msgstr ""
@@ -248,7 +250,7 @@ msgid "submission.status.scheduled"
 msgstr "Pianificato"
 
 msgid "publication.status.unscheduled"
-msgstr "Rimosso dalla pianficazione"
+msgstr "Non pianificato"
 
 msgid "submission.publications"
 msgstr "Pubblicazioni"
@@ -256,7 +258,7 @@ msgstr "Pubblicazioni"
 msgid "publication.copyrightYearBasis.issueDescription"
 msgstr ""
 "L'anno di copyright sarà configurato automaticamente quando questo articolo "
-"sarà assegnato ad un'uscita."
+"sarà assegnato a un'uscita."
 
 msgid "publication.copyrightYearBasis.submissionDescription"
 msgstr ""
@@ -273,7 +275,7 @@ msgid "publication.event.published"
 msgstr "Questo articolo è stato pubblicato."
 
 msgid "publication.event.scheduled"
-msgstr "Questo articolo è stato assegnato ad una uscita."
+msgstr "Questo articolo è stato assegnato a una uscita."
 
 msgid "publication.event.unpublished"
 msgstr "Questo articolo è stato rimosso da un'uscita."
@@ -297,11 +299,11 @@ msgid "publication.publish.requirements"
 msgstr "Prima della pubblicazione confermare i seguenti requisiti."
 
 msgid "publication.required.declined"
-msgstr "Un'articolo rigettato non puo' essere pubblicato."
+msgstr "Un articolo rigettato non può essere pubblicato."
 
 msgid "publication.required.reviewStage"
 msgstr ""
-"Per essere pubblicato un'articolo deve essere nella fase di copy-editing o "
+"Per essere pubblicato un articolo deve essere nella fase di copy-editing o "
 "produzione."
 
 msgid "submission.license.description"
@@ -329,6 +331,7 @@ msgstr "Confermi di non voler pianificare la pubblicazione di questo articolo?"
 msgid "publication.version.details"
 msgstr "Dettagli di pubblicazione per la versione {$version}"
 
+#, fuzzy
 msgid "submission.queries.production"
 msgstr "Discussioni durante la produzione"
 
@@ -345,12 +348,15 @@ msgstr ""
 "{$editorName} ha modificato la decisione di accettare questa proposta e la "
 "ha riportato alla fase di revisione."
 
+#, fuzzy
 msgid "editor.submission.decision.backToReview.completed"
 msgstr "Ritornata alla revisione"
 
+#, fuzzy
 msgid "editor.submission.decision.backToReview.completed.description"
 msgstr "La proposta, {$title}, è stata riportata alla fase di revisione."
 
+#, fuzzy
 msgid "editor.submission.decision.backToReview.notifyAuthorsDescription"
 msgstr ""
 "Invia una email agli autori per informarli che la loro sottomissione è stata "
@@ -385,31 +391,44 @@ msgstr ""
 "{$pubObjectTitle}. Non esiste nel sito della rivista."
 
 msgid "submission.layout.viewGalley"
-msgstr ""
+msgstr "Visualizza il file"
 
 msgid "galley.cantEditPublished"
-msgstr ""
+msgstr "Questo file non può essere modificato perché è già stato pubblicato."
 
 msgid "submission.copyright.description"
 msgstr ""
+"Si prega di leggere e accettare i termini di copyright per la presentazione "
+"di contributi a questa rivista."
 
 msgid "submission.wizard.notAllowed.description"
 msgstr ""
+"Non si è autorizzati all'invio di proposte editoriali a questa rivista "
+"occorre essere prima registrati dalla Redazione. Se si ritiene che si tratti "
+"di un errore, contattare <a href='mailto:{$email}'>{$name}</a>."
 
 msgid "submission.wizard.noSectionAllowed.description"
 msgstr ""
+"Non è possibile inviare una proposta a questa rivista perché l'invio a tutte "
+"le sezioni sono state disattivate o limitate. Se si ritiene che si tratti di "
+"un errore, contattare <a href='mailto:{$email}'>{$name}</a>."
 
 msgid "submission.wizard.sectionClosed.message"
 msgstr ""
+"{$contextName} non accetta proposte per la sezione {$section}. In caso di "
+"necessità di aiuto per il recupero della proposta editoriale, contattare <a "
+"href='mailto:{$email}'>{$name}</a>."
 
 msgid "submission.sectionNotFound"
-msgstr ""
+msgstr "Non è stato possibile trovare la sezione relativa a questa proposta."
 
 msgid "submission.sectionRestrictedToEditors"
 msgstr ""
+"Solo i membri del gruppo editoriale sono autorizzati a presentare proposte "
+"in questa sezione."
 
 msgid "submission.submit.form.authorRequired"
-msgstr "E' necessario indicare almeno un autore."
+msgstr "È necessario indicare almeno un autore."
 
 msgid "submission.submit.form.titleRequired"
 msgstr "Inserisci il titolo del contributo."

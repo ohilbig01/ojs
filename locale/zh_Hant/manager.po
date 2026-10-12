@@ -356,12 +356,6 @@ msgstr "此分類的摘要字數限制（如無限制則為零）"
 msgid "manager.setup"
 msgstr "期刊設定"
 
-msgid "manager.setup.masthead"
-msgstr "出版資訊欄"
-
-msgid "manager.setup.editorialTeam"
-msgstr "編輯委員會"
-
 msgid "manager.setup.homepageContent"
 msgstr "期刊主頁內容"
 
@@ -422,10 +416,6 @@ msgstr "輪入任何你想在公告頁面出現的資訊。"
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "（將出現在關於期刊頁面） "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"要求提交作者投稿時，同時提供一個利益衝突（Competing Interest, 簡稱CI）聲明。"
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -691,12 +681,6 @@ msgstr "放置在眾期刊列表的一個小型標誌或其他可代表期刊圖
 msgid "manager.setup.contextTitle"
 msgstr "期刊名稱"
 
-msgid "manager.setup.keyInfo"
-msgstr "重要資訊"
-
-msgid "manager.setup.keyInfo.description"
-msgstr "請提供一個簡短的期刊描述及選用編輯、管理人和其他編輯團隊的成員。"
-
 msgid "manager.setup.labelName"
 msgstr "標籤名稱"
 
@@ -730,11 +714,6 @@ msgstr ""
 "允許LOCKSS透過LOCKSS<a href=\"{$lockssUrl}\" target=\"_blank\">Publisher "
 "Manifest</a>頁面於參與的圖書館儲存及安置期刊期刊內容。"
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"LOCKSS許可證將出現於關於期刊頁面內檔案保存下方：<a href=\"http://www.lockss."
-"org/community/publishers-titles-gln/\" target=\"_blank\">LOCKSS許可證</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "LOCKSS許可證說明"
 
@@ -751,11 +730,6 @@ msgid "manager.setup.clockssEnable"
 msgstr ""
 "允許CLOCKSS透過CLOCKSS<a href=\"{$clockssUrl}\" target=\"_blank\">Publisher "
 "Manifest</a>頁面於參與的圖書館儲存及安置期刊期刊內容。"
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"CLOCKSS許可證將出現於關於期刊頁面內檔案保存下方：<a href=\"https://clockss."
-"org\" target=\"_blank\">CLOCKSS許可證</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "CLOCKSS許可證說明"
@@ -1751,9 +1725,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "密碼"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr "請注意密碼將以純文字方式儲存，即無加密。"
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "任何期號"
 
@@ -1780,9 +1751,6 @@ msgstr "紀錄已註冊"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "註冊"
-
-msgid "plugins.importexport.common.validation"
-msgstr "導出及註冊前確認XML。"
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "無已選項目。"

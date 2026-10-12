@@ -1,19 +1,20 @@
+# 全名 <ytissona@bgu.ac.il>, 2025.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2020-10-01 19:11+0000\n"
-"Last-Translator: Rachel Joseph <rachel.joseph@biu.ac.il>\n"
-"Language-Team: Hebrew <http://translate.pkp.sfu.ca/projects/ojs/emails/he_IL/"
-">\n"
-"Language: he_IL\n"
+"PO-Revision-Date: 2025-09-01 10:01+0000\n"
+"Last-Translator: 全名 <ytissona@bgu.ac.il>\n"
+"Language-Team: Hebrew <http://translate.pkp.sfu.ca/projects/ojs/manager/he/>"
+"\n"
+"Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
-msgstr ""
+msgstr "גישה"
 
 msgid "manager.distribution.copyrightYearBasis.description"
 msgstr ""
@@ -333,12 +334,6 @@ msgstr ""
 msgid "manager.setup"
 msgstr ""
 
-msgid "manager.setup.masthead"
-msgstr ""
-
-msgid "manager.setup.editorialTeam"
-msgstr ""
-
 msgid "manager.setup.homepageContent"
 msgstr ""
 
@@ -394,9 +389,6 @@ msgid "manager.setup.announcementsIntroduction.description"
 msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
-msgstr ""
-
-msgid "manager.setup.competingInterests.requireAuthors"
 msgstr ""
 
 msgid "manager.setup.competingInterests.requireReviewers"
@@ -639,12 +631,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr ""
 
-msgid "manager.setup.keyInfo"
-msgstr ""
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-
 msgid "manager.setup.labelName"
 msgstr ""
 
@@ -672,9 +658,6 @@ msgstr ""
 msgid "manager.setup.lockssEnable"
 msgstr ""
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr ""
 
@@ -685,9 +668,6 @@ msgid "manager.setup.lockssTitle"
 msgstr ""
 
 msgid "manager.setup.clockssEnable"
-msgstr ""
-
-msgid "manager.setup.clockssLicenseDescription"
 msgstr ""
 
 msgid "manager.setup.clockssLicenseLabel"
@@ -1618,9 +1598,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr ""
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr ""
 
@@ -1646,9 +1623,6 @@ msgid "plugins.importexport.common.action.markRegistered"
 msgstr ""
 
 msgid "plugins.importexport.common.action.register"
-msgstr ""
-
-msgid "plugins.importexport.common.validation"
 msgstr ""
 
 msgid "plugins.importexport.common.error.noObjectsSelected"

@@ -16,8 +16,9 @@ module.exports = defineConfig({
       en: 'JPK',
     },
     defaultGenre: 'Article Text',
-    authorUserGroupId: 14,
-    translatorUserGroupId: 15,
+    contributorTypePerson: 'PERSON',
+    contributorRoleAuthor: 1,
+    contributorRoleTranslator: 2,
     dataAvailabilityTest: {
       submission: {
         title: 'Sodium butyrate improves growth performance of weaned piglets during the first period after weaning',
@@ -29,6 +30,7 @@ module.exports = defineConfig({
   },
   watchForFileChanges: false,
   defaultCommandTimeout: 10000,
+  pageLoadTimeout: 120000,
   video: false,
   numTestsKeptInMemory: 0,
   e2e: {
@@ -42,6 +44,7 @@ module.exports = defineConfig({
       'cypress/tests/integration/**/*.cy.{js,jsx,ts,tsx}',
       'lib/pkp/cypress/tests/**/*.cy.{js,jsx,ts,tsx}',
     ],
+    redirectionLimit: 1000,
     experimentalRunAllSpecs: true,
   },
   // Allow cypress to interact with iframes

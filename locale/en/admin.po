@@ -164,10 +164,10 @@ msgstr "Open Access Notification"
 msgid "admin.scheduledTask.reviewReminder"
 msgstr "Review Reminder"
 
-msgid "admin.scheduledTask.usageStatsLoader.invalidLogEntry.issueId"
+msgid "admin.job.processLogFile.invalidLogEntry.issueId"
 msgstr "Issue ID is not an integer."
 
-msgid "admin.scheduledTask.usageStatsLoader.invalidLogEntry.issueGalleyId"
+msgid "admin.job.processLogFile.invalidLogEntry.issueGalleyId"
 msgstr "Issue galley ID is not an integer."
 
 msgid ""
@@ -228,3 +228,6 @@ msgstr ""
 "journals on this site. If you enable the public API, each journal may "
 "override this setting to make their statistics private. However, if you "
 "disable the public API, journals can not make their own API public."
+
+msgid "admin.settings.statistics.sushiPlatform.isSiteSushiPlatform"
+msgstr "Use the site as the platform for all journals."

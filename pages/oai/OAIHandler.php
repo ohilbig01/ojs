@@ -16,18 +16,19 @@
 
 namespace APP\pages\oai;
 
+use APP\core\Application;
 use APP\handler\Handler;
 use APP\oai\ojs\JournalOAI;
 use Firebase\JWT\Key;
 use PKP\config\Config;
 use PKP\core\PKPJwt as JWT;
+use PKP\core\PKPSessionGuard;
 use PKP\oai\OAIConfig;
 use PKP\plugins\PluginRegistry;
-use PKP\session\SessionManager;
 use stdClass;
 
 // Disable initializing the session
-SessionManager::disable();
+PKPSessionGuard::disableSession();
 
 class OAIHandler extends Handler
 {
@@ -42,9 +43,8 @@ class OAIHandler extends Handler
         PluginRegistry::loadCategory('oaiMetadataFormats', true);
 
         $oai = new JournalOAI(new OAIConfig($request->url(null, 'oai'), Config::getVar('oai', 'repository_id')));
-        if (!$request->getJournal() && $request->getRouter()->getRequestedContextPath($request) != 'index') {
-            $dispatcher = $request->getDispatcher();
-            return $dispatcher->handle404();
+        if (!$request->getJournal() && $request->getRouter()->getRequestedContextPath($request) != Application::SITE_CONTEXT_PATH) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
         $oai->execute();
     }

@@ -18,6 +18,7 @@ namespace APP\controllers\grid\pubIds;
 
 use APP\core\Application;
 use APP\facades\Repo;
+use APP\plugins\PubObjectsExportPlugin;
 use PKP\controllers\grid\DataObjectGridCellProvider;
 use PKP\controllers\grid\GridHandler;
 use PKP\core\PKPApplication;
@@ -69,7 +70,7 @@ class PubIdExportRepresentationsListGridCellProvider extends DataObjectGridCellP
         switch ($columnId) {
             case 'title':
                 $this->_titleColumn = $column;
-                $title = $submission->getLocalizedTitle();
+                $title = $publication->getLocalizedTitle();
                 if (empty($title)) {
                     $title = __('common.untitled');
                 }
@@ -85,7 +86,7 @@ class PubIdExportRepresentationsListGridCellProvider extends DataObjectGridCellP
                     )
                 ];
             case 'issue':
-                $contextId = $submission->getContextId();
+                $contextId = $submission->getData('contextId');
                 $issueId = $submission->getCurrentPublication()->getData('issueId');
                 $issue = Repo::issue()->get($issueId);
                 $issue = $issue->getJournalId() == $contextId ? $issue : null;
@@ -99,7 +100,7 @@ class PubIdExportRepresentationsListGridCellProvider extends DataObjectGridCellP
                             $dispatcher->url($request, PKPApplication::ROUTE_COMPONENT, null, 'grid.issues.BackIssueGridHandler', 'editIssue', null, ['issueId' => $issue->getId()]),
                             __('plugins.importexport.common.settings.DOIPluginSettings')
                         ),
-                        htmlspecialchars($issue->getIssueIdentification()),
+                        $issue->getIssueIdentification(),
                         null
                     )
                 ];
@@ -159,7 +160,7 @@ class PubIdExportRepresentationsListGridCellProvider extends DataObjectGridCellP
                         $label = $statusNames[$status];
                     }
                 } else {
-                    $label = $statusNames[EXPORT_STATUS_NOT_DEPOSITED];
+                    $label = $statusNames[PubObjectsExportPlugin::EXPORT_STATUS_NOT_DEPOSITED];
                 }
                 return ['label' => $label];
         }

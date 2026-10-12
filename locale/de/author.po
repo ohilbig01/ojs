@@ -1,27 +1,26 @@
 # Pia Piontkowitz <pia.piontkowitz@rub.de>, 2023.
+# Marco Tullney <marco.tullney@tib.eu>, 2024.
+# Elisabeth Sawatzky <ejournals.ojs@uni-muenster.de>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27T09:54:42-07:00\n"
-"PO-Revision-Date: 2023-04-25 14:36+0000\n"
-"Last-Translator: Pia Piontkowitz <pia.piontkowitz@rub.de>\n"
+"PO-Revision-Date: 2026-09-07 14:43+0000\n"
+"Last-Translator: Elisabeth Sawatzky <ejournals.ojs@uni-muenster.de>\n"
 "Language-Team: German <http://translate.pkp.sfu.ca/projects/ojs/author/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "author.submit"
 msgstr "Neuer Beitrag"
 
 msgid "author.track"
 msgstr "Beiträge im Begutachtungsverfahren"
-
-msgid "author.competingInterests"
-msgstr "<a target=\"_new\" class=\"action\" href=\"{$competingInterestGuidelinesUrl}\">Richtlinie</a> für Interessenkonflikte"
 
 msgid "author.submit.submitArticle"
 msgstr "Einen Artikel einreichen"
@@ -140,7 +139,7 @@ msgid "author.submit.reorder"
 msgstr "Autor/innennamen umordnen"
 
 msgid "author.submit.selectPrincipalContact"
-msgstr "Hauptkontakt für die redaktionelle Korrespondenz"
+msgstr "Hauptkontakt für die redaktionelle Korrespondenz."
 
 msgid "author.submit.addAuthor"
 msgstr "Autor/in hinzufügen"
@@ -254,15 +253,16 @@ msgstr "Quellentext"
 msgid "author.submit.suppFile.briefDescription"
 msgstr "Kurze Beschreibung"
 
-#, fuzzy
 msgid "author.submit.suppFile.availableToPeers"
-msgstr "Datei (ohne Metadaten) den Gutachter/innen übermitteln, da dies die Anonymität der Begutachtung nicht beeinträchtigen wird."
+msgstr ""
+"Datei (ohne Metadaten) den Gutachter/innen übermitteln, da dies die "
+"Anonymität der Begutachtung nicht beeinträchtigen wird."
 
 msgid "author.submit.suppFile.publisherDescription"
 msgstr "Nur bei offiziell veröffentlichtem Material angeben."
 
 msgid "author.submit.suppFile.dateDescription"
-msgstr "Datum der Datenerhebung oder der Erstellung des Forschungsinstruments"
+msgstr "Datum der Datenerhebung oder der Erstellung des Forschungsinstruments."
 
 msgid "author.submit.suppFile.sourceDescription"
 msgstr "Bezeichnung der Studie oder andere Herkunftsbezeichnung."

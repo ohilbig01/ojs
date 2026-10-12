@@ -22,6 +22,7 @@ use APP\submission\Submission;
 use PKP\controllers\api\file\linkAction\DownloadFileLinkAction;
 use PKP\controllers\grid\DataObjectGridCellProvider;
 use PKP\controllers\grid\GridHandler;
+use PKP\facades\Locale;
 use PKP\galley\Galley;
 
 class ArticleGalleyGridCellProvider extends DataObjectGridCellProvider
@@ -62,7 +63,11 @@ class ArticleGalleyGridCellProvider extends DataObjectGridCellProvider
         switch ($columnId) {
             case 'label':
                 return [
-                    'label' => !$element->getRemoteUrl() && $element->getData('submissionFileId') ? '' : $element->getLabel()
+                    'label' => !$element->getData('urlRemote') && $element->getData('submissionFileId') ? '' : $element->getLabel()
+                ];
+            case 'language':
+                return [
+                    'label' => Locale::getSubmissionLocaleDisplayNames([$element->getLocale()], $this->getLocale())[$element->getLocale()]
                 ];
             default: assert(false);
         }
@@ -92,7 +97,7 @@ class ArticleGalleyGridCellProvider extends DataObjectGridCellProvider
         switch ($column->getId()) {
             case 'label':
                 $element = $row->getData();
-                if ($element->getRemoteUrl() || !$element->getData('submissionFileId')) {
+                if ($element->getData('urlRemote') || !$element->getData('submissionFileId')) {
                     break;
                 }
 

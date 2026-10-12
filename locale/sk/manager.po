@@ -398,12 +398,6 @@ msgstr "Obmedziť počet slov abstraktu pre túto sekciu (0 pre žiadny limit)"
 msgid "manager.setup"
 msgstr "Nastavenia"
 
-msgid "manager.setup.masthead"
-msgstr "Hlavný titulok"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Tím redaktorov"
-
 msgid "manager.setup.homepageContent"
 msgstr "Obsah domovskej stránky časopisu"
 
@@ -467,11 +461,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(K zobrazeniu v časti O časopise) "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Požadovať od autorov, aby spolu s príspevkom zaslali súbor s vyhlásením o "
-"konflikte záujmov."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -783,14 +772,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Názov časopisu"
 
-msgid "manager.setup.keyInfo"
-msgstr "Kľúčová informácia"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Uveďte krátky opis vášho denníka a identifikujte editorov, manažérov a "
-"ďalších členov vášho redakčného tímu."
-
 msgid "manager.setup.labelName"
 msgstr "Názov popisku"
 
@@ -829,12 +810,6 @@ msgstr ""
 "zúčastnených knižniciach cez LOCKSS stránku <a href=\"{$lockssUrl}\" target="
 "\"_blank\">Zoznam vydavateľov</a>."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"Licencia LOCKSS sa objaví v O časopise pod Archivácia: <a href=\"http://www."
-"lockss.org/community/publishers-titles-gln/\" target=\"_blank\">Licencia "
-"LOCKSS</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "Popis licencie LOCKSS"
 
@@ -854,11 +829,6 @@ msgstr ""
 "Povoľte službe CLOCKSS ukladať a distribuovať obsah časopisu v zúčastnených "
 "knižniciach prostredníctvom stránky <a href=\"{$clockssUrl}\" target=\"_blank"
 "\"> stránky Manifest vydavateľa </a>."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"Licencia CLOCKSS sa objaví v sekcii O časopise v sekcii Archivovanie: <a "
-"href=\"http://clockss.org/\" target=\"_blank\"> Licencia CLOCKSS </a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "Popis licencie CLOCKSS"
@@ -1992,10 +1962,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Heslo"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Upozornenie: heslo bude uložené ako obyčajný text, nebude teda zašifrované."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Ľubovoľné číslo"
 
@@ -2022,9 +1988,6 @@ msgstr "Označiť registrované"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Registrácia"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Validujte XML pred exportom a registráciou."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Neboli vybrané žiadne objekty."

@@ -23,8 +23,9 @@ use APP\issue\Issue;
 use APP\journal\Journal;
 use APP\notification\NotificationManager;
 use APP\submission\Submission;
+use Illuminate\Support\Str;
 use PKP\core\JSONMessage;
-use PKP\core\PKPString;
+use PKP\publication\PKPPublication;
 use PKP\submission\Representation;
 use PKP\submissionFile\SubmissionFile;
 
@@ -81,13 +82,16 @@ abstract class PubIdPlugin extends \PKP\plugins\PKPPubIdPlugin
                 $representationDao = Application::getRepresentationDAO();
                 $submissions = Repo::submission()->getCollector()
                     ->filterByContextIds([$context->getId()])
-                    ->filterByStatus([Submission::STATUS_PUBLISHED])
                     ->getMany();
 
                 foreach ($submissions as $submission) {
                     $publications = $submission->getData('publications');
                     if ($publicationEnabled) {
                         foreach ($publications as $publication) {
+                            if ($publication->getStatus() != PKPPublication::STATUS_PUBLISHED) {
+                                continue;
+                            }
+
                             $publicationPubId = $publication->getStoredPubId($this->getPubIdType());
                             if (empty($publicationPubId)) {
                                 $publicationPubId = $this->getPubId($publication);
@@ -101,6 +105,10 @@ abstract class PubIdPlugin extends \PKP\plugins\PKPPubIdPlugin
                     }
                     if ($representationEnabled) {
                         foreach ($publications as $publication) {
+                            if ($publication->getStatus() != PKPPublication::STATUS_PUBLISHED) {
+                                continue;
+                            }
+
                             $representations = Repo::galley()->getCollector()
                                 ->filterByPublicationIds([$publication->getId()])
                                 ->getMany();
@@ -140,18 +148,16 @@ abstract class PubIdPlugin extends \PKP\plugins\PKPPubIdPlugin
     /**
      * @copydoc PKPPubIdPlugin::checkDuplicate()
      */
-    public function checkDuplicate($pubId, $pubObjectType, $excludeId, $contextId)
+    public function checkDuplicate($pubId, $pubObject, $contextId)
     {
-        foreach ($this->getPubObjectTypes() as $type => $fqcn) {
-            if ($type === 'Issue') {
-                $excludeTypeId = $type === $pubObjectType ? $excludeId : null;
-                if (Repo::issue()->dao->pubIdExists($this->getPubIdType(), $pubId, $excludeTypeId, $contextId)) {
-                    return false;
-                }
+        $allowedPubObjectTypes = $this->getPubObjectTypes();
+        if ($pubObject instanceof $allowedPubObjectTypes['Issue']) {
+            if (Repo::issue()->dao->pubIdExists($this->getPubIdType(), $pubId, $pubObject->getId(), $contextId)) {
+                return false;
             }
+            return true;
         }
-
-        return parent::checkDuplicate($pubId, $pubObjectType, $excludeId, $contextId);
+        return parent::checkDuplicate($pubId, $pubObject, $contextId);
     }
 
     /**
@@ -213,7 +219,7 @@ abstract class PubIdPlugin extends \PKP\plugins\PKPPubIdPlugin
         if (!$pubObject instanceof Issue) {
             assert(!is_null($submission));
             $issue = Repo::issue()->getBySubmissionId($submission->getId());
-            $issue = $issue->getJournalId() == $contextId ? $issue : null;
+            $issue = $issue?->getJournalId() == $contextId ? $issue : null;
         }
         if ($issue && $contextId != $issue->getJournalId()) {
             return null;
@@ -266,7 +272,7 @@ abstract class PubIdPlugin extends \PKP\plugins\PKPPubIdPlugin
      */
     public static function generateDefaultPattern($context, $issue = null, $submission = null, $representation = null, $submissionFile = null): string
     {
-        $pubIdSuffix = PKPString::regexp_replace('/[^-._;()\/A-Za-z0-9]/', '', PKPString::strtolower($context->getAcronym($context->getPrimaryLocale())));
+        $pubIdSuffix = preg_replace('/[^-._;()\/A-Za-z0-9]/', '', Str::lower($context->getAcronym($context->getPrimaryLocale())));
 
         if ($issue) {
             $pubIdSuffix .= '.v' . $issue->getVolume() . 'i' . $issue->getNumber();
@@ -304,42 +310,55 @@ abstract class PubIdPlugin extends \PKP\plugins\PKPPubIdPlugin
     public static function generateCustomPattern($context, $pubIdSuffix, $pubObject, $issue = null, $submission = null, $representation = null, $submissionFile = null): string
     {
         // %j - journal initials, remove special characters and uncapitalize
-        $pubIdSuffix = PKPString::regexp_replace('/%j/', PKPString::regexp_replace('/[^-._;()\/A-Za-z0-9]/', '', PKPString::strtolower($context->getAcronym($context->getPrimaryLocale()))), $pubIdSuffix);
+        $pubIdSuffix = preg_replace('/%j/', preg_replace('/[^-._;()\/A-Za-z0-9]/', '', Str::lower($context->getAcronym($context->getPrimaryLocale()))), $pubIdSuffix);
 
         // %x - custom identifier
         if ($pubObject->getStoredPubId('publisher-id')) {
-            $pubIdSuffix = PKPString::regexp_replace('/%x/', $pubObject->getStoredPubId('publisher-id'), $pubIdSuffix);
+            $pubIdSuffix = preg_replace('/%x/', $pubObject->getStoredPubId('publisher-id'), $pubIdSuffix);
         }
 
         if ($issue) {
             // %v - volume number
-            $pubIdSuffix = PKPString::regexp_replace('/%v/', $issue->getVolume(), $pubIdSuffix);
+            $pubIdSuffix = preg_replace('/%v/', $issue->getVolume(), $pubIdSuffix);
             // %i - issue number
-            $pubIdSuffix = PKPString::regexp_replace('/%i/', $issue->getNumber(), $pubIdSuffix);
+            $pubIdSuffix = preg_replace('/%i/', $issue->getNumber(), $pubIdSuffix);
             // %Y - year
-            $pubIdSuffix = PKPString::regexp_replace('/%Y/', $issue->getYear(), $pubIdSuffix);
+            $pubIdSuffix = preg_replace('/%Y/', $issue->getYear(), $pubIdSuffix);
         }
 
         if ($submission) {
             // %a - article id
-            $pubIdSuffix = PKPString::regexp_replace('/%a/', $submission->getId(), $pubIdSuffix);
+            $pubIdSuffix = preg_replace('/%a/', $submission->getId(), $pubIdSuffix);
             // %p - page number
-            if ($submission->getPages()) {
-                $pubIdSuffix = PKPString::regexp_replace('/%p/', $submission->getPages(), $pubIdSuffix);
+            if ($pages = $submission->getCurrentPublication()->getData('pages')) {
+                $pubIdSuffix = preg_replace('/%p/', $pages, $pubIdSuffix);
             }
         }
 
         if ($representation) {
             // %g - galley id
-            $pubIdSuffix = PKPString::regexp_replace('/%g/', $representation->getId(), $pubIdSuffix);
+            $pubIdSuffix = preg_replace('/%g/', $representation->getId(), $pubIdSuffix);
         }
 
         if ($submissionFile) {
             // %f - file id
-            $pubIdSuffix = PKPString::regexp_replace('/%f/', $submissionFile->getId(), $pubIdSuffix);
+            $pubIdSuffix = preg_replace('/%f/', $submissionFile->getId(), $pubIdSuffix);
         }
 
         return $pubIdSuffix;
+    }
+
+    /**
+     * Checks if the given pubId suffix pattern includes any elements that would require
+     * the publication object to be assigned to an issue (volume number, issue number, or year).
+     *
+     * @param string $pubIdSuffix Full legacy suffix pattern to check against
+     */
+    public static function suffixHasIssuePattern(string $pubIdSuffix): bool
+    {
+        return str_contains($pubIdSuffix, '%v')
+            || str_contains($pubIdSuffix, '%i')
+            || str_contains($pubIdSuffix, '%Y');
     }
 
     //
@@ -408,8 +427,4 @@ abstract class PubIdPlugin extends \PKP\plugins\PKPPubIdPlugin
     {
         return array_merge(parent::getDAOs(), [Repo::issue()->dao]);
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\plugins\PubIdPlugin', '\PubIdPlugin');
 }

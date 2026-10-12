@@ -19,7 +19,9 @@ describe('Subscription tests', function() {
 
 	it('Configures subscriptions', function() {
 		cy.login('dbarnes', null, 'publicknowledge');
-		cy.get('a:contains("Distribution")').click();
+		cy.get('nav').contains('Settings').click();
+		// Ensure submenu item click despite animation
+		cy.get('nav').contains('Distribution').click({ force: true });
 
 		// Payment settings
 		cy.get('button#payments-button').click();
@@ -38,22 +40,25 @@ describe('Subscription tests', function() {
 		cy.get('#access [role="status"]').contains('Saved');
 
 		// Configure an issue for subscription.
-		cy.get('.app__nav a:contains("Issues")').first().click();
+		cy.get('nav').contains('Content').click();
+		// Ensure submenu item click despite animation
+		cy.get('nav').contains('Issues').click({force: true});
 		cy.get('button:contains("Back Issues")').click();
 		cy.get('a:contains("Vol. 1 No. 2 (2014)")').click();
-		cy.get('div.pkp_modal_panel a:contains("Access")').click();
+		cy.get('[role="dialog"] a:contains("Access")').click();
 		cy.get('select#accessStatus').select('Subscription');
 		cy.get('form#issueAccessForm button:contains("Save")').click();
 		cy.get('div:contains("Your changes have been saved.")');
 
 		// Set up subscription policies
-		cy.get('.app__nav a:contains("Payments")').click();
+		cy.get('nav').contains('Payments').click();
 		cy.get('a[name=subscriptionPolicies]').click();
 		cy.get('input[id^="subscriptionName-"]').type('Sebastiano Mortensen', {delay: 0});
 		cy.get('input[id^="subscriptionEmail-"]').type('smortensen@mailinator.com', {delay: 0});
 		cy.get('textarea[id^="subscriptionMailingAddress"]').type('123 456th Street', {delay: 0});
 		cy.get('form#subscriptionPolicies button:contains("Save")').click();
 		cy.get('div:contains("Your changes have been saved.")');
+		cy.logout();
 	});
 
 	it('Checks subscription-based publishing without login', function() {
@@ -73,14 +78,18 @@ describe('Subscription tests', function() {
 		cy.get('a.obj_galley_link').should('have.class', 'restricted');
 		cy.get('a.obj_galley_link:first').click();
 		cy.get('iframe'); // The PDF viewer loads; we can't inspect within it, though.
+		cy.logout();
 	});
 
 	it('Checks unauthorized access to subscription-based content', function() {
 		cy.login('dbarnes', null, 'publicknowledge');
 
 		// Create a reader user for the subscription
-		cy.get('.app__nav a:contains("Users & Roles")').click();
-		cy.createUser({
+		cy.get('nav').contains('Settings').click();
+		// Ensure submenu item click despite animation
+		cy.get('nav').contains('Users & Roles').click({ force: true });
+		cy.logout();
+		cy.createUserByInvitation({
 			'username': 'reader',
 			'givenName': 'Rea',
 			'familyName': 'Der',
@@ -88,8 +97,6 @@ describe('Subscription tests', function() {
 			'affiliation': 'Simon Fraser University',
 			'roles': ['Reader']
 		});
-
-		cy.logout();
 
 		// See if the newly-subscribed user has a subscription
 		cy.login('reader', null, 'publicknowledge');
@@ -99,13 +106,14 @@ describe('Subscription tests', function() {
 		cy.get('a.obj_galley_link').should('have.class', 'restricted');
 		cy.get('a.obj_galley_link:first').click();
 		cy.get('h3:contains("Subscriptions Contact")');
+		cy.logout();
 	});
 
 	it('Creates a subscription', function() {
 		cy.login('dbarnes', null, 'publicknowledge');
 
 		// Set up an individual subscription type
-		cy.get('.app__nav a:contains("Payments")').click();
+		cy.get('nav').contains('Payments').click();
 		cy.get('a[name="subscriptionTypes"]').click();
 		cy.get('a:contains("Create New Subscription Type")').click();
 		cy.wait(1000); // Form initialization problem
@@ -127,7 +135,12 @@ describe('Subscription tests', function() {
 		cy.get('form#userSearchForm input[name=search]').type('Der');
 		cy.get('form#userSearchForm button:contains("Search")').click();
 		cy.waitJQuery();
-		cy.get('form#individualSubscriptionForm input[name="userId"]').click(); // Should be only match
+		displayUserSearchResults();
+
+		cy.contains('tr', 'Rea Der').within(() => {
+			cy.get('input[type="radio"]').check({ force: true });
+		});
+
 		cy.get('form#individualSubscriptionForm select#typeId').select('Yearly Subscription - 1 year - 50.00 CAD');
 		cy.get('form#individualSubscriptionForm select#status').select('Active');
 		cy.get('form#individualSubscriptionForm input[id^="dateStart-"]:visible').type((new Date().getFullYear()) + "-01-01", {delay: 0});
@@ -145,5 +158,21 @@ describe('Subscription tests', function() {
 		cy.get('a.obj_galley_link').should('not.have.class', 'restricted');
 		cy.get('a.obj_galley_link:first').click();
 		cy.get('iframe'); // The PDF viewer loads; we can't inspect within it, though.
+		cy.logout();
 	});
+
+	// Multiple results may be returned for a user search phrase, as the search API searches roles as well.
+	// So ensure the correct user's name is visible in the table before attempting to interact with it.
+	function displayUserSearchResults() {
+		return cy.document().then(doc => {
+			const elements = Cypress.$('a.pkp_linkaction_moreItems', doc);
+			if (elements.length > 0) {
+				cy.get('a.pkp_linkaction_moreItems').click({force: true})
+					.then(() => {
+						cy.wait(800);
+						return displayUserSearchResults();
+					});
+			}
+		});
+	}
 })

@@ -1170,9 +1170,6 @@ msgstr ""
 "cercetare (see <a target=\"_new\" class=\"action\" href="
 "\"{$competingInterestGuidelinesUrl}\">CI&nbsp;Policy</a>)."
 
-msgid "reviewer.competingInterests"
-msgstr "Interesele concurente"
-
 msgid "reviewer.article.enterReviewA"
 msgstr ""
 "Faceți clic pe pictogramă pentru a introduce (sau a lipi) recenzia dvs. "
@@ -1661,12 +1658,6 @@ msgstr "Despre revistă"
 msgid "about.history"
 msgstr "Istoricul revistei"
 
-msgid "about.editorialTeam"
-msgstr "Colectiv editorial"
-
-msgid "about.editorialTeam.biography"
-msgstr "Biografie"
-
 msgid "about.editorialPolicies"
 msgstr "Politici editoriale"
 
@@ -1960,7 +1951,7 @@ msgstr ""
 "\n"
 "<p>Vă mulțumim pentru că ați descărcat Public Knowledge Project's "
 "<strong>Open Journal Systems</strong>. Înainte de a merge mai departe, vă "
-"rog să citiți fișierul <a href=\"{$baseUrl}/docs/README.md\">README</a> "
+"rog să citiți fișierul <a href=\"{$baseUrl}/README.md\">README</a> "
 "inclus în această aplicație. Pentru mai multe informații cu privire la "
 "Public Knowledge Project și proiectele de software ale acestuia, vă rog să "
 "vizitați <a href=\"http://pkp.sfu.ca/\" target=\"_blank\">PKP web site</a>. "
@@ -2035,6 +2026,7 @@ msgstr ""
 "<p>2. Trebuie creat un director pentru stocarea fișierelor încărcate și să "
 "poată fi scris (vezi „Setări fișiere” de mai jos).</p>"
 
+#, fuzzy
 msgid "installer.upgradeInstructions"
 msgstr ""
 "<h4>OJS Version {$version}</h4>\n"
@@ -2213,11 +2205,13 @@ msgstr ""
 msgid "log.review.resubmit"
 msgstr "Manuscrisul {$submissionId} a fost redepus pentru revizie."
 
+#, fuzzy
 msgid "log.review.reviewDeclined"
 msgstr ""
 "{$reviewerName} a refuzat runda {$round} de revizie pentru manuscrisul "
 "{$submissionId}."
 
+#, fuzzy
 msgid "log.review.reviewAccepted"
 msgstr ""
 "{$reviewerName} a acceptat runda {$round} de revizuire a manuscrisului "
@@ -2441,9 +2435,6 @@ msgstr "<p>Eliminați aprobarea pentru acest conținut.</p>"
 
 msgid "search.cli.rebuildIndex.indexing"
 msgstr "Indexarea \"{$journalName}\""
-
-msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
-msgstr "Această implementare de căutare nu permite re-indexarea jurnalului."
 
 msgid "search.cli.rebuildIndex.unknownJournal"
 msgstr ""

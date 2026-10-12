@@ -32,7 +32,7 @@ class OpenAccessNotification extends ScheduledTask
     /**
      * @copydoc ScheduledTask::getName()
      */
-    public function getName()
+    public function getName(): string
     {
         return __('admin.scheduledTask.openAccessNotification');
     }
@@ -92,7 +92,7 @@ class OpenAccessNotification extends ScheduledTask
     /**
      * @copydoc ScheduledTask::executeActions()
      */
-    protected function executeActions()
+    protected function executeActions(): bool
     {
         $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
         $journals = $journalDao->getAll(true);
@@ -157,8 +157,4 @@ class OpenAccessNotification extends ScheduledTask
         }
         return true;
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\tasks\OpenAccessNotification', '\OpenAccessNotification');
 }

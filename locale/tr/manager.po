@@ -1,12 +1,14 @@
-# Hüseyin Körpeoğlu <yoruyenturk@hotmail.com>, 2021, 2022, 2023.
+# Hüseyin Körpeoğlu <yoruyenturk@hotmail.com>, 2021, 2022, 2023, 2024, 2025.
 # Osman Durmaz <osmandurmaz@hotmail.de>, 2022.
+# Kubilay Tuğlu <kubilay.tuglu@gmail.com>, 2024, 2025.
+# Kerim Sarıgül <sarigulkerim@gmail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:36+00:00\n"
-"PO-Revision-Date: 2023-05-10 06:08+0000\n"
-"Last-Translator: Hüseyin Körpeoğlu <yoruyenturk@hotmail.com>\n"
+"PO-Revision-Date: 2025-04-08 23:35+0000\n"
+"Last-Translator: Kubilay Tuğlu <kubilay.tuglu@gmail.com>\n"
 "Language-Team: Turkish <http://translate.pkp.sfu.ca/projects/ojs/manager/tr/>"
 "\n"
 "Language: tr\n"
@@ -14,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "Erişim"
@@ -359,7 +361,7 @@ msgstr "Bu bölümde yayınlanan ögelerin belirlenmesinde kullanılacak tanım"
 
 msgid "manager.sections.identifyTypeExamples"
 msgstr ""
-"(Örneğin,  \"Hakemlik Değerlendirmesinden Geçmiş Makale\", \"Hakemlik "
+"(Örneğin, \"Hakemlik Değerlendirmesinden Geçmiş Makale\", \"Hakemlik "
 "Değerlendirmesinden Geçmemiş Kitap İncelemesi\", \"Çağrılı Yorum\", vb.)"
 
 msgid "manager.sections.indexed"
@@ -400,12 +402,6 @@ msgstr "Bu bölümde öz (abstract) için kelime sayısı (limitsiz: 0)"
 
 msgid "manager.setup"
 msgstr "Dergi Ayarları"
-
-msgid "manager.setup.masthead"
-msgstr "Yönetici Listesi"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Editör Kurulları"
 
 msgid "manager.setup.homepageContent"
 msgstr "Dergi Ana Sayfa İçeriği"
@@ -469,11 +465,6 @@ msgstr "Duyuru sayfasında gösterilecek ek bilgi gir."
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Dergi Hakkında sayfasında gösterilecek) "
 
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Yazarların gönderileriyle birlikte bir Çıkar Çatışması bildirimi dosyası "
-"göndermeleri gereklidir."
-
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
 "Yazarların değerlendirmeleriyle birlikte bir Çıkar Çatışması bildirimi "
@@ -533,7 +524,7 @@ msgstr ""
 
 msgid "manager.setup.emailBounceAddress.disabled"
 msgstr ""
-"<strong>Not:</strong> Bu seçeneği etkinleştirmek için ADS konfigürasyon "
+"<strong>Not:</strong> Bu seçeneği etkinleştirmek için konfigürasyon "
 "dosyasında <code>allow_envelope_sender</code> seçeneği etkin olmalıdır. Bu "
 "işlevin kullanılabilmesi için sunucu (tüm sunucularda çalışmayabilir) "
 "ayarlarında da değişiklik yapılması gerekir."
@@ -704,7 +695,7 @@ msgid "manager.setup.journalHomepageContentDescription"
 msgstr ""
 "Giriş sayfası var sayılan yönlendirme bağlantılarından oluşur. Aşağıdaki "
 "seçenekler kullanılarak, aşağıdaki sıra ile görülmek üzere giriş sayfasına "
-"eklenebilirler. Son  sayı yönlendirme bağlantılarında \"Son Sayı\" olarak "
+"eklenebilirler. Son sayı yönlendirme bağlantılarında \"Son Sayı\" olarak "
 "sürekli yer alır."
 
 msgid "manager.setup.journalHomepageHeader"
@@ -778,14 +769,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Dergi başlığı"
 
-msgid "manager.setup.keyInfo"
-msgstr "Temel Bilgi"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Derginizin kısa bir açıklamasını yapın ve editörleri, yönetim direktörlerini "
-"ve editör ekibinizin diğer üyelerini belirleyin."
-
 msgid "manager.setup.labelName"
 msgstr "Etiket adı"
 
@@ -825,25 +808,16 @@ msgstr ""
 "a> sayfasında yer almak için LOCKSS'i etkinleştirin. LOCKSS lisansı \"Dergi "
 "Hakkında\" sayfasında görünecektir."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"CLOCKSS lisansı Dergi Hakkında bölümünde, arşivleme altında  görünecektir: "
-"<a href=\"http://www.lockss.org/community/publishers-titles-gln/\" target="
-"\"_blank\">LOCKSS Lisansı</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "LOCKSS Lisans Açıklaması"
 
 msgid "manager.setup.lockssRegister"
 msgstr ""
-"Derginin kayıtlı olduğu ve saklandığı 6-10 kütüphane tanımla. Örneğin, "
-"editör veya yayın kurulu üyeleri LOCKSS’de yer alan kuruluşlara baş vurunuz. "
-"<a href=\"http://lockss.org/lockss/Libraries\" target=\"_blank\">Katılan "
-"kütüphaneleri buradan görebilirsiniz</a>. (i) Başvururken <a href="
-"\"{$lockssExistingArchiveUrl}\" target=\"_blank\">LOCKSS da görev alan "
-"kütüphaneler</a> veya (ii) <a href=\"{$lockssNewArchiveUrl}\" target=\"_blank"
-"\">LOCKSS'da henüz yer almayan kütüphaneler</a> ve hazır davet yazıları için "
-"tıklayın."
+"Dergiyi kaydedecek ve önbelleğe alacak 6-10 kütüphane belirleyin. Örneğin, "
+"editörlerin veya Yönetim Kurulu üyelerinin çalıştığı kurumlara ve/veya "
+"halihazırda LOCKSS'e katılan kurumlara yönelin. <a href=\"https://www.lockss."
+"org/join-lockss/partner-communities\" target=\"_blank\">LOCKSS topluluğuna</"
+"a> bakın."
 
 msgid "manager.setup.lockssTitle"
 msgstr "LOCKSS"
@@ -853,11 +827,6 @@ msgstr ""
 "Bir CLOCKSS <a href=\"{$clockssUrl}\" target=\"_blank\">Publisher Manifest</"
 "a> sayfası aracılığıyla katılımcı kütüphanelerde dergi içeriğini depolamak "
 "ve dağıtmak için CLOCKSS uygulamasını etkinleştirin."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"CLOCKSS lisansı Dergi Hakkında bölümünde, arşivleme altında  görünecektir: "
-"<a href=\"https://clockss.org\" target=\"_blank\">CLOCKSS Lisansı</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "CLOCKSS Lisans Açıklaması"
@@ -922,10 +891,9 @@ msgstr "Not"
 
 msgid "manager.setup.notifications.submissionAckDisabled"
 msgstr ""
-"<strong>Not:</strong> Otomatik başvuru e-posta gönderme seçeneği başlangıçta "
-"pasifleştirildi. Açmak için <a class=\"action\" href="
-"\"{$preparedEmailsUrl}\">Hazır E-Posta Mesajları</a> sayfasında "
-"\"SUBMISSION_ACK\" olarak tanımlanan mesajı etkinleştirin."
+"<strong>Not:</strong> Gönderim onayı e-postası şu anda devre dışı. Bu "
+"özelliği kullanmak için E-postalar'da \"Gönderim Onayı\" e-postasını "
+"etkinleştirin."
 
 msgid "manager.setup.numPageLinks"
 msgstr "Sayfa bağlantıları"
@@ -967,7 +935,7 @@ msgstr "Yayın Planlaması"
 
 msgid "manager.setup.publicationScheduleDescription"
 msgstr ""
-"Makaleler, kendi içindekiler tablosu olan bir sayıda toplanarak  "
+"Makaleler, kendi içindekiler tablosu olan bir sayıda toplanarak "
 "yayınlanabilir. Ayrıca hazır olan makale son sayının içindekiler tablosuna "
 "eklenerek yayınlanabilir. Dergi Hakkında bölümünde okuyucularınıza hangi "
 "sistemin kullanıldığı ve ne sıklıkta yeni sayı yayınlandığını belirtiniz."
@@ -1069,7 +1037,7 @@ msgstr "Bölümler ve Bölüm Editörleri"
 
 msgid "manager.setup.sectionsDefaultSectionDescription"
 msgstr ""
-"(Eğer bölüm eklenmemişse, başvurular varsayılan olarak Makaleler bölümüne  "
+"(Eğer bölüm eklenmemişse, başvurular varsayılan olarak Makaleler bölümüne "
 "gönderilir.)"
 
 msgid "manager.setup.sectionsDescription"
@@ -1371,7 +1339,7 @@ msgstr "Online Ödeme Bildirimleri"
 
 msgid "manager.subscriptionPolicies.onlinePaymentNotificationsDescription"
 msgstr ""
-"Otomatik e-posta bildirimleri (ADS tarafından  hazırlanmış e-postalar dergi "
+"Otomatik e-posta bildirimleri (ADS tarafından hazırlanmış e-postalar dergi "
 "yöneticileri tarafından düzenlenebilir) online ödemeler tamamlandıktan sonra "
 "Abone Yöneticisine gönderilebilir."
 
@@ -1630,12 +1598,10 @@ msgstr "&#8226;"
 
 msgid "manager.subscriptions.form.ipRangeInstructions"
 msgstr ""
-"Eğer buraya bir IP aralığı girilirse, alan adı girilmeyebilir. <br />Bir IP "
-"aralığı için geçerli değerler: IP adresi (Ör. 142.58.103.1), IP aralığı (Ör. "
-"142.58.103.1 - 142.58.103.4), '*' işareti içeren bir IP aralığı (Ör. "
-"142.58.103.*), veya bunların ';' işareti ile ile ayrılmış herhangi bir "
-"kombinasyonu olabilir (Ör. 142.58.103.* - 142.58.107.* ; 142.58.108.1 ; "
-"142.58.106.*)."
+"Buraya IP aralıkları girilirse, etki alanı isteğe bağlıdır.<br />Geçerli "
+"değerler arasında bir IP adresi (örn. 142.58.103.1), IP aralığı (örn. "
+"142.58.103.1 - 142.58.103.4), joker karakterli '*' IP aralığı (örn. 142."
+"58.*.*) ve CIDR'li bir IP aralığı (örn. 142.58.100.0/24) bulunur."
 
 msgid "manager.subscriptions.form.ipRangeValid"
 msgstr "Lütfen geçerli bir IP aralığı giriniz."
@@ -1980,11 +1946,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Şifre"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Şifrenin düz metin olarak, yani şifrelenmemiş olarak kaydedileceğini lütfen "
-"unutmayın."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Herhangi Bir Sayı"
 
@@ -2012,9 +1973,6 @@ msgstr "İşaretli kayıt"
 msgid "plugins.importexport.common.action.register"
 msgstr "Kayıt"
 
-msgid "plugins.importexport.common.validation"
-msgstr "İhraç ve kayıt işleminden önce XML'i doğrulayın."
-
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Hiçbir nesne seçilmedi."
 
@@ -2031,7 +1989,7 @@ msgid "plugins.importexport.common.export.error.inputFileNotReadable"
 msgstr "Çıktı dosyası {$param} okunabilir değil."
 
 msgid "plugins.importexport.common.register.error.mdsError"
-msgstr "Kayıt başarılı değil! DOI kayıt sunucusu bir hata verdi:  '{$param}'."
+msgstr "Kayıt başarılı değil! DOI kayıt sunucusu bir hata verdi: '{$param}'."
 
 msgid "plugins.importexport.common.register.success"
 msgstr "Kayıt Başarılı!"
@@ -2174,7 +2132,6 @@ msgstr "Derginin ana sayfasının URL'si"
 msgid "emailTemplate.variable.context.contactName"
 msgstr "Derginin birincil irtibat kişisinin adı"
 
-#, fuzzy
 msgid "emailTemplate.variable.context.contextAcronym"
 msgstr "Dergi baş harfleri"
 
@@ -2217,21 +2174,17 @@ msgstr "Aboneliğin türü, adı, süresi ve maliyetinin bir özeti"
 msgid "emailTemplate.variable.subscription.membership"
 msgstr "Abonenin üyeliği hakkında bilgi"
 
-#, fuzzy
 msgid "emailTemplate.variable.subscription.institutionName"
-msgstr "Kurum adı"
+msgstr "Abone olan kurum/kuruluşun adı"
 
-#, fuzzy
 msgid "emailTemplate.variable.subscription.institutionMailingAddress"
-msgstr "Kurum adresi"
+msgstr "Abone olan kurum/kuruluşun e-posta adresi"
 
-#, fuzzy
 msgid "emailTemplate.variable.subscription.domain"
 msgstr "Alan adı"
 
-#, fuzzy
 msgid "emailTemplate.variable.subscription.ipRanges"
-msgstr "Abonelik kimlik doğrulaması için IP aralıkları"
+msgstr "Bu abonelik için geçerli IP aralıkları"
 
 msgid "emailTemplate.variable.queuedPaymentUrl"
 msgstr "Yazarın ödeme yapabileceği sayfanın URL'si"
@@ -2296,10 +2249,10 @@ msgstr "DOI ön eki zorunludur ve 10.xxxx biçiminde olmalıdır."
 
 msgid "doi.manager.settings.doiSuffixPattern"
 msgstr ""
-"DOI eklerini oluşturmak için aşağıda girilen şablonu kullanın. Dergi için %"
-"\", cilt numarası için %v, sayı için %i, yıl için %Y, OJS makale ID'si için "
-"\"%a\", OJS dizgi tablası ID'si için %g, OJS dosya ID'si için %f, sayfa "
-"numarası için %p ve \"Özel Tanımlayıcı\" için %x  kullanın."
+"DOI eklerini oluşturmak için aşağıda girilen şablonu kullanın. Dergi için %\""
+", cilt numarası için %v, sayı için %i, yıl için %Y, OJS makale ID'si için \"%"
+"a\", OJS dizgi tablası ID'si için %g, OJS dosya ID'si için %f, sayfa "
+"numarası için %p ve \"Özel Tanımlayıcı\" için %x kullanın. "
 
 msgid "doi.manager.settings.doiSuffixPattern.example"
 msgstr ""
@@ -2614,17 +2567,8 @@ msgstr ""
 #~ msgid "manager.statistics.statistics.registeredUsers"
 #~ msgstr "Kayıtlı kullanıcılar:"
 
-#~ msgid "manager.setup.editorialTeam.description"
-#~ msgstr ""
-#~ "Yöneticiler, editörler ve dergiyle ilişkili diğer kişileri listeleyin."
-
 #~ msgid "manager.setup.layout"
 #~ msgstr "Dergi Düzeni"
-
-#~ msgid "manager.setup.contextSummary.description"
-#~ msgstr ""
-#~ "Derginizin dergiler listesinde gösterilebilecek kısa bir açıklamasını "
-#~ "giriniz."
 
 #~ msgid "manager.setup.favicon"
 #~ msgstr "Dergi Favori İkonu"
@@ -2686,3 +2630,20 @@ msgstr ""
 
 msgid "plugins.importexport.common.error.import.issueGalleyFileMissing"
 msgstr "Bir sayı dizgisi içe aktarılamadı, dosyası eksik."
+
+msgid "plugins.importexport.common.error.issueCoverImageMissing"
+msgstr ""
+"{$id} sayısının kapak resmi dışa aktarılmadı, dosya \"{$path}\" yolunda "
+"bulunamadı."
+
+msgid "plugins.importexport.common.error.issueGalleyFileMissing"
+msgstr ""
+"{$id} sayı dizgisi dışa aktarılamadı, dosya \"{$path}\" yolunda bulunamadı."
+
+msgid "manager.setup.contextSummary.description"
+msgstr ""
+"İçeriği ve amacı hakkında fikir vermek için derginizin kısa bir tanımını "
+"sunun."
+
+msgid "emailTemplate.variable.issue.issueTableOfContents"
+msgstr "Tüm ilişkili gönderilerin listesi gibi sayı içerik tablosu."

@@ -18,7 +18,7 @@ namespace APP\controllers\grid\submissions;
 
 use APP\core\Application;
 use APP\facades\Repo;
-use APP\submission\Submission;
+use APP\plugins\PubObjectsExportPlugin;
 use PKP\controllers\grid\DataObjectGridCellProvider;
 use PKP\controllers\grid\GridHandler;
 use PKP\core\PKPApplication;
@@ -62,7 +62,6 @@ class ExportPublishedSubmissionsListGridCellProvider extends DataObjectGridCellP
     {
         $submission = $row->getData();
         $columnId = $column->getId();
-        assert($submission instanceof Submission && !empty($columnId));
 
         switch ($columnId) {
             case 'title':
@@ -79,14 +78,14 @@ class ExportPublishedSubmissionsListGridCellProvider extends DataObjectGridCellP
                         new RedirectAction(
                             Repo::submission()->getWorkflowUrlByUserRoles($submission)
                         ),
-                        htmlspecialchars($title)
+                        $title
                     )
                 ];
             case 'issue':
-                $contextId = $submission->getContextId();
+                $contextId = $submission->getData('contextId');
                 $issueId = $submission->getCurrentPublication()->getData('issueId');
-                $issue = Repo::issue()->get($issueId);
-                $issue = $issue->getJournalId() == $contextId ? $issue : null;
+                $issue = $issueId ? Repo::issue()->get($issueId) : null;
+                $issue = $issue?->getJournalId() == $contextId ? $issue : null;
                 if ($issue) {
                     // Link to the issue edit modal
                     $application = Application::get();
@@ -96,9 +95,9 @@ class ExportPublishedSubmissionsListGridCellProvider extends DataObjectGridCellP
                             'edit',
                             new AjaxModal(
                                 $dispatcher->url($request, PKPApplication::ROUTE_COMPONENT, null, 'grid.issues.BackIssueGridHandler', 'editIssue', null, ['issueId' => $issue->getId()]),
-                                __('plugins.importexport.common.settings.DOIPluginSettings')
+                                __('plugins.importexport.common.settings.DOIPluginSettings'),
                             ),
-                            htmlspecialchars($issue->getIssueIdentification()),
+                            $issue->getIssueIdentification(),
                             null
                         )
                     ];
@@ -109,7 +108,6 @@ class ExportPublishedSubmissionsListGridCellProvider extends DataObjectGridCellP
                 $statusNames = $this->_plugin->getStatusNames();
                 $statusActions = $this->_plugin->getStatusActions($submission);
                 if ($status && array_key_exists($status, $statusActions)) {
-                    assert(array_key_exists($status, $statusNames));
                     return [$statusActions[$status]];
                 }
                 break;
@@ -127,7 +125,6 @@ class ExportPublishedSubmissionsListGridCellProvider extends DataObjectGridCellP
     {
         $submission = $row->getData();
         $columnId = $column->getId();
-        assert($submission instanceof Submission && !empty($columnId));
 
         switch ($columnId) {
             case 'id':
@@ -144,11 +141,10 @@ class ExportPublishedSubmissionsListGridCellProvider extends DataObjectGridCellP
                     if (array_key_exists($status, $statusActions)) {
                         $label = '';
                     } else {
-                        assert(array_key_exists($status, $statusNames));
                         $label = $statusNames[$status];
                     }
                 } else {
-                    $label = $statusNames[EXPORT_STATUS_NOT_DEPOSITED];
+                    $label = $statusNames[PubObjectsExportPlugin::EXPORT_STATUS_NOT_DEPOSITED];
                 }
                 return ['label' => $label];
         }

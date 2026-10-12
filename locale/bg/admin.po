@@ -1,7 +1,7 @@
-# Cyril Kamburov <cc@intermedia.bg>, 2021, 2022, 2023.
+# Cyril Kamburov <cc@intermedia.bg>, 2021, 2022, 2023, 2025.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2023-02-27 07:59+0000\n"
+"PO-Revision-Date: 2025-03-24 22:19+0000\n"
 "Last-Translator: Cyril Kamburov <cc@intermedia.bg>\n"
 "Language-Team: Bulgarian <http://translate.pkp.sfu.ca/projects/ojs/admin/bg/>"
 "\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "admin.hostedContexts"
 msgstr "Поддържани списания"
@@ -167,10 +167,10 @@ msgstr "Open Access уведомление"
 msgid "admin.scheduledTask.reviewReminder"
 msgstr "Подсещане на рецензент за преглед"
 
-msgid "admin.scheduledTask.usageStatsLoader.invalidLogEntry.issueId"
+msgid "admin.job.processLogFile.invalidLogEntry.issueId"
 msgstr "Идентификаторът на броя не е цяло число."
 
-msgid "admin.scheduledTask.usageStatsLoader.invalidLogEntry.issueGalleyId"
+msgid "admin.job.processLogFile.invalidLogEntry.issueGalleyId"
 msgstr "Идентификаторът на типографията не е цяло число."
 
 msgid ""
@@ -241,3 +241,6 @@ msgstr ""
 "замени тази настройка, за да направи статистиката си лична. Въпреки това, "
 "ако деактивирате публичния API, списанията не могат да направят собствения "
 "си API публичен."
+
+msgid "admin.settings.statistics.sushiPlatform.isSiteSushiPlatform"
+msgstr "Използване на сайта като платформа за всички списания."

@@ -1158,9 +1158,6 @@ msgstr ""
 "\"{$competingInterestGuidelinesUrl}\"> Pravidlá upravujúce konflikt záujmov</"
 "a>)."
 
-msgid "reviewer.competingInterests"
-msgstr "Konflikt záujmov"
-
 msgid "reviewer.article.enterReviewA"
 msgstr ""
 "Pre vloženie (alebo nakopírovanie) Vašej recenzie tohto príspevku kliknite "
@@ -1641,12 +1638,6 @@ msgstr "O časopise"
 msgid "about.history"
 msgstr "História časopisu"
 
-msgid "about.editorialTeam"
-msgstr "Editorský tým"
-
-msgid "about.editorialTeam.biography"
-msgstr "Životopis"
-
 msgid "about.editorialPolicies"
 msgstr "Edičné pravidlá"
 
@@ -1934,7 +1925,7 @@ msgstr ""
 "\n"
 "<p>Ďakujeme za sťiahnutie <strong>Open Journal Systému</strong> vytvoreného "
 "projektom Public Knowledge Project. Než budete pokračovať, prečítajte si, "
-"prosím, súbor <a href=\"{$baseUrl}/docs/README.md\">README</a> dodaný s "
+"prosím, súbor <a href=\"{$baseUrl}/README.md\">README</a> dodaný s "
 "týmto softwarom. Pre viac informácií o Public Knowledge Project a jeho "
 "softwarových projektoch navštívte, prosím, <a href=\"http://pkp.sfu.ca/\" "
 "target=\"_blank\"> webové stránky PKP</a>. Pokiaľ máte chybové hlásenia, "
@@ -2008,6 +1999,7 @@ msgstr ""
 "<p> 2. Adresár pre ukladanie nahraných súborov musí byť vytvorený a "
 "zapisovateľný (viď \"Nastavenia súborov\" nižšie). </p>"
 
+#, fuzzy
 msgid "installer.upgradeInstructions"
 msgstr ""
 "<h4>Verzia OJS {$version}</h4>\n"
@@ -2178,11 +2170,13 @@ msgstr ""
 msgid "log.review.resubmit"
 msgstr "Príspevok {$submissionId} bol znovu odoslaný k recenzii."
 
+#, fuzzy
 msgid "log.review.reviewDeclined"
 msgstr ""
 "{$ReviewerName} odmietol recenzné kolo {$round} pre príspevok "
 "{$submissionId}."
 
+#, fuzzy
 msgid "log.review.reviewAccepted"
 msgstr ""
 "{$reviewerName} prijal recenzné kolo {$round} pre príspevok {$submissionId}."
@@ -2390,11 +2384,6 @@ msgstr "<p>Odobratie schválenia tejto sadzobnice.</p>"
 
 msgid "search.cli.rebuildIndex.indexing"
 msgstr "Indexácia \"{$journalName}\""
-
-msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
-msgstr ""
-"Táto implementácia vyhľadávania neumožňuje opakované indexovanie podľa "
-"časopisov."
 
 msgid "search.cli.rebuildIndex.unknownJournal"
 msgstr ""

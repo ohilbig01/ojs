@@ -15,6 +15,8 @@
  * @uses $numAnnouncementsHomepage int Number of announcements to display on the
  *       homepage
  * @uses $issue Issue Current issue
+ *
+ * @hook Templates::Index::journal []
  *}
 {include file="frontend/components/header.tpl" pageTitleTranslated=$currentJournal->getLocalizedName()}
 
@@ -22,14 +24,22 @@
 
 	{call_hook name="Templates::Index::journal"}
 
-	{if !$activeTheme->getOption('useHomepageImageAsHeader') && $homepageImage}
+	{if $highlights->count()}
+		{include file="frontend/components/highlights.tpl" highlights=$highlights}
+	{/if}
+
+	{if $activeTheme && !$activeTheme->getOption('useHomepageImageAsHeader') && $homepageImage}
 		<div class="homepage_image">
 			<img src="{$publicFilesDir}/{$homepageImage.uploadName|escape:"url"}"{if $homepageImage.altText} alt="{$homepageImage.altText|escape}"{/if}>
 		</div>
 	{/if}
 
+	{if $categories && $categories->count() > 0}
+		{include file="frontend/components/categoryHeader.tpl" categories=$categories}
+	{/if}
+
 	{* Journal Description *}
-	{if $activeTheme->getOption('showDescriptionInJournalIndex')}
+	{if $activeTheme && $activeTheme->getOption('showDescriptionInJournalIndex')}
 		<section class="homepage_about">
 			<a id="homepageAbout"></a>
 			<h2>{translate key="about.aboutContext"}</h2>
@@ -37,35 +47,11 @@
 		</section>
 	{/if}
 
-	{* Announcements *}
-	{if $numAnnouncementsHomepage && $announcements|@count}
-		<section class="cmp_announcements highlight_first">
-			<a id="homepageAnnouncements"></a>
-			<h2>
-				{translate key="announcement.announcements"}
-			</h2>
-			{foreach name=announcements from=$announcements item=announcement}
-				{if $smarty.foreach.announcements.iteration > $numAnnouncementsHomepage}
-					{break}
-				{/if}
-				{if $smarty.foreach.announcements.iteration == 1}
-					{include file="frontend/objects/announcement_summary.tpl" heading="h3"}
-					<div class="more">
-				{else}
-					<article class="obj_announcement_summary">
-						<h4>
-							<a href="{url router=\PKP\core\PKPApplication::ROUTE_PAGE page="announcement" op="view" path=$announcement->getId()}">
-								{$announcement->getLocalizedTitle()|escape}
-							</a>
-						</h4>
-						<div class="date">
-							{$announcement->getDatePosted()|date_format:$dateFormatShort}
-						</div>
-					</article>
-				{/if}
-			{/foreach}
-			</div><!-- .more -->
-		</section>
+	{include file="frontend/objects/announcements_list.tpl" numAnnouncements=$numAnnouncementsHomepage}
+
+	{* Latest Published Publications *}
+	{if $publishedPublications && $publishedPublications->count()}
+		{include file="frontend/objects/latest_article.tpl" articles=$publishedPublications heading="h2"}
 	{/if}
 
 	{* Latest issue *}
@@ -76,10 +62,10 @@
 				{translate key="journal.currentIssue"}
 			</h2>
 			<div class="current_issue_title">
-				{$issue->getIssueIdentification()|strip_unsafe_html}
+				{$issue->getIssueIdentification()|escape}
 			</div>
 			{include file="frontend/objects/issue_toc.tpl" heading="h3"}
-			<a href="{url router=\PKP\core\PKPApplication::ROUTE_PAGE page="issue" op="archive"}" class="read_more">
+			<a href="{url router=PKP\core\PKPApplication::ROUTE_PAGE page="issue" op="archive"}" class="read_more">
 				{translate key="journal.viewAllIssues"}
 			</a>
 		</section>

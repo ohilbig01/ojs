@@ -3,132 +3,28 @@
 <!--
   * dbscripts/xml/upgrade.xml
   *
-  * Copyright (c) 2014-2021 Simon Fraser University
-  * Copyright (c) 2003-2021 John Willinsky
+  * Copyright (c) 2014-2026 Simon Fraser University
+  * Copyright (c) 2003-2026 John Willinsky
   * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
   *
   * Upgrade descriptor file.
   *
   -->
 
-<install version="3.5.0.0">
+<install version="3.6.0.0">
 	<code function="checkPhpVersion" />
 
-	<upgrade minversion="2.0.0.0" maxversion="3.0.9.9">
+	<upgrade minversion="2.0.0.0" maxversion="3.2.9.9">
 		<!-- OJS < 3.1.0 upgrade unsupported -->
 		<code function="abort" message="installer.unsupportedUpgradeError" />
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.1.0.9">
-		<data file="dbscripts/xml/upgrade/3.1.1_preupdate_citations.xml" condition="return $installer->columnExists('citations', 'assoc_type');" />
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.1.1.9">
-		<data file="dbscripts/xml/upgrade/3.1.2_preupdate_user_author_names.xml" condition="return $installer->columnExists('users', 'first_name');" />
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.1.9.9">
-		<code function="migrateSubmissionCoverImages" />
-		<data file="dbscripts/xml/upgrade/3.2.0_preupdate_email_templates.xml" />
-		<data file="dbscripts/xml/upgrade/3.2.0_preupdate_versioning_articleGalleySettings.xml" condition="return $installer->tableExists('article_galley_settings');"/>
-		<data file="dbscripts/xml/upgrade/3.2.0_preupdate_versioning.xml" />
-		<data file="dbscripts/xml/upgrade/3.2.0_preupdate_last_activity.xml" />
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.1.9.9">
-		<!-- Old schema syncs: These are deprecated! -->
-		<schema file="lib/pkp/xml/schema/common.xml" />
-		<schema file="lib/pkp/xml/schema/log.xml" />
-		<schema file="lib/pkp/xml/schema/announcements.xml" />
-		<schema file="lib/pkp/xml/schema/scheduledTasks.xml" />
-		<schema file="lib/pkp/xml/schema/temporaryFiles.xml" />
-		<schema file="lib/pkp/xml/schema/metadata.xml" />
-		<schema file="lib/pkp/xml/schema/reviews.xml" />
-		<schema file="lib/pkp/xml/schema/reviewForms.xml" />
-		<schema file="lib/pkp/xml/schema/controlledVocab.xml" />
-		<schema file="lib/pkp/xml/schema/submissions.xml" />
-		<schema file="lib/pkp/xml/schema/submissionFiles.xml" />
-		<schema file="lib/pkp/xml/schema/categories.xml" />
-		<schema file="lib/pkp/xml/schema/notes.xml" />
-		<schema file="lib/pkp/xml/schema/genres.xml" />
-		<schema file="lib/pkp/xml/schema/tombstone.xml" />
-		<schema file="lib/pkp/xml/schema/rolesAndUserGroups.xml" />
-		<schema file="lib/pkp/xml/schema/metrics.xml" />
-		<schema file="lib/pkp/xml/schema/libraryFiles.xml" />
-		<schema file="lib/pkp/xml/schema/navigationMenus.xml" />
-		<schema file="dbscripts/xml/ojs_schema.xml" />
 	</upgrade>
 
 	<!-- Install default NavigationMenus -->
 	<code function="installDefaultNavigationMenus" />
 	<code function="migrateStaticPagesToNavigationMenuItems" />
 
-	<upgrade minversion="3.1.0.0" maxversion="3.1.1.9">
-		<code function="migrateSRLocale" />
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.1.9.9">
-		<!-- migrateUserAndAuthorNames should be after migrateSRLocale -->
-		<code function="migrateUserAndAuthorNames" condition="return $installer->tableExists('users_tmp');" />
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.1.0.9">
-		<data file="dbscripts/xml/upgrade/3.1.1_update.xml" />
-		<code function="updateSuppFileMetrics" />
-		<code function="installEmailTemplate" key="REVISED_VERSION_NOTIFY" locales="ar_IQ,da_DK,en_US,es_ES,fa_IR,fi_FI,fr_CA,fr_FR,id_ID,pt_PT,ru_RU,sv_SE" />
-		<code function="clearDataCache" />
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.1.0.9">
-		<code function="repairSuppFilesFilestage" />
-		<code function="fixAuthorGroup" /><!-- Run again after previous invalid fix (#3289) -->
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.1.0.9">
-		<note file="docs/release-notes/README-3.1.1" />
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.1.1.9">
-		<data file="dbscripts/xml/upgrade/3.1.2_update.xml" />
-		<note file="docs/release-notes/README-3.1.2" />
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.1.1.4">
-		<data file="dbscripts/xml/upgrade/event_log_oneclickuserid.xml" />
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.1.9.9">
-		<data file="dbscripts/xml/upgrade/3.2.0_stylesheet.xml" />
-		<data file="dbscripts/xml/upgrade/3.2.0_archiving_settings.xml" />
-		<data file="dbscripts/xml/upgrade/3.2.0_update.xml" />
-		<data file="dbscripts/xml/upgrade/3.2.0_navigation_menu_items_locale_change.xml" />
-		<code function="migrateSiteLocales" />
-		<code function="migrateSidebarBlocks" />
-		<code function="migrateSiteStylesheet" />
-		<code function="migrateMetadataSettings" />
-		<code function="createLicenseTerms" />
-		<code function="installEmailTemplate" key="REVIEW_REINSTATE" locales="en_US" />
-		<code function="changeUserRolesAndStageAssignmentsForStagePermitSubmissionEdit" />
-		<data file="dbscripts/xml/upgrade/3.2.0_versioning.xml" />
-		<data file="dbscripts/xml/upgrade/3.2.0_versioning_submissionCategories.xml" condition="return $installer->tableExists('submission_categories');" />
-		<data file="dbscripts/xml/upgrade/3.2.0_last_activity.xml" />
-		<data file="dbscripts/xml/upgrade/3.2.0_url_path.xml" />
-		<code function="setStatsEmailSettings" />
-		<code function="fixLibraryFiles" />
-		<code function="installEmailTemplate" key="STATISTICS_REPORT_NOTIFICATION" locales="ar_IQ,ca_ES,cs_CZ,da_DK,de_DE,en_US,es_ES,fi_FI,fr_CA,hi_IN,hu_HU,id_ID,it_IT,ku_IQ,pt_BR,pt_PT,ru_RU,sl_SI,sv_SE,tr_TR,vi_VN,zh_CN" />
-		<note file="docs/release-notes/README-3.2.0" />
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.2.0.9">
-		<data file="dbscripts/xml/upgrade/3.2.1_update.xml" />
-		<code function="installEmailTemplate" key="ANNOUNCEMENT" locales="ca_ES,cs_CZ,ar_IQ,da_DK,en_US,es_ES,fr_CA,id_ID,it_IT,pt_BR,pt_PT,ru_RU,sl_SI,sv_SE,tr_TR,vi_VN,zh_CN" />
-		<migration class="PKP\migration\upgrade\PKPv3_2_1SubeditorCategoriesMigration" />
-		<note file="docs/release-notes/README-3.2.1" />
-	</upgrade>
-
-	<upgrade minversion="3.1.0.0" maxversion="3.2.9.9">
-		<migration class="APP\migration\upgrade\OJSv3_3_0UpgradeMigration" />
-		<note file="docs/release-notes/README-3.3.0" />
+	<upgrade minversion="3.3.0.16" maxversion="3.4.0.7">
+		<migration class="PKP\migration\upgrade\v3_4_0\I10249_FixProfileImageDataLoss" />
 	</upgrade>
 
 	<upgrade minversion="3.1.0.0" maxversion="3.3.9.9">
@@ -172,6 +68,7 @@
 		<migration class="PKP\migration\upgrade\v3_4_0\I2890_AddSetNullForOnDeleteToReviewRoundIdForeign"/>
 		<migration class="APP\migration\upgrade\v3_4_0\I7901_Duplicate_OAI_IDs"/>
 		<migration class="PKP\migration\upgrade\v3_4_0\I7366_UpdateUserAPIKeySettings"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I7463_LocaleColumn"/>
 		<migration class="PKP\migration\upgrade\v3_4_0\I8093_UpdateUserGroupRelationTablesFK"/>
 		<migration class="APP\migration\upgrade\v3_4_0\I7725_DecisionConstantsUpdate"/>
 		<migration class="PKP\migration\upgrade\v3_4_0\I4789_AddReviewerRequestResentColumns"/>
@@ -193,7 +90,6 @@
 		<migration class="APP\migration\upgrade\v3_4_0\I7513_DoiSettings"/>
 		<migration class="PKP\migration\upgrade\v3_4_0\I7486_RenameUnconsideredColumnToConsidered"/>
 		<migration class="PKP\migration\upgrade\v3_4_0\I7486_RemoveItemViewsTable"/>
-		<migration class="PKP\migration\upgrade\v3_4_0\I8737_SectionEditorsUniqueIndexUpdate"/>
 		<migration class="PKP\migration\upgrade\v3_4_0\I8508_ConvertCurrentLogFile"/>
 		<migration class="PKP\migration\upgrade\v3_4_0\I8866_DispatchRegionCodesFixingJobs"/>
 		<migration class="APP\migration\upgrade\v3_4_0\I8992_FixEmptyUrlPaths"/>
@@ -204,22 +100,160 @@
 		<note file="docs/release-notes/README-3.4.0" />
 	</upgrade>
 
-	<upgrade minversion="3.1.0.0" maxversion="3.2.9.9">
-		<migration class="PKP\migration\upgrade\v3_4_0\I7249_UpdateUsersUniqueIndex_v3_1"/>
-	</upgrade>
-
 	<upgrade minversion="3.3.0.0" maxversion="3.3.9.9">
 		<migration class="PKP\migration\upgrade\v3_4_0\I7249_UpdateUsersUniqueIndex"/>
 	</upgrade>
 
-	<upgrade minversion="3.1.0.0" maxversion="3.4.0.9">
+	<upgrade minversion="3.1.0.0" maxversion="3.4.0.1">
 		<migration class="PKP\migration\upgrade\v3_4_0\I9136_MigrateUniqueSiteId"/>
 		<migration class="APP\migration\upgrade\v3_4_0\I9231_FixMetricsIndexes"/>
 	</upgrade>
-	
-	<upgrade minversion="3.4.0.0" maxversion="3.4.9.9">
-		<migration class="PKP\migration\upgrade\v3_5_0\I9197_MigrateAccessKeys"/>
+
+	<upgrade minversion="3.1.0.0" maxversion="3.4.0.4">
+		<migration class="PKP\migration\upgrade\v3_4_0\I9627_AddUsageStatsTemporaryTablesIndexes"/>
+		<migration class="PKP\migration\upgrade\v3_4_0\I9535_FixEmptyFileStage"/>
 	</upgrade>
+
+	<upgrade minversion="3.1.0.0" maxversion="3.4.0.5">
+		<migration class="PKP\migration\upgrade\v3_4_0\I9830_FixEmptyUserLocales"/>
+	</upgrade>
+
+	<upgrade minversion="3.4.0.0" maxversion="3.4.0.5">
+		<migration class="PKP\migration\upgrade\v3_4_0\I8592_SiteNotificationSubscriptions"/>
+	</upgrade>
+
+	<upgrade minversion="3.4.0.0" maxversion="3.4.9.9">
+		<migration class="APP\migration\upgrade\v3_4_0\I9813_QuickSubmitSubmissionProgressType"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I11241_MissingDecisionConstantsUpdate"/>
+	</upgrade>
+
+	<upgrade minversion="3.1.0.0" maxversion="3.4.9.9">
+		<migration class="PKP\migration\upgrade\v3_5_0\PreflightCheckMigration" fallback="3.4.9.9" />
+		<migration class="APP\migration\upgrade\v3_5_0\I8333_AddMissingForeignKeys" />
+		<migration class="APP\migration\upgrade\v3_5_0\I9892_FloatToDecimalColumnTypeUpdate" />
+		<migration class="PKP\migration\upgrade\v3_5_0\I9895_AddAppKeyToConfigFile"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I9678_RemoveScheduledTasksTable"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\InstallEmailTemplates"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I9197_MigrateAccessKeys"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I9253_SiteAnnouncements"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I9262_Highlights"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I9475_RecoverLayoutFiles"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I9462_UserUserGroupsStartEndDate"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I9552_UserGroupsMasthead"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I5504_UserGroupsSettings"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I9425_SeparateUIAndSubmissionLocales"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I9709_UserUserGroupsMasthead"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I9566_UserRememberToken"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I9566_SessionUpgrade"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I9809_ReviewCancelDate"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I9860_EditorialMastheadNavMenuItem"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I9937_EditorialTeamToEditorialHistory"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I10041_UserGroupsAndUserUserGroupsMastheadValues"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I9771_OrcidMigration"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I10157_CreateAndMigrateIssueIdField"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I5885_RenameReviewReminderSettingsName"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\COA75_AddUserRoleEndEmail"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I10738_RemoveInvalidUserGroups"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I10362_EventLogEditorNames"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I10292_RemoveControlledVocabEntrySettingType"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I10292_UpdateControlledVocabAssocId"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I10292_UpdateControlledVocabEntrySettingName"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\FilterClassNames"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I10620_EditorialBoardMemberRole"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I9707_WeblateUILocales"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I7135_CreateAuthorAffiliationsTables"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I7135_CreateNewRorRegistryCacheTables"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I10759_AddReviewAssignmentSettings"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I10819_OrcidOauthScopeMail"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I10359_DateConsideredToReviewAssignments"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I4787_AddReviewSuggestionHelp"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I4787_InstallReviewerSuggestion"/>
+		<!-- Intentional re-run of 3.4.0 migration; see https://github.com/pkp/pkp-lib/issues/10264#issuecomment-2702413991 -->
+		<migration class="PKP\migration\upgrade\v3_4_0\I7624_StrftimeDeprecation"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I11238_PrepareDBForStructuredCitations"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I10659_UpdateCrossrefSchema"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I11125_UpdateEmailTemplateVariables"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I10962_UpdateEmailTemplateVariables"/>
+		<code function="downloadIPGeoDB" />
+		<note file="docs/release-notes/README-3.5.0" />
+	</upgrade>
+
+	<upgrade minversion="3.5.0.0" maxversion="3.5.0.99">
+		<migration class="PKP\migration\upgrade\v3_5_0\I11603_AddMissingUserRoleAssignmentInvitationEmail"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I11673_AddMissingApprovalToReviewerSuggestion"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I11800_AddUserRoleMastheadUpdateEmail"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I12608_RestoreActiveReviewerInvitations"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I12792_FixInvitationEmailButtons"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I12513_MissingSiteLocaleUserNames"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I12357_FixDecisionConstantsMissedStageId"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I13128_FixEmailUrlLinks"/>
+	</upgrade>
+
+	<upgrade minversion="3.5.0.0" maxversion="3.5.9.9">
+		<migration class="APP\migration\upgrade\v3_4_0\InstallEmailTemplates"/>
+	</upgrade>
+
+	<upgrade minversion="3.3.0.0" maxversion="3.5.9.9">
+		<migration class="PKP\migration\upgrade\v3_6_0\PreflightCheckMigration" fallback="3.5.9.9" />
+		<migration class="APP\migration\install\ReviewerRecommendationsMigration" />
+		<migration class="APP\migration\upgrade\v3_6_0\I1660_ReviewerRecommendations"/>
+		<migration class="APP\migration\upgrade\v3_6_0\I10404_UpdateCategoryImageNameFields"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I4860_MigratePublicationVersion"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I4860_MigratePublicationAddCreatedAt"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I4860_MigratePublicationVersionSourcePublicationId"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I11326_UserComments"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I857_CreditRoles"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I8920_ReplaceSearchEngine"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I10406_EditorialTasks"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I11702_ExtendTasks"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I11754_TaskTemplateEnhancements"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I11779_UseEmailTemplateKeyOnEditTaskTemplates"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I11701_Notes"/>
+		<migration class="APP\migration\upgrade\v3_6_0\I11593_DOAJGenericPlugin"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I11917_TaskTemplateDueDate"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I11913_AssociatePublicationsWithReviewRounds"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I857_ContributorRolesTypes"/>
+		<migration class="APP\migration\upgrade\v3_6_0\I12046_AssignMachineReadableRecommendationType"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I12108_RestrictEditTemplatesToUserGroups"/>
+        <migration class="PKP\migration\upgrade\v3_6_0\I12078_RemoveSettingTypeInCitationSettings"/>
+        <migration class="PKP\migration\upgrade\v3_6_0\I11971_RemoveShowTitleInUserGroups"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I11583_ClassNamespaceFromDotNotationClassPath"/>
+		<migration class="PKP\migration\upgrade\v3_5_0\I10962_UpdateEmailTemplateVariables"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I12074_EncryptCredentials"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I12204_ReviewAssignmentPublicVisibility"/>
+        <migration class="PKP\migration\upgrade\v3_6_0\I12048_ReviewRoundAuthorResponse"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I11993_MakeNotesUserIdNullable" />
+        <migration class="PKP\migration\upgrade\v3_6_0\I11332_AddPeerReviewDois" />
+		<migration class="PKP\migration\upgrade\v3_6_0\I6278_DataCitations" />
+        <migration class="PKP\migration\upgrade\v3_6_0\I12307_ReviewRoundRequestAuthorResponseMail" />
+        <migration class="PKP\migration\upgrade\v3_6_0\I12251_SupportMediaFiles" />
+        <migration class="PKP\migration\upgrade\v3_6_0\I12772_UserCommentForeignKeys" />
+		<migration class="PKP\migration\upgrade\v3_6_0\I12584_AddPublicationUpdateType" />
+        <migration class="PKP\migration\upgrade\v3_6_0\I12800_ReviewPublicationAssociationNullable" />
+        <migration class="PKP\migration\upgrade\v3_6_0\I12799_MovePublishedSubmissionsToDone"/>
+		<migration class="APP\migration\upgrade\v3_6_0\I12948_RemoveRFC1807Plugin" />
+		<migration class="PKP\migration\upgrade\v3_5_0\I12133_FixCategorySort"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I12392_Funders" />
+		<migration class="PKP\migration\upgrade\v3_6_0\I11914_MigrateCreditRoles" />
+		<migration class="PKP\migration\upgrade\v3_6_0\I12841_CreateLogsDirectory" />
+		<migration class="PKP\migration\upgrade\v3_6_0\I13059_EventLogImpersonation" />
+		<migration class="PKP\migration\upgrade\v3_6_0\InstallEmailTemplates"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I13117_AddReviewAssignmentLastModifiedBy"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I12593_EmailToTaskTemplates"/>
+		<migration class="APP\migration\upgrade\v3_5_0\I13128_FixEmailUrlLinks"/><!-- Already added to 3.5.0-5 but idempotent -->
+		<migration class="PKP\migration\upgrade\v3_6_0\I12903_ReviewerUnassignEmailTemplate" />
+		<migration class="PKP\migration\upgrade\v3_6_0\I12347_FixRevisionUploadLogData" />
+		<migration class="PKP\migration\upgrade\v3_6_0\I13109_PermitPublishedMetadataEdit" />
+		<migration class="PKP\migration\upgrade\v3_6_0\I13213_TaskTemplateForeignConstraint"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I12813_UpdateAuthorResponseAndSubmissionCommentTextType"/>
+		<migration class="PKP\migration\upgrade\v3_6_0\I12994_CompetingInterestsDeclared" />
+		<migration class="APP\migration\upgrade\v3_6_0\I7527_IdentityMetadata" />
+		<code function="rebuildSearchIndex" />
+		<note file="docs/release-notes/README-3.6.0" />
+	</upgrade>
+
+	<!-- Cached data, e.g. the event listeners, may name classes that no longer exist -->
+	<code function="clearDataCache" />
 
 	<!-- update plugin configuration - should be done as the final upgrade task -->
 	<code function="addPluginVersions" />

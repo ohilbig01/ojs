@@ -1,12 +1,13 @@
 # Dariusz Lis <Dariusz@Lis.PL>, 2021, 2023.
-# rl <biuro@fimagis.pl>, 2022.
+# rl <biuro@fimagis.pl>, 2022, 2024.
+# Mikołaj Machowski <mikmach@gmail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-30T17:55:29+00:00\n"
-"PO-Revision-Date: 2023-04-26 14:01+0000\n"
-"Last-Translator: Dariusz Lis <Dariusz@Lis.PL>\n"
+"PO-Revision-Date: 2025-09-04 06:23+0000\n"
+"Last-Translator: Mikołaj Machowski <mikmach@gmail.com>\n"
 "Language-Team: Polish <http://translate.pkp.sfu.ca/projects/ojs/manager/pl/>"
 "\n"
 "Language: pl\n"
@@ -15,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "Dostęp"
@@ -399,12 +400,6 @@ msgstr "Ogranicz liczbę słów abstraktu dla tego działu (0 = bez limitu)"
 msgid "manager.setup"
 msgstr "Konfiguracja"
 
-msgid "manager.setup.masthead"
-msgstr "Stopka redakcyjna"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Zespół redakcyjny"
-
 msgid "manager.setup.homepageContent"
 msgstr "Zawartość strony głównej czasopisma"
 
@@ -466,9 +461,6 @@ msgstr "Wprowadź informację która ukazywałaby się na stronie ogłoszeń."
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Widoczne na stronie O czasopiśmie) "
 
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr "Wymagaj od autorów oświadczenia o zbieżności zainteresowań."
-
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr "Wymagaj od recenzentów oświadczenia o zbieżności zainteresowań."
 
@@ -487,7 +479,7 @@ msgid "manager.setup.customizingTheLook"
 msgstr "Krok 5. Dostosuj wygląd"
 
 msgid "manager.setup.details"
-msgstr "Informacje podstawowe"
+msgstr "Szczegóły"
 
 msgid "manager.setup.details.description"
 msgstr ""
@@ -608,7 +600,7 @@ msgid "manager.setup.form.supportNameRequired"
 msgstr "Nazwa osoby wspierającej jest wymagana."
 
 msgid "manager.setup.generalInformation"
-msgstr "Informacje podstawowe"
+msgstr "Informacje ogólne"
 
 msgid "manager.setup.gettingDownTheDetails"
 msgstr "Krok 1. Szczegóły"
@@ -764,14 +756,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Tytuł czasopisma"
 
-msgid "manager.setup.keyInfo"
-msgstr "Kluczowe informacje"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Dostarcz krótki opis Twojego czasopisma i określ redaktorów, dyrektorów "
-"zarządzających i innych członków Twojego zespołu wydawniczego."
-
 msgid "manager.setup.labelName"
 msgstr "Etykieta"
 
@@ -793,7 +777,7 @@ msgstr ""
 "korzystania z PKP PN."
 
 msgid "manager.setup.plnPluginArchiving"
-msgstr "Sieć zachowująca PKP (PKP PN)"
+msgstr "Sieć archiwizująca PKP (PN)"
 
 msgid "manager.setup.plnPluginNotInstalled"
 msgstr ""
@@ -811,12 +795,6 @@ msgstr ""
 "pośrednictwem usługi LOCKSS. <a href=\"{$lockssUrl}\" target=\"_blank"
 "\">Dowiedz się więcej na temat LOCKSS</a>. Treść licencji LOCKSS będzie "
 "widoczna w dziale O czasopiśmie."
-
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"Licencja LOCKSS zostanie wyświetlona w sekcji O czasopiśmie, pod "
-"Archiwizacją: <a href=\"http://www.lockss.org/community/publishers-titles-"
-"gln/\" target=\"_blank\">LOCKSS License</a>"
 
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "Opis licencji LOCKSS"
@@ -836,12 +814,6 @@ msgstr ""
 "Włącz CLOCKSS w celu przechowywania i dystrybucji zasobów czasopisma wśród "
 "uczestniczących bibliotek za pomocą <a href=\"{$clockssUrl}\" target=\"_blank"
 "\">strony</a> CLOCKSS ."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"Licencja CLOCKSS zostanie wyświetlona w sekcji \"O czasopiśmie\", pod "
-"Archiwizacją: <a href=\"http://clockss.org/\" target=\"_blank\">CLOCKSS "
-"License</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "Opis licencji CLOCKSS"
@@ -1945,9 +1917,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Hasło"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr "Hasło zostanie zapisane w postaci tekstu, nie zostanie zaszyfrowane."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Dowolny numer"
 
@@ -1973,10 +1942,7 @@ msgid "plugins.importexport.common.action.markRegistered"
 msgstr "Oznacz jako zarejestrowane"
 
 msgid "plugins.importexport.common.action.register"
-msgstr "Zarejestrowane"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Sprawdź XML przed eksportem i rejestracją."
+msgstr "Zarejestruj"
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Nie zaznaczono obiektów."
@@ -2852,3 +2818,11 @@ msgid "plugins.importexport.common.error.import.issueGalleyFileMissing"
 msgstr ""
 "Nie można zaimportować ostatecznej treści wydania, bo brakuje pliku który ją "
 "zawiera."
+
+msgid "manager.setup.contextSummary.description"
+msgstr ""
+"Zaoferuj krótki opis swojego pisma by zapewnić wgląd w jego treści i "
+"przeznaczenie."
+
+msgid "emailTemplate.variable.issue.issueTableOfContents"
+msgstr "Spis treści wydania jako lista wszystkich powiązanych zgłoszeń."

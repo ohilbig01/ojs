@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/datacite/DataciteExportPlugin.php
  *
- * Copyright (c) 2014-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2014-2025 Simon Fraser University
+ * Copyright (c) 2003-2025 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DataciteExportPlugin
@@ -25,7 +25,6 @@ use PKP\config\Config;
 use PKP\context\Context;
 use PKP\core\DataObject;
 use PKP\core\PKPApplication;
-use PKP\core\PKPString;
 use PKP\doi\Doi;
 use PKP\file\FileManager;
 use PKP\file\TemporaryFileManager;
@@ -51,6 +50,19 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin
         parent::__construct();
 
         $this->agencyPlugin = $agencyPlugin;
+    }
+
+    public function register($category, $path, $mainContextId = null)
+    {
+        $success = parent::register($category, $path, $mainContextId);
+        if ($success) {
+            // register hooks. This will prevent DB access attempts before the
+            // schema is installed.
+            if (Application::isUnderMaintenance()) {
+                return true;
+            }
+        }
+        return $success;
     }
 
     /**
@@ -106,13 +118,13 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin
      */
     public function getPluginSettingsPrefix()
     {
-        return 'datacite';
+        return 'dataciteplugin';
     }
 
     /**
      * @copydoc DOIPubIdExportPlugin::getSettingsFormClassName()
      */
-    public function getSettingsFormClassName()
+    public function getSettingsFormClassName(): string
     {
         throw new Exception('DOI settings no longer managed via plugin settings form.');
     }
@@ -212,7 +224,9 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin
             }
             // If we have more than one export file we package the files
             // up as a single tar before going on.
-            assert(count($exportedFiles) >= 1);
+            if (empty($exportedFiles)) {
+                throw new Exception('DataCite export: no objects were exported.');
+            }
             if (count($exportedFiles) > 1) {
                 // tar file name: e.g. datacite-20160723-160036-articles-1.tar.gz
                 $finalExportFileName = $this->getExportFileName(
@@ -242,18 +256,31 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin
      */
     public function depositXML($object, $context, $filename)
     {
+        // Application is set to sandbox mode and will not run the features of plugin
+        if (Config::getVar('general', 'sandbox', false)) {
+            error_log('Application is set to sandbox mode and datacite will not do any deposition');
+            return false;
+        }
+
         $request = Application::get()->getRequest();
         // Get the DOI and the URL for the object.
-        $doi = $object->getStoredPubId('doi');
-        assert(!empty($doi));
+        if ($object instanceof Submission) {
+            $doi = $object->getCurrentPublication()->getDoi();
+        } else {
+            $doi = $object->getDoi();
+        }
+        if (empty($doi)) {
+            throw new Exception('DataCite export: no DOI assigned to the object being deposited.');
+        }
         $testDOIPrefix = null;
         if ($this->isTestMode($context)) {
             $testDOIPrefix = $this->getSetting($context->getId(), 'testDOIPrefix');
-            assert(!empty($testDOIPrefix));
-            $doi = PKPString::regexp_replace('#^[^/]+/#', $testDOIPrefix . '/', $doi);
+            $doi = preg_replace('#^[^/]+/#', $testDOIPrefix . '/', $doi);
         }
         $url = $this->_getObjectUrl($request, $context, $object);
-        assert(!empty($url));
+        if (empty($url)) {
+            throw new Exception('DataCite export: no URL could be determined for the object being deposited.');
+        }
 
         $dataCiteAPIUrl = DATACITE_API_URL;
         $username = $this->getSetting($context->getId(), 'username');
@@ -265,7 +292,9 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin
         }
 
         // Prepare HTTP session.
-        assert(is_readable($filename));
+        if (!is_readable($filename)) {
+            throw new Exception("DataCite export: export file {$filename} is not readable.");
+        }
         $httpClient = Application::get()->getHttpClient();
         try {
             $response = $httpClient->request('POST', $dataCiteAPIUrl . 'metadata', [
@@ -280,7 +309,7 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin
             if ($e->hasResponse()) {
                 $returnMessage = $e->getResponse()->getBody() . ' (' . $e->getResponse()->getStatusCode() . ' ' . $e->getResponse()->getReasonPhrase() . ')';
             }
-            $this->updateDepositStatus($object, Doi::STATUS_ERROR);
+            $this->updateDepositStatus($object, Doi::STATUS_ERROR, $returnMessage);
             return [['plugins.importexport.common.register.error.mdsError', "Registering DOI {$doi}: {$returnMessage}"]];
         }
 
@@ -299,7 +328,7 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin
             if ($e->hasResponse()) {
                 $returnMessage = $e->getResponse()->getBody() . ' (' . $e->getResponse()->getStatusCode() . ' ' . $e->getResponse()->getReasonPhrase() . ')';
             }
-            $this->updateDepositStatus($object, Doi::STATUS_ERROR);
+            $this->updateDepositStatus($object, Doi::STATUS_ERROR, $returnMessage);
             return [['plugins.importexport.common.register.error.mdsError', "Registering DOI {$doi}: {$returnMessage}"]];
         }
         // Test mode submits entirely different DOI and URL so the status of that should not be stored in the database
@@ -315,21 +344,22 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin
      *
      * @param Submission|Issue|Representation $object
      */
-    public function updateDepositStatus(DataObject $object, string $status)
+    public function updateDepositStatus(DataObject $object, string $status, ?string $failedMsg = null)
     {
-        assert($object instanceof Submission || $object instanceof Issue || $object instanceof Representation);
         if ($object instanceof Submission) {
             $object = $object->getCurrentPublication();
         }
         $doiObject = $object->getData('doiObject');
         $editParams = [
-            'status' => $status
+            'status' => $status,
+            $this->getFailedMsgSettingName() => $failedMsg,
         ];
         if ($status == Doi::STATUS_REGISTERED) {
             $editParams['registrationAgency'] = $this->getName();
         }
         Repo::doi()->edit($doiObject, $editParams);
     }
+
 
     /**
      * Test whether the tar binary is available.
@@ -359,7 +389,6 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin
      */
     public function _tarFiles($targetPath, $targetFile, $sourceFiles)
     {
-        assert((bool) $this->_checkForTar());
         // GZip compressed result file.
         $tarCommand = Config::getVar('cli', 'tar') . ' -czf ' . escapeshellarg($targetFile);
         // Do not reveal our internal export path by exporting only relative filenames.
@@ -369,7 +398,6 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin
         // Add each file individually so that other files in the directory
         // will not be included.
         foreach ($sourceFiles as $sourceFile) {
-            assert(dirname($sourceFile) . '/' === $targetPath);
             if (dirname($sourceFile) . '/' !== $targetPath) {
                 continue;
             }
@@ -400,23 +428,22 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin
             } else {
                 $article = Repo::submission()->get($articleId);
             }
-            assert($article instanceof Submission);
         }
         $url = null;
         switch (true) {
             case $object instanceof Issue:
-                $url = $dispatcher->url($request, PKPApplication::ROUTE_PAGE, $context->getPath(), 'issue', 'view', $object->getBestIssueId(), null, null, true);
+                $url = $dispatcher->url($request, PKPApplication::ROUTE_PAGE, $context->getPath(), 'issue', 'view', [$object->getBestIssueId()], null, null, true, '');
                 break;
             case $object instanceof Submission:
-                $url = $dispatcher->url($request, PKPApplication::ROUTE_PAGE, $context->getPath(), 'article', 'view', $object->getBestId(), null, null, true);
+                $url = $dispatcher->url($request, PKPApplication::ROUTE_PAGE, $context->getPath(), 'article', 'view', [$object->getBestId()], null, null, true, '');
                 break;
             case $object instanceof Galley:
-                $url = $dispatcher->url($request, PKPApplication::ROUTE_PAGE, $context->getPath(), 'article', 'view', [$article->getBestId(), $object->getBestGalleyId()], null, null, true);
+                $url = $dispatcher->url($request, PKPApplication::ROUTE_PAGE, $context->getPath(), 'article', 'view', [$article->getBestId(), $object->getBestGalleyId()], null, null, true, '');
                 break;
         }
         if ($this->isTestMode($context)) {
             // Change server domain for testing.
-            $url = PKPString::regexp_replace('#://[^\s]+/index.php#', '://example.com/index.php', $url);
+            $url = preg_replace('#://[^\s]+/index.php#', '://example.com/index.php', $url);
         }
         return $url;
     }

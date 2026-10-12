@@ -22,8 +22,8 @@ configuration parameters.
   The old formats will continue to work for now but are deprecated.
 
 - An allowed_hosts option was added to protect against HOST injection attacks.
-  We recommend configuring this setting! See "Recommended Configuration" in
-  docs/README.md for details. (https://github.com/pkp/pkp-lib/issues/7649)
+  We recommend configuring this setting! See https://github.com/pkp/pkp-lib/issues/7649
+  for details.
 
 - The captcha.captcha_on_login option for displaying a captcha challenge in
   the login interface has been added (default: on)
@@ -41,6 +41,10 @@ New config.inc.php section for queues is added, with the following parameters:
 - The setting general.session_samesite (default value: Lax) has been added to control the "SameSite" setting for the session cookie.
 
 - The setting security.force_ssl, when enabled, will also set the "Secure" flag for the session cookie.
+
+New config.inc.php parameters added for emails:
+    - default (default value: sendmail), being the default mailer driver to be used for email delivery
+    - sendmail_path (default value: "/usr/sbin/sendmail -bs"), being the path to the sendmail program on the server
 
 New Features
 ------------

@@ -420,12 +420,6 @@ msgstr ""
 msgid "manager.setup"
 msgstr "Configuració"
 
-msgid "manager.setup.masthead"
-msgstr "Capçalera"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Equip editorial"
-
 msgid "manager.setup.homepageContent"
 msgstr "Contingut de la pàgina d'inici de la revista"
 
@@ -491,11 +485,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Apareixerà a «Sobre la revista») "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Demana als autors/ores que presentin una declaració de conflictes "
-"d’interessos (CI) juntament amb la tramesa."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -818,14 +807,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Títol de la revista"
 
-msgid "manager.setup.keyInfo"
-msgstr "Informació clau"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Proporcioneu una breu descripció de la revista i identifiqueu els editors/"
-"es, els directors/es administratius i altres membres de l'equip editorial."
-
 msgid "manager.setup.labelName"
 msgstr "Nom de l’etiqueta"
 
@@ -864,12 +845,6 @@ msgstr ""
 "biblioteques col·laboradores a través d'una pàgina de <a href="
 "\"{$lockssUrl}\" target=\"_blank\">manifest editorial</a> LOCKSS."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"Apareixerà una llicència LOCKSS en l'apartat \"Sobre la revista\" sota "
-"\"Emmagatzematge\": <a href=\"http://www.lockss.org/community/publishers-"
-"titles-gln/\" target=\"_blank\">llicència LOCKSS</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "Descripció de llicència LOCKSS"
 
@@ -889,12 +864,6 @@ msgstr ""
 "Permetre que CLOCKSS emmagatzemi i distribueixi el contingut de la revista "
 "entre les biblioteques participants a través d'una pàgina CLOCKSS de <a href="
 "\"{$clockssUrl}\" target=\"_blank\">manifest editorial</a>."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"Una llicència CLOCKSS apareixerà en l'apartat \"Sobre la revista\" sota "
-"\"Emmagatzematge\": <a href=\"http://clockss.org/\" target=\"_blank"
-"\">CLOCKSS License</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "Descripció de la llicència CLOCKSS"
@@ -2070,11 +2039,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Contrasenya"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Heu de tenir en compte que la contrasenya serà guardada en text sense "
-"format, p. ex. no encriptada."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Qualsevol número"
 
@@ -2101,9 +2065,6 @@ msgstr "Marcar com a registrats"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Registra"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Validar el XML abans de l'exportació i el registre."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Cap objecte seleccionat."

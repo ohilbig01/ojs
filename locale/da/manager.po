@@ -1,12 +1,12 @@
 # Niels Erik Frederiksen <nef@kb.dk>, 2021.
-# Alexandra Fogtmann-Schulz <alfo@kb.dk>, 2022, 2023.
+# Alexandra Fogtmann-Schulz <alfo@kb.dk>, 2022, 2023, 2024, 2025, 2026.
 # Jesper B. Thestrup <jbt@kb.dk>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:19+00:00\n"
-"PO-Revision-Date: 2023-03-28 17:13+0000\n"
+"PO-Revision-Date: 2026-09-08 10:13+0000\n"
 "Last-Translator: Alexandra Fogtmann-Schulz <alfo@kb.dk>\n"
 "Language-Team: Danish <http://translate.pkp.sfu.ca/projects/ojs/manager/da/>"
 "\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "Adgang"
@@ -183,7 +183,7 @@ msgstr ""
 "varighed og abonnenter administreres af abonnementschefen."
 
 msgid "subscriptionManager.subscription.confirmRemove"
-msgstr "Er du sikker på, at fu vil slette dette abonnement?"
+msgstr "Er du sikker på, at du vil slette dette abonnement?"
 
 msgid "manager.payment.options.enablePayments"
 msgstr ""
@@ -291,7 +291,7 @@ msgstr ""
 msgid "manager.people.mergeUsers.into.description"
 msgstr ""
 "Vælg en bruger, som skal tilskrives den tidligere brugers forfatterskab, "
-"redigeringsopgaver osv."
+"redaktionsopgaver osv."
 
 msgid "manager.people.roleEnrollment"
 msgstr "{$role} Tilmelding"
@@ -412,12 +412,6 @@ msgstr "Begræns ordantal for resumé i denne sektion (0 for ingen grænse)"
 msgid "manager.setup"
 msgstr "Tidsskriftskonfiguration"
 
-msgid "manager.setup.masthead"
-msgstr "Kolofon"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Redaktionsgruppe"
-
 msgid "manager.setup.homepageContent"
 msgstr "Indhold på tidsskriftshjemmeside"
 
@@ -482,11 +476,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Vises under Om tidsskriftet) "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Kræv, at forfattere, der fremsender et manuskript, skal indsende en "
-"erklæring om konkurrerende interesser sammen med deres manuskript."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -577,12 +566,12 @@ msgstr ""
 "nyheder og begivenheder. Publicerede meddelelser vises på siden Meddelelser."
 
 msgid "manager.setup.numAnnouncementsHomepage"
-msgstr "Vis på hjemmeside"
+msgstr "Vis på forsiden"
 
 msgid "manager.setup.numAnnouncementsHomepage.description"
 msgstr ""
-"Hvor mange meddelelser skal der vises på hjemmesiden. Lad dette være tomt "
-"hvis du ikke ønsker at vise nogen."
+"Antal meddelelser der skal vises på forsiden. Lad feltet være tomt, hvis der "
+"ikke skal vises nogen."
 
 msgid "manager.setup.enableUserRegistration"
 msgstr "Brugere kan lade sig registrere hos tidsskriftet."
@@ -797,14 +786,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Titel på tidsskrift"
 
-msgid "manager.setup.keyInfo"
-msgstr "Nøgleinformation"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Giv en kort beskrivelse af dit tidsskrift og identificer redaktører, "
-"tidsskriftschefer og andre medlemmer af din redaktion."
-
 msgid "manager.setup.labelName"
 msgstr "Etiketnavn"
 
@@ -844,12 +825,6 @@ msgstr ""
 "biblioteker via LOCKSS-siden <a href=\"{$lockssUrl}\" target=\"_blank"
 "\">Publisher Manifest</a>."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"En LOCKSS licens vil fremtræde i afsnittet 'Om tidsskriftet' under "
-"arkivering: <a href=\"http://www.lockss.org/community/publishers-titles-gln/"
-"\" target=\"_blank\">LOCKSS License</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "LOCKSS licensbeskrivelse"
 
@@ -869,11 +844,6 @@ msgstr ""
 "Aktivér CLOCKSS for at gemme og distribuere tidsskriftsindhold hos "
 "deltagende biblioteker via CLOCKSS-siden <a href=\"{$clockssUrl}\" target="
 "\"_blank\">Publisher Manifest</a> page."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"En CLOCKSS licens vil fremgå i afsnittet 'Om tidsskriftet' under arkivering: "
-"<a href=\"https://clockss.org\" target=\"_blank\">CLOCKSS Licens</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "CLOCKSS licensbeskrivelse"
@@ -983,11 +953,11 @@ msgstr "Publiceringsplan"
 
 msgid "manager.setup.publicationScheduleDescription"
 msgstr ""
-"Tidsskriftsartikler kan publiceres kollektivt, som en del af en udgave med "
+"Tidsskriftsartikler kan publiceres kollektivt, som en del af et nummer med "
 "egen indholdsfortegnelse. Individuelle artikler kan også publiceres så "
 "snart, de er klar, ved at føje dem til det \"aktuelle\" nummers "
-"indholdsfortegnelse. Oplys læserne, under Om tidsskriftet, om det system, "
-"som dette tidsskrift vil bruge, og om tidsskriftets forventede "
+"indholdsfortegnelse. Oplys læserne, under \"Om tidsskriftet\", om det "
+"system, som dette tidsskrift vil bruge, og om tidsskriftets forventede "
 "publiceringshyppighed."
 
 msgid "manager.setup.publicationScheduling"
@@ -997,7 +967,7 @@ msgid "manager.setup.publicIdentifier"
 msgstr "Identifikation af tidsskriftsindhold"
 
 msgid "manager.setup.publisher"
-msgstr "Forlægger"
+msgstr "Udgiver"
 
 msgid "manager.setup.referenceLinking"
 msgstr "Angivelse af links til referencer"
@@ -1706,7 +1676,7 @@ msgstr "Vælg bruger"
 
 msgid "manager.subscriptions.selectSubscriber.desc"
 msgstr ""
-"Der gives automatisk adgangsrettigheder til abonnementer til tidsskriftets "
+"Der gives automatisk abonnent-adgangsrettigheder til tidsskriftets "
 "tidsskriftschefter, redaktører, sektionsredaktører, layoutredaktører, "
 "manuskriptredaktører og korrekturlæsere."
 
@@ -1910,17 +1880,17 @@ msgstr ""
 "adgangsrettigheder, og som er tilknyttet tidsskriftets workflow. Der er fem "
 "forskellige adgangsniveauer: Tidsskriftschefer har adgang til alt i "
 "tidsskriftet (alt indhold og alle indstillinger). Sektionsredaktører har "
-"fuld adgang til alt indhold. Tidsskriftsassistenter har begrænset adgang til "
-"det indsendte materiale, der eksplicit er blevet tildelt dem af en redaktør. "
-"Bedømmere kan se og arbejde med de indsendelser, de er blevet sat til at "
-"bedømme, og forfattere kan se og interagere i forhold til en begrænset del "
-"af de informationer, der løbende knyttes til deres egne indsendelser. "
+"fuld adgang til alt indhold, de er blevet tildelt. Tidsskriftsassistenter "
+"har begrænset adgang til det indsendte materiale, der eksplicit er blevet "
+"tildelt dem af en redaktør. Bedømmere kan se og arbejde med de indsendelser, "
+"de er blevet sat til at bedømme. Forfattere kan se og interagere med en "
+"begrænset del af de informationer, der vedrører deres egne indsendelser. "
 "Derudover er der fem forskellige trin i workflowet, som roller kan tildeles "
 "adgang til: Indsendelse, intern bedømmelse, bedømmelse, redigering og "
 "produktion."
 
 msgid "manager.publication.library"
-msgstr "Forlagsbibliotek"
+msgstr "Filbibliotek"
 
 msgid "manager.setup.copyrightYearBasis"
 msgstr "Basér ny artikels copyright-år på"
@@ -2005,9 +1975,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Adgangskode"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr "Bemærk: Adgangskoden gemmes i klartekst dvs. ikke-krypteret."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Ethvert nummer"
 
@@ -2034,9 +2001,6 @@ msgstr "Markér registreret"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Registrér"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Godkend XML før eksport og registrering."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Der er ikke valgt element."
@@ -2548,16 +2512,16 @@ msgstr "Abonnementet er udløbet"
 
 msgid "mailable.subscriptionExpired.description"
 msgstr ""
-"Denne e-mail underretter en abonnent om, at vedkommendes abonnement er "
-"udløbet. Den indeholder tidsskriftets URL-adresse samt adgangsinstruktioner."
+"Denne e-mail sendes automatisk for at underrette en abonnent om, at "
+"vedkommendes abonnement er udløbet."
 
 msgid "mailable.subscriptionExpiredLast.name"
 msgstr "Abonnement udløb sidste"
 
 msgid "mailable.subscriptionExpiredLast.description"
 msgstr ""
-"Denne e-mail underretter en abonnent om, at vedkommendes abonnement er "
-"udløbet. Den indeholder tidsskriftets URL-adresse samt adgangsinstruktioner."
+"Denne e-mail sendes automatisk for anden gang for at underrette en abonnent "
+"om, at vedkommendes abonnement er udløbet"
 
 msgid "mailable.subscriptionPurchaseIndividual.name"
 msgstr "Køb individuelt abonnement"
@@ -2698,3 +2662,13 @@ msgid "plugins.importexport.common.error.issueCoverImageMissing"
 msgstr ""
 "Forsidebilledet på nummeret {$id} blev ikke eksporteret, da filen ikke blev "
 "fundet på stien \"{$path}\"."
+
+msgid "manager.setup.contextSummary.description"
+msgstr ""
+"Giv en kort beskrivelse af dit tidsskrift for at give indsigt i indhold og "
+"formål."
+
+msgid "emailTemplate.variable.issue.issueTableOfContents"
+msgstr ""
+"Nummerets indholdsfortegnelse som fx en liste af alle tilhørende "
+"indsendelser."

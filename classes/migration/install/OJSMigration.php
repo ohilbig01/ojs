@@ -14,9 +14,11 @@
 
 namespace APP\migration\install;
 
+use APP\publication\enums\VersionStage;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use PKP\publication\enums\UpdateType;
 
 class OJSMigration extends \PKP\migration\Migration
 {
@@ -38,7 +40,7 @@ class OJSMigration extends \PKP\migration\Migration
             $table->foreign('review_form_id', 'sections_review_form_id')->references('review_form_id')->on('review_forms')->onDelete('set null');
             $table->index(['review_form_id'], 'sections_review_form_id');
 
-            $table->float('seq', 8, 2)->default(0);
+            $table->float('seq')->default(0);
             $table->smallInteger('editor_restricted')->default(0);
             $table->smallInteger('meta_indexed')->default(0);
             $table->smallInteger('meta_reviewed')->default(1);
@@ -58,7 +60,7 @@ class OJSMigration extends \PKP\migration\Migration
             $table->foreign('section_id', 'section_settings_section_id')->references('section_id')->on('sections')->onDelete('cascade');
             $table->index(['section_id'], 'section_settings_section_id');
 
-            $table->string('locale', 14)->default('');
+            $table->string('locale', 28)->default('');
             $table->string('setting_name', 255);
             $table->mediumText('setting_value')->nullable();
 
@@ -107,19 +109,19 @@ class OJSMigration extends \PKP\migration\Migration
             $table->foreign('issue_id', 'issue_settings_issue_id')->references('issue_id')->on('issues')->onDelete('cascade');
             $table->index(['issue_id'], 'issue_settings_issue_id');
 
-            $table->string('locale', 14)->default('');
+            $table->string('locale', 28)->default('');
             $table->string('setting_name', 255);
             $table->mediumText('setting_value')->nullable();
 
             $table->unique(['issue_id', 'locale', 'setting_name'], 'issue_settings_unique');
         });
         // Add partial index (DBMS-specific)
-        switch (DB::getDriverName()) {
-            case 'mysql': DB::unprepared('CREATE INDEX issue_settings_name_value ON issue_settings (setting_name(50), setting_value(150))');
-                break;
-            case 'pgsql': DB::unprepared("CREATE INDEX issue_settings_name_value ON issue_settings (setting_name, setting_value) WHERE setting_name IN ('medra::registeredDoi', 'datacite::registeredDoi')");
-                break;
-        }
+        match (DB::getDriverName()) {
+            'mysql', 'mariadb' =>
+                DB::unprepared('CREATE INDEX issue_settings_name_value ON issue_settings (setting_name(50), setting_value(150))'),
+            'pgsql' =>
+                DB::unprepared("CREATE INDEX issue_settings_name_value ON issue_settings (setting_name, setting_value) WHERE setting_name IN ('medra::registeredDoi', 'datacite::registeredDoi')")
+        };
 
         Schema::create('issue_files', function (Blueprint $table) {
             $table->comment('Relationships between issues and issue files, such as cover images.');
@@ -143,7 +145,7 @@ class OJSMigration extends \PKP\migration\Migration
             $table->comment('Issue galleys are representations of the entire issue in a single file, such as a complete issue PDF.');
             $table->bigInteger('galley_id')->autoIncrement();
 
-            $table->string('locale', 14)->nullable();
+            $table->string('locale', 28)->nullable();
 
             $table->bigInteger('issue_id');
             $table->foreign('issue_id', 'issue_galleys_issue_id')->references('issue_id')->on('issues')->onDelete('cascade');
@@ -154,7 +156,7 @@ class OJSMigration extends \PKP\migration\Migration
             $table->index(['file_id'], 'issue_galleys_file_id');
 
             $table->string('label', 255)->nullable();
-            $table->float('seq', 8, 2)->default(0);
+            $table->float('seq')->default(0);
             $table->string('url_path', 64)->nullable();
 
             $table->index(['url_path'], 'issue_galleys_url_path');
@@ -169,7 +171,7 @@ class OJSMigration extends \PKP\migration\Migration
             $table->foreign('galley_id', 'issue_galleys_settings_galley_id')->references('galley_id')->on('issue_galleys')->onDelete('cascade');
             $table->index(['galley_id'], 'issue_galley_settings_galley_id');
 
-            $table->string('locale', 14)->default('');
+            $table->string('locale', 28)->default('');
             $table->string('setting_name', 255);
             $table->mediumText('setting_value')->nullable();
             $table->string('setting_type', 6)->comment('(bool|int|float|string|object)');
@@ -189,7 +191,7 @@ class OJSMigration extends \PKP\migration\Migration
             $table->foreign('journal_id', 'custom_issue_orders_journal_id')->references('journal_id')->on('journals')->onDelete('cascade');
             $table->index(['journal_id'], 'custom_issue_orders_journal_id');
 
-            $table->float('seq', 8, 2)->default(0);
+            $table->float('seq')->default(0);
 
             $table->unique(['issue_id'], 'custom_issue_orders_unique');
         });
@@ -206,7 +208,7 @@ class OJSMigration extends \PKP\migration\Migration
             $table->foreign('section_id', 'custom_section_orders_section_id')->references('section_id')->on('sections')->onDelete('cascade');
             $table->index(['section_id'], 'custom_section_orders_section_id');
 
-            $table->float('seq', 8, 2)->default(0);
+            $table->float('seq')->default(0);
 
             $table->unique(['issue_id', 'section_id'], 'custom_section_orders_unique');
         });
@@ -228,21 +230,36 @@ class OJSMigration extends \PKP\migration\Migration
             $table->foreign('section_id', 'publications_section_id')->references('section_id')->on('sections')->onDelete('set null');
             $table->index(['section_id'], 'publications_section_id');
 
-            $table->float('seq', 8, 2)->default(0);
+            $table->float('seq')->default(0);
 
             $table->bigInteger('submission_id');
             $table->foreign('submission_id', 'publications_submission_id')->references('submission_id')->on('submissions')->onDelete('cascade');
             $table->index(['submission_id'], 'publications_submission_id');
 
-            $table->smallInteger('status')->default(1); // PKPSubmission::STATUS_QUEUED
+            $table->smallInteger('status')->default(1); // PKPPublication::STATUS_QUEUED
             $table->string('url_path', 64)->nullable();
-            $table->bigInteger('version')->nullable();
 
             $table->bigInteger('doi_id')->nullable();
             $table->foreign('doi_id')->references('doi_id')->on('dois')->nullOnDelete();
             $table->index(['doi_id'], 'publications_doi_id');
 
+            $table->enum('version_stage', array_column(VersionStage::cases(), 'value'))->nullable();
+            $table->integer('version_minor')->nullable();
+            $table->integer('version_major')->nullable();
+            $table->enum('update_type', array_column(UpdateType::cases(), 'value'))->default(UpdateType::NEW_VERSION->value);
+            $table->datetime('created_at')->useCurrent();
+
+            $table->bigInteger('issue_id')->nullable();
+            $table->foreign('issue_id')->references('issue_id')->on('issues')->nullOnDelete();
+            $table->index(['issue_id'], 'publications_issue_id_index');
+
             $table->index(['url_path'], 'publications_url_path');
+
+            $table->bigInteger('source_publication_id')->nullable();
+            $table->foreign('source_publication_id', 'publications_source_publication_id')
+                ->references('publication_id')->on('publications')->nullOnDelete();
+            $table->index(['source_publication_id'], 'publications_source_publication_id_index');
+
         });
         // The following foreign key relationships are for tables defined in SubmissionsMigration
         // but they depend on publications to exist so are created here.
@@ -258,11 +275,16 @@ class OJSMigration extends \PKP\migration\Migration
             $table->foreign('publication_id')->references('publication_id')->on('publications')->onDelete('cascade');
             $table->index(['publication_id'], 'authors_publication_id');
         });
+        Schema::table('review_rounds', function (Blueprint $table) {
+            $table->foreign('publication_id')->references('publication_id')->on('publications');
+            $table->index(['publication_id'], 'review_rounds_publication_id');
+        });
+
         // Publication galleys
         Schema::create('publication_galleys', function (Blueprint $table) {
             $table->comment('Publication galleys are representations of a publication in a specific format, e.g. a PDF.');
             $table->bigInteger('galley_id')->autoIncrement();
-            $table->string('locale', 14)->nullable();
+            $table->string('locale', 28)->nullable();
 
             $table->bigInteger('publication_id');
             $table->foreign('publication_id', 'publication_galleys_publication_id')->references('publication_id')->on('publications')->onDelete('cascade');
@@ -274,7 +296,7 @@ class OJSMigration extends \PKP\migration\Migration
             $table->foreign('submission_file_id')->references('submission_file_id')->on('submission_files');
             $table->index(['submission_file_id'], 'publication_galleys_submission_file_id');
 
-            $table->float('seq', 8, 2)->default(0);
+            $table->float('seq')->default(0);
             $table->string('remote_url', 2047)->nullable();
             $table->smallInteger('is_approved')->default(0);
             $table->string('url_path', 64)->nullable();
@@ -295,19 +317,19 @@ class OJSMigration extends \PKP\migration\Migration
             $table->foreign('galley_id', 'publication_galley_settings_galley_id')->references('galley_id')->on('publication_galleys')->onDelete('cascade');
             $table->index(['galley_id'], 'publication_galley_settings_galley_id');
 
-            $table->string('locale', 14)->default('');
+            $table->string('locale', 28)->default('');
             $table->string('setting_name', 255);
             $table->mediumText('setting_value')->nullable();
 
             $table->unique(['galley_id', 'locale', 'setting_name'], 'publication_galley_settings_unique');
         });
         // Add partial index (DBMS-specific)
-        switch (DB::getDriverName()) {
-            case 'mysql': DB::unprepared('CREATE INDEX publication_galley_settings_name_value ON publication_galley_settings (setting_name(50), setting_value(150))');
-                break;
-            case 'pgsql': DB::unprepared('CREATE INDEX publication_galley_settings_name_value ON publication_galley_settings (setting_name, setting_value)');
-                break;
-        }
+        match (DB::getDriverName()) {
+            'mysql', 'mariadb' =>
+                DB::unprepared('CREATE INDEX publication_galley_settings_name_value ON publication_galley_settings (setting_name(50), setting_value(150))'),
+            'pgsql' =>
+                DB::unprepared('CREATE INDEX publication_galley_settings_name_value ON publication_galley_settings (setting_name, setting_value)')
+        };
 
         // Subscription types.
         Schema::create('subscription_types', function (Blueprint $table) {
@@ -318,14 +340,14 @@ class OJSMigration extends \PKP\migration\Migration
             $table->foreign('journal_id', 'subscription_types_journal_id')->references('journal_id')->on('journals')->onDelete('cascade');
             $table->index(['journal_id'], 'subscription_types_journal_id');
 
-            $table->float('cost', 8, 2);
+            $table->decimal('cost', 8, 2)->unsigned();
             $table->string('currency_code_alpha', 3);
             $table->smallInteger('duration')->nullable();
             $table->smallInteger('format');
             $table->smallInteger('institutional')->default(0);
             $table->smallInteger('membership')->default(0);
             $table->smallInteger('disable_public_display');
-            $table->float('seq', 8, 2);
+            $table->float('seq');
         });
 
         // Locale-specific subscription type data
@@ -337,7 +359,7 @@ class OJSMigration extends \PKP\migration\Migration
             $table->foreign('type_id', 'subscription_type_settings_type_id')->references('type_id')->on('subscription_types')->onDelete('cascade');
             $table->index(['type_id'], 'subscription_type_settings_type_id');
 
-            $table->string('locale', 14)->default('');
+            $table->string('locale', 28)->default('');
             $table->string('setting_name', 255);
             $table->mediumText('setting_value')->nullable();
             $table->string('setting_type', 6);
@@ -415,7 +437,7 @@ class OJSMigration extends \PKP\migration\Migration
             $table->index(['user_id'], 'completed_payments_user_id');
 
             $table->bigInteger('assoc_id')->nullable();
-            $table->float('amount', 8, 2);
+            $table->decimal('amount', 8, 2)->unsigned();
             $table->string('currency_code_alpha', 3)->nullable();
             $table->string('payment_method_plugin_name', 80)->nullable();
         });
@@ -449,8 +471,6 @@ class OJSMigration extends \PKP\migration\Migration
         Schema::drop('issue_galleys');
         Schema::drop('issue_settings');
         Schema::drop('issues');
-        Schema::drop('doi_settings');
-        Schema::drop('dois');
         Schema::drop('section_settings');
         Schema::drop('sections');
     }

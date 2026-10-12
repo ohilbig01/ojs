@@ -18,7 +18,7 @@
 		$('#urnSettingsForm').pkpHandler('$.pkp.plugins.pubIds.urn.js.URNSettingsFormHandler');
 	{rdelim});
 </script>
-<form class="pkp_form" id="urnSettingsForm" method="post" action="{url router=\PKP\core\PKPApplication::ROUTE_COMPONENT op="manage" category="pubIds" plugin=$pluginName verb="save"}">
+<form class="pkp_form" id="urnSettingsForm" method="post" action="{url router=PKP\core\PKPApplication::ROUTE_COMPONENT op="manage" category="pubIds" plugin=$pluginName verb="save"}">
 	{csrf}
 	{include file="common/formErrors.tpl"}
 	{fbvFormArea id="urnObjectsFormArea" title="plugins.pubIds.urn.manager.settings.urnObjects"}
@@ -51,7 +51,7 @@
 		{/fbvFormSection}
 		{fbvFormSection list="true"}
 			{fbvElement type="radio" id="urnSuffixPattern" name="urnSuffix" value="pattern" label="plugins.pubIds.urn.manager.settings.urnSuffixPattern" checked=$urnSuffix|compare:"pattern"}
-			<p class="pkp_help">{translate key="plugins.pubIds.urn.manager.settings.urnSuffixPattern.example"}</p>
+			<div><p class="pkp_help">{translate key="plugins.pubIds.urn.manager.settings.urnSuffixPattern.example"}</p></div>
 			{fbvElement type="text" label="plugins.pubIds.urn.manager.settings.urnSuffixPattern.issues" id="urnIssueSuffixPattern" value=$urnIssueSuffixPattern maxlength="40" inline=true size=$fbvStyles.size.MEDIUM}
 			{fbvElement type="text" label="plugins.pubIds.urn.manager.settings.urnSuffixPattern.submissions" id="urnPublicationSuffixPattern" value=$urnPublicationSuffixPattern maxlength="40" inline=true size=$fbvStyles.size.MEDIUM}
 			{fbvElement type="text" label="plugins.pubIds.urn.manager.settings.urnSuffixPattern.representations" id="urnRepresentationSuffixPattern" value=$urnRepresentationSuffixPattern maxlength="40" inline=true size=$fbvStyles.size.MEDIUM}

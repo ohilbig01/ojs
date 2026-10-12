@@ -15,10 +15,12 @@
 
 namespace APP\plugins\generic\announcementFeed;
 
-use APP\facades\Repo;
 use APP\template\TemplateManager;
-use PKP\core\Core;
+use Carbon\Carbon;
+use PKP\announcement\Announcement;
 use PKP\db\DAORegistry;
+use PKP\facades\Locale;
+use PKP\i18n\LocaleConversion;
 use PKP\plugins\GatewayPlugin;
 use PKP\site\VersionDAO;
 
@@ -128,25 +130,25 @@ class AnnouncementFeedGatewayPlugin extends GatewayPlugin
         }
 
         // Get limit setting, if any
-        $collector = Repo::announcement()->getCollector()->filterByContextIds([$journal->getId()]);
+        $announcements = Announcement::withContextIds([$journal->getId()])->withActiveByDate();
         $recentItems = (int) $this->_parentPlugin->getSetting($journal->getId(), 'recentItems');
         if ($recentItems > 0) {
-            $collector->limit($recentItems);
+            $announcements->limit($recentItems);
         }
-        $announcements = $collector->getMany();
+        $announcements = $announcements->get();
 
         // Get date of most recent announcement
         $lastDateUpdated = $this->_parentPlugin->getSetting($journal->getId(), 'dateUpdated');
-        if (empty($announcements)) {
+        if ($announcements->isEmpty()) {
             if (empty($lastDateUpdated)) {
-                $dateUpdated = Core::getCurrentDate();
+                $dateUpdated = Carbon::now();
                 $this->_parentPlugin->updateSetting($journal->getId(), 'dateUpdated', $dateUpdated, 'string');
             } else {
                 $dateUpdated = $lastDateUpdated;
             }
         } else {
-            $dateUpdated = $announcements->first()->getDatetimePosted();
-            if (empty($lastDateUpdated) || (strtotime($dateUpdated) > strtotime($lastDateUpdated))) {
+            $dateUpdated = $announcements->first()->datePosted;
+            if (empty($lastDateUpdated) || $dateUpdated->gt($lastDateUpdated)) {
                 $this->_parentPlugin->updateSetting($journal->getId(), 'dateUpdated', $dateUpdated, 'string');
             }
         }
@@ -161,6 +163,7 @@ class AnnouncementFeedGatewayPlugin extends GatewayPlugin
             'dateUpdated' => $dateUpdated,
             'announcements' => $announcements,
             'journal' => $journal,
+            'language' => LocaleConversion::toBcp47(Locale::getLocale()),
         ]);
 
         $templateMgr->setHeaders(['content-type: ' . $mimeTypeMap[$type] . '; charset=utf-8']);

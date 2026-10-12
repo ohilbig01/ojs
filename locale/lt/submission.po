@@ -1,0 +1,426 @@
+# Darius Zviedris <darius.zviedris@lki.lt>, 2025.
+# Vincas Grigas <vincas.grigas@gmail.com>, 2026.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2026-08-20 11:17+0000\n"
+"Last-Translator: Vincas Grigas <vincas.grigas@gmail.com>\n"
+"Language-Team: Lithuanian <http://translate.pkp.sfu.ca/projects/ojs/"
+"submission/lt/>\n"
+"Language: lt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && (n % 100 < 11 || n % 100 > "
+"19)) ? 0 : ((n % 10 >= 2 && n % 10 <= 9 && (n % 100 < 11 || n % 100 > 19)) ? "
+"1 : 2);\n"
+"X-Generator: Weblate 4.18.2\n"
+
+msgid "submission.submit.userGroup"
+msgstr "Pateikti kaip..."
+
+msgid "submission.upload.selectComponent"
+msgstr "Pasirinkite straipsnio komponentą"
+
+msgid "submission.submit.form.authorRequired"
+msgstr "Turi būi nurodytas bent vienas autorius."
+
+msgid "submission.submit.form.titleRequired"
+msgstr "Prašom įrašyti straipsnio pavadinimą."
+
+msgid "submission.submit.form.contributorRoleRequired"
+msgstr "Prašome pasirinkti pateikėjo vaidmenį."
+
+msgid "submission.title"
+msgstr "Straipsnio pavadinimas"
+
+msgid "submission.title.tip"
+msgstr ""
+"Pateikimo tipas paprastai būna vienas iš „paveikslėlis“, „tekstas“ arba kiti "
+"daugialypės terpės tipai, įskaitant „programinė įranga“ ar „interaktyvus“.  "
+"Pasirinkite tą, kuris labiausiai atitinka jūsų pateikimą.  Pavyzdžių galite "
+"rasti adresu <a target=\"_blank\" href=\"http://dublincore.org/documents/"
+"2001/04/12/usageguide/generic.shtml#type\">[http://dublincore.org/documents/"
+"2001/04/12/usageguide/generic.shtml#type](http://dublincore.org/documents/"
+"2001/04/12/usageguide/generic.shtml#type)</a>"
+
+msgid "submission.submit.newSubmissionMultiple"
+msgstr "Pradėti naują pateikimą"
+
+msgid "submission.submit.newSubmissionSingle"
+msgstr "Naujas straipsnis"
+
+msgid "grid.action.workflow"
+msgstr "Pateikimo eiga"
+
+msgid "submission.abstract.wordCount.description"
+msgstr "Santrauką turi sudaryti ne daugiau kaip {$wordCount} žodžių."
+
+msgid "submission.issueEntry"
+msgstr "Metaduomenys"
+
+msgid "submission.submit.whatNext.description"
+msgstr ""
+"Apie Jūsų straipsnį leidiniui pranešta, o Jums išsiųstas patvirtinimas, kad "
+"straipsnis gautas. Kai redaktorius straipsnį perskaitys, su jumis susisieks."
+
+msgid "grid.action.galleyInIssueEntry"
+msgstr "Publikavimo formatas rodomas numerio įraše"
+
+msgid "grid.action.issueEntry"
+msgstr "Peržiūrėti pateikto straipsnio metaduomenis"
+
+msgid "submission.event.articleGalleyMadeAvailable"
+msgstr "Straipsnio publikavimo formatas „{$galleyFormatName}“ yra paskelbtas."
+
+msgid "submission.event.articleGalleyMadeUnavailable"
+msgstr "Publikavimo formatas „{$galleyFormatName}“ nebėra prieinamas."
+
+msgid "submission.event.publicIdentifiers"
+msgstr "Straipsnių viešieji identifikatoriai atnaujinti."
+
+msgid "grid.issueEntry.availableGalley.title"
+msgstr "Formato patvirtinimas"
+
+msgid "grid.issueEntry.availableGalley.removeMessage"
+msgstr ""
+"<p>Ši publikacijos versija <em>daugiau nebebus prieinama</em> "
+"skaitytojams.</p>"
+
+msgid "grid.issueEntry.availableGalley.message"
+msgstr "<p>Ši publikacijos versija <em>bus prieinama</em> skaitytojams.</p>"
+
+msgid "grid.action.availableArticleGalley"
+msgstr "Padaryti šį publikavimo formatą prieinamą"
+
+msgid "submission.galleyFiles"
+msgstr "Publikavimo formato failai"
+
+msgid "submission.proofReadingDescription"
+msgstr ""
+"Maketo redaktorius čia įkelia paruoštus publikavimui failus. Naudokite "
+"<em>Priskirti tikrintoją</em>, kad paskirtumėte autorius ar kitus asmenis "
+"koreguoti publikacijos maketus; pataisyti failai turi būti įkelti "
+"patvirtinimui prieš publikaciją."
+
+msgid "grid.action.approveProof"
+msgstr "Patvirtinti šią korektūrą įtraukimui į publikavimo formatą."
+
+msgid "grid.action.pageProofApproved"
+msgstr "Ši korektūra patvirtinta įtraukti į publikavimo formatą."
+
+msgid "submission.submit.titleAndSummary"
+msgstr "Pavadinimas ir santrauka"
+
+msgid "submission.submit.upload.description"
+msgstr ""
+"Įkelti su šiuo straipsniu susijusius failus: straipsnį, vaizdo medžiagą, "
+"duomenis, iliustracijas ir kt."
+
+msgid "submission.pageProofs"
+msgstr "Korektūra"
+
+msgid "workflow.review.externalReview"
+msgstr "Recenzuojamas"
+
+msgid "submission.event.issueMetadataUpdated"
+msgstr "Numeriui pateiktų straipsnių metaduomenys atnaujinti."
+
+msgid "submission.upload.fileContents"
+msgstr "Straipsnio sudedamosios dalys"
+
+msgid "submission.complete"
+msgstr "Patvirtinta"
+
+msgid "submission.incomplete"
+msgstr "Laukiama patvirtinimo"
+
+msgid "submission.submit.submissionChecklist"
+msgstr "Pateikimo kontrolinis sąrašas"
+
+msgid "submission.submit.privacyStatement"
+msgstr "Privatumo deklaracija"
+
+msgid "submission.submit.contributorRole"
+msgstr "Dalyvio vaidmuo"
+
+msgid "submission.citationFormat.notFound"
+msgstr "Nepavyko gauti pasirinkto citavimo formato."
+
+msgid "submission.metadataDescription"
+msgstr ""
+"Nustatymai grindžiami „Dublin Core“ metaduomenų rinkiniu, žurnalo turiniui "
+"atvaizduoti taikomi tarptautiniai standartai."
+
+msgid "section.any"
+msgstr "Bet kuri sekcija"
+
+msgid "catalog.browseTitles"
+msgstr "{$numTitles} elementai"
+
+msgid "catalog.category.heading"
+msgstr "Visi elementai"
+
+msgid "submission.submit.form.abstractRequired"
+msgstr "Prašom pateikti straipsnio santrauką."
+
+msgid "submission.submit.form.wordCountAlert"
+msgstr ""
+"Santrauka per ilga. Sutrumpinkite, kad nebūtų ilgesnė nei nustatytas žodžių "
+"skaičius."
+
+msgid "submission.submit.noContext"
+msgstr "Nepavyko rasti žurnalo, kuriam priklauso šis pateikimas."
+
+msgid "submission.sectionOptions"
+msgstr "Sekcijos parinktys"
+
+msgid "galley.editPublishedDisabled"
+msgstr ""
+"Šio leidinio galutinės versijos negalima redaguoti, nes jis jau buvo "
+"publikuotas."
+
+msgid "galley.publicationNotFound"
+msgstr "Nepavyko rasti su šiuo publikavimo formatu susietos publikacijos."
+
+msgid "publication.assignToissue"
+msgstr "Priskirti numeriui"
+
+msgid "publication.assignedToIssue"
+msgstr ""
+"Tai buvo priskirta <a href=\"{$issueUrl}\">{$issueName</a>, bet nebuvo "
+"suplanuota publikuoti."
+
+msgid "publication.invalidSection"
+msgstr "Šio leidinio sekcija nerasta."
+
+msgid "publication.inactiveSection"
+msgstr "{$section} (Neaktyvus)"
+
+msgid "publication.invalidIssue"
+msgstr "Šio leidinio numerio rasti nepavyko."
+
+msgid "publication.publish.confirmation"
+msgstr ""
+"Visi publikavimo reikalavimai įvykdyti. Ar tikrai norite tai publikuoti?"
+
+msgid "publication.publish.confirmation.datePublishedInPast"
+msgstr ""
+"Visi publikavimo reikalavimai įvykdyti. Šis įrašas bus paskelbtas "
+"nedelsiant, nes publikavimo data nustatyta kaip {$datePublished}. Ar tikrai "
+"norite tai publikuoti?"
+
+msgid "publication.required.issue"
+msgstr "Prieš publikuojant, straipsnis turi būti priskirtas numeriui."
+
+msgid "publication.publishedIn"
+msgstr "Paskelbta <a href=\"{$issueUrl}\">{$issueName}</a>."
+
+msgid "publication.scheduledIn"
+msgstr "Numatyta paskelbti <a href=\"{$issueUrl}\">{$issueName}</a>."
+
+msgid "publication.unscheduledIn"
+msgstr "Tai nebuvo suplanuota publikuoti jokiame numeryje."
+
+msgid "publication.selectIssue"
+msgstr "Pasirinkite numerį, kurį norite suplanuoti publikuoti"
+
+msgid "submission.publication"
+msgstr "Leidinys"
+
+msgid "publication.status.published"
+msgstr "Paskelbta"
+
+msgid "submission.status.scheduled"
+msgstr "Suplanuota"
+
+msgid "submission.publications"
+msgstr "Leidiniai"
+
+msgid "publication.copyrightYearBasis.submissionDescription"
+msgstr "Autorių teisių metai bus nustatyti automatiškai pagal išleidimo datą."
+
+msgid "publication.datePublished"
+msgstr "Paskelbimo data"
+
+msgid "publication.editDisabled"
+msgstr "Ši versija buvo paskelbta ir jos negalima redaguoti."
+
+msgid "publication.event.published"
+msgstr "Pateikimas buvo paskelbtas."
+
+msgid "publication.event.unpublished"
+msgstr "Pateikimas nebuvo paskelbtas."
+
+msgid "publication.event.versionPublished"
+msgstr "Buvo paskelbta nauja versija."
+
+msgid "publication.event.versionScheduled"
+msgstr "Nauja versija suplanuota publikuoti."
+
+msgid "publication.event.versionUnpublished"
+msgstr "Versija buvo pašalinta iš leidinio."
+
+msgid "publication.invalidSubmission"
+msgstr "Nepavyko rasti šiai publikacijai priskirto pateikimo."
+
+msgid "publication.publish"
+msgstr "Publikuoti"
+
+msgid "publication.required.declined"
+msgstr "Atmestas pateikimas negali būti publikuojamas."
+
+msgid "publication.required.reviewStage"
+msgstr ""
+"Pateikimas turi būti redagavimo arba gamybos etape, kad jį būtų galima "
+"publikuoti."
+
+msgid "submission.copyrightHolder.description"
+msgstr ""
+"Autorių teisės bus automatiškai priskirtos {$copyright}, kai šis kūrinys bus "
+"paskelbtas."
+
+msgid "submission.copyrightOther.description"
+msgstr "Priskirti publikuotų darbų autorių teises šiai šaliai."
+
+msgid "publication.unpublish"
+msgstr "Atšaukti publikavimą"
+
+msgid "publication.unpublish.confirm"
+msgstr "Ar tikrai nenorite, kad tai būtų publikuojama?"
+
+msgid "publication.unschedule.confirm"
+msgstr "Ar tikrai nenorite, kad tai būtų suplanuota publikuoti?"
+
+msgid "publication.version.details"
+msgstr "Leidinio {$version} versijos informacija"
+
+#, fuzzy
+msgid "submission.queries.production"
+msgstr "Gamybos diskusijos"
+
+msgid "editor.submission.decision.backToReview.description"
+msgstr ""
+"Atšaukti sprendimą publikuoti šį pateikimą ir grąžinti jį į recenzavimą."
+
+#, fuzzy
+msgid "editor.submission.decision.backToReview.completed"
+msgstr "Grąžinti į recenzavimą"
+
+#, fuzzy
+msgid "editor.submission.decision.backToReview.completed.description"
+msgstr "Pateiktas darbas, {$title}, buvo grąžintas į recenzavimą."
+
+#, fuzzy
+msgid "editor.submission.decision.backToReview.notifyAuthorsDescription"
+msgstr ""
+"Išsiųskite autoriams el. laišką apie rankraščio grąžinimą į recenzavimo "
+"etapą. Paaiškinkite sprendimo priežastis ir nurodykite, koks tolesnis "
+"vertinimas bus atliekamas."
+
+msgid "editor.submission.decision.promoteFiles.externalReview"
+msgstr "Pasirinkite failus, kurie turėtų būti siunčiami į recenzavimą."
+
+msgid "doi.submission.issueMissing.publication"
+msgstr ""
+"Nepavyko sugeneruoti DOI šiam pateikimui: {$pubObjectTitle}. DOI gali būti "
+"sukurtas tik tada, kai pateikimas yra priskirtas žurnalo numeriui."
+
+msgid "doi.submission.issueMissing.representation"
+msgstr ""
+"Nepavyko sugeneruoti DOI publikavimo formatui „{$pubObjectTitle}“, susietam "
+"su pateikimu „{$itemTitle}“. DOI gali būti sukurtas tik tada, kai pateikimas "
+"yra priskirtas žurnalo numeriui."
+
+msgid "doi.submission.incorrectContext"
+msgstr ""
+"Nepavyko sukurti DOI šiam pateikimui: {$pubObjectTitle}. Dabartiniame "
+"žurnalo kontekste jo nėra."
+
+msgid "submission.layout.viewGalley"
+msgstr "Peržiūrėti publikavimo formatą"
+
+msgid "galley.cantEditPublished"
+msgstr "Šio publikavimo formato nebegalima redaguoti, nes jis jau paskelbtas."
+
+msgid "submission.copyright.description"
+msgstr ""
+"Prašome perskaityti ir įsigilinti į autorių teisių sąlygas, taikomas "
+"pateikiant straipsnius šiam žurnalui."
+
+msgid "submission.wizard.noSectionAllowed.description"
+msgstr ""
+"Jums neleidžiama pateikti darbų šiam žurnalui, nes pateikimas visose šio "
+"žurnalo sekcijose buvo išjungtas arba apribotas. Jei manote, kad tai klaida, "
+"susisiekite su <a href='mailto:{$email}'>{$name</a>."
+
+msgid "submission.wizard.sectionClosed.message"
+msgstr ""
+"„{$contextName}“ nepriima pateiktų darbų į „{$section}“ sekciją. Jei jums "
+"reikia pagalbos atkuriant pateiktą darbą, susisiekite su <a "
+"href='mailto:{$email}'>{$name</a>."
+
+msgid "submission.sectionNotFound"
+msgstr "Nepavyko rasti šiam pateikimui priskirtos sekcijos."
+
+msgid "submission.sectionRestrictedToEditors"
+msgstr "Straipsnius į šią sekciją gali teikti tik redakcinės komandos nariai."
+
+msgid "publication.changeIssue"
+msgstr "Pakeisti numeri"
+
+msgid "publication.event.scheduled"
+msgstr "Pateikimas buvo suplanuotas publikavimui."
+
+msgid "publication.publish.requirements"
+msgstr "Prieš publikuojant, turi būti įvykdyti šie reikalavimai."
+
+msgid "editor.submission.decision.backToReview"
+msgstr "Grįžti į recenzavimą"
+
+msgid "editor.submission.decision.sendExternalReview.notifyAuthorsDescription"
+msgstr ""
+"Išsiųskite autoriams el. laišką, kad šis pateiktas darbas bus išsiųstas "
+"recenzuoti. Jei įmanoma, nurodykite autoriams, kiek laiko gali užtrukti "
+"recenzavimass ir kada jie turėtų tikėtis kito redaktorių atsakymo. Šis el. "
+"laiškas bus išsiųstas tik tada, kai bus užregistruotas sprendimas."
+
+msgid "submission.wizard.notAllowed.description"
+msgstr ""
+"Jums neleidžiama pateikti darbų šiam žurnalui, nes autorius turi "
+"užregistruoti redakcijos darbuotojai. Jei manote, kad tai klaida, "
+"susisiekite su <a href='mailto:{$email}'>{$name</a>."
+
+msgid "publication.datePublished.description"
+msgstr ""
+"Išleidimo data bus nustatyta automatiškai, kai numeris bus išleistas. "
+"Neįveskite išleidimo datos, nebent straipsnis anksčiau buvo publikuotas "
+"kitur ir jums reikia jį datuoti atgal."
+
+msgid "submission.license.description"
+msgstr ""
+"Licencija bus automatiškai nustatyta į <a href='{$licenseUrl}' "
+"target='_blank'>{$licenseName</a>, kai tai bus paskelbta."
+
+msgid "editor.submission.decision.backToReview.log"
+msgstr ""
+"{$editorName} atšaukė sprendimą priimti šį pateikimą ir grąžino jį į "
+"recenzavimą."
+
+msgid "publication.publish.confirmation.futureIssue"
+msgstr ""
+"Visi publikavimo reikalavimai yra įvykdyti. Šis straipsnis bus paskelbtas, "
+"kai bus paskelbtas numeris {$issue}. Ar tikrai norite suplanuoti jo "
+"publikavimą?"
+
+msgid "publication.publish.confirmation.backIssue"
+msgstr ""
+"Visi publikavimo reikalavimai įvykdyti. Tai bus nedelsiant paskelbta "
+"leidinyje {$issue}. Ar tikrai norite tai publikuoti?"
+
+msgid "publication.status.unscheduled"
+msgstr "Nepriskirta numeriui"
+
+msgid "publication.copyrightYearBasis.issueDescription"
+msgstr ""
+"Autorių teisių metai bus nustatyti automatiškai, kai šis straipsnis bus "
+"paskelbtas numeryje."

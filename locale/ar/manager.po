@@ -1,12 +1,13 @@
 # M. Ali <vorteem@gmail.com>, 2021, 2022, 2023.
 # Salam Al-Khammasi <salam.alshemmari@uokufa.edu.iq>, 2022.
+# "M. Ali" <vorteem@gmail.com>, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:16+00:00\n"
-"PO-Revision-Date: 2023-03-31 18:43+0000\n"
-"Last-Translator: M. Ali <vorteem@gmail.com>\n"
+"PO-Revision-Date: 2026-09-20 09:59+0000\n"
+"Last-Translator: \"M. Ali\" <vorteem@gmail.com>\n"
 "Language-Team: Arabic <http://translate.pkp.sfu.ca/projects/ojs/manager/ar/>"
 "\n"
 "Language: ar\n"
@@ -15,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "الوصول"
@@ -388,12 +389,6 @@ msgstr "قيد عدد كلمات الملخص في هذا القسم (الصفر
 msgid "manager.setup"
 msgstr "التهيئة"
 
-msgid "manager.setup.masthead"
-msgstr "طاقم المجلة"
-
-msgid "manager.setup.editorialTeam"
-msgstr "هيئة التحرير"
-
 msgid "manager.setup.homepageContent"
 msgstr "محتوى الصفحة الرئيسية للمجلة"
 
@@ -456,10 +451,6 @@ msgstr "أدخل أي معلومات إضافية ينبغي عرضها للقر
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(لتظهر في \"عن المجلة\") "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"يتطلب تقديم المؤلفين لبيان المصالح المتضاربة (CI) مع طلبات النشر الخاصة بهم."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -759,14 +750,6 @@ msgstr "شعار صغير أو ما يمثل المجلة بالإمكان اس�
 msgid "manager.setup.contextTitle"
 msgstr "عنوان المجلة"
 
-msgid "manager.setup.keyInfo"
-msgstr "المعلومات الأساسية"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"أعط وصفاً موجزاً عن المجلة مع التعريف بطاقمها من محررين ومدراء وغيرهم من "
-"المساهمين في أعمال التحرير."
-
 msgid "manager.setup.labelName"
 msgstr "اسم الملصق"
 
@@ -805,11 +788,6 @@ msgstr ""
 "LOCKSS <a href=\"{$lockssUrl}\" target=\"_blank\">وثيقة الناشر الأساسية</a>. "
 "إن رخصة LOCKSS ستظهر ضمن (عن المجلة) تحت (الحفظ)."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"رخصة LOCKSS ستظهر في (عن المجلة) تحت باب الحفظ: <a href=\"http://www.lockss."
-"org/community/publishers-titles-gln/\" target=\"_blank\">رخصة LOCKSS</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "وصف رخصة LOCKSS"
 
@@ -827,11 +805,6 @@ msgid "manager.setup.clockssEnable"
 msgstr ""
 "تمكين CLOCKSS لتخزين وتوزيع محتوى المجلة لدى المكتبات المساهمة بواسطة صفحة "
 "<a href=\"{$clockssUrl}\" target=\"_blank\">وثيقة الناشر الأساسية</a>."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"رخصة CLOCKSS ستظهر في (عن المجلة) تحت باب الحفظ: <a href=\"https://clockss."
-"org\" target=\"_blank\">رخصة CLOCKSS</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "وصف رخصة CLOCKSS"
@@ -1915,9 +1888,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "كلمة المرور"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr "لطفاً، لاحظ أن كلمة المرور سيتم حفظها بشكل نص صريح غير مشفر."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "أي عدد"
 
@@ -1944,9 +1914,6 @@ msgstr "مؤشر أنه مسجل"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "تسجيل"
-
-msgid "plugins.importexport.common.validation"
-msgstr "تحقق من نصوص XML قبل التصدير والتسجيل."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "لم يتم إختيار أي مكون."
@@ -2436,8 +2403,7 @@ msgstr "الاشتراك منتهي"
 
 msgid "mailable.subscriptionExpired.description"
 msgstr ""
-"هذه الرسالة تُعلم مشتركاً بانتهاء فترة إشتراكه في المجلة، وهي تقدم له رابط "
-"الدخول إلى الموقع مع تعليمات الوصول."
+"هذه الرسالة تُرسل تلقائيًا لتُعلم مشتركاً بانتهاء فترة إشتراكه في المجلة."
 
 msgid "mailable.subscriptionExpiredLast.name"
 msgstr "الاشتراك المنتهي مؤخرًا"
@@ -2551,3 +2517,9 @@ msgid "plugins.importexport.common.error.issueCoverImageMissing"
 msgstr ""
 "تعذر تصدير صورة الغلاف للعدد {$id}، تعذر العثور على ملفها في المسار \"{$path}"
 "\"."
+
+msgid "manager.setup.contextSummary.description"
+msgstr "أعطِ وصفًا موجزًا عن مجلتك لتوفر رؤى عن غرضها ومحتوياتها."
+
+msgid "emailTemplate.variable.issue.issueTableOfContents"
+msgstr "جدول محتويات العدد كأن يكون قائمة بكل طلبات التقديم ذات الصلة."

@@ -80,10 +80,13 @@ plugins/generic/citationStyleLanguage/lib/vendor/guzzle/guzzle/tests/Guzzle/Test
 plugins/generic/citationStyleLanguage/lib/vendor/symfony/config/Tests/			\
 lib/pkp/lib/vendor/symfony/translation/Tests/						\
 lib/pkp/lib/vendor/symfony/process/Tests/						\
-lib/pkp/lib/vendor/pimple/pimple/src/Pimple/Tests/					\
 lib/pkp/lib/vendor/robloach/component-installer/tests/ComponentInstaller/Test/		\
 lib/pkp/lib/vendor/michelf/php-markdown/test						\
-lib/pkp/lib/vendor/adodb/adodb-php/.git							\
+lib/pkp/lib/vendor/altcha-org/altcha/tests						\
+lib/pkp/lib/vendor/hanneskod/classtools/tests						\
+lib/pkp/lib/vendor/kirkbushell/eloquence/tests						\
+lib/pkp/lib/vendor/elcobvg/laravel-opcache/tests					\
+lib/pkp/lib/vendor/dflydev/base32-crockford/tests					\
 plugins/generic/citationStyleLanguage/lib/vendor/satooshi/php-coveralls/tests/		\
 plugins/generic/citationStyleLanguage/lib/vendor/guzzle/guzzle/tests/			\
 plugins/generic/citationStyleLanguage/lib/vendor/seboettg/collection/tests/		\
@@ -92,9 +95,7 @@ plugins/generic/citationStyleLanguage/lib/vendor/seboettg/citeproc-php/example/	
 lib/pkp/lib/vendor/nikic/fast-route/test/						\
 lib/pkp/lib/vendor/ezyang/htmlpurifier/tests/						\
 lib/pkp/lib/vendor/ezyang/htmlpurifier/smoketests/					\
-lib/pkp/lib/vendor/pimple/pimple/ext/pimple/tests/					\
 lib/pkp/lib/vendor/robloach/component-installer/tests/					\
-lib/pkp/lib/vendor/phpmailer/phpmailer/test/						\
 node_modules										\
 .editorconfig										\
 babel.config.js										\

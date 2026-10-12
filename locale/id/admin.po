@@ -1,11 +1,12 @@
-# Ramli Baharuddin <ramli.baharuddin@relawanjurnal.id>, 2022, 2023.
+# Ramli Baharuddin <ramli.baharuddin@relawanjurnal.id>, 2022, 2023, 2024.
+# Zahid Rizky Fakhri <zahidrizkyfakhri@gmail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:25+00:00\n"
-"PO-Revision-Date: 2023-04-07 08:35+0000\n"
-"Last-Translator: Ramli Baharuddin <ramli.baharuddin@relawanjurnal.id>\n"
+"PO-Revision-Date: 2025-05-02 14:23+0000\n"
+"Last-Translator: Zahid Rizky Fakhri <zahidrizkyfakhri@gmail.com>\n"
 "Language-Team: Indonesian <http://translate.pkp.sfu.ca/projects/ojs/admin/id/"
 ">\n"
 "Language: id\n"
@@ -13,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "admin.hostedContexts"
 msgstr "Jurnal yang Dikelola"
@@ -167,10 +168,10 @@ msgstr "Pemberitahuan Akses Terbuka"
 msgid "admin.scheduledTask.reviewReminder"
 msgstr "Pengingat Review"
 
-msgid "admin.scheduledTask.usageStatsLoader.invalidLogEntry.issueId"
+msgid "admin.job.processLogFile.invalidLogEntry.issueId"
 msgstr "ID edisi bukan integer."
 
-msgid "admin.scheduledTask.usageStatsLoader.invalidLogEntry.issueGalleyId"
+msgid "admin.job.processLogFile.invalidLogEntry.issueGalleyId"
 msgstr "ID galei edisi bukan integer."
 
 msgid ""
@@ -256,3 +257,6 @@ msgstr ""
 #~ "\t\thasil pencarian. Silakan pilih salah satu jenis metrik sebagai "
 #~ "bawaan.\n"
 #~ "\t"
+
+msgid "admin.settings.statistics.sushiPlatform.isSiteSushiPlatform"
+msgstr "Jadikan website sebagai flatform semua jurnal."

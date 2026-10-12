@@ -3,8 +3,8 @@
 /**
  * @file classes/plugins/DOIPubIdExportPlugin.php
  *
- * Copyright (c) 2014-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2014-2025 Simon Fraser University
+ * Copyright (c) 2003-2025 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DOIPubIdExportPlugin
@@ -21,9 +21,7 @@ use APP\issue\Issue;
 use APP\journal\Journal;
 use APP\submission\Submission;
 use APP\template\TemplateManager;
-use PKP\core\PKPString;
 use PKP\galley\Galley;
-use PKP\submission\PKPSubmission;
 
 // Configuration errors.
 define('DOI_EXPORT_CONFIG_ERROR_DOIPREFIX', 0x01);
@@ -52,6 +50,8 @@ abstract class DOIPubIdExportPlugin extends PubObjectsExportPlugin
     /**
      * Get pub ID type
      *
+     * @deprecated 3.4
+     *
      * @return string
      */
     public function getPubIdType()
@@ -62,6 +62,8 @@ abstract class DOIPubIdExportPlugin extends PubObjectsExportPlugin
     /**
      * Get pub ID display type
      *
+     * @deprecated 3.4
+     *
      * @return string
      */
     public function getPubIdDisplayType()
@@ -70,17 +72,18 @@ abstract class DOIPubIdExportPlugin extends PubObjectsExportPlugin
     }
 
     /**
-     * Mark selected submissions or issues as registered.
+     * Mark selected submissions or issues and their subobject DOIs as registered.
      *
-     * @param Journal $context
-     * @param array $objects Array of published submissions, issues or galleys
+     * @param array $objects Array of published submissions or issues
      */
-    public function markRegistered($context, $objects)
+    public function markRegistered($objects)
     {
         foreach ($objects as $object) {
-            $doiId = $object->getData('doiId');
-
-            if ($doiId != null) {
+            $doiIds = match (true) {
+                $object instanceof Submission => Repo::doi()->getPublishedDoisForSubmission($object->getId()),
+                $object instanceof Issue => Repo::doi()->getDoisForIssue($object->getId(), true),
+            };
+            foreach ($doiIds as $doiId) {
                 Repo::doi()->markRegistered($doiId);
             }
         }
@@ -97,13 +100,15 @@ abstract class DOIPubIdExportPlugin extends PubObjectsExportPlugin
      * @param Journal $context
      * @param Issue|Submission|Galley $object
      * @param string $testPrefix
+     *
+     * @deprecated 3.4
      */
     public function saveRegisteredDoi($context, $object, $testPrefix = '10.1234')
     {
         $registeredDoi = $object->getStoredPubId('doi');
         assert(!empty($registeredDoi));
         if ($this->isTestMode($context)) {
-            $registeredDoi = PKPString::regexp_replace('#^[^/]+/#', $testPrefix . '/', $registeredDoi);
+            $registeredDoi = preg_replace('#^[^/]+/#', $testPrefix . '/', $registeredDoi);
         }
         $object->setData($this->getPluginSettingsPrefix() . '::' . DOI_EXPORT_REGISTERED_DOI, $registeredDoi);
         $this->updateObject($object);
@@ -111,12 +116,10 @@ abstract class DOIPubIdExportPlugin extends PubObjectsExportPlugin
 
     /**
      * Get a list of additional setting names that should be stored with the objects.
-     *
-     * @return array
      */
-    protected function _getObjectAdditionalSettings()
+    public function getObjectAdditionalSettings(): array
     {
-        return array_merge(parent::_getObjectAdditionalSettings(), [
+        return array_merge(parent::getObjectAdditionalSettings(), [
             $this->getPluginSettingsPrefix() . '::' . DOI_EXPORT_REGISTERED_DOI
         ]);
     }
@@ -127,6 +130,8 @@ abstract class DOIPubIdExportPlugin extends PubObjectsExportPlugin
      * @param array $submissionIds
      * @param Journal $context
      *
+     * @deprecated 3.4
+     *
      * @return array
      */
     public function getPublishedSubmissions($submissionIds, $context)
@@ -134,7 +139,7 @@ abstract class DOIPubIdExportPlugin extends PubObjectsExportPlugin
         $allSubmissionIds = Repo::submission()
             ->getCollector()
             ->filterByContextIds([$context->getId()])
-            ->filterByStatus([PKPSubmission::STATUS_PUBLISHED])
+            ->filterByCurrentPublicationStatus([PKPPublication::STATUS_PUBLISHED])
             ->getIds()
             ->toArray();
         $validSubmissionIds = array_intersect($allSubmissionIds, $submissionIds);
@@ -151,6 +156,8 @@ abstract class DOIPubIdExportPlugin extends PubObjectsExportPlugin
      *
      * @param array $issueIds
      * @param Journal $context
+     *
+     * @deprecated 3.4
      *
      * @return array
      */
@@ -171,6 +178,8 @@ abstract class DOIPubIdExportPlugin extends PubObjectsExportPlugin
      *
      * @param array $galleyIds
      * @param Journal $context
+     *
+     * @deprecated 3.4
      *
      * @return array
      */
@@ -205,8 +214,4 @@ abstract class DOIPubIdExportPlugin extends PubObjectsExportPlugin
     {
         return false;
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\plugins\DOIPubIdExportPlugin', '\DOIPubIdExportPlugin');
 }

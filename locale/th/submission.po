@@ -1,0 +1,408 @@
+# Apichaya <apichaya_cc@thonburi-u.ac.th>, 2024, 2026.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2026-09-15 04:51+0000\n"
+"Last-Translator: Apichaya <apichaya_cc@thonburi-u.ac.th>\n"
+"Language-Team: Thai <http://translate.pkp.sfu.ca/projects/ojs/submission/th/>"
+"\n"
+"Language: th\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.18.2\n"
+
+msgid "submission.submit.userGroup"
+msgstr "ส่งบทความในบทบาทของ..."
+
+msgid "submission.upload.selectComponent"
+msgstr "เลือกองค์ประกอบของบทความ"
+
+msgid "submission.submit.whatNext.description"
+msgstr ""
+"วารสารได้รับบทความของคุณแล้ว และได้ส่งอีเมลยืนยันให้คุณเก็บไว้เป็นหลักฐาน "
+"เมื่อบรรณาธิการตรวจสอบบทความแล้วจะติดต่อกลับ"
+
+msgid "submission.title"
+msgstr "ชื่อบทความ"
+
+msgid "submission.submit.newSubmissionMultiple"
+msgstr "เริ่มส่งบทความใหม่ใน"
+
+msgid "submission.submit.newSubmissionSingle"
+msgstr "ส่งบทความใหม่"
+
+msgid "grid.action.workflow"
+msgstr "ขั้นตอนการดำเนินงาน"
+
+msgid "submission.abstract.wordCount.description"
+msgstr "บทคัดย่อต้องมีความยาวไม่เกิน {$wordCount} คำ"
+
+msgid "submission.submit.noContext"
+msgstr "ไม่พบวารสารของบทความที่ส่งนี้"
+
+msgid "submission.issueEntry"
+msgstr "ข้อมูลเมตา"
+
+msgid "grid.action.galleyInIssueEntry"
+msgstr "แสดงไฟล์เผยแพร่ในข้อมูลฉบับวารสาร"
+
+msgid "grid.action.issueEntry"
+msgstr "ดูข้อมูลเมตาของบทความนี้"
+
+msgid "submission.event.articleGalleyMadeAvailable"
+msgstr "เปิดให้เข้าถึงไฟล์เผยแพร่บทความ \"{$galleyFormatName}\" แล้ว"
+
+msgid "submission.event.articleGalleyMadeUnavailable"
+msgstr "ปิดการเข้าถึงไฟล์เผยแพร่บทความ \"{$galleyFormatName}\" แล้ว"
+
+msgid "submission.event.publicIdentifiers"
+msgstr "อัปเดตรหัสสาธารณะของบทความแล้ว"
+
+msgid "grid.issueEntry.availableGalley.title"
+msgstr "การอนุมัติรูปแบบ"
+
+msgid "submission.title.tip"
+msgstr ""
+"ประเภทของบทความที่ส่งมักเป็น \"ภาพ\" \"ข้อความ\" หรือสื่อประเภทอื่น เช่น "
+"\"ซอฟต์แวร์\" หรือ \"สื่อโต้ตอบ\" "
+"โปรดเลือกประเภทที่ตรงกับบทความของคุณมากที่สุด ดูตัวอย่างได้ที่ <a target="
+"\"_blank\" href=\"http://dublincore.org/documents/2001/04/12/usageguide/"
+"generic.shtml#type\">http://dublincore.org/documents/2001/04/12/usageguide/"
+"generic.shtml#type</a>"
+
+msgid "section.any"
+msgstr "ทุกหมวด"
+
+msgid "submission.sectionOptions"
+msgstr "ตัวเลือกหมวด"
+
+msgid "catalog.browseTitles"
+msgstr "{$numTitles} รายการ"
+
+msgid "catalog.category.heading"
+msgstr "รายการทั้งหมด"
+
+msgid "galley.editPublishedDisabled"
+msgstr "ไม่สามารถแก้ไขไฟล์เผยแพร่ของรายการนี้ได้ เนื่องจากเผยแพร่แล้ว"
+
+msgid "galley.publicationNotFound"
+msgstr "ไม่พบรายการเผยแพร่ของไฟล์เผยแพร่นี้"
+
+msgid "publication.assignToissue"
+msgstr "กำหนดฉบับวารสาร"
+
+msgid "publication.changeIssue"
+msgstr "เปลี่ยนฉบับวารสาร"
+
+msgid "submission.publication"
+msgstr "การเผยแพร่"
+
+msgid "publication.unpublish"
+msgstr "ยกเลิกการเผยแพร่"
+
+msgid "publication.unpublish.confirm"
+msgstr "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเผยแพร่รายการนี้?"
+
+msgid "publication.unschedule.confirm"
+msgstr "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกกำหนดการเผยแพร่รายการนี้?"
+
+msgid "publication.version.details"
+msgstr "รายละเอียดการเผยแพร่ฉบับที่ {$version}"
+
+#, fuzzy
+msgid "submission.queries.production"
+msgstr "การสนทนาในขั้นตอนจัดเตรียมเผยแพร่"
+
+msgid "editor.submission.decision.backToReview"
+msgstr "ส่งกลับไปประเมิน"
+
+msgid "editor.submission.decision.promoteFiles.externalReview"
+msgstr "เลือกไฟล์ที่จะส่งไปยังขั้นตอนการประเมิน"
+
+msgid "editor.submission.decision.sendExternalReview.notifyAuthorsDescription"
+msgstr ""
+"ส่งอีเมลแจ้งผู้เขียนว่าบทความนี้จะถูกส่งให้ผู้ทรงคุณวุฒิประเมิน หากเป็นไปได้ "
+"ควรแจ้งระยะเวลาโดยประมาณของกระบวนการประเมินและช่วงเวลาที่ผู้เขียนคาดว่าจะได้ร"
+"ับการติดต่อจากบรรณาธิการอีกครั้ง "
+"อีเมลนี้จะยังไม่ถูกส่งจนกว่าจะบันทึกผลการตัดสินใจ"
+
+msgid "doi.submission.issueMissing.representation"
+msgstr ""
+"ไม่สามารถสร้าง DOI สำหรับไฟล์เผยแพร่ {$pubObjectTitle} ของบทความ {$itemTitle}"
+" ได้ ต้องกำหนดบทความให้อยู่ในฉบับวารสารก่อนจึงจะสร้าง DOI ได้"
+
+msgid "submission.layout.viewGalley"
+msgstr "ดูไฟล์เผยแพร่"
+
+msgid "galley.cantEditPublished"
+msgstr "ไม่สามารถแก้ไขไฟล์เผยแพร่นี้ได้ เนื่องจากเผยแพร่แล้ว"
+
+msgid "submission.copyright.description"
+msgstr ""
+"โปรดอ่านและทำความเข้าใจเงื่อนไขด้านลิขสิทธิ์สำหรับการส่งบทความมายังวารสารนี้"
+
+msgid "submission.sectionNotFound"
+msgstr "ไม่พบหมวดของบทความนี้"
+
+msgid "submission.sectionRestrictedToEditors"
+msgstr "เฉพาะกองบรรณาธิการเท่านั้นที่สามารถส่งบทความมายังหมวดนี้ได้"
+
+msgid "grid.issueEntry.availableGalley.removeMessage"
+msgstr "<p>ไฟล์เผยแพร่นี้จะ<em>ไม่เปิดให้ผู้อ่านเข้าถึงอีกต่อไป</em></p>"
+
+msgid "grid.issueEntry.availableGalley.message"
+msgstr "<p>ไฟล์เผยแพร่นี้จะ<em>เปิดให้ผู้อ่านเข้าถึง</em></p>"
+
+msgid "grid.action.availableArticleGalley"
+msgstr "เปิดให้เข้าถึงไฟล์เผยแพร่นี้"
+
+msgid "submission.galleyFiles"
+msgstr "ไฟล์เผยแพร่"
+
+msgid "submission.proofReadingDescription"
+msgstr ""
+"บรรณาธิการจัดรูปแบบจะอัปโหลดไฟล์ที่เตรียมพร้อมสำหรับการเผยแพร่ไว้ที่นี่ ใช้ "
+"<em>มอบหมายผู้ตรวจ</em> "
+"เพื่อมอบหมายให้ผู้เขียนหรือบุคคลอื่นตรวจพิสูจน์ไฟล์เผยแพร่ "
+"และอัปโหลดไฟล์ที่แก้ไขแล้วเพื่อขออนุมัติก่อนเผยแพร่"
+
+msgid "grid.action.approveProof"
+msgstr "อนุมัติไฟล์พิสูจน์นี้เพื่อรวมในไฟล์เผยแพร่"
+
+msgid "grid.action.pageProofApproved"
+msgstr "อนุมัติไฟล์พิสูจน์นี้เพื่อรวมในไฟล์เผยแพร่แล้ว"
+
+msgid "submission.submit.titleAndSummary"
+msgstr "ชื่อบทความและบทคัดย่อ"
+
+msgid "submission.submit.upload.description"
+msgstr ""
+"อัปโหลดไฟล์ที่เกี่ยวข้องกับบทความนี้ เช่น บทความ สื่อมัลติมีเดีย ชุดข้อมูล "
+"ภาพประกอบ และไฟล์อื่น ๆ"
+
+msgid "submission.pageProofs"
+msgstr "การพิสูจน์อักษร"
+
+msgid "workflow.review.externalReview"
+msgstr "การประเมิน"
+
+msgid "submission.event.issueMetadataUpdated"
+msgstr "อัปเดตข้อมูลเมตาของฉบับวารสารแล้ว"
+
+msgid "submission.upload.fileContents"
+msgstr "องค์ประกอบของบทความ"
+
+msgid "submission.complete"
+msgstr "อนุมัติแล้ว"
+
+msgid "submission.incomplete"
+msgstr "รอการอนุมัติ"
+
+msgid "submission.submit.submissionChecklist"
+msgstr "รายการตรวจสอบการส่งบทความ"
+
+msgid "submission.submit.privacyStatement"
+msgstr "คำชี้แจงสิทธิส่วนบุคคล"
+
+msgid "submission.submit.contributorRole"
+msgstr "บทบาทของผู้มีส่วนร่วม"
+
+msgid "submission.citationFormat.notFound"
+msgstr "ไม่พบรูปแบบการอ้างอิงที่ร้องขอ"
+
+msgid "submission.metadataDescription"
+msgstr ""
+"ข้อกำหนดเหล่านี้อ้างอิงจากชุดข้อมูลเมตา Dublin Core "
+"ซึ่งเป็นมาตรฐานสากลสำหรับอธิบายเนื้อหาของวารสาร"
+
+msgid "publication.assignedToIssue"
+msgstr ""
+"รายการนี้ถูกกำหนดให้อยู่ใน <a href=\"{$issueUrl}\">{$issueName}</a> แล้ว "
+"แต่ยังไม่ได้กำหนดเวลาเผยแพร่"
+
+msgid "publication.datePublished.description"
+msgstr ""
+"ระบบจะกำหนดวันที่เผยแพร่โดยอัตโนมัติเมื่อเผยแพร่ฉบับวารสาร "
+"ไม่ต้องระบุวันที่เผยแพร่ "
+"เว้นแต่บทความนี้เคยเผยแพร่ที่อื่นมาก่อนและต้องการใช้วันที่ย้อนหลัง"
+
+msgid "publication.invalidSection"
+msgstr "ไม่พบหมวดของรายการเผยแพร่นี้"
+
+msgid "publication.inactiveSection"
+msgstr "{$section} (ปิดใช้งาน)"
+
+msgid "publication.invalidIssue"
+msgstr "ไม่พบฉบับวารสารของรายการเผยแพร่นี้"
+
+msgid "publication.publish.confirmation"
+msgstr ""
+"ข้อกำหนดสำหรับการเผยแพร่ครบถ้วนแล้ว "
+"คุณแน่ใจหรือไม่ว่าต้องการเผยแพร่รายการนี้?"
+
+msgid "publication.publish.confirmation.futureIssue"
+msgstr ""
+"ข้อกำหนดสำหรับการเผยแพร่ครบถ้วนแล้ว รายการนี้จะเผยแพร่เมื่อ {$issue} เผยแพร่ "
+"คุณแน่ใจหรือไม่ว่าต้องการกำหนดรายการนี้เพื่อเผยแพร่?"
+
+msgid "publication.publish.confirmation.backIssue"
+msgstr ""
+"ข้อกำหนดสำหรับการเผยแพร่ครบถ้วนแล้ว รายการนี้จะเผยแพร่ทันทีใน {$issue} "
+"คุณแน่ใจหรือไม่ว่าต้องการเผยแพร่?"
+
+msgid "publication.publish.confirmation.datePublishedInPast"
+msgstr ""
+"ข้อกำหนดสำหรับการเผยแพร่ครบถ้วนแล้ว รายการนี้จะเผยแพร่ทันที "
+"เนื่องจากกำหนดวันที่เผยแพร่เป็น {$datePublished} "
+"คุณแน่ใจหรือไม่ว่าต้องการเผยแพร่?"
+
+msgid "publication.required.issue"
+msgstr "ต้องกำหนดรายการเผยแพร่นี้ให้อยู่ในฉบับวารสารก่อนจึงจะเผยแพร่ได้"
+
+msgid "publication.publishedIn"
+msgstr "เผยแพร่ใน <a href=\"{$issueUrl}\">{$issueName}</a>"
+
+msgid "publication.scheduledIn"
+msgstr "กำหนดให้เผยแพร่ใน <a href=\"{$issueUrl}\">{$issueName}</a>"
+
+msgid "publication.unscheduledIn"
+msgstr "รายการนี้ยังไม่ได้กำหนดให้เผยแพร่ในฉบับวารสาร"
+
+msgid "publication.selectIssue"
+msgstr "เลือกฉบับวารสารสำหรับกำหนดเผยแพร่"
+
+msgid "publication.status.published"
+msgstr "เผยแพร่แล้ว"
+
+msgid "submission.status.scheduled"
+msgstr "กำหนดเผยแพร่แล้ว"
+
+msgid "publication.status.unscheduled"
+msgstr "ยังไม่ได้กำหนดเผยแพร่"
+
+msgid "submission.publications"
+msgstr "รายการเผยแพร่"
+
+msgid "publication.copyrightYearBasis.issueDescription"
+msgstr "ระบบจะกำหนดปีลิขสิทธิ์โดยอัตโนมัติเมื่อรายการนี้เผยแพร่ในฉบับวารสาร"
+
+msgid "publication.copyrightYearBasis.submissionDescription"
+msgstr "ระบบจะกำหนดปีลิขสิทธิ์โดยอัตโนมัติตามวันที่เผยแพร่"
+
+msgid "publication.datePublished"
+msgstr "วันที่เผยแพร่"
+
+msgid "publication.editDisabled"
+msgstr "ฉบับนี้เผยแพร่แล้วและไม่สามารถแก้ไขได้"
+
+msgid "publication.event.published"
+msgstr "เผยแพร่บทความแล้ว"
+
+msgid "publication.event.scheduled"
+msgstr "กำหนดบทความเพื่อเผยแพร่แล้ว"
+
+msgid "publication.event.unpublished"
+msgstr "ยกเลิกการเผยแพร่บทความแล้ว"
+
+msgid "publication.event.versionPublished"
+msgstr "เผยแพร่ฉบับใหม่แล้ว"
+
+msgid "publication.event.versionScheduled"
+msgstr "กำหนดฉบับใหม่เพื่อเผยแพร่แล้ว"
+
+msgid "publication.event.versionUnpublished"
+msgstr "ยกเลิกการเผยแพร่ฉบับหนึ่งแล้ว"
+
+msgid "publication.invalidSubmission"
+msgstr "ไม่พบบทความที่ส่งสำหรับรายการเผยแพร่นี้"
+
+msgid "publication.publish"
+msgstr "เผยแพร่"
+
+msgid "publication.publish.requirements"
+msgstr "ต้องดำเนินการตามข้อกำหนดต่อไปนี้ให้ครบถ้วนก่อนจึงจะเผยแพร่ได้"
+
+msgid "publication.required.declined"
+msgstr "ไม่สามารถเผยแพร่บทความที่ถูกปฏิเสธได้"
+
+msgid "publication.required.reviewStage"
+msgstr ""
+"บทความต้องอยู่ในขั้นตอนตรวจแก้ต้นฉบับหรือขั้นตอนจัดเตรียมเพื่อเผยแพร่ก่อนจึงจ"
+"ะเผยแพร่ได้"
+
+msgid "submission.license.description"
+msgstr ""
+"ระบบจะกำหนดสัญญาอนุญาตเป็น <a href='{$licenseUrl}' "
+"target='_blank'>{$licenseName}</a> โดยอัตโนมัติเมื่อเผยแพร่"
+
+msgid "submission.copyrightHolder.description"
+msgstr "ระบบจะกำหนดลิขสิทธิ์ให้แก่ {$copyright} โดยอัตโนมัติเมื่อเผยแพร่"
+
+msgid "submission.copyrightOther.description"
+msgstr "กำหนดลิขสิทธิ์ของบทความที่เผยแพร่ให้แก่บุคคลหรือหน่วยงานต่อไปนี้"
+
+msgid "editor.submission.decision.backToReview.description"
+msgstr "ยกเลิกผลการตัดสินใจรับบทความนี้ และส่งกลับไปยังขั้นตอนการประเมิน"
+
+msgid "editor.submission.decision.backToReview.log"
+msgstr ""
+"{$editorName} ยกเลิกผลการตัดสินใจรับบทความนี้ "
+"และส่งกลับไปยังขั้นตอนการประเมิน"
+
+#, fuzzy
+msgid "editor.submission.decision.backToReview.completed"
+msgstr "ส่งกลับไปประเมินแล้ว"
+
+#, fuzzy
+msgid "editor.submission.decision.backToReview.completed.description"
+msgstr "บทความ {$title} ถูกส่งกลับไปยังขั้นตอนการประเมินแล้ว"
+
+#, fuzzy
+msgid "editor.submission.decision.backToReview.notifyAuthorsDescription"
+msgstr ""
+"ส่งอีเมลแจ้งผู้เขียนว่าบทความของตนถูกส่งกลับไปยังขั้นตอนการประเมิน "
+"พร้อมอธิบายเหตุผลของการตัดสินใจและแจ้งว่าจะมีการประเมินเพิ่มเติมอย่างไร"
+
+msgid "doi.submission.issueMissing.publication"
+msgstr ""
+"ไม่สามารถสร้าง DOI สำหรับบทความต่อไปนี้ได้: {$pubObjectTitle} "
+"ต้องกำหนดบทความให้อยู่ในฉบับวารสารก่อนจึงจะสร้าง DOI ได้"
+
+msgid "doi.submission.incorrectContext"
+msgstr ""
+"ไม่สามารถสร้าง DOI สำหรับบทความต่อไปนี้ได้: {$pubObjectTitle} "
+"เนื่องจากบทความนี้ไม่ได้อยู่ในวารสารปัจจุบัน"
+
+msgid "submission.wizard.notAllowed.description"
+msgstr ""
+"คุณไม่มีสิทธิ์ส่งบทความมายังวารสารนี้ "
+"เนื่องจากผู้เขียนต้องได้รับการลงทะเบียนโดยกองบรรณาธิการ หากคิดว่าเกิดข้อผิ"
+"ดพลาด โปรดติดต่อ <a href='mailto:{$email}'>{$name}</a>"
+
+msgid "submission.wizard.noSectionAllowed.description"
+msgstr ""
+"คุณไม่มีสิทธิ์ส่งบทความมายังวารสารนี้ "
+"เนื่องจากการส่งบทความในทุกหมวดถูกปิดหรือจำกัดไว้ หากคิดว่าเกิดข้อผิดพลาด "
+"โปรดติดต่อ <a href='mailto:{$email}'>{$name}</a>"
+
+msgid "submission.wizard.sectionClosed.message"
+msgstr ""
+"{$contextName} ไม่เปิดรับบทความในหมวด {$section} "
+"หากต้องการความช่วยเหลือในการกู้คืนบทความที่กำลังส่ง โปรดติดต่อ <a "
+"href='mailto:{$email}'>{$name}</a>"
+
+msgid "submission.submit.form.authorRequired"
+msgstr "ต้องมีผู้เขียนอย่างน้อยหนึ่งคน"
+
+msgid "submission.submit.form.titleRequired"
+msgstr "โปรดระบุชื่อบทความ"
+
+msgid "submission.submit.form.abstractRequired"
+msgstr "โปรดระบุบทคัดย่อของบทความ"
+
+msgid "submission.submit.form.wordCountAlert"
+msgstr "บทคัดย่อยาวเกินกำหนด โปรดย่อให้มีจำนวนคำไม่เกินที่กำหนดสำหรับหมวดนี้"
+
+msgid "submission.submit.form.contributorRoleRequired"
+msgstr "โปรดเลือกบทบาทของผู้มีส่วนร่วม"

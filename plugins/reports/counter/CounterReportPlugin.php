@@ -15,11 +15,10 @@
 namespace APP\plugins\reports\counter;
 
 use APP\core\Application;
-use APP\core\Services;
 use APP\notification\NotificationManager;
 use APP\statistics\StatisticsHelper;
 use APP\template\TemplateManager;
-use PKP\notification\PKPNotification;
+use PKP\notification\Notification;
 use PKP\plugins\ReportPlugin;
 
 class CounterReportPlugin extends ReportPlugin
@@ -181,7 +180,7 @@ class CounterReportPlugin extends ReportPlugin
                     }
                     $user = $request->getUser();
                     $notificationManager = new NotificationManager();
-                    $notificationManager->createTrivialNotification($user->getId(), PKPNotification::NOTIFICATION_TYPE_ERROR, ['contents' => $errormessage]);
+                    $notificationManager->createTrivialNotification($user->getId(), Notification::NOTIFICATION_TYPE_ERROR, ['contents' => $errormessage]);
             }
         }
         $templateManager = TemplateManager::getManager();
@@ -220,7 +219,7 @@ class CounterReportPlugin extends ReportPlugin
             'contextIds' => [Application::get()->getRequest()->getContext()->getId()],
             'assocTypes' => [Application::ASSOC_TYPE_SUBMISSION_FILE]
         ];
-        $metricsQB = Services::get('publicationStats')->getQueryBuilder($filters);
+        $metricsQB = app()->get('publicationStats')->getQueryBuilder($filters);
         $metricsQB = $metricsQB->getSum([StatisticsHelper::STATISTICS_DIMENSION_YEAR]);
         $metricsQB->orderBy(StatisticsHelper::STATISTICS_DIMENSION_YEAR, StatisticsHelper::STATISTICS_ORDER_ASC);
         $results = $metricsQB->get()->toArray();

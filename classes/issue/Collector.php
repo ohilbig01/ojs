@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file classes/issue/Collector.php
  *
@@ -13,6 +14,7 @@
 
 namespace APP\issue;
 
+use APP\core\Application;
 use APP\facades\Repo;
 use Exception;
 use Illuminate\Database\Query\Builder;
@@ -21,7 +23,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\LazyCollection;
 use InvalidArgumentException;
 use PKP\core\interfaces\CollectorInterface;
-use PKP\core\PKPApplication;
+use PKP\doi\Doi;
 use PKP\plugins\Hook;
 
 class Collector implements CollectorInterface
@@ -42,11 +44,17 @@ class Collector implements CollectorInterface
 
     public ?int $offset = null;
 
-    /** @var array|null Context ID or PKPApplication::CONTEXT_ID_ALL to get from all contexts */
+    /** @var array|null Context ID */
     public ?array $contextIds = null;
 
     /** @var array|null List of issue IDs to include */
     public ?array $issueIds = null;
+
+    /** @var array|null List of publication IDs to include */
+    public ?array $publicationIds = null;
+
+    /** @var array|null List of submission IDs to include */
+    public ?array $submissionIds = null;
 
     /** @var array|null order and direction pairing for queries */
     public ?array $resultOrderings = null;
@@ -133,6 +141,28 @@ class Collector implements CollectorInterface
     }
 
     /**
+     * Set publication ID filter
+     *
+     * @return $this
+     */
+    public function filterByPublicationIds(?array $publicationIds): static
+    {
+        $this->publicationIds = $publicationIds;
+        return $this;
+    }
+
+    /**
+     * Set submission ID filter
+     *
+     * @return $this
+     */
+    public function filterBySubmissionIds(?array $submissionIds): static
+    {
+        $this->submissionIds = $submissionIds;
+        return $this;
+    }
+
+    /**
      * Set result order and direction based on an ORDERBY_* constant
      *
      * @return $this
@@ -140,6 +170,9 @@ class Collector implements CollectorInterface
     public function orderBy(string $orderByConstant): static
     {
         $this->resultOrderings = match ($orderByConstant) {
+            static::ORDERBY_DATE_PUBLISHED => [
+                ['orderBy' => 'i.date_published', 'direction' => static::ORDER_DIR_DESC]
+            ],
             static::ORDERBY_LAST_MODIFIED => [
                 ['orderBy' => 'i.last_modified', 'direction' => static::ORDER_DIR_DESC]
             ],
@@ -301,6 +334,8 @@ class Collector implements CollectorInterface
 
     /**
      * @inheritDoc
+     *
+     * @hook Issue::getMany::queryObject [[&$q, $this]]
      */
     public function getQueryBuilder(): Builder
     {
@@ -322,17 +357,20 @@ class Collector implements CollectorInterface
             )
         );
 
-        // Context
-        // Never permit a query without a context_id unless the PKPApplication::CONTEXT_ID_ALL wildcard
-        // has been set explicitly.
+        // Context: Never permit a query without a context_id unless the Application::SITE_CONTEXT_ID_ALL wildcard has been set explicitly.
         if (!isset($this->contextIds)) {
-            throw new Exception('Submissions can not be retrieved without a context id. Pass the Application::CONTEXT_ID_ALL wildcard to get submissions from any context.');
-        } elseif (!in_array(PKPApplication::CONTEXT_ID_ALL, $this->contextIds)) {
-            $q->whereIn('i.journal_id', $this->contextIds);
+            throw new Exception('Issues cannot be retrieved without a context id. Pass the Application::SITE_CONTEXT_ID_ALL wildcard to get issues from any context.');
         }
 
+        if (!in_array(Application::SITE_CONTEXT_ID_ALL, $this->contextIds)) {
+            $q->whereIn('i.journal_id', $this->contextIds);
+        }
         // Issue IDs
         $q->when($this->issueIds !== null, fn (Builder $q) => $q->whereIn('i.issue_id', $this->issueIds));
+        // Publication IDs
+        $q->when($this->publicationIds !== null, fn (Builder $q) => $q->whereIn('i.issue_id', DB::table('publications')->select('issue_id')->whereIn('publication_id', $this->publicationIds)));
+        // Submission IDs
+        $q->when($this->submissionIds !== null, fn (Builder $q) => $q->whereIn('i.issue_id', DB::table('publications')->select('issue_id')->whereIn('submission_id', $this->submissionIds)));
         // Published
         $q->when($this->isPublished !== null, fn (Builder $q) => $q->where('i.published', '=', $this->isPublished ? 1 : 0));
         // Volumes
@@ -410,8 +448,11 @@ class Collector implements CollectorInterface
                 )
             );
 
+            // Add support to search using DOI identifiers
+            // search phrases starting with number followed by a '.'  will be interpreted as a DOI identifier. E.g: 10.1
+            $isSearchPhraseDoi = Doi::beginsWithDoiPrefixPattern($searchPhrase);
             $words = array_filter(array_unique(explode(' ', $searchPhrase)), 'strlen');
-            if (count($words)) {
+            if (count($words) && !$isSearchPhraseDoi) {
                 $likePattern = DB::raw("CONCAT('%', LOWER(?), '%')");
                 foreach ($words as $word) {
                     $q->where(
@@ -436,6 +477,24 @@ class Collector implements CollectorInterface
                             ->when(ctype_digit($word) && strlen($word) === 4, fn (Builder $q) => $q->orWhere('i.year', '=', $word))
                     );
                 }
+            }
+
+            if ($isSearchPhraseDoi) {
+                $q->when(
+                    Application::get()->getRequest()->getContext()->isDoiTypeEnabled(Repo::doi()::TYPE_ISSUE),
+                    function (Builder $query) {
+                        $query->whereIn('i.issue_id', function (Builder $query) {
+                            $query->select('is.issue_id')
+                                ->from('issues as is')
+                                ->join('dois AS d', 'is.doi_id', '=', 'd.doi_id')
+                                ->whereLike('d.doi', "{$this->searchPhrase}%");
+                        });
+                    },
+                    function (Builder $query) {
+                        // Default to empty result if searching by DOI when issue DOI is not enabled.
+                        $query->whereRaw('1 = 0');
+                    }
+                );
             }
         }
 

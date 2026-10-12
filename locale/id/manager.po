@@ -1,11 +1,12 @@
 # Ramli Baharuddin <ramli.baharuddin@relawanjurnal.id>, 2021, 2022, 2023.
+# Zahid Rizky Fakhri <zahidrizkyfakhri@gmail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:26+00:00\n"
-"PO-Revision-Date: 2023-04-11 01:52+0000\n"
-"Last-Translator: Ramli Baharuddin <ramli.baharuddin@relawanjurnal.id>\n"
+"PO-Revision-Date: 2025-05-02 14:24+0000\n"
+"Last-Translator: Zahid Rizky Fakhri <zahidrizkyfakhri@gmail.com>\n"
 "Language-Team: Indonesian <http://translate.pkp.sfu.ca/projects/ojs/manager/"
 "id/>\n"
 "Language: id\n"
@@ -13,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "Akses"
@@ -409,12 +410,6 @@ msgstr "Batasi jumlah kata abstrak untuk bagian ini (0 jika tidak ada batasan)"
 msgid "manager.setup"
 msgstr "Pengaturan Jurnal"
 
-msgid "manager.setup.masthead"
-msgstr "Tajuk"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Dewan Editor"
-
 msgid "manager.setup.homepageContent"
 msgstr "Konten Beranda Jurnal"
 
@@ -478,11 +473,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Untuk ditampilkan di Tentang Jurnal) "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Mengharuskan Penulis untuk memberikan pernyataan Konflik Kepentingan dalam "
-"naskah mereka."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -786,14 +776,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Nama Jurnal"
 
-msgid "manager.setup.keyInfo"
-msgstr "Informasi Kunci"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Tuliskan gambaran singkat tentng jurnal Anda dan sebutkan editor, direktur "
-"pelaksana dan anggota tim redaksi lainnya."
-
 msgid "manager.setup.labelName"
 msgstr "Nama Label"
 
@@ -832,12 +814,6 @@ msgstr ""
 "perpustakaan yang berpartisipasi melalui halaman <a href=\"{$lockssUrl}\" "
 "target=\"_blank\">Publisher Manifest</a> LOCKSS."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"Lisensi LOCKSS akan muncul di Tentang Jurnal di bawah Pengarsipan: <a href="
-"\"http://www.lockss.org/community/publishers-titles-gln/\" target=\"_blank"
-"\">LOCKSS License</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "Deskripsi Lisensi LOCKSS"
 
@@ -857,11 +833,6 @@ msgstr ""
 "Aktifkan CLOCKSS untuk menyimpan dan mendistribusikan konten jurnal ke "
 "perpustakaan yang berpartisipasi melalui halaman <a href=\"{$clockssUrl}\" "
 "target=\"_blank\">Daftar Penerbit</a> CLOCKSS."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"Lisensi CLOCKSS akan muncul di Tentang Jurnal di bawah Pengarsipan: <a href="
-"\"https://clockss.org\" target=\"_blank\">CLOCKSS License</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "Deskripsi Lisensi CLOCKSS"
@@ -1485,7 +1456,7 @@ msgid "manager.subscriptions.edit"
 msgstr "Edit Langganan"
 
 msgid "manager.subscriptions.editTitle"
-msgstr "Edit"
+msgstr "Sunting"
 
 msgid "manager.subscriptions.withStatus"
 msgstr "Dengan Status"
@@ -1966,11 +1937,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Katakunci"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Mohon diperhatikan bahwa katakunci akan disimpan dalam bentuk plain text, "
-"tidak dienkripsi."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Semua Terbitan"
 
@@ -1997,9 +1963,6 @@ msgstr "Tandai terdaftar"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Daftar"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Validasi XML sebelum proses ekspor dan registrasi."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Tidak ada objek yang dipilih."
@@ -2674,3 +2637,11 @@ msgid "plugins.importexport.common.error.issueCoverImageMissing"
 msgstr ""
 "Gambar sampul edisi {$id} tidak bisa diekspor, filenya tidak ditemukan dalam "
 "direktori \"{$path}\"."
+
+msgid "emailTemplate.variable.issue.issueTableOfContents"
+msgstr "Daftar isi masalah seperti daftar semua kiriman yang terkait."
+
+msgid "manager.setup.contextSummary.description"
+msgstr ""
+"Berikan deskripsi singkat tentang jurnal Anda untuk memberikan wawasan "
+"tentang konten dan tujuannya."

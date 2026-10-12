@@ -31,12 +31,12 @@ class Section extends \PKP\section\PKPSection
         return $this->getLocalizedData('abbrev');
     }
 
-    public function getAbbrev(?string $locale): string|array
+    public function getAbbrev(?string $locale): string|array|null
     {
         return $this->getData('abbrev', $locale);
     }
 
-    public function setAbbrev(string|array $abbrev, string $locale = null): void
+    public function setAbbrev(string|array $abbrev, ?string $locale = null): void
     {
         $this->setData('abbrev', $abbrev, $locale);
     }
@@ -51,7 +51,7 @@ class Section extends \PKP\section\PKPSection
         return $this->getData('policy', $locale);
     }
 
-    public function setPolicy(string|array $policy, string $locale = null): void
+    public function setPolicy(string|array $policy, ?string $locale = null): void
     {
         $this->setData('policy', $policy, $locale);
     }
@@ -186,12 +186,8 @@ class Section extends \PKP\section\PKPSection
     /**
      * Set string identifying type of items in this section.
      */
-    public function setIdentifyType(string|array $identifyType, string $locale = null): void
+    public function setIdentifyType(string|array $identifyType, ?string $locale = null): void
     {
         $this->setData('identifyType', $identifyType, $locale);
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\section\Section', '\Section');
 }

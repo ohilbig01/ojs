@@ -1167,9 +1167,6 @@ msgstr ""
 "kapcsolatban (lásd <a target=\"_new\" class=\"action\" href="
 "\"{$competingInterestGuidelinesUrl}\">CI&nbsp;Policy</a>)."
 
-msgid "reviewer.competingInterests"
-msgstr "Összeférhetetlenség"
-
 msgid "reviewer.article.enterReviewA"
 msgstr ""
 "Kattintson az ikonra, hogy begépelhesse (vagy beillessze) ehhez az anyaghoz "
@@ -1648,12 +1645,6 @@ msgstr "Információk"
 msgid "about.history"
 msgstr "A folyóirat története"
 
-msgid "about.editorialTeam"
-msgstr "Szerkesztőbizottság"
-
-msgid "about.editorialTeam.biography"
-msgstr "Életrajz"
-
 msgid "about.editorialPolicies"
 msgstr "Szerkesztői politikák"
 
@@ -1946,7 +1937,7 @@ msgstr ""
 "\n"
 "<p>Köszönjük, hogy letöltötte a Public Knowledge Project's <strong>Open "
 "Journal Systems</strong> szoftverét. Mielőtt használatba venné, kérjük "
-"olvassa át az <a href=\"{$baseUrl}/docs/README\">OLVASS EL</a> fájlt, amit "
+"olvassa át az <a href=\"{$baseUrl}/README\">OLVASS EL</a> fájlt, amit "
 "tartalmaz ez a szoftver. A Public Knowledge Project-ről és szoftvereiről "
 "bővebb információkért látogasson el a <a href=\"http://pkp.sfu.ca/\" target="
 "\"_blank\">PKP weboldalára</a>. Ha hibát szeretne bejelenteni, vagy "
@@ -2017,6 +2008,7 @@ msgstr ""
 "<p>2. Annak a könyvtárnak, ahova a fájlok kerülnek szintén írhatónak kell "
 "lennie (lásd \"Fájlok rendszere\" alább).</p>"
 
+#, fuzzy
 msgid "installer.upgradeInstructions"
 msgstr ""
 "<h4>OJS verzió {$version}</h4>\n"
@@ -2193,11 +2185,13 @@ msgstr ""
 msgid "log.review.resubmit"
 msgstr "{$submissionId} cikk újra el lett küldve szakmai lektorálásra."
 
+#, fuzzy
 msgid "log.review.reviewDeclined"
 msgstr ""
 "{$reviewerName} szakmai lektor a {$round} lektorálási körben elutasította a "
 "{$submissionId} cikket."
 
+#, fuzzy
 msgid "log.review.reviewAccepted"
 msgstr ""
 "{$reviewerName} szakmai lektor a {$round} lektorálási körben elfogadta a "
@@ -2421,10 +2415,6 @@ msgstr "<p>Jóváhagyás eltávolítása ennél a kefelenyomatnál.</p>"
 
 msgid "search.cli.rebuildIndex.indexing"
 msgstr "\"{$journalName}\" folyóirat indexelése"
-
-msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
-msgstr ""
-"A keresés végrehajtása nem teszi lehetővé a folyóiratonkénti újraindexelést."
 
 msgid "search.cli.rebuildIndex.unknownJournal"
 msgstr ""

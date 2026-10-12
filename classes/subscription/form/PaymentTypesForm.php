@@ -55,6 +55,7 @@ class PaymentTypesForm extends Form
         $this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'membershipFee', 'optional', 'manager.payment.form.numeric', function ($membershipFee) {
             return is_numeric($membershipFee) && $membershipFee >= 0;
         }));
+        $this->addCheck(new \PKP\form\validation\FormValidatorCSRF($this));
     }
 
     /**
@@ -89,8 +90,4 @@ class PaymentTypesForm extends Form
         $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
         $journalDao->updateObject($journal);
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\subscription\form\PaymentTypesForm', '\PaymentTypesForm');
 }

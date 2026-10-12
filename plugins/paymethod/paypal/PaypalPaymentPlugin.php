@@ -21,10 +21,11 @@ use APP\core\Request;
 use APP\template\TemplateManager;
 use Illuminate\Support\Collection;
 use Omnipay\Omnipay;
+use PKP\components\forms\context\PKPPaymentSettingsForm;
+use PKP\config\Config;
 use PKP\db\DAORegistry;
 use PKP\plugins\Hook;
 use PKP\plugins\PaymethodPlugin;
-use Slim\Http\Request as SlimRequest;
 
 require_once(dirname(__FILE__) . '/vendor/autoload.php');
 
@@ -61,12 +62,23 @@ class PaypalPaymentPlugin extends PaymethodPlugin
      */
     public function register($category, $path, $mainContextId = null)
     {
-        if (parent::register($category, $path, $mainContextId)) {
-            $this->addLocaleData();
-            Hook::add('Form::config::before', $this->addSettings(...));
-            return true;
+        if (!parent::register($category, $path, $mainContextId)) {
+            return false;
         }
-        return false;
+
+        $this->addLocaleData();
+        Hook::add('Form::config::before', $this->addSettings(...));
+        return true;
+    }
+
+    /**
+     * @copydoc \PKP\plugins\Plugin::getEncryptedSettingFields()
+     */
+    public function getEncryptedSettingFields(): array
+    {
+        return [
+            'secret',
+        ];
     }
 
     /**
@@ -77,8 +89,7 @@ class PaypalPaymentPlugin extends PaymethodPlugin
      */
     public function addSettings($hookName, $form)
     {
-        import('lib.pkp.classes.components.forms.context.PKPPaymentSettingsForm'); // Load constant
-        if ($form->id !== FORM_PAYMENT_SETTINGS) {
+        if ($form->id !== PKPPaymentSettingsForm::FORM_PAYMENT_SETTINGS) {
             return;
         }
 
@@ -113,6 +124,8 @@ class PaypalPaymentPlugin extends PaymethodPlugin
             ->addField(new \PKP\components\forms\FieldText('secret', [
                 'label' => __('plugins.paymethod.paypal.settings.secret'),
                 'value' => $this->getSetting($context->getId(), 'secret'),
+                'inputType' => 'password',
+                'autocomplete' => 'off',
                 'groupId' => 'paypalpayment',
             ]));
 
@@ -124,11 +137,11 @@ class PaypalPaymentPlugin extends PaymethodPlugin
      */
     public function saveSettings(string $hookname, array $args)
     {
-        $slimRequest = $args[0]; /** @var SlimRequest $slimRequest */
+        $illuminateRequest = $args[0]; /** @var \Illuminate\Http\Request $illuminateRequest */
         $request = $args[1]; /** @var Request $request */
         $updatedSettings = $args[3]; /** @var Collection $updatedSettings */
 
-        $allParams = $slimRequest->getParsedBody();
+        $allParams = $illuminateRequest->input();
         $saveParams = [];
         foreach ($allParams as $param => $val) {
             switch ($param) {
@@ -176,6 +189,12 @@ class PaypalPaymentPlugin extends PaymethodPlugin
      */
     public function handle($args, $request)
     {
+        // Application is set to sandbox mode and will not run the features of plugin
+        if (Config::getVar('general', 'sandbox', false)) {
+            error_log('Application is set to sandbox mode and no payment will be done via paypal');
+            return;
+        }
+
         $journal = $request->getJournal();
         $queuedPaymentDao = DAORegistry::getDAO('QueuedPaymentDAO'); /** @var \PKP\payment\QueuedPaymentDAO $queuedPaymentDao */
         try {
@@ -211,7 +230,7 @@ class PaypalPaymentPlugin extends PaymethodPlugin
                 throw new \Exception('Amounts (' . $transaction['amount']['total'] . ' ' . $transaction['amount']['currency'] . ' vs ' . $queuedPayment->getAmount() . ' ' . $queuedPayment->getCurrencyCode() . ') don\'t match!');
             }
 
-            $paymentManager = Application::getPaymentManager($journal);
+            $paymentManager = Application::get()->getPaymentManager($journal);
             $paymentManager->fulfillQueuedPayment($request, $queuedPayment, $this->getName());
             $request->redirectUrl($queuedPayment->getRequestUrl());
         } catch (\Exception $e) {
@@ -221,8 +240,4 @@ class PaypalPaymentPlugin extends PaymethodPlugin
             $templateMgr->display('frontend/pages/message.tpl');
         }
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\plugins\paymethod\paypal\PaypalPaymentPlugin', '\PaypalPaymentPlugin');
 }

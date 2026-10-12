@@ -18,7 +18,6 @@ namespace APP\components\listPanels;
 
 use APP\components\forms\FieldSelectIssues;
 use APP\core\Application;
-use APP\template\TemplateManager;
 use PKP\components\listPanels\PKPDoiListPanel;
 use PKP\core\PKPApplication;
 
@@ -37,6 +36,16 @@ class DoiListPanel extends PKPDoiListPanel
     {
         if ($this->isSubmission) {
             $config['executeActionApiUrl'] = $this->doiApiUrl . '/submissions';
+            $config['filters'][] = [
+                'heading' => __('manager.dois.filters.workflow'),
+                'filters' => [
+                    [
+                        'title' => __('manager.dois.filters.inEditingOrPublished'),
+                        'param' => 'inEditingOrPublished',
+                        'value' => '1',
+                    ],
+                ],
+            ];
         } else {
             $config['executeActionApiUrl'] = $this->doiApiUrl . '/issues';
             // Overwrite default submission published statuses for issue-specific ones
@@ -70,10 +79,5 @@ class DoiListPanel extends PKPDoiListPanel
 
         // Provide required locale keys
         $request = Application::get()->getRequest();
-        $templateMgr = TemplateManager::getManager($request);
-        $templateMgr->setLocaleKeys([
-            'article.article',
-            'issue.issue'
-        ]);
     }
 }

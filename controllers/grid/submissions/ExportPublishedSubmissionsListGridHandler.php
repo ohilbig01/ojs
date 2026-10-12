@@ -19,6 +19,7 @@ namespace APP\controllers\grid\submissions;
 use APP\core\Application;
 use APP\facades\Repo;
 use APP\issue\Collector;
+use APP\plugins\PubObjectsExportPlugin;
 use PKP\controllers\grid\feature\PagingFeature;
 use PKP\controllers\grid\feature\selectableItems\SelectableItemsFeature;
 use PKP\controllers\grid\GridColumn;
@@ -78,15 +79,17 @@ class ExportPublishedSubmissionsListGridHandler extends GridHandler
         $this->setTitle('plugins.importexport.common.export.articles');
 
         $pluginCategory = $request->getUserVar('category');
-        $pluginPathName = $request->getUserVar('plugin');
+        $pluginName = $request->getUserVar('plugin');
 
-        // Allow for plugins that have already been loaded (e.g. by injection from a generic plugin)
-        $this->_plugin = PluginRegistry::getPlugin($pluginCategory, $pluginPathName);
+        // Get the plugin, if it have already been loaded (e.g. by injection from a generic plugin)
+        $this->_plugin = PluginRegistry::getPlugin($pluginCategory, $pluginName);
 
-        // Otherwise, load the plugin as specified
-        $this->_plugin ??= PluginRegistry::loadPlugin($pluginCategory, $pluginPathName);
-
-        assert(isset($this->_plugin));
+        if (!$this->_plugin) {
+            // loadCategory because loadPlugin does not work properly when plugin name is provided:
+            // loadPlugin calls instantiatePlugin, that considers $pluginName to be plugin folder name
+            PluginRegistry::loadCategory($pluginCategory);
+            $this->_plugin = PluginRegistry::getPlugin($pluginCategory, $pluginName);
+        }
 
         // Grid columns.
         $cellProvider = $this->getGridCellProvider();
@@ -156,7 +159,7 @@ class ExportPublishedSubmissionsListGridHandler extends GridHandler
      */
     public function getRequestArgs()
     {
-        return array_merge(parent::getRequestArgs(), ['category' => $this->_plugin->getCategory(), 'plugin' => basename($this->_plugin->getPluginPath())]);
+        return array_merge(parent::getRequestArgs(), ['category' => $this->_plugin->getCategory(), 'plugin' => $this->_plugin->getName()]);
     }
 
     /**
@@ -255,7 +258,8 @@ class ExportPublishedSubmissionsListGridHandler extends GridHandler
             $issueId,
             $pubIdStatusSettingName,
             $statusId,
-            $this->getGridRangeInfo($request, $this->getId())
+            $this->getGridRangeInfo($request, $this->getId()),
+            $this->_plugin->getExportableVersionStages()
         );
     }
 
@@ -299,7 +303,7 @@ class ExportPublishedSubmissionsListGridHandler extends GridHandler
         } else {
             $issueId = null;
         }
-        if (isset($filter['statusId']) && $filter['statusId'] != EXPORT_STATUS_ANY) {
+        if (isset($filter['statusId']) && $filter['statusId'] != PubObjectsExportPlugin::EXPORT_STATUS_ANY) {
             $statusId = $filter['statusId'];
         } else {
             $statusId = null;

@@ -20,6 +20,7 @@
 namespace APP\statistics;
 
 use APP\core\Application;
+use DateTimeImmutable;
 use Illuminate\Support\Facades\DB;
 use PKP\statistics\PKPTemporaryTotalsDAO;
 
@@ -44,8 +45,8 @@ class TemporaryTotalsDAO extends PKPTemporaryTotalsDAO
      */
     public function compileIssueMetrics(string $loadId): void
     {
-        $date = substr($loadId, -12, 8);
-        DB::table('metrics_issue')->where('load_id', '=', $loadId)->orWhere('date', '=', DB::raw("DATE({$date})"))->delete();
+        $date = DateTimeImmutable::createFromFormat('Ymd', substr($loadId, -12, 8));
+        DB::table('metrics_issue')->where('load_id', '=', $loadId)->orWhereDate('date', '=', $date)->delete();
 
         $selectIssueMetrics = DB::table($this->table)
             ->select(DB::raw('load_id, context_id, issue_id, DATE(date) as date, count(*) as metric'))
@@ -60,5 +61,22 @@ class TemporaryTotalsDAO extends PKPTemporaryTotalsDAO
             ->where('assoc_type', '=', Application::ASSOC_TYPE_ISSUE_GALLEY)
             ->groupBy(DB::raw('load_id, context_id, issue_id, issue_galley_id, DATE(date)'));
         DB::table('metrics_issue')->insertUsing(['load_id', 'context_id', 'issue_id', 'issue_galley_id', 'date', 'metric'], $selectIssueGalleyMetrics);
+    }
+
+    /**
+     * @copydoc PKPTemporaryTotalsDAO::compileSubmissionMetrics()
+     *
+     * Also loads usage for JATS XML downloads.
+     */
+    public function compileSubmissionMetrics(string $loadId): void
+    {
+        parent::compileSubmissionMetrics($loadId);
+
+        $selectJatsMetrics = DB::table($this->table)
+            ->select(DB::raw('load_id, context_id, submission_id, assoc_type, DATE(date) as date, count(*) as metric'))
+            ->where('load_id', '=', $loadId)
+            ->where('assoc_type', '=', Application::ASSOC_TYPE_JATS)
+            ->groupBy(DB::raw('load_id, context_id, submission_id, assoc_type, DATE(date)'));
+        DB::table('metrics_submission')->insertUsing(['load_id', 'context_id', 'submission_id', 'assoc_type', 'date', 'metric'], $selectJatsMetrics);
     }
 }

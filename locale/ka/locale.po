@@ -1161,9 +1161,6 @@ msgstr ""
 "(იხ. <a target=\"_new\" class=\"action\" href="
 "\"{$competingInterestGuidelinesUrl}\">CI პოლიტიკა</a> )."
 
-msgid "reviewer.competingInterests"
-msgstr "ინტერესთა კონფლიქტი"
-
 msgid "reviewer.article.enterReviewA"
 msgstr "დააჭირეთ ხატულას (ან ჩასვით) ამ სტატიაზე რეცენზიის შესატანად."
 
@@ -1636,12 +1633,6 @@ msgstr "ჟურნალის შესახებ"
 
 msgid "about.history"
 msgstr "ჟურნალის ისტორია"
-
-msgid "about.editorialTeam"
-msgstr "რედაქცია"
-
-msgid "about.editorialTeam.biography"
-msgstr "ბიოგრაფია"
 
 msgid "about.editorialPolicies"
 msgstr "გამომცემლობის პოლიტიკა"
@@ -2179,11 +2170,13 @@ msgstr ""
 msgid "log.review.resubmit"
 msgstr "მასალა {$submissionId} კვლავ გაიგზავნა რეცენზიაზე."
 
+#, fuzzy
 msgid "log.review.reviewDeclined"
 msgstr ""
 "რეცენზენტმა {$reviewerName} უარი თქვა რეცენზირებაზე {$round} რუნდზე "
 "მასალისათვის რეცენზენტის {$submissionId} დავალებით."
 
+#, fuzzy
 msgid "log.review.reviewAccepted"
 msgstr ""
 "რეცენზენტი {$reviewerName} დაეთანხმა რეცენზირებაზე {$round} რაუნდზე "
@@ -2405,9 +2398,6 @@ msgstr "<p>ამ სვეტის გამოქვეყნების დ
 
 msgid "search.cli.rebuildIndex.indexing"
 msgstr "ინდექსირება \"{$journalName}\""
-
-msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
-msgstr "ძიების ეს ფორმა არ იძლევა ჟურნალის ინდექსირების საშუალებას."
 
 msgid "search.cli.rebuildIndex.unknownJournal"
 msgstr ""

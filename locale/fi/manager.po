@@ -1,11 +1,12 @@
 # Antti-Jussi Nygård <ajnyga@gmail.com>, 2023.
+# Minna Kivinen <minna.kivinen@hamk.fi>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:23+00:00\n"
-"PO-Revision-Date: 2023-05-31 21:31+0000\n"
-"Last-Translator: Antti-Jussi Nygård <ajnyga@gmail.com>\n"
+"PO-Revision-Date: 2025-05-26 10:57+0000\n"
+"Last-Translator: Minna Kivinen <minna.kivinen@hamk.fi>\n"
 "Language-Team: Finnish <http://translate.pkp.sfu.ca/projects/ojs/manager/fi/>"
 "\n"
 "Language: fi\n"
@@ -13,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "Saatavuus"
@@ -410,12 +411,6 @@ msgstr "Rajaa tämän osaston abstraktien sanamäärät (0 ei rajoitusta)"
 msgid "manager.setup"
 msgstr "Julkaisun asetukset"
 
-msgid "manager.setup.masthead"
-msgstr "Tunnuslaatikko"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Toimituskunta"
-
 msgid "manager.setup.homepageContent"
 msgstr "Julkaisun etusivun sisältö"
 
@@ -480,11 +475,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Näkyy Tietoa julkaisusta -sivulla) "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Vaadi käsikirjoituksen lähettäviä kirjoittajia jättämään Sidonnaisuudet-"
-"lausunto lähetyksen yhteydessä."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -794,12 +784,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Julkaisun nimi"
 
-msgid "manager.setup.keyInfo"
-msgstr "Avaintiedot"
-
-msgid "manager.setup.keyInfo.description"
-msgstr "Anna julkaisun lyhyt kuvaus ja esittele toimituskunnan jäsenet."
-
 msgid "manager.setup.labelName"
 msgstr "Selitteen nimi"
 
@@ -836,12 +820,6 @@ msgstr ""
 "ota LOCKSS käyttöön LOCKSS:in <a href=\"{$lockssUrl}\" target=\"_blank"
 "\">Publisher Manifest</a> -sivun kautta."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"LOCKSS-lisenssi näkyy Tietoa julkaisusta sivulla Arkistointi-kohdassa: <a "
-"href=\"http://www.lockss.org/community/publishers-titles-gln/\" target="
-"\"_blank\">LOCKSS-lisenssi</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "LOCKSS-lisenssin kuvaus"
 
@@ -861,11 +839,6 @@ msgstr ""
 "Tallentaaksesi ja jakaaksesi julkaisun sisältöä osallistuvissa kirjastoissa, "
 "ota CLOCKSS käyttöön CLOCKSS:in <a href=\"{$clockssUrl}\" target=\"_blank"
 "\">Publisher Manifest</a> -sivun kautta."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"CLOCKSS-lisenssi näkyy Tietoa julkaisusta sivulla Arkistointi-kohdassa: <a "
-"href=\"http://clockss.org/\" target=\"_blank\">CLOCKSS-lisenssi</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "CLOCKSS-lisenssin kuvaus"
@@ -1992,11 +1965,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Salasana"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Huomaathan, että salasana tallennetaan pelkkänä tekstinä, eli ei salatussa "
-"muodossa."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Mikä tahansa numero"
 
@@ -2023,9 +1991,6 @@ msgstr "Merkitse rekisteröidyt"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Rekisteröi"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Validoi XML ennen vientiä ja rekisteröintiä."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Yhtään kohdetta ei ole valittu."
@@ -2668,3 +2633,11 @@ msgstr ""
 msgid "plugins.importexport.common.error.issueCoverImageMissing"
 msgstr ""
 "Numeron {$id} kansikuvaa ei viety, tiedostoa ei löytynyt polusta \"{$path}\"."
+
+msgid "manager.setup.contextSummary.description"
+msgstr ""
+"Kirjoita julkaisun lyhyt kuvaus, joka antaa käsityksen sen sisällöstä ja "
+"tarkoituksesta."
+
+msgid "emailTemplate.variable.issue.issueTableOfContents"
+msgstr "Numeron sisältö, kuten lista kaikista sisältyvistä käsikirjoituksista."

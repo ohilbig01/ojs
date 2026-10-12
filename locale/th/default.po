@@ -1,0 +1,180 @@
+# Apichaya <apichaya_cc@thonburi-u.ac.th>, 2024, 2026.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2026-09-15 04:51+0000\n"
+"Last-Translator: Apichaya <apichaya_cc@thonburi-u.ac.th>\n"
+"Language-Team: Thai <http://translate.pkp.sfu.ca/projects/ojs/default/th/>\n"
+"Language: th\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.18.2\n"
+
+msgid "section.default.abbrev"
+msgstr "ART"
+
+msgid "default.genres.article"
+msgstr "เนื้อหาบทความ"
+
+msgid "default.contextSettings.openAccessPolicy"
+msgstr ""
+"วารสารนี้เปิดให้เข้าถึงเนื้อหาได้ทันทีโดยไม่เสียค่าใช้จ่าย โดยยึดหลักว่าการเผ"
+"ยแพร่งานวิจัยให้สาธารณชนเข้าถึงได้อย่างเสรีจะช่วยส่งเสริมการแลกเปลี่ยนความรู้"
+"ในระดับสากล"
+
+msgid "section.default.title"
+msgstr "บทความ"
+
+msgid "section.default.policy"
+msgstr "นโยบายประจำหมวด"
+
+msgid "default.contextSettings.lockssLicense"
+msgstr ""
+"วารสารนี้ใช้ระบบ LOCKSS "
+"เพื่อสร้างเครือข่ายจัดเก็บข้อมูลแบบกระจายร่วมกับห้องสมุดที่เข้าร่วม และอนุญาต"
+"ให้ห้องสมุดเหล่านั้นจัดเก็บสำเนาวารสารแบบถาวรเพื่อการอนุรักษ์และการกู้คืนข้อม"
+"ูล <a href=\"https://www.lockss.org\">ดูเพิ่มเติม...</a>"
+
+msgid "default.contextSettings.forLibrarians"
+msgstr ""
+"ขอเชิญบรรณารักษ์ด้านงานวิจัยเพิ่มวารสารนี้ไว้ในรายชื่อวารสารอิเล็กทรอนิกส์ของ"
+"ห้องสมุด นอกจากนี้ ระบบเผยแพร่แบบโอเพนซอร์สที่วารสารนี้ใช้งานยังเหมาะสำหรับให"
+"้ห้องสมุดนำไปใช้สนับสนุนคณาจารย์ในการจัดทำและบริหารวารสารที่มีส่วนร่วมเป็นกอง"
+"บรรณาธิการ (ดู <a href=\"https://pkp.sfu.ca/ojs\">Open Journal Systems</a>)"
+
+msgid "default.contextSettings.authorGuidelines"
+msgstr ""
+"<p>วารสารนี้เปิดรับบทความจากผู้เขียนทุกท่าน บทความที่ส่งเข้ามาทั้งหมดจะได้รับ"
+"การพิจารณาเบื้องต้นโดยบรรณาธิการว่าเป็นไปตามวัตถุประสงค์และขอบเขตของวารสารหรื"
+"อไม่ บทความที่มีเนื้อหาเหมาะสมกับวารสารจะถูกส่งให้ผู้ทรงคุณวุฒิประเมินก่อนพิจ"
+"ารณาว่าจะรับหรือปฏิเสธการตีพิมพ์</p><p>ก่อนส่งบทความ "
+"ผู้เขียนต้องได้รับอนุญาตให้เผยแพร่เอกสารหรือข้อมูลทั้งหมดที่นำมาใช้"
+"ประกอบบทความ เช่น ภาพถ่าย เอกสาร และชุดข้อมูล "
+"ผู้เขียนทุกคนที่ระบุในบทความต้องยินยอมให้มีชื่อเป็นผู้เขียน "
+"และในกรณีที่เกี่ยวข้อง งานวิจัยต้องได้รับการรับรองจากคณะกรรมการจริยธรรมที่เหม"
+"าะสมตามข้อกำหนดทางกฎหมายของประเทศที่ดำเนินการวิจัย</p><p>บรรณาธิการอาจปฏิเสธบ"
+"ทความโดยไม่ส่งประเมิน หากบทความไม่ผ่านเกณฑ์คุณภาพขั้นต่ำ ก่อนส่งบทความ โปรดตร"
+"วจสอบให้แน่ใจว่ารูปแบบการวิจัยและการนำเสนอเหตุผลมีโครงสร้างที่เหมาะสมและชั"
+"ดเจน ชื่อบทความควรกระชับ "
+"และบทคัดย่อควรสามารถสื่อสารสาระสำคัญได้อย่างครบถ้วนด้วยตนเอง "
+"ซึ่งจะช่วยเพิ่มโอกาสที่ผู้ทรงคุณวุฒิจะยอมรับการประเมินบทความ "
+"เมื่อมั่นใจว่าบทความเป็นไปตามเกณฑ์ดังกล่าวแล้ว "
+"โปรดดำเนินการตามรายการตรวจสอบด้านล่างเพื่อเตรียมส่งบทความ</p>"
+
+msgid "default.contextSettings.checklist"
+msgstr ""
+"<p>บทความที่ส่งทุกเรื่องต้องเป็นไปตามข้อกำหนดต่อไปนี้</p><ul><li>บทความนี้เป็"
+"นไปตามข้อกำหนดที่ระบุไว้ใน <a href=\"{$submissionGuidelinesUrl}\""
+">คำแนะนำสำหรับผู้เขียน</a></li><li>บทความนี้ไม่เคยได้รับการตีพิมพ์มาก่อน และไ"
+"ม่ได้อยู่ระหว่างการพิจารณาของวารสารอื่น</li><li>เอกสารอ้างอิงทั้งหมดได้รับการ"
+"ตรวจสอบความถูกต้องและความครบถ้วนแล้ว</li><li>ตารางและรูปภาพทั้งหมดมีหมายเลขแล"
+"ะคำกำกับอย่างครบถ้วน</li><li>ได้รับอนุญาตให้เผยแพร่ภาพถ่าย ชุดข้อมูล "
+"และเอกสารอื่น ๆ ที่ส่งมาพร้อมกับบทความแล้ว</li></ul>"
+
+msgid "default.contextSettings.privacyStatement"
+msgstr ""
+"<p>ชื่อและอีเมลที่กรอกในเว็บไซต์วารสารนี้จะใช้เฉพาะตามวัตถุประสงค์ของวารสารเท"
+"่านั้น และจะไม่ถูกนำไปใช้เพื่อวัตถุประสงค์อื่นหรือเปิดเผยแก่บุคคลอื่น</p>"
+
+msgid "default.contextSettings.forReaders"
+msgstr ""
+"ขอเชิญผู้อ่านสมัครรับการแจ้งเตือนการเผยแพร่ของวารสาร โดยใช้ลิงก์ <a href=\""
+"{$indexUrl}/{$contextPath}/user/register\">ลงทะเบียน</a> ที่ด้านบนของหน้าหลั"
+"กวารสาร เมื่อลงทะเบียนแล้ว ผู้อ่านจะได้รับสารบัญของวารสารฉบับใหม่ทางอีเมล "
+"รายชื่อผู้ลงทะเบียนยังช่วยสะท้อนระดับการสนับสนุนและจำนวนผู้อ่านของวารสาร "
+"โปรดดู <a href=\"{$indexUrl}/{$contextPath}/about/submissions#"
+"privacyStatement\">คำชี้แจงสิทธิส่วนบุคคล</a> ของวารสาร "
+"ซึ่งระบุว่าชื่อและอีเมลของผู้อ่านจะไม่นำไปใช้เพื่อวัตถุประสงค์อื่น"
+
+msgid "default.contextSettings.forAuthors"
+msgstr ""
+"สนใจส่งบทความมายังวารสารนี้หรือไม่? ขอแนะนำให้ศึกษาหน้า <a href=\""
+"{$indexUrl}/{$contextPath}/about\">เกี่ยวกับวารสาร</a> เพื่อดูนโยบายของแต่"
+"ละหมวด และอ่าน <a href=\"{$indexUrl}/{$contextPath}/about/submissions#"
+"authorGuidelines\">คำแนะนำสำหรับผู้เขียน</a> ก่อนส่งบทความ ผู้เขียนต้อง <a "
+"href=\"{$indexUrl}/{$contextPath}/user/register\">ลงทะเบียน</a> กับวารสารก่"
+"อน หรือหากลงทะเบียนไว้แล้ว สามารถ <a href=\"{$indexUrl}/index/login\""
+">เข้าสู่ระบบ</a> และเริ่มขั้นตอนการส่งบทความ 5 ขั้นตอนได้ทันที"
+
+msgid "default.groups.plural.editor"
+msgstr "บรรณาธิการวารสาร"
+
+msgid "default.groups.abbrev.editor"
+msgstr "JE"
+
+msgid "default.groups.abbrev.guestEditor"
+msgstr "GE"
+
+msgid "default.groups.plural.externalReviewer"
+msgstr "ผู้ประเมิน"
+
+msgid "default.contextSettings.clockssLicense"
+msgstr ""
+"วารสารนี้ใช้ระบบ CLOCKSS "
+"เพื่อสร้างเครือข่ายจัดเก็บข้อมูลแบบกระจายร่วมกับห้องสมุดที่เข้าร่วม และอนุญาต"
+"ให้ห้องสมุดเหล่านั้นจัดเก็บสำเนาวารสารแบบถาวรเพื่อการอนุรักษ์และการกู้คืนข้อม"
+"ูล <a href=\"https://clockss.org\">ดูเพิ่มเติม...</a>"
+
+msgid "default.groups.name.manager"
+msgstr "ผู้จัดการวารสาร"
+
+msgid "default.groups.plural.manager"
+msgstr "ผู้จัดการวารสาร"
+
+msgid "default.groups.abbrev.manager"
+msgstr "JM"
+
+msgid "default.groups.name.editor"
+msgstr "บรรณาธิการวารสาร"
+
+msgid "default.groups.name.guestEditor"
+msgstr "บรรณาธิการรับเชิญ"
+
+msgid "default.groups.plural.guestEditor"
+msgstr "บรรณาธิการรับเชิญ"
+
+msgid "default.groups.name.sectionEditor"
+msgstr "บรรณาธิการประจำหมวด"
+
+msgid "default.groups.plural.sectionEditor"
+msgstr "บรรณาธิการประจำหมวด"
+
+msgid "default.groups.abbrev.sectionEditor"
+msgstr "SecE"
+
+msgid "default.groups.name.subscriptionManager"
+msgstr "ผู้จัดการสมาชิกวารสาร"
+
+msgid "default.groups.plural.subscriptionManager"
+msgstr "ผู้จัดการสมาชิกวารสาร"
+
+msgid "default.groups.abbrev.subscriptionManager"
+msgstr "SubM"
+
+msgid "default.genres.researchInstrument"
+msgstr "เครื่องมือวิจัย"
+
+msgid "default.genres.researchMaterials"
+msgstr "วัสดุหรือข้อมูลสำหรับการวิจัย"
+
+msgid "default.genres.researchResults"
+msgstr "ผลการวิจัย"
+
+msgid "default.genres.transcripts"
+msgstr "บันทึกถอดความ"
+
+msgid "default.genres.dataAnalysis"
+msgstr "การวิเคราะห์ข้อมูล"
+
+msgid "default.genres.dataSet"
+msgstr "ชุดข้อมูล"
+
+msgid "default.genres.sourceTexts"
+msgstr "ข้อความต้นฉบับ"
+
+msgid "default.groups.name.externalReviewer"
+msgstr "ผู้ประเมิน"
+
+msgid "default.groups.abbrev.externalReviewer"
+msgstr "R"

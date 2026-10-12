@@ -25,6 +25,7 @@ use PKP\controllers\grid\GridHandler;
 use PKP\controllers\grid\users\userSelect\UserSelectGridCellProvider;
 use PKP\security\authorization\ContextAccessPolicy;
 use PKP\security\Role;
+use PKP\userGroup\UserGroup;
 
 class SubscriberSelectGridHandler extends GridHandler
 {
@@ -64,20 +65,22 @@ class SubscriberSelectGridHandler extends GridHandler
     {
         parent::initialize($request, $args);
 
+        $builder = UserGroup::withContextIds([$request->getContext()->getId()]);
         $stageId = $this->getAuthorizedContextObject(Application::ASSOC_TYPE_WORKFLOW_STAGE);
-        $userGroups = Repo::userGroup()->getUserGroupsByStage(
-            $request->getContext()->getId(),
-            $stageId
-        );
+        if ($stageId) {
+            $builder->withStageIds([$stageId]);
+        }
+        $userGroups = $builder->get();
+
         $this->_userGroupOptions = [];
         foreach ($userGroups as $userGroup) {
-            $this->_userGroupOptions[$userGroup->getId()] = $userGroup->getLocalizedName();
+            $this->_userGroupOptions[$userGroup->id] = $userGroup->getLocalizedData('name');
         }
 
         $this->setTitle('editor.submission.findAndSelectUser');
 
         // Columns
-        $cellProvider = new UserSelectGridCellProvider($request->getUserVar('userId'));
+        $cellProvider = new UserSelectGridCellProvider($request->getContext()->getId(), $request->getUserVar('userId'));
         $this->addColumn(
             new GridColumn(
                 'select',
@@ -137,7 +140,7 @@ class SubscriberSelectGridHandler extends GridHandler
 
         $users = $userCollector->getMany();
 
-        $totalCount = $userCollector->limit(null)->offset(null)->getCount();
+        $totalCount = $userCollector->getCount();
         return new \PKP\core\VirtualArrayIterator(iterator_to_array($users, true), $totalCount, $rangeInfo->getPage(), $rangeInfo->getCount());
     }
 
@@ -146,14 +149,12 @@ class SubscriberSelectGridHandler extends GridHandler
      */
     public function renderFilter($request, $filterData = [])
     {
-        $context = $request->getContext();
-        $userGroups = Repo::userGroup()->getCollector()
-            ->filterByContextIds([$context->getId()])
-            ->getMany();
+        $contextId = $request->getContext()->getId();
+        $userGroups = UserGroup::withContextIds([$contextId])->get();
 
         $userGroupOptions = ['' => __('grid.user.allRoles')];
         foreach ($userGroups as $userGroup) {
-            $userGroupOptions[$userGroup->getId()] = $userGroup->getLocalizedName();
+            $userGroupOptions[$userGroup->id] = $userGroup->getLocalizedData('name');
         }
 
         return parent::renderFilter(

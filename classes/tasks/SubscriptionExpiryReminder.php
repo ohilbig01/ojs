@@ -36,7 +36,7 @@ class SubscriptionExpiryReminder extends ScheduledTask
     /**
      * @copydoc ScheduledTask::getName()
      */
-    public function getName()
+    public function getName(): string
     {
         return __('admin.scheduledTask.subscriptionExpiryReminder');
     }
@@ -59,7 +59,7 @@ class SubscriptionExpiryReminder extends ScheduledTask
             ->recipients([$user])
             ->subject($template->getLocalizedData('subject', $locale))
             ->body($template->getLocalizedData('body', $locale))
-            ->setData($locale);
+            ->setLocale($locale);
 
         Mail::send($mailable);
     }
@@ -235,7 +235,7 @@ class SubscriptionExpiryReminder extends ScheduledTask
     /**
      * @copydoc ScheduledTask::executeActions()
      */
-    protected function executeActions()
+    protected function executeActions(): bool
     {
         $journalDao = DAORegistry::getDAO('JournalDAO'); /** @var JournalDAO $journalDao */
         $journals = $journalDao->getAll(true);
@@ -299,6 +299,7 @@ class SubscriptionExpiryReminder extends ScheduledTask
                 }
             }
         }
+
         return true;
     }
 }

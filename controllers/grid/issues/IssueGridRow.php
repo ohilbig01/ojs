@@ -51,8 +51,8 @@ class IssueGridRow extends GridRow
                     'edit',
                     new AjaxModal(
                         $router->url($request, null, null, 'editIssue', null, ['issueId' => $issueId]),
-                        __('editor.issues.editIssue', ['issueIdentification' => $issue->getIssueIdentification()]),
-                        'modal_edit',
+                        __('editor.issues.editIssue', ['issueIdentification' => htmlspecialchars($issue->getIssueIdentification())]),
+                        null,
                         true
                     ),
                     __('grid.action.edit'),
@@ -63,16 +63,16 @@ class IssueGridRow extends GridRow
             $dispatcher = $request->getDispatcher();
             $this->addAction(
                 new LinkAction(
-                    $issue->getDatePublished() ? 'viewIssue' : 'previewIssue',
+                    $issue->getPublished() ? 'viewIssue' : 'previewIssue',
                     new OpenWindowAction(
                         $dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'issue', 'view', [$issueId])
                     ),
-                    __($issue->getDatePublished() ? 'grid.action.viewIssue' : 'grid.action.previewIssue'),
+                    __($issue->getPublished() ? 'grid.action.viewIssue' : 'grid.action.previewIssue'),
                     'information'
                 )
             );
 
-            if ($issue->getDatePublished()) {
+            if ($issue->getPublished()) {
                 $this->addAction(
                     new LinkAction(
                         'unpublish',
@@ -81,7 +81,7 @@ class IssueGridRow extends GridRow
                             __('editor.issues.confirmUnpublish'),
                             __('editor.issues.unpublishIssue'),
                             $router->url($request, null, null, 'unpublishIssue', null, ['issueId' => $issueId]),
-                            'modal_delete'
+                            'negative'
                         ),
                         __('editor.issues.unpublishIssue'),
                         'delete'
@@ -101,7 +101,6 @@ class IssueGridRow extends GridRow
                                 ['issueId' => $issueId]
                             ),
                             __('editor.issues.publishIssue'),
-                            'modal_confirm'
                         ),
                         __('editor.issues.publishIssue'),
                         'advance'
@@ -111,7 +110,7 @@ class IssueGridRow extends GridRow
 
             $currentIssue = Repo::issue()->getCurrent($issue->getJournalId());
             $isCurrentIssue = $currentIssue != null && $issue->getId() == $currentIssue->getId();
-            if ($issue->getDatePublished() && !$isCurrentIssue) {
+            if ($issue->getPublished() && !$isCurrentIssue) {
                 $this->addAction(
                     new LinkAction(
                         'setCurrentIssue',
@@ -120,7 +119,7 @@ class IssueGridRow extends GridRow
                             __('editor.issues.confirmSetCurrentIssue'),
                             __('editor.issues.currentIssue'),
                             $router->url($request, null, null, 'setCurrentIssue', null, ['issueId' => $issueId]),
-                            'modal_delete'
+                            'primary'
                         ),
                         __('editor.issues.currentIssue'),
                         'delete'
@@ -136,7 +135,7 @@ class IssueGridRow extends GridRow
                         __('common.confirmDelete'),
                         __('grid.action.delete'),
                         $router->url($request, null, null, 'deleteIssue', null, ['issueId' => $issueId]),
-                        'modal_delete'
+                        'negative'
                     ),
                     __('grid.action.delete'),
                     'delete'

@@ -1,0 +1,66 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-30T06:56:44-07:00\n"
+"PO-Revision-Date: 2019-09-30T06:56:44-07:00\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "plugins.importexport.doaj.displayName"
+msgstr "DOAJ Export Plugin"
+
+msgid "plugins.importexport.doaj.description"
+msgstr "Export article metadata to the Directory of Open Access Journals (DOAJ)."
+
+msgid "plugins.importexport.doaj.export.contact"
+msgstr "Contact DOAJ for inclusion"
+
+msgid "plugins.importexport.doaj.registrationIntro"
+msgstr ""
+"To register articles with DOAJ directly from OJS, enter your DOAJ API key. "
+"Without an API key, you can still export articles in DOAJ XML format, but "
+"you will need to submit them to DOAJ yourself."
+
+msgid "plugins.importexport.doaj.settings.form.apiKey"
+msgstr "DOAJ API Key"
+
+msgid "plugins.importexport.doaj.settings.form.apiKey.description"
+msgstr "You will find your API key on your DOAJ user page."
+
+msgid ""
+"plugins.importexport.doaj.settings.form.automaticRegistration.description"
+msgstr ""
+"Deposit newly published articles to DOAJ automatically. Deposits are "
+"sent once a day, so an article may take up to a day after publication to "
+"reach DOAJ."
+
+msgid "plugins.importexport.doaj.senderTask.name"
+msgstr "DOAJ automatic registration task"
+
+msgid "plugins.importexport.doaj.register.error.mdsError"
+msgstr ""
+"Deposit was not successful! The DOAJ API returned an error: '{$param}'."
+
+msgid "plugins.importexport.doaj.delete.error.mdsError"
+msgstr ""
+"Delete was not successful! The DOAJ API returned an error: '{$param}'."
+
+msgid "plugins.importexport.doaj.cliUsage"
+msgstr ""
+"Usage:\n"
+"{$scriptName} {$pluginName} export [xmlFileName] [journal_path] articles "
+"objectId1 [objectId2] ...\n"
+
+msgid "plugins.importexport.doaj.submit.success"
+msgstr "Articles submitted successfully"
+
+msgid "plugins.generic.doaj.displayName"
+msgstr "DOAJ Plugin"
+
+msgid "plugins.generic.doaj.description"
+msgstr "Handles registration of articles or article versions with DOAJ."

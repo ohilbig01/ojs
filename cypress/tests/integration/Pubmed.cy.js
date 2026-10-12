@@ -18,7 +18,7 @@ describe('Pubmed tests', function () {
 		.then((win) => {
 			const csrfToken = win.pkp.currentUser.csrfToken;
 			cy.request({
-					url: '/index.php/publicknowledge/management/importexport/plugin/PubMedExportPlugin/exportSubmissions',
+					url: '/index.php/publicknowledge/en/management/importexport/plugin/PubMedExportPlugin/exportSubmissions',
 					method: 'POST',
 					headers: {
 						'X-Csrf-Token': csrfToken
@@ -34,5 +34,6 @@ describe('Pubmed tests', function () {
 			expect(Cypress.$(response.body).find('Article > Journal > Issn').text()).to.equal('0378-5955');
 			expect(Cypress.$(response.body).find('Article > ArticleTitle').text()).to.equal('The Signalling Theory Dividends');
 		});
+		cy.logout();
 	});
 });

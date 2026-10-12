@@ -308,12 +308,6 @@ msgstr "Bu bölmədə xülasə (abstract) üçün kəlmə sayı (limitsiz: 0)"
 msgid "manager.setup"
 msgstr "Jurnal tənzimləri"
 
-msgid "manager.setup.masthead"
-msgstr "İdarəçi siyahısı"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Redaksiya heyəti"
-
 msgid "manager.setup.homepageContent"
 msgstr "Jurnal əsas səhifə məzmunu"
 
@@ -485,9 +479,6 @@ msgstr "Jurnal şəkli (kiçik)"
 msgid "manager.setup.contextTitle"
 msgstr "Jurnal başlığı"
 
-msgid "manager.setup.keyInfo"
-msgstr "Əsas məlumat"
-
 msgid "manager.setup.labelName"
 msgstr "Etiket adı"
 
@@ -500,23 +491,11 @@ msgstr "PKP PN qoşmasını aktivləşdirin"
 msgid "manager.setup.plnPluginArchiving"
 msgstr "PKP təhlükəsizlik şəbəkəsi (PN)"
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"CLOCKSS lisenziyası Jurnal Haqqında bölməsində, arxivləşdirmə altında "
-"görünəcəkdir: <a href=\"http://www.lockss.org/community/"
-"publishers-titles-gln/\" target=\"_blank\">LOCKSS Lisansı</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "LOCKSS lisenziya təsviri"
 
 msgid "manager.setup.lockssTitle"
 msgstr "LOCKSS"
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"CLOCKSS lisenziyası Jurnal Haqqında bölməsində, Arxivləşdirmə altında "
-"görünəcəkdir: <a href=\"https://clockss.org\" target=\"_blank\">CLOCKSS "
-"Lisansı</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "CLOCKSS Lisenziya Təsviri"
@@ -1834,11 +1813,6 @@ msgstr ""
 msgid "manager.sections.form.reviewFormId"
 msgstr "Zəhmət olmasa etibarlı bir dəyərləndirmə formu seçdiyinizdən əmin olun"
 
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Müəlliflərin məqalə ilə birlikdə mənfəət münaqişəsi bildirişi faylı "
-"göndərmələri gərəklidir."
-
 msgid "manager.sections.form.titleRequired"
 msgstr "Bölmə üçün başlıq məcburidir."
 
@@ -1949,11 +1923,6 @@ msgid "manager.setup.journalStyleSheetInvalid"
 msgstr ""
 "Formatlandırma səhifəsi üçün etibarsız fayl formatı. Dəstəklərən fayl "
 "formatı .css dir"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Jurnalın qısa bir açıqlamasını edin və redaktorları, idarə direktorlarını və "
-"redaksiya heyətinizin digər üzvlərini müəyyənləşdirin."
 
 msgid "manager.setup.plnDescription"
 msgstr ""
@@ -2367,14 +2336,6 @@ msgstr "#YOK"
 
 msgid "plugins.importexport.common.error.issueCoverImageMissing"
 msgstr "#YOK"
-
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Şifrənin düz mətn kimi, yəni şifrələnməmiş olaraq yadda saxlanacağını zəhmət "
-"olmasa unutmayın."
-
-msgid "plugins.importexport.common.validation"
-msgstr "İxrac və qeydiyyat əməliyyatından əvvəl XML-i təsdiqləyin"
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Heç bir obyekt seçilmədi."

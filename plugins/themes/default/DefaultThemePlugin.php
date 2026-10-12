@@ -16,8 +16,9 @@ namespace APP\plugins\themes\default;
 
 use APP\core\Application;
 use APP\file\PublicFileManager;
+use APP\journal\enums\JournalContentOption;
 use PKP\config\Config;
-use PKP\session\SessionManager;
+use PKP\core\PKPSessionGuard;
 
 class DefaultThemePlugin extends \PKP\plugins\ThemePlugin
 {
@@ -26,7 +27,7 @@ class DefaultThemePlugin extends \PKP\plugins\ThemePlugin
      */
     public function isActive()
     {
-        if (SessionManager::isDisabled()) {
+        if (PKPSessionGuard::isSessionDisable()) {
             return true;
         }
         return parent::isActive();
@@ -39,6 +40,8 @@ class DefaultThemePlugin extends \PKP\plugins\ThemePlugin
      */
     public function init()
     {
+        $context = Application::get()->getRequest()->getContext();
+
         // Register theme options
         $this->addOption('typography', 'FieldOptions', [
             'type' => 'radio',
@@ -93,6 +96,14 @@ class DefaultThemePlugin extends \PKP\plugins\ThemePlugin
             ],
             'default' => false,
         ]);
+
+        $this->addOption('journalContentOrganization', 'FieldOptions', [
+            'label' => __('manager.setup.journalContentOrganization'),
+            'description' => __('manager.setup.journalContentOrganization.description'),
+            'options' => JournalContentOption::getOptions(),
+            'default' => JournalContentOption::default($context),
+        ]);
+
         $this->addOption('useHomepageImageAsHeader', 'FieldOptions', [
             'label' => __('plugins.themes.default.option.useHomepageImageAsHeader.label'),
             'description' => __('plugins.themes.default.option.useHomepageImageAsHeader.description'),
@@ -155,9 +166,10 @@ class DefaultThemePlugin extends \PKP\plugins\ThemePlugin
         }
 
         // Update colour based on theme option
-        if ($this->getOption('baseColour') !== '#1E6292') {
-            $additionalLessVariables[] = '@bg-base:' . $this->getOption('baseColour') . ';';
-            if (!$this->isColourDark($this->getOption('baseColour'))) {
+        if (($baseColour = $this->getOption('baseColour')) !== '#1E6292') {
+            if (!preg_match('/^#[0-9a-fA-F]{1,6}$/', $baseColour)) $baseColour = '#1E6292'; // pkp/pkp-lib#11974
+            $additionalLessVariables[] = '@bg-base:' . $baseColour . ';';
+            if (!$this->isColourDark($baseColour)) {
                 $additionalLessVariables[] = '@text-bg-base:rgba(0,0,0,0.84);';
                 $additionalLessVariables[] = '@bg-base-border-color:rgba(0,0,0,0.2);';
             }
@@ -178,13 +190,9 @@ class DefaultThemePlugin extends \PKP\plugins\ThemePlugin
         );
 
         // Get homepage image and use as header background if useAsHeader is true
-        $context = Application::get()->getRequest()->getContext();
-        if ($context && $this->getOption('useHomepageImageAsHeader')) {
+        if ($context && $this->getOption('useHomepageImageAsHeader') && ($homepageImage = $context->getLocalizedData('homepageImage'))) {
             $publicFileManager = new PublicFileManager();
             $publicFilesDir = $request->getBaseUrl() . '/' . $publicFileManager->getContextFilesPath($context->getId());
-
-            $homepageImage = $context->getLocalizedData('homepageImage');
-
             $homepageImageUrl = $publicFilesDir . '/' . $homepageImage['uploadName'];
 
             $this->addStyle(
@@ -196,8 +204,9 @@ class DefaultThemePlugin extends \PKP\plugins\ThemePlugin
 
         // Load jQuery from a CDN or, if CDNs are disabled, from a local copy.
         $min = Config::getVar('general', 'enable_minified') ? '.min' : '';
-        $jquery = $request->getBaseUrl() . '/lib/pkp/lib/vendor/components/jquery/jquery' . $min . '.js';
-        $jqueryUI = $request->getBaseUrl() . '/lib/pkp/lib/vendor/components/jqueryui/jquery-ui' . $min . '.js';
+        $jquery = $request->getBaseUrl() . '/js/build/jquery/jquery' . $min . '.js';
+        $jqueryUI = $request->getBaseUrl() . '/js/build/jquery-ui/jquery-ui' . $min . '.js';
+
         // Use an empty `baseUrl` argument to prevent the theme from looking for
         // the files within the theme directory
         $this->addScript('jQuery', $jquery, ['baseUrl' => '']);
@@ -207,6 +216,11 @@ class DefaultThemePlugin extends \PKP\plugins\ThemePlugin
         $this->addScript('popper', 'js/lib/popper/popper.js');
         $this->addScript('bsUtil', 'js/lib/bootstrap/util.js');
         $this->addScript('bsDropdown', 'js/lib/bootstrap/dropdown.js');
+
+        // Load Swiper for carousel
+        $this->addScript('swiper', 'js/lib/swiper/swiper-bundle' . $min . '.js');
+        $this->addStyle('swiper', 'js/lib/swiper/swiper-bundle' . $min . '.css');
+        $this->addScript('swiper-i18n', $this->getSwiperI18n(), ['inline' => true]);
 
         // Load custom JavaScript for this theme
         $this->addScript('default', 'js/main.js');
@@ -224,6 +238,14 @@ class DefaultThemePlugin extends \PKP\plugins\ThemePlugin
     public function getContextSpecificPluginSettingsFile()
     {
         return $this->getPluginPath() . '/settings.xml';
+    }
+
+    /** @see ThemePlugin::saveOption */
+    public function saveOption($name, $value, $contextId = null) {
+        // Validate the base colour setting value.
+        if ($name == 'baseColour' && !preg_match('/^#[0-9a-fA-F]{1,6}$/', $value)) $value = null; // pkp/pkp-lib#11974
+
+        parent::saveOption($name, $value, $contextId);
     }
 
     /**
@@ -256,8 +278,15 @@ class DefaultThemePlugin extends \PKP\plugins\ThemePlugin
     {
         return __('plugins.themes.default.description');
     }
-}
 
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\plugins\themes\default\DefaultThemePlugin', '\DefaultThemePlugin');
+    /**
+     * Get the locale strings for the swiper carousel
+     */
+    public function getSwiperI18n(): string
+    {
+        return 'var pkpDefaultThemeI18N = ' . json_encode([
+            'nextSlide' => __('plugins.themes.default.nextSlide'),
+            'prevSlide' => __('plugins.themes.default.prevSlide'),
+        ]);
+    }
 }

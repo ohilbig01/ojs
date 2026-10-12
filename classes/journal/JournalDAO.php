@@ -79,17 +79,16 @@ class JournalDAO extends ContextDAO
     /**
      * Delete the public IDs of all publishing objects in a journal.
      *
-     * @param int $journalId
-     * @param string $pubIdType One of the NLM pub-id-type values or
+     * @param $pubIdType One of the NLM pub-id-type values or
      * 'other::something' if not part of the official NLM list
      * (see <http://dtd.nlm.nih.gov/publishing/tag-library/n-4zh0.html>).
      */
-    public function deleteAllPubIds($journalId, $pubIdType)
+    public function deleteAllPubIds(int $journalId, string $pubIdType): int
     {
-        Repo::galley()->dao->deleteAllPubIds($journalId, $pubIdType);
-        Repo::submissionFile()->dao->deleteAllPubIds($journalId, $pubIdType);
-        Repo::issue()->dao->deleteAllPubIds($journalId, $pubIdType);
-        Repo::publication()->dao->deleteAllPubIds($journalId, $pubIdType);
+        return Repo::galley()->dao->deleteAllPubIds($journalId, $pubIdType)
+            + Repo::submissionFile()->dao->deleteAllPubIds($journalId, $pubIdType)
+            + Repo::issue()->dao->deleteAllPubIds($journalId, $pubIdType)
+            + Repo::publication()->dao->deleteAllPubIds($journalId, $pubIdType);
     }
 
     /**
@@ -119,7 +118,7 @@ class JournalDAO extends ContextDAO
         $pubObjectDaos = [
             Application::ASSOC_TYPE_ISSUE => Repo::issue()->dao,
             Application::ASSOC_TYPE_PUBLICATION => Repo::publication()->dao,
-            Application::ASSOC_TYPE_GALLEY => Application::getRepresentationDAO(),
+            Application::ASSOC_TYPE_REPRESENTATION => Application::getRepresentationDAO(),
             Application::ASSOC_TYPE_ISSUE_GALLEY => DAORegistry::getDAO('IssueGalleyDAO'),
             Application::ASSOC_TYPE_SUBMISSION_FILE => Repo::submissionFile()->dao,
         ];
@@ -148,19 +147,13 @@ class JournalDAO extends ContextDAO
      * Sets current_issue_id for context to null.
      * This is necessary because current_issue_id should explicitly be set to null rather than unset.
      *
-     * @param int $contextId
-     *
      * @return int
      */
-    public function removeCurrentIssue($contextId)
+    public function removeCurrentIssue(int $contextId)
     {
         return $this->update(
             "UPDATE {$this->tableName} SET current_issue_id = null WHERE {$this->primaryKeyColumn} = ?",
-            [(int) $contextId]
+            [$contextId]
         );
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\journal\JournalDAO', '\JournalDAO');
 }

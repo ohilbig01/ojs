@@ -1,11 +1,13 @@
-# Pia Piontkowitz <pia.piontkowitz@rub.de>, 2021, 2022, 2023.
+# Pia Piontkowitz <pia.piontkowitz@rub.de>, 2021, 2022, 2023, 2025, 2026.
 # Felix Henn <shenn@ub.uni-koeln.de>, 2022.
+# Martin Brändle <martin.braendle@uzh.ch>, 2023.
+# Emma U <emmaupkp@gmail.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27T09:54:42-07:00\n"
-"PO-Revision-Date: 2023-04-26 14:01+0000\n"
+"PO-Revision-Date: 2026-02-06 23:18+0000\n"
 "Last-Translator: Pia Piontkowitz <pia.piontkowitz@rub.de>\n"
 "Language-Team: German <http://translate.pkp.sfu.ca/projects/ojs/locale/de/>\n"
 "Language: de\n"
@@ -13,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "user.authorization.journalDoesNotPublish"
 msgstr "Diese Zeitschrift veröffentlicht ihren Inhalt nicht online."
@@ -399,7 +401,7 @@ msgid "user.profile.profileImage"
 msgstr "Profilbild"
 
 msgid "user.showAllJournals"
-msgstr "Alle Zeitschriften anzeigen"
+msgstr "Meine Zeitschriften anzeigen"
 
 msgid "user.registerForOtherJournals"
 msgstr "Für andere Zeitschriften registrieren"
@@ -644,7 +646,7 @@ msgid "submission.event.author.authorRevision"
 msgstr "Bearbeitung durch Autor/in eingegangen"
 
 msgid "submission.event.general.authorRevision"
-msgstr "Revisionsdatei durch Autor/in aktualisiert"
+msgstr "Überarbeitungsdatei durch Autor/in aktualisiert"
 
 msgid "submission.event.editor.editorAssigned"
 msgstr "Beitrag einer Redakteurin/einem Redakteur zugeteilt"
@@ -746,19 +748,19 @@ msgid "search.results.orderBy"
 msgstr "Ergebnisse sortieren nach"
 
 msgid "search.results.orderBy.article"
-msgstr "Artikeltitel"
+msgstr "Titel des Artikels"
 
 msgid "search.results.orderBy.author"
 msgstr "Autor/in"
 
 msgid "search.results.orderBy.date"
-msgstr "Veröffentlichungsdatum"
+msgstr "Publikationsdatum"
 
 msgid "search.results.orderBy.issue"
 msgstr "Ausgabe"
 
 msgid "search.results.orderBy.journal"
-msgstr "Zeitschriftentitel"
+msgstr "Titel der Zeitschrift"
 
 msgid "search.results.orderBy.popularityAll"
 msgstr "Beliebtheit (gesamte Zeit)"
@@ -1200,9 +1202,6 @@ msgstr ""
 "haben (Siehe <a target=\"_new\" class=\"action\" href="
 "\"{$competingInterestGuidelinesUrl}\">Richtlinien für Interessenkonflikte</"
 "a>)."
-
-msgid "reviewer.competingInterests"
-msgstr "Interessenkonflikte"
 
 msgid "reviewer.article.enterReviewA"
 msgstr ""
@@ -1709,12 +1708,6 @@ msgstr "Über die Zeitschrift"
 msgid "about.history"
 msgstr "Zeitschriften-Geschichte"
 
-msgid "about.editorialTeam"
-msgstr "Redaktion"
-
-msgid "about.editorialTeam.biography"
-msgstr "Biografie"
-
 msgid "about.editorialPolicies"
 msgstr "Zeitschriftenrichtlinien und Publikationsprozess"
 
@@ -2016,7 +2009,7 @@ msgstr ""
 "\n"
 "<p>Danke für das Herunterladen von <strong>Open Journal Systems </strong>des "
 "Public Knowledge Projects (PKP). Bevor Sie fortfahren, lesen Sie bitte die "
-"zum Programm gehörende <a href=\"{$baseUrl}/docs/README.md\">README</a>-"
+"zum Programm gehörende <a href=\"{$baseUrl}/README.md\">README</a>-"
 "Datei. Näheres über das Public Knowledge Project und seine "
 "Programmentwicklungen finden Sie auf der <a href=\"https://pkp.sfu.ca/\" "
 "target=\"_blank\">Webseite des PKP</a>. Wenn Sie Programmfehler melden "
@@ -2092,18 +2085,18 @@ msgstr ""
 "\n"
 "<p>Danke für das Herunterladen von <strong>Open Journal Systems </strong>des "
 "Public Knowledge Project. Bevor Sie fortfahren, lesen Sie bitte die zum "
-"Programm gehörenden Dateien <a href=\"{$baseUrl}/docs/README.md\">README</a> "
-"und <a href=\"{$baseUrl}/docs/UPGRADE.md\">UPGRADE</a>. Näheres über das "
-"Public Knowledge Project und seine Programmentwicklungen finden Sie auf der "
-"<a href=\"https://pkp.sfu.ca/\" target=\"_blank\">Webseite des PKP</a>. Wenn "
-"Sie Programmfehler melden wollen oder technische Fragen zu Open Journal "
-"Systems haben, gehen Sie bitte zum <a href=\"https://forum.pkp.sfu.ca\" "
-"target=\"_blank\">Support Forum</a> von PKP oder besuchen Sie unseren <a "
-"href=\"https://github.com/pkp/pkp-lib/issues\" target=\"_blank\">Webservice "
-"für die Meldung von Programmfehlern</a>. Wenn Sie im Support Forum keine "
-"geeignete Hilfestellung finden, können Sie uns auch unter <a href=\"mailto"
-":pkp.contact@gmail.com\">pkp.contact@gmail.com</a> per E-Mail "
-"kontaktieren.</p>\n"
+"Programm gehörenden Dateien <a href=\"{$baseUrl}/README.md\">README</a> und "
+"<a href=\"https://docs.pkp.sfu.ca/dev/upgrade-guide)\">den Upgrade Guide</"
+"a>. Näheres über das Public Knowledge Project und seine "
+"Programmentwicklungen finden Sie auf der <a href=\"https://pkp.sfu.ca/\" "
+"target=\"_blank\">Webseite des PKP</a>. Wenn Sie Programmfehler melden "
+"wollen oder technische Fragen zu Open Journal Systems haben, gehen Sie bitte "
+"zum <a href=\"https://forum.pkp.sfu.ca\" target=\"_blank\">Support Forum</a> "
+"von PKP oder besuchen Sie unseren <a href=\"https://github.com/pkp/pkp-lib/"
+"issues\" target=\"_blank\">Webservice für die Meldung von Programmfehlern</"
+"a>. Wenn Sie im Support Forum keine geeignete Hilfestellung finden, können "
+"Sie uns auch unter <a href=\"mailto:pkp.contact@gmail.com\">pkp.contact@gmail"
+".com</a> per E-Mail kontaktieren.</p>\n"
 "<p>Wir <strong>empfehlen dringend</strong>, dass Sie ein Backup Ihrer "
 "Datenbank, Dateiverzeichnisse und OJS-Installation machen, bevor Sie "
 "fortfahren.</p>"
@@ -2253,11 +2246,13 @@ msgstr ""
 msgid "log.review.resubmit"
 msgstr "Beitrag {$submissionId} wurde erneut zur Begutachtung eingereicht."
 
+#, fuzzy
 msgid "log.review.reviewDeclined"
 msgstr ""
 "{$reviewerName} hat die Begutachtung von Beitrag {$submissionId} in "
 "Durchgang {$round} abgelehnt."
 
+#, fuzzy
 msgid "log.review.reviewAccepted"
 msgstr ""
 "{$reviewerName} hat die Begutachtung von Beitrag {$submissionId} in "
@@ -2413,7 +2408,7 @@ msgstr ""
 
 msgid "notification.type.assignProductionUser"
 msgstr ""
-"Nutzen Sie den Hinzufügen-Link in der Teilnehmer/innen-Liste, um eine/n "
+"Nutzen Sie die Schaltfläche Zuweisen in der Beteiligten-Liste, um eine/n "
 "Nutzer/in zum Erzeugen von Fahnen einzutragen."
 
 msgid "notification.type.awaitingRepresentations"
@@ -2481,10 +2476,6 @@ msgstr "<p>Freigabe dieser Fahne entfernen.</p>"
 msgid "search.cli.rebuildIndex.indexing"
 msgstr "Indiziere \"{$journalName}\""
 
-msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
-msgstr ""
-"Diese Implementierung der Suche erlaubt keine Neuindizierung pro Journal."
-
 msgid "search.cli.rebuildIndex.unknownJournal"
 msgstr "Der angegebene Pfad \"{$journalPath}\" führt zu keiner Zeitschrift."
 
@@ -2510,3 +2501,6 @@ msgstr "Wählen Sie, wie Artikel in dieser Kategorie sortiert sein sollen."
 
 #~ msgid "category.category"
 #~ msgstr "Kategorien"
+
+msgid "search.journal"
+msgstr "Nach Zeitschrift"

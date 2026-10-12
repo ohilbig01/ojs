@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file classes/issue/DAO.php
  *
@@ -16,12 +17,13 @@
 namespace APP\issue;
 
 use APP\facades\Repo;
+use APP\plugins\PubObjectsExportPlugin;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\LazyCollection;
-use PKP\cache\CacheManager;
-use PKP\cache\GenericCache;
 use PKP\core\EntityDAO;
+use PKP\core\interfaces\CollectorInterface;
 use PKP\core\traits\EntityWithParent;
 use PKP\db\DAOResultFactory;
 use PKP\services\PKPSchemaService;
@@ -35,9 +37,6 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
      * @use EntityWithParent<Issue>
      */
     use EntityWithParent;
-
-    // TODO: Needs to be addressed with refactor of caching.
-    public $caches;
 
     /** @copydoc EntityDAO::$schema */
     public $schema = PKPSchemaService::SCHEMA_ISSUE;
@@ -83,42 +82,6 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
     }
 
     /**
-     * Handle a cache miss.
-     *
-     * TODO: Caching not currently working as expected
-     *
-     */
-    public function _cacheMiss(GenericCache $cache, int $id): ?Issue
-    {
-        if ($cache->getCacheId() === 'current') {
-            $issue = Repo::issue()->getCurrent($id);
-        } else {
-            $issue = Repo::issue()->getByBestId($id, null, false);
-        }
-        $cache->setCache($id, $issue);
-        return $issue;
-    }
-
-    /**
-     * Get an issue cache by cache ID
-     *
-     * TODO: Not currently working as expected. Not used throughout current class
-     *
-     * @return mixed|object|\PKP\cache\APCCache|\PKP\cache\FileCache|GenericCache|\PKP\cache\MemcacheCache|\PKP\cache\XCacheCache
-     */
-    public function _getCache(string $cacheId)
-    {
-        if (!isset($this->caches)) {
-            $this->caches = [];
-        }
-        if (!isset($this->caches[$cacheId])) {
-            $cacheManager = CacheManager::getManager();
-            $this->caches[$cacheId] = $cacheManager->getObjectCache('issues', $cacheId, $this->_cacheMiss(...));
-        }
-        return $this->caches[$cacheId];
-    }
-
-    /**
      * Instantiate a new DataObject
      */
     public function newDataObject(): Issue
@@ -133,7 +96,7 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
     {
         return $query
             ->getQueryBuilder()
-            ->count();
+            ->getCountForPagination();
     }
 
     /**
@@ -145,24 +108,6 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
             ->getQueryBuilder()
             ->select('i.' . $this->primaryKeyColumn)
             ->pluck('i.' . $this->primaryKeyColumn);
-    }
-
-    /**
-     * Get a collection of issues matching the configured query
-     *
-     * @return LazyCollection<int,Issue>
-     */
-    public function getMany(Collector $query): LazyCollection
-    {
-        $rows = $query
-            ->getQueryBuilder()
-            ->get();
-
-        return LazyCollection::make(function () use ($rows) {
-            foreach ($rows as $row) {
-                yield $row->issue_id => $this->fromRow($row);
-            }
-        });
     }
 
     /**
@@ -180,9 +125,9 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
     }
 
     /** @copydoc EntityDAO::fromRow() */
-    public function fromRow(object $row): Issue
+    public function fromRow(object $row, array $ids, object $cache, ?CollectorInterface $query = null): Issue
     {
-        $issue = parent::fromRow($row);
+        $issue = parent::fromRow($row, $ids, $cache, $query);
         $this->setDoiObject($issue);
 
         return $issue;
@@ -202,7 +147,6 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
         $issue->stampModified();
         parent::_update($issue);
         $this->resequenceCustomIssueOrders($issue->getData('journalId'));
-        // TODO: Flush cache
     }
 
     /** @copydoc EntityDAO::_delete() */
@@ -210,7 +154,6 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
     {
         parent::_delete($issue);
         $this->resequenceCustomIssueOrders($issue->getData('journalId'));
-        // TODO: Flush cache
     }
 
     /**
@@ -253,7 +196,7 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
                     ],
                     [
                         'issue_id' => $item->issue_id,
-                        'journal_id' => (int) $contextId,
+                        'journal_id' => $contextId,
                         'seq' => $newSeq
                     ],
                 );
@@ -266,10 +209,9 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
      */
     public function customIssueOrderingExists(int $contextId): bool
     {
-        $resultCount = DB::table('custom_issue_orders', 'o')
+        return DB::table('custom_issue_orders', 'o')
             ->where('o.journal_id', '=', $contextId)
-            ->count();
-        return $resultCount != 0;
+            ->getCountForPagination() > 0;
     }
 
     /**
@@ -279,8 +221,8 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
     public function getCustomIssueOrder(int $contextId, int $issueId): ?int
     {
         $results = DB::table('custom_issue_orders')
-            ->where('journal_id', '=', (int) $contextId)
-            ->where('issue_id', '=', (int) $issueId);
+            ->where('journal_id', '=', $contextId)
+            ->where('issue_id', '=', $issueId);
 
         $row = $results->first();
         return $row ? (int) $row->seq : null;
@@ -344,22 +286,15 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
      *
      * From legacy IssueDAO
      */
-    public function pubIdExists($pubIdType, $pubId, $excludePubObjectId, $contextId)
+    public function pubIdExists(string $pubIdType, string $pubId, int $excludePubObjectId, int $contextId): bool
     {
-        $result = $this->deprecatedDao->retrieve(
-            'SELECT COUNT(*) AS row_count
-			FROM issue_settings ist
-				INNER JOIN issues i ON ist.issue_id = i.issue_id
-			WHERE ist.setting_name = ? AND ist.setting_value = ? AND i.issue_id <> ? AND i.journal_id = ?',
-            [
-                'pub-id::' . $pubIdType,
-                $pubId,
-                (int) $excludePubObjectId,
-                (int) $contextId
-            ]
-        );
-        $row = $result->current();
-        return $row && $row->row_count;
+        return DB::table('issue_settings AS ist')
+            ->join('issues AS i', 'ist.issue_id', '=', 'i.issue_id')
+            ->where('ist.setting_name', '=', "pub-id::{$pubIdType}")
+            ->where('ist.setting_value', '=', $pubId)
+            ->where('i.issue_id', '<>', $excludePubObjectId)
+            ->where('i.journal_id', '=', $contextId)
+            ->count() > 0;
     }
 
     /**
@@ -373,8 +308,6 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
             ['issue_id' => (int) $pubObjectId, 'locale' => '', 'setting_name' => 'pub-id::' . $pubIdType],
             ['setting_value' => (string) $pubId]
         );
-        // TODO: Cache not implemented
-        // $this->flushCache();
     }
 
     /**
@@ -382,38 +315,25 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
      *
      * From legacy IssueDAO
      */
-    public function deletePubId($pubObjectId, $pubIdType)
+    public function deletePubId(int $pubObjectId, string $pubIdType): int
     {
-        $this->deprecatedDao->update(
-            'DELETE FROM issue_settings WHERE setting_name = ? AND issue_id = ?',
-            [
-                'pub-id::' . $pubIdType,
-                (int)$pubObjectId
-            ]
-        );
-        // TODO: Cache not implemented
-        // $this->flushCache();
+        return DB::table('issue_settings')
+            ->where('setting_name', '=', "pub-id::{$pubIdType}")
+            ->where('issue_id', '=', $pubObjectId)
+            ->delete();
     }
 
     /**
      * @copydoc PKPPubIdPluginDAO::deleteAllPubIds()
-     *
-     * From legacy IssueDAO
      */
-    public function deleteAllPubIds($contextId, $pubIdType)
+    public function deleteAllPubIds(int $contextId, string $pubIdType): int
     {
+        $affectedRows = 0;
         $issues = Repo::issue()->getCollector()->filterByContextIds([$contextId])->getMany();
         foreach ($issues as $issue) {
-            $this->deprecatedDao->update(
-                'DELETE FROM issue_settings WHERE setting_name = ? AND issue_id = ?',
-                [
-                    'pub-id::' . $pubIdType,
-                    (int)$issue->getId()
-                ]
-            );
+            $affectedRows += $this->deletePubId($issue->getId(), $pubIdType);
         }
-        // TODO: Cache not implemented
-        // $this->flushCache();
+        return $affectedRows;
     }
 
     /**
@@ -421,7 +341,7 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
      *
      * From legacy IssueDAO
      *
-     * @param int $contextId optional
+     * @param int $contextId
      * @param string $pubIdType
      * @param string $pubIdSettingName optional
      * (e.g. crossref::registeredDoi)
@@ -432,49 +352,38 @@ class DAO extends EntityDAO implements \PKP\plugins\PKPPubIdPluginDAO
      */
     public function getExportable($contextId, $pubIdType = null, $pubIdSettingName = null, $pubIdSettingValue = null, $rangeInfo = null)
     {
-        $params = [];
-        if ($pubIdSettingName) {
-            $params[] = $pubIdSettingName;
-        }
-        $params[] = (int) $contextId;
-        if ($pubIdType) {
-            $params[] = 'pub-id::' . $pubIdType;
-        }
+        $q = DB::table('issues', 'i')
+            ->leftJoin('custom_issue_orders AS o', 'o.issue_id', '=', 'i.issue_id')
+            ->when($pubIdType != null, fn (Builder $q) => $q->leftJoin('issue_settings AS ist', 'i.issue_id', '=', 'ist.issue_id'))
+            ->when($pubIdSettingName, fn (Builder $q) => $q->leftJoin('issue_settings AS iss', fn (JoinClause $j) => $j->on('i.issue_id', '=', 'iss.issue_id')->where('iss.setting_name', '=', $pubIdSettingName)))
+            ->where('i.published', '=', 1)
+            ->where('i.journal_id', '=', (int) $contextId)
+            ->when($pubIdType != null, fn (Builder $q) => $q->where('ist.setting_name', '=', "pub-id::{$pubIdType}")->whereNotNull('ist.setting_value'))
+            ->when(
+                $pubIdSettingName,
+                fn (Builder $q) => $q->when(
+                    $pubIdSettingValue === null,
+                    fn (Builder $q) => $q->whereRaw("COALESCE(iss.setting_value, '') = ''"),
+                    fn (Builder $q) => $q->when(
+                        $pubIdSettingValue != PubObjectsExportPlugin::EXPORT_STATUS_NOT_DEPOSITED,
+                        fn (Builder $q) => $q->where('iss.setting_value', '=', $pubIdSettingValue),
+                        fn (Builder $q) => $q->whereNull('iss.setting_value')
+                    )
+                )
+            )
+            ->orderByDesc('i.date_published')
+            ->select('i.*');
 
-        import('classes.plugins.PubObjectsExportPlugin'); // Constants
-        if ($pubIdSettingName && $pubIdSettingValue && $pubIdSettingValue != EXPORT_STATUS_NOT_DEPOSITED) {
-            $params[] = $pubIdSettingValue;
-        }
-
-        $result = $this->deprecatedDao->retrieveRange(
-            $sql = 'SELECT i.*
-			FROM issues i
-				LEFT JOIN custom_issue_orders o ON (o.issue_id = i.issue_id)
-				' . ($pubIdType != null ? ' LEFT JOIN issue_settings ist ON (i.issue_id = ist.issue_id)' : '')
-                . ($pubIdSettingName != null ? ' LEFT JOIN issue_settings iss ON (i.issue_id = iss.issue_id AND iss.setting_name = ?)' : '') . '
-			WHERE
-				i.published = 1  AND i.journal_id = ?
-				' . ($pubIdType != null ? ' AND ist.setting_name = ? AND ist.setting_value IS NOT NULL' : '')
-                . (($pubIdSettingName != null && $pubIdSettingValue != null && $pubIdSettingValue == EXPORT_STATUS_NOT_DEPOSITED) ? ' AND iss.setting_value IS NULL' : '')
-                . (($pubIdSettingName != null && $pubIdSettingValue != null && $pubIdSettingValue != EXPORT_STATUS_NOT_DEPOSITED) ? ' AND iss.setting_value = ?' : '')
-                . (($pubIdSettingName != null && is_null($pubIdSettingValue)) ? ' AND (iss.setting_value IS NULL OR iss.setting_value = \'\')' : '')
-                . ' ORDER BY i.date_published DESC',
-            $params,
-            $rangeInfo
-        );
-
-        return new DAOResultFactory($result, $this, 'fromRow', [], $sql, $params, $rangeInfo);
+        $result = $this->deprecatedDao->retrieveRange($q, [], $rangeInfo);
+        return new DAOResultFactory($result, $this, 'fromRowDeprecated', [], $q, [], $rangeInfo);
     }
 
     /**
-     * Flush the issue cache.
-     *
-     * TODO: Not currently in use. _getCache always results in cache miss.
+     * Deprecated; remove when getExportable is refactored
      */
-    public function flushCache()
+    public function fromRowDeprecated(object $row): Issue
     {
-        $this->_getCache('issues')->flush();
-        $this->_getCache('current')->flush();
+        return $this->fromRow($row, [$row->issue_id], (object) []);
     }
 
     /**

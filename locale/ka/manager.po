@@ -403,12 +403,6 @@ msgstr ""
 msgid "manager.setup"
 msgstr "ჟურნალის პარამეტრები"
 
-msgid "manager.setup.masthead"
-msgstr "გამომავალი მონაცემები"
-
-msgid "manager.setup.editorialTeam"
-msgstr "რედაქცია"
-
 msgid "manager.setup.homepageContent"
 msgstr "ჟურნალის მთავარი გვერდის შიგთავსი"
 
@@ -471,11 +465,6 @@ msgstr "შეიტანეთ ინფორმაცია, რომელ
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(გამოჩნდება განყოფილებაში „ჟურნალის შესახებ“) "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"ავტორებისაგან ინტერესთა კონფლიქტის დეკლარაციის წარმოდგენა, გამოგზავნილ "
-"მასალასთან ერთად."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -789,14 +778,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "ჟურნალის სათაური"
 
-msgid "manager.setup.keyInfo"
-msgstr "საკვანძო ინფორმაცია"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"მიუთითეთ თქვენი ჟურნალის მოკლე აღწერა და განსაზღვრეთ რედაქტორები, მმართველი "
-"დირექტორები და თქვენი სარედაქციო ჯგუფის სხვა წევრები."
-
 msgid "manager.setup.labelName"
 msgstr "იარლიყის სახელი"
 
@@ -835,12 +816,6 @@ msgstr ""
 "ბიბლიოთეკებში LOCKSS <a href=\"{$lockssUrl}\" target=\"_blank\">Publisher "
 "Manifest</a> გვერდის საშუალებით."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"LOCKSS ლიცენზია გამოჩნდება არქივის ქვეშ ჟურნალში: <a href=\"http://www."
-"lockss.org/community/publishers-titles-gln/\" target=\"_blank\">LOCKSS "
-"ლიცენზია</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "LOCKSS ლიცენზიის აღწერა"
 
@@ -860,12 +835,6 @@ msgstr ""
 "CLOCKSS-ის ჩართვა, ჟურნალის შიგთავსის გასავრცელებლად CLOCKSS-ის <a href="
 "\"{$clockssUrl}\" target=\"_blank\">გამომცემლის მანიფესტი</a> გვერდის "
 "საშუალებით."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"CLOCKSS-ის ლიცენზია გამოჩნდება „ჟურნალის შესახებ“ სექციაში, სათაურით "
-"„ჟურნალის არქივაცია“: <a href=\"http://clockss.org/\" target=\"_blank"
-"\">CLOCKSS ლიცენზია</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "CLOCKSS ლიცენზიის აღწერა"
@@ -2001,11 +1970,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "პაროლი"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"გთხოვთ გაითვალისწინოთ, რომ პაროლი შეინახება როგორც მარტივი ტექსტი, ანუ არ "
-"არის დაშიფრული."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "ნებისმიერი გამოცემა"
 
@@ -2032,9 +1996,6 @@ msgstr "მონიშნულია, როგორც დარეგის
 
 msgid "plugins.importexport.common.action.register"
 msgstr "რეგისტრაცია"
-
-msgid "plugins.importexport.common.validation"
-msgstr "დაადასტურეთ XML ექსპორტამდე და რეგისტრაციამდე."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "ობიექტი არ არის არჩეული."

@@ -15,10 +15,10 @@
 namespace APP\plugins\blocks\languageToggle;
 
 use APP\core\Application;
+use PKP\core\PKPSessionGuard;
 use PKP\facades\Locale;
 use PKP\i18n\LocaleMetadata;
 use PKP\plugins\BlockPlugin;
-use PKP\session\SessionManager;
 
 class LanguageToggleBlockPlugin extends BlockPlugin
 {
@@ -70,7 +70,7 @@ class LanguageToggleBlockPlugin extends BlockPlugin
     {
         $templateMgr->assign('isPostRequest', $request->isPost());
 
-        if (!SessionManager::isDisabled()) {
+        if (!PKPSessionGuard::isSessionDisable()) {
             $request ??= Application::get()->getRequest();
             $context = $request->getContext();
             $locales = Locale::getFormattedDisplayNames(
@@ -85,15 +85,9 @@ class LanguageToggleBlockPlugin extends BlockPlugin
             $templateMgr->assign('languageToggleNoUser', true);
         }
 
-        if (!empty($locales)) {
-            $templateMgr->assign('enableLanguageToggle', true);
-            $templateMgr->assign('languageToggleLocales', $locales);
-        }
+        $templateMgr->assign('enableLanguageToggle', count($locales) > 1);
+        $templateMgr->assign('languageToggleLocales', $locales);
 
         return parent::getContents($templateMgr, $request);
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\plugins\blocks\languageToggle\LanguageToggleBlockPlugin', '\LanguageToggleBlockPlugin');
 }

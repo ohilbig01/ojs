@@ -30,6 +30,7 @@ use PKP\form\Form;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\RemoteActionConfirmationModal;
 use PKP\plugins\Hook;
+use PKP\validation\ValidatorFactory;
 
 class IssueForm extends Form
 {
@@ -60,6 +61,7 @@ class IssueForm extends Form
             return !$showTitle || implode('', $form->getData('title')) != '' ? true : false;
         }));
         $this->addCheck(new \PKP\form\validation\FormValidatorRegExp($this, 'urlPath', 'optional', 'validator.alpha_dash_period', '/^[a-zA-Z0-9]+([\\.\\-_][a-zA-Z0-9]+)*$/'));
+
         $this->addCheck(new \PKP\form\validation\FormValidatorPost($this));
         $this->addCheck(new \PKP\form\validation\FormValidatorCSRF($this));
         $this->issue = $issue;
@@ -100,7 +102,7 @@ class IssueForm extends Form
                                     'issueId' => $this->issue->getId(),
                                 ]
                             ),
-                            'modal_delete'
+                            'negative'
                         ),
                         __('common.delete'),
                         null
@@ -141,6 +143,27 @@ class IssueForm extends Form
                     $this->addErrorField('urlPath');
                 }
             }
+        }
+
+        // Note! The following datePublished validation is not triggered
+        // when JQuery DatePicker is enabled in the datePublished field.
+        // The datePicker will convert any invalid date into a valid yyyy-mm-dd
+        // date before the form data is submitted.
+
+        if ($this->getData('datePublished')) {
+            $validator = ValidatorFactory::make(
+                ['value' => $this->getData('datePublished')],
+                ['value' => ['required', 'date_format:Y-m-d']]
+            );
+
+            if (!$validator->passes()) {
+                $this->addError('datePublished', __('editor.issues.datePublished.invalid'));
+                $this->addErrorField('datePublished');
+            }
+        } elseif ($this->issue?->getPublished()) {
+            // A published issue must have a published date
+            $this->addError('datePublished', __('editor.issues.datePublished.requiredWhenPublished'));
+            $this->addErrorField('datePublished');
         }
 
         return parent::validate($callHooks);
@@ -208,11 +231,11 @@ class IssueForm extends Form
 
     /**
      * Save issue settings.
+     *
+     * @hook issueform::execute [[$this, $issue]]
      */
     public function execute(...$functionArgs)
     {
-        parent::execute(...$functionArgs);
-
         $request = Application::get()->getRequest();
         $journal = $request->getJournal();
 
@@ -221,6 +244,7 @@ class IssueForm extends Form
             $issue = $this->issue;
         } else {
             $issue = Repo::issue()->newDataObject();
+            $this->issue = $issue;
             switch ($journal->getData('publishingMode')) {
                 case \APP\journal\Journal::PUBLISHING_MODE_SUBSCRIPTION:
                 case \APP\journal\Journal::PUBLISHING_MODE_NONE:
@@ -242,9 +266,10 @@ class IssueForm extends Form
         $issue->setVolume(empty($volume) ? null : $volume);
         $issue->setNumber(empty($number) ? null : $number);
         $issue->setYear(empty($year) ? null : $year);
-        if (!$isNewIssue) {
-            $issue->setDatePublished($this->getData('datePublished'));
-        }
+
+        // If issue is not published, allow empty datePublished
+        $issue->setDatePublished(!$this->getData('datePublished') && !$issue->getPublished() ? null : $this->getData('datePublished'));
+
         $issue->setDescription($this->getData('description'), null); // Localized
         $issue->setShowVolume((int) $this->getData('showVolume'));
         $issue->setShowNumber((int) $this->getData('showNumber'));
@@ -257,6 +282,9 @@ class IssueForm extends Form
         if ($isNewIssue) {
             $issue->setPublished(0);
             Repo::issue()->add($issue);
+            if (Repo::doi()->assignOnItemCreation($journal)) {
+                Repo::issue()->createDoi($issue);
+            }
         }
 
         $locale = Locale::getLocale();
@@ -276,7 +304,7 @@ class IssueForm extends Form
 
         $issue->setCoverImageAltText($this->getData('coverImageAltText'), $locale);
 
-        Hook::call('issueform::execute', [$this, $issue]);
+        parent::execute(...$functionArgs);
 
         Repo::issue()->edit($issue, []);
     }

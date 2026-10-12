@@ -1,21 +1,22 @@
+# Haval Abdulkarim <haval.abdulkarim@gmail.com>, 2025.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2020-04-14 13:48+0000\n"
-"Last-Translator: Hewa Salam Khalid <hewa.salam@koyauniversity.org>\n"
-"Language-Team: Kurdish <http://translate.pkp.sfu.ca/projects/ojs/locale/"
-"ku_IQ/>\n"
-"Language: ku_IQ\n"
+"PO-Revision-Date: 2025-03-25 18:56+0000\n"
+"Last-Translator: Haval Abdulkarim <haval.abdulkarim@gmail.com>\n"
+"Language-Team: Kurdish (Central) <http://translate.pkp.sfu.ca/projects/ojs/"
+"locale/ckb/>\n"
+"Language: ckb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "user.authorization.journalDoesNotPublish"
 msgstr ""
 
 msgid "context.current"
-msgstr "گۆڤاری ئێستا"
+msgstr "گۆڤاری ئێستا:"
 
 msgid "context.select"
 msgstr "بچۆ گۆڤارێکی دیکە:"
@@ -1144,9 +1145,6 @@ msgstr ""
 "یاخود نا(see <a target=\"_new\" class=\"action\" href="
 "\"{$competingInterestGuidelinesUrl}\">CI&nbsp;Policy</a>)."
 
-msgid "reviewer.competingInterests"
-msgstr "بەرژەوەندییە ڕکابەرەکان"
-
 msgid "reviewer.article.enterReviewA"
 msgstr "کلیک لەسەر ئەم ئایکۆنە بکە بۆ نوسینی هەڵسەنگاندنەکەت."
 
@@ -1610,12 +1608,6 @@ msgstr "دەربارەی گۆڤارەکە"
 msgid "about.history"
 msgstr "مێژوی گۆڤارەکە"
 
-msgid "about.editorialTeam"
-msgstr "دەستەی سەرنوسەران"
-
-msgid "about.editorialTeam.biography"
-msgstr "ژیاننامە"
-
 msgid "about.editorialPolicies"
 msgstr "سیاسەتەکانی گۆڤار"
 
@@ -1900,7 +1892,7 @@ msgstr ""
 "<h4>OJS وەشانی{$version}</h4>\n"
 "\n"
 "<p>سوپاس بۆ دابەزاندنی پڕۆژەی زانیاریی گشتی<strong>سیستەمەکانی گۆڤاری کراوە</"
-"strong>. تکایە ئەمە بخوێنەوە پێش چونەپێشی زیاتر <a href=\"{$baseUrl}/docs/"
+"strong>. تکایە ئەمە بخوێنەوە پێش چونەپێشی زیاتر <a href=\"{$baseUrl}/"
 "README.md\">README</a> فایلەکە بە پڕۆگرمێک هاوپێچ کراوە. بۆ زانیاریی زیاتر "
 "دەربارەی پڕۆژەی زانیاریی گشتی و سیستەمی گۆڤاری کراوە سەردانی ئەم لینکە بکە "
 "<a href=\"http://pkp.sfu.ca/\" target=\"_blank\">PKP web site</a>.ئەگەر "
@@ -1972,6 +1964,7 @@ msgstr ""
 "<p>2. ئەو فایلانەی بار دەکرین دەبێت دەستکاری بکڕین (\"ڕێکخستنی فایلەکان\" لە "
 "خوارەوە ببینە).</p>"
 
+#, fuzzy
 msgid "installer.upgradeInstructions"
 msgstr ""
 "<h4>وەشانی سیستەمی گۆڤاری کراوە {$version}</h4>\n"
@@ -2142,11 +2135,13 @@ msgstr ""
 msgid "log.review.resubmit"
 msgstr "توێژینەوەی {$submissionId} دوبارە نێردرایەوە بۆ هەڵسەنگاندن."
 
+#, fuzzy
 msgid "log.review.reviewDeclined"
 msgstr ""
 "هەڵسەنگێنەر{$reviewerName}بەخشرا لە خولی {$round} بۆ هەڵسەنگاندنی "
 "{$submissionId}."
 
+#, fuzzy
 msgid "log.review.reviewAccepted"
 msgstr ""
 "هەڵسەنگێنەر{$reviewerName} خولی {$round} پەسەند کرد بۆ هەڵسەنگاندنی "
@@ -2353,9 +2348,6 @@ msgstr "<p>قبوڵکردنی ئەم تابلۆیە لا ببە.</p>"
 
 msgid "search.cli.rebuildIndex.indexing"
 msgstr "ناوەرۆکی \"{$journalName}\""
-
-msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
-msgstr "ئەم گەڕانە ڕێگە بە دوبارە پێنوێنیکردن نادات بە گوێرەی گۆڤار."
 
 msgid "search.cli.rebuildIndex.unknownJournal"
 msgstr "ئەم ڕێچکەیەی گۆڤار \"{$journalPath}\"بەردەست نییە."

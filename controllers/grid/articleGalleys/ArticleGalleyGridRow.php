@@ -80,7 +80,6 @@ class ArticleGalleyGridRow extends GridRow
                 new AjaxModal(
                     $router->url($request, null, null, 'editGalley', null, $actionArgs),
                     ($this->_isEditable) ? __('submission.layout.editGalley') : __('submission.layout.viewGalley'),
-                    'modal_edit'
                 ),
                 ($this->_isEditable) ? __('grid.action.edit') : __('grid.action.view'),
                 'edit'
@@ -88,7 +87,7 @@ class ArticleGalleyGridRow extends GridRow
 
             if ($this->_isEditable) {
                 $galley = $this->getData();
-                if (!$galley->getRemoteUrl()) {
+                if (!$galley->getData('urlRemote')) {
                     $this->addAction(new AddFileLinkAction(
                         $request,
                         $this->getSubmission()->getId(),
@@ -97,7 +96,8 @@ class ArticleGalleyGridRow extends GridRow
                         SubmissionFile::SUBMISSION_FILE_PROOF,
                         Application::ASSOC_TYPE_REPRESENTATION,
                         $rowId,
-                        null
+                        null,
+                        $galley->getData('submissionFileId')
                     ));
                 }
 
@@ -108,7 +108,7 @@ class ArticleGalleyGridRow extends GridRow
                         __('common.confirmDelete'),
                         __('grid.action.delete'),
                         $router->url($request, null, null, 'deleteGalley', null, $actionArgs),
-                        'modal_delete'
+                        'negative'
                     ),
                     __('grid.action.delete'),
                     'delete'

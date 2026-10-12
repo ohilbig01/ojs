@@ -23,14 +23,12 @@ switch ($op) {
     //
     case 'index':
     case 'subscriptions':
-    case 'setLocale':
     case 'authorizationDenied':
     case 'purchaseSubscription':
     case 'payPurchaseSubscription':
     case 'completePurchaseSubscription':
     case 'payRenewSubscription':
     case 'payMembership':
-    case 'getInterests':
         return new APP\pages\user\UserHandler();
     default:
         return require_once('lib/pkp/pages/user/index.php');

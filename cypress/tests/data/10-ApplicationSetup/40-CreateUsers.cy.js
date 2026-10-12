@@ -12,7 +12,9 @@ describe('Data suite tests', function() {
 		cy.login('admin', 'admin');
 		cy.get('a:contains("admin"):visible').click();
 		cy.get('a:contains("Dashboard")').click();
-		cy.get('a:contains("Users & Roles")').click();
+		cy.get('nav').contains('Settings').click();
+		// Ensure submenu item click despite animation
+		cy.get('nav').contains('Users & Roles').click({ force: true });
 
 		var users = [
 			{
@@ -123,16 +125,9 @@ describe('Data suite tests', function() {
 				'roles': ['Proofreader']
 			}
 		];
+		cy.logout();
 		users.forEach(user => {
-			cy.createUser(user);
+			cy.createUserByInvitation(user);
 		});
-		cy.logout();
-		var user = users[0];
-		if (!('email' in user)) user.email = user.username + '@mailinator.com';
-		if (!('password' in user)) user.password = user.username + user.username;
-
-		cy.login(user.username);
-		cy.resetPassword(user.username, user.password);
-		cy.logout();
 	});
 })

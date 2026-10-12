@@ -30,7 +30,7 @@ use PKP\db\DAO;
 use PKP\db\DAORegistry;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
-use PKP\notification\PKPNotification;
+use PKP\notification\Notification;
 use PKP\security\Role;
 
 class SectionGridHandler extends SetupGridHandler
@@ -105,7 +105,6 @@ class SectionGridHandler extends SetupGridHandler
                 new AjaxModal(
                     $router->url($request, null, null, 'addSection', null, ['gridId' => $this->getId()]),
                     __('manager.sections.create'),
-                    'modal_manage'
                 ),
                 __('manager.sections.create'),
                 'add_section'
@@ -250,29 +249,30 @@ class SectionGridHandler extends SetupGridHandler
     public function deleteSection($args, $request)
     {
         if (!$request->checkCSRF()) {
-            return new JSONMessage(false, __('form.csrfInvalid'));
+            return $this->sendErrorToUser($request->getUser()->getId(), 'form.csrfInvalid');
         }
 
         $journal = $request->getJournal();
 
         $section = Repo::section()->get($request->getUserVar('sectionId'), $journal->getId());
         if (!$section) {
-            return new JSONMessage(false, __('manager.setup.errorDeletingItem'));
+            return $this->sendErrorToUser($request->getUser()->getId(), 'manager.setup.errorDeletingItem');
         }
 
         // Validate if it can be deleted
         $sectionEmpty = Repo::section()->isEmpty($section->getId(), $journal->getId());
         if (!$sectionEmpty) {
-            return new JSONMessage(false, __('manager.sections.alertDelete'));
+            return $this->sendErrorToUser($request->getUser()->getId(), 'manager.sections.alertDelete', $section->getId());
         }
 
         $activeSectionsCount = Repo::section()->getCollector()->filterByContextIds([$journal->getId()])->excludeInactive()->getCount();
         $activeSectionsCount = (!$section->getIsInactive()) ? $activeSectionsCount - 1 : $activeSectionsCount;
         if ($activeSectionsCount < 1) {
-            return new JSONMessage(false, __('manager.sections.confirmDeactivateSection.error'));
+            return $this->sendErrorToUser($request->getUser()->getId(), 'manager.sections.confirmDeactivateSection.error', $section->getId());
         }
 
         Repo::section()->delete($section);
+
         return DAO::getDataChangedEvent($section->getId());
     }
 
@@ -310,10 +310,7 @@ class SectionGridHandler extends SetupGridHandler
             }
         } else {
             // Create the notification.
-            $notificationMgr = new NotificationManager();
-            $user = $request->getUser();
-            $notificationMgr->createTrivialNotification($user->getId(), PKPNotification::NOTIFICATION_TYPE_ERROR, ['contents' => __('manager.sections.confirmDeactivateSection.error')]);
-            return DAO::getDataChangedEvent($sectionId);
+            return $this->sendErrorToUser($request->getUser()->getId(), 'manager.sections.confirmDeactivateSection.error', $sectionId);
         }
 
         return new JSONMessage(false);
@@ -351,5 +348,17 @@ class SectionGridHandler extends SetupGridHandler
         }
 
         return new JSONMessage(false);
+    }
+
+    private function sendErrorToUser(int $userId, string $errorKey, ?int $elementId = null): JSONMessage
+    {
+        $notificationMgr = new NotificationManager();
+        $notificationMgr->createTrivialNotification(
+            $userId,
+            Notification::NOTIFICATION_TYPE_ERROR,
+            ['contents' => __($errorKey)]
+        );
+
+        return DAO::getDataChangedEvent($elementId);
     }
 }

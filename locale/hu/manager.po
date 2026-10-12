@@ -411,12 +411,6 @@ msgstr ""
 msgid "manager.setup"
 msgstr "Folyóirat beállítások"
 
-msgid "manager.setup.masthead"
-msgstr "Impresszum"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Szerkesztőség"
-
 msgid "manager.setup.homepageContent"
 msgstr "Folyóirat főoldal tartalom"
 
@@ -481,11 +475,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Megjelenés az Információk részben) "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"A cikket beadó szerzők felszólítása az összeférhetetlenségi nyilatkozat "
-"benyújtására."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -797,14 +786,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Folyóirat címe"
 
-msgid "manager.setup.keyInfo"
-msgstr "Kulcs információ"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Mutassa be röviden a folyóiratát, a szerkesztőket és a szerkesztői csapat "
-"többi tagját."
-
 msgid "manager.setup.labelName"
 msgstr "Címke neve"
 
@@ -843,12 +824,6 @@ msgstr ""
 "megosztásra kerüljenek a kapcsolódó könyvtárakkal a LOCKSS <a href="
 "\"{$lockssUrl}\" target=\"_blank\">Publisher Manifest</a> oldalon."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"A LOCKSS lincensz az Információk oldal Archiválás részében fog megjelenni: "
-"<a href=\"http://www.lockss.org/community/publishers-titles-gln/\" target="
-"\"_blank\">LOCKSS License</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "LOCKSS Licenc leírás"
 
@@ -867,12 +842,6 @@ msgstr ""
 "A CLOCKSS rendszer engedélyezése, hogy a folyóirat tartalmak letárolásra és "
 "megosztásra kerüljenek a kapcsolódó könyvtárakkal a CLOCKSS <a href="
 "\"{$clockssUrl}\" target=\"_blank\">Publisher Manifest</a> oldalon."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"A CLOCKSS licenc a folyóirat információs oldalán fog megjelenni az "
-"archiválásnál: <a href=\"http://clockss.org/\" target=\"_blank\">CLOCKSS "
-"Licenc</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "CLOCKSS Licenc Leírás"
@@ -1997,11 +1966,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Jelszó"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Felhívjuk a figyelmét, hogy a jelszó sima szövegként lesz mentve, azaz nem "
-"lesz titkosítva."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Bármelyik folyóiratszám"
 
@@ -2028,9 +1992,6 @@ msgstr "Regisztráltnak jelölve"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Regisztráció"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Érvényesítse az XML-t mielőtt exportálja és regisztrálja."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Nincs kiválasztva objektum."
@@ -2894,11 +2855,6 @@ msgstr ""
 
 #~ msgid "manager.subscriptions.form.dateRemindedAfter"
 #~ msgstr "Lejárat utáni emlékeztető küldése"
-
-#~ msgid "manager.setup.editorialTeam.description"
-#~ msgstr ""
-#~ "Lista a szerkesztőkről, ügyvezetőkről és egyéb személyekről akik a "
-#~ "folyóirathoz köthetők."
 
 #~ msgid "stats.publishedSubmissions.details"
 #~ msgstr "Cikk részletek"

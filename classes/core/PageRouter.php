@@ -21,14 +21,9 @@ class PageRouter extends \PKP\core\PKPPageRouter
     /**
      * get the cacheable pages
      *
-     * @return array
      */
-    public function getCacheablePages()
+    public function getCacheablePages(): array
     {
         return ['about', 'announcement', 'help', 'index', 'information', 'issue', ''];
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\core\PageRouter', '\PageRouter');
 }

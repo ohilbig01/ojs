@@ -12,6 +12,7 @@ describe('Article View Metadata - DC Plugin', function() {
 	let uniqueId;
 	let today;
 	let dcElements;
+	let issueAssignmentOption = 'Assign To Current/Back Issue';
 
 	before(function() {
 		today = new Date();
@@ -32,20 +33,22 @@ describe('Article View Metadata - DC Plugin', function() {
 			submitterRole: 'Journal manager',
 			additionalAuthors: [
 				{
+					contributorType: Cypress.env('contributorTypePerson'),
 					givenName: {en: 'Name 1'},
 					familyName: {en: 'Author 1'},
 					country: 'US',
 					affiliation: {en: 'Stanford University'},
 					email: 'nameauthor1Test@mailinator.com',
-					userGroupId: Cypress.env('authorUserGroupId')
+					contributorRoles: [Cypress.env('contributorRoleAuthor')]
 				},
 				{
+					contributorType: Cypress.env('contributorTypePerson'),
 					givenName: {en: 'Name 2'},
 					familyName: {en: 'Author 2'},
 					country: 'US',
 					affiliation: {en: 'Stanford University'},
 					email: 'nameauthor2Test@mailinator.com',
-					userGroupId: Cypress.env('authorUserGroupId')
+					contributorRoles: [Cypress.env('contributorRoleAuthor')]
 				}
 			],
 			files: [
@@ -152,7 +155,7 @@ describe('Article View Metadata - DC Plugin', function() {
 							]
 						},
 						{
-							locale: 'fr',
+							locale: 'fr-CA',
 							contents: [
 								submission.localeMetadata
 									.find(element => element.locale == 'fr_CA')
@@ -173,7 +176,7 @@ describe('Article View Metadata - DC Plugin', function() {
 							]
 						},
 						{
-							locale: 'fr',
+							locale: 'fr-CA',
 							contents: [
 								submission.localeTitles.fr_CA.abstract
 							]
@@ -184,7 +187,7 @@ describe('Article View Metadata - DC Plugin', function() {
 					element: 'DC.Title.Alternative',
 					values: [
 						{
-							locale: 'fr',
+							locale: 'fr-CA',
 							contents: [
 								submission.localeTitles.fr_CA.prefix + ' ' + submission.localeTitles.fr_CA.title + ': ' + submission.localeTitles.fr_CA.subtitle
 							]
@@ -207,7 +210,7 @@ describe('Article View Metadata - DC Plugin', function() {
 
 						},
 						{
-							locale: 'fr',
+							locale: 'fr-CA',
 							contents: [
 								submission.localeMetadata
 									.find(element => element.locale == 'fr_CA')
@@ -230,7 +233,7 @@ describe('Article View Metadata - DC Plugin', function() {
 								.values
 						},
 						{
-							locale: 'fr',
+							locale: 'fr-CA',
 							contents: submission.localeMetadata
 								.find(element => element.locale == 'fr_CA')
 								.manyValues
@@ -327,7 +330,7 @@ describe('Article View Metadata - DC Plugin', function() {
 				},
 				{
 					element: 'DC.Language',
-					scheme: 'ISO639-1',
+					scheme: 'rfc5646',
 					content: 'en'
 				},
 				{
@@ -359,7 +362,9 @@ describe('Article View Metadata - DC Plugin', function() {
 		cy.get('a').contains('Dashboard').click();
 
 		// Enable metadata settings
-		cy.get('.app__nav a').contains('Workflow').click();
+		cy.get('nav').contains('Settings').click();
+		// Ensure submenu item click despite animation
+		cy.get('nav').contains('Workflow').click({ force: true });
 		cy.get('button').contains('Metadata').click();
 		cy.get('span').contains('Enable coverage metadata').prev('input[type="checkbox"]').check();
 		cy.get('span').contains('Enable type metadata').prev('input[type="checkbox"]').check();
@@ -369,10 +374,11 @@ describe('Article View Metadata - DC Plugin', function() {
 		cy.wait(500);
 
 		// Enable dois
-		cy.checkDoiConfig(['publication', 'issue', 'representation']);
+		cy.checkDoiConfig(['publication', 'issue']);
 
 		// After configuration, go to submissions
-		cy.get('.app__nav a').contains('Submissions').click();
+		cy.get('nav').contains('Editor Dashboard').click();
+		cy.get('nav').contains('Active submissions').click();
 
 		// Create a new submission
 		cy.getCsrfToken();
@@ -384,31 +390,32 @@ describe('Article View Metadata - DC Plugin', function() {
 				return cy.submitSubmissionWithApi(submission.id, this.csrfToken);
 			})
 			.then(xhr => {
-				cy.visit('/index.php/publicknowledge/workflow/index/' + submission.id + '/1');
+				cy.visit('/index.php/publicknowledge/en/dashboard/editorial?workflowSubmissionId=' + submission.id);
 			});
 
 
 		// Go to publication tabs
-		cy.get('#publication-button').click();
+		cy.openWorkflowMenu('Unassigned version', 'Title & Abstract').click();
 
 		// Open multilanguage inputs and add data to fr_CA inputs
-		cy.get('div#titleAbstract button').contains('French').click();
+		cy.get('button').contains('French').click();
 
-		cy.get('#titleAbstract input[name=prefix-en]').type(submission.prefix, {delay: 0});
+		cy.get('input[name=prefix-en]').type(submission.prefix, {delay: 0});
 		cy.setTinyMceContent('titleAbstract-subtitle-control-en', submission.subtitle);
 
 		cy.setTinyMceContent('titleAbstract-title-control-fr_CA', submission.localeTitles.fr_CA.title);
-		cy.get('#titleAbstract input[name=prefix-fr_CA]').type(submission.localeTitles.fr_CA.prefix, {delay: 0});
+		cy.get('input[name=prefix-fr_CA]').type(submission.localeTitles.fr_CA.prefix, {delay: 0});
 		cy.setTinyMceContent('titleAbstract-subtitle-control-fr_CA', submission.localeTitles.fr_CA.subtitle);
 		cy.setTinyMceContent('titleAbstract-abstract-control-fr_CA', submission.localeTitles.fr_CA.abstract);
 		cy.get('#titleAbstract-title-control-fr_CA').click({force:true}); // Ensure blur event is fired
 		cy.get('#titleAbstract-subtitle-control-fr_CA').click({force:true});
-		cy.get('#titleAbstract button').contains('Save').click();
-		cy.get('#titleAbstract [role="status"]').contains('Saved');
+		cy.get('button').contains('Save').click();
+		cy.get('[role="status"]').contains('Saved');
 
 		// Go to metadata
-		cy.get('#metadata-button').click();
-		cy.get('div#metadata button').contains('French').click();
+		cy.openWorkflowMenu('Unassigned version', 'Metadata').click();
+		cy.wait(2000); // wait for the form to load
+		cy.get('button:contains("French")').click({force:true});
 
 		// Add the metadata to the submission
 		submission.localeMetadata.forEach((locale) => {
@@ -416,6 +423,8 @@ describe('Article View Metadata - DC Plugin', function() {
 
 			locale.manyValues.forEach((manyValueMetadata) => {
 				manyValueMetadata.values.forEach((value) => {
+					cy.get('#metadata-' + manyValueMetadata.metadata + '-control-' + localeName).click({force: true});
+					cy.wait(1000);
 					cy.get('#metadata-' + manyValueMetadata.metadata + '-control-' + localeName).type(value, {delay: 0});
 					cy.wait(2000);
 					cy.get('#metadata-' + manyValueMetadata.metadata + '-control-' + localeName).type('{enter}', {delay: 0});
@@ -430,20 +439,20 @@ describe('Article View Metadata - DC Plugin', function() {
 			});
 		});
 
-		cy.get('#metadata button').contains('Save').click();
-		cy.get('#metadata [role="status"]').contains('Saved');
+		cy.get('button').contains('Save').click();
+		cy.get('[role="status"]').contains('Saved');
 
 		// Permissions & Disclosure
-		cy.get('#license-button').click();
-		cy.get('#license [name="licenseUrl"]').type(submission.licenceUrl, {delay: 0});
-		cy.get('#license button').contains('Save').click();
-		cy.get('#license [role="status"]').contains('Saved');
+		cy.openWorkflowMenu('Unassigned version', 'Permissions & Disclosure').click();
+
+		cy.get('[name="licenseUrl"]').type(submission.licenceUrl, {delay: 0});
+		cy.get('button').contains('Save').click();
+		cy.get('[role="status"]').contains('Saved');
 
 		// Create a galley
+		cy.openWorkflowMenu('Unassigned version', 'Galleys')
 		submission.galleys.forEach((galley) => {
-			cy.get('button#galleys-button').click();
-			cy.wait(1500); // Wait for the form to settle
-			cy.get('div#representations-grid a').contains('Add galley').click();
+			cy.get('[data-cy="galley-manager"]').contains('Add galley').click();
 			cy.wait(1500); // Wait for the form to settle
 			cy.get('input[id^=label-]').type(galley.label, {delay: 0});
 			cy.get('form#articleGalleyForm button:contains("Save")').click();
@@ -460,28 +469,30 @@ describe('Article View Metadata - DC Plugin', function() {
 		});
 
 
-		// Issue
-		cy.get('#issue-button').click();
+		// Publication Settings
+		cy.openWorkflowMenu('Unassigned version', 'Publication Settings')
+		cy.get('label:Contains("'+issueAssignmentOption+'")').click();
+		cy.get('select[name="issueId"]').select(submission.source.issueTitle);
 		submission.publishIssueSections.forEach((sectionTitle) => {
-			cy.get('#issue [name="sectionId"]').select(sectionTitle);
+			cy.get('[name="sectionId"]').select(sectionTitle);
 		});
-		cy.get('#issue [name="pages"]').type(submission.identifiers.pageNumber, {delay: 0});
-		cy.get('#issue [name="urlPath"]').type(submission.urlPath);
-		cy.get('#issue button').contains('Save').click();
-		cy.get('#issue [role="status"]').contains('Saved');
+		cy.get('[name="pages"]').type(submission.identifiers.pageNumber, {delay: 0});
+		cy.get('[name="urlPath"]').type(submission.urlPath);
+		cy.get('button').contains('Save').click();
+		cy.get('[role="status"]').contains('Saved');
 
 		// Go to workflow to send the submission to Copyediting stage
-		cy.get('#workflow-button').click();
+		cy.openWorkflowMenu('Submission')
 		cy.clickDecision('Accept and Skip Review');
 		cy.recordDecision('and has been sent to the copyediting stage');
 		cy.isActiveStageTab('Copyediting');
 
 		// Publish the submission
-		cy.publish(submission.source.volume, submission.source.issueTitle);
+		cy.publish(issueAssignmentOption ,submission.source.volume, submission.source.issueTitle);
 	});
 
 	it('Tests if Header DC Metadata are present and consistent', function() {
-		cy.visit('/index.php/publicknowledge/article/view/' + submission.urlPath);
+		cy.visit('/index.php/publicknowledge/en/article/view/' + submission.urlPath);
 
 		cy.get('meta[name^="DC."]').each((item, index, list) => {
 			cy.wrap(item)

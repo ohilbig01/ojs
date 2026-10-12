@@ -406,12 +406,6 @@ msgstr ""
 msgid "manager.setup"
 msgstr "Setări jurnal"
 
-msgid "manager.setup.masthead"
-msgstr "Masthead"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Echipa editorială"
-
 msgid "manager.setup.homepageContent"
 msgstr "Conținutul paginii de pornire a jurnalului"
 
@@ -475,11 +469,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Să apară în Despre Jurnal) "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Solicitați autorilor care înregistrează manuscrise să depună o declarație de "
-"interes (CI) odată cu transmiterea lor."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -794,14 +783,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Titlul jurnalului"
 
-msgid "manager.setup.keyInfo"
-msgstr "Informație cheie"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Oferiți o scurtă descriere a jurnalului dvs. și identificați editorii, "
-"directorii manageri și alți membri ai echipei dvs. de redacție."
-
 msgid "manager.setup.labelName"
 msgstr "Numele etichetei"
 
@@ -840,12 +821,6 @@ msgstr ""
 "bibliotecile participante la LOCKSS <a href=\"{$lockssUrl}\" target=\"_blank"
 "\">pagina Manifestul editorului</a>."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"O licență LOCKSS va apărea în Despre jurnal sub Arhivare: <a href=\"http://"
-"www.lockss.org/community/publishers-titles-gln/\" target=\"_blank\">Licența "
-"LOCKSS</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "Descrierea licenței LOCKSS"
 
@@ -865,11 +840,6 @@ msgstr ""
 "Permiteți CLOCKSS să stocheze și să distribuie conținutul jurnalului în "
 "bibliotecile participante prin intermediul CLOCKSS <a href=\"{$clockssUrl}\" "
 "target=\"_blank\">pagina Manifestul editorului</a>."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"O licență CLOCKSS va apărea în Despre jurnal sub Arhivare: <a href=\"http://"
-"clockss.org/\" target=\"_blank\">Licența CLOCKSS</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "Descrierea licenței CLOCKSS"
@@ -2015,9 +1985,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Parolă"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr "Rețineți că parola va fi salvată ca text simplu, adică nu criptată."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Orice număr"
 
@@ -2044,9 +2011,6 @@ msgstr "Marcă înregistrată"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Înregistrare"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Validarea XML înainte de exportare și înregistrare."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Nici un obiect selectat."

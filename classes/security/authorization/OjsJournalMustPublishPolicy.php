@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file classes/security/authorization/OjsJournalMustPublishPolicy.php
  *
@@ -38,7 +39,7 @@ class OjsJournalMustPublishPolicy extends AuthorizationPolicy
     //
     // Implement template methods from AuthorizationPolicy
     //
-    public function effect()
+    public function effect(): int
     {
         if (!$this->_context) {
             return AuthorizationPolicy::AUTHORIZATION_DENY;
@@ -65,8 +66,4 @@ class OjsJournalMustPublishPolicy extends AuthorizationPolicy
 
         return AuthorizationPolicy::AUTHORIZATION_PERMIT;
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\security\authorization\OjsJournalMustPublishPolicy', '\OjsJournalMustPublishPolicy');
 }

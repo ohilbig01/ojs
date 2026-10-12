@@ -1,8 +1,8 @@
 {**
  * templates/frontend/objects/article_details.tpl
  *
- * Copyright (c) 2014-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2014-2026 Simon Fraser University
+ * Copyright (c) 2003-2026 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief View of an Article which displays all details about the article.
@@ -64,6 +64,11 @@
  * @uses $licenseUrl string URL to license. Only assigned if license should be
  *   included with published submissions.
  * @uses $ccLicenseBadge string An image and text with details about the license
+ * @uses $creditRoleTerms Array of translated credit role terms: roles and degrees
+ *
+ * @hook Templates::Article::Main []
+ * @hook Templates::Article::Details::Reference []
+ * @hook Templates::Article::Details []
  *}
  {if !$heading}
  	{assign var="heading" value="h3"}
@@ -71,9 +76,9 @@
 <article class="obj_article_details">
 
 	{* Indicate if this is only a preview *}
-	{if $publication->getData('status') !== \PKP\submission\PKPSubmission::STATUS_PUBLISHED}
+	{if $publication->getData('status') !== PKP\publication\PKPPublication::STATUS_PUBLISHED}
 	<div class="cmp_notification notice">
-		{capture assign="submissionUrl"}{url page="workflow" op="access" path=$article->getId()}{/capture}
+		{capture assign="submissionUrl"}{url page="dashboard" op="editorial" workflowSubmissionId=$article->getId()}{/capture}
 		{translate key="submission.viewingPreview" url=$submissionUrl}
 	</div>
 	{* Notification that this is an old version *}
@@ -86,7 +91,6 @@
 			}
 		</div>
 	{/if}
-
 	<h1 class="page_title">
 		{$publication->getLocalizedTitle(null, 'html')|strip_unsafe_html}
 	</h1>
@@ -109,28 +113,54 @@
 							<span class="name">
 								{$author->getFullName()|escape}
 							</span>
-							{if $author->getLocalizedData('affiliation')}
+							{if count($author->getAffiliations()) > 0}
 								<span class="affiliation">
-									{$author->getLocalizedData('affiliation')|escape}
-									{if $author->getData('rorId')}
-										<a href="{$author->getData('rorId')|escape}">{$rorIdIcon}</a>
-									{/if}
+									{assign var="renderedAffiliation" value=false}
+									{foreach from=$author->getAffiliations() item="affiliation"}
+										{if $affiliation->getLocalizedName() || $affiliation->getRor()}
+											{if $renderedAffiliation}{translate key="common.commaListSeparator"}{/if}
+											{if $affiliation->getLocalizedName()}<span>{$affiliation->getLocalizedName()|escape}</span>{/if}
+											{if $affiliation->getRor()}<a href="{$affiliation->getRor()|escape}">{$rorIdIcon}</a>{/if}
+											{assign var="renderedAffiliation" value=true}
+										{/if}
+									{/foreach}
 								</span>
 							{/if}
-							{assign var=authorUserGroup value=$userGroupsById[$author->getData('userGroupId')]}
-							{if $authorUserGroup->getShowTitle()}
-								<span class="userGroup">
-									{$authorUserGroup->getLocalizedName()|escape}
-								</span>
-							{/if}
+							<span class="contributor_roles">
+								{foreach $author->getLocalizedContributorRoleNames() as $contributorRoleName}
+									{strip}
+									<span class="value">
+										{$contributorRoleName|escape}
+									</span>
+									{if !$contributorRoleName@last}{translate key="common.commaListSeparator"}{/if}
+									{/strip}
+								{/foreach}
+							</span>
 							{if $author->getData('orcid')}
 								<span class="orcid">
-									{if $author->getData('orcidAccessToken')}
+									{if $author->hasVerifiedOrcid()}
 										{$orcidIcon}
+									{else}
+										{$orcidUnauthenticatedIcon}
 									{/if}
 									<a href="{$author->getData('orcid')|escape}" target="_blank">
-										{$author->getData('orcid')|escape}
+										{$author->getOrcidDisplayValue()|escape}
 									</a>
+								</span>
+							{/if}
+							{if $author->getData('creditRoles')->isNotEmpty()}
+								<span class="credit_roles">
+								{strip}
+								{foreach $author->getData('creditRoles') as $credit}
+									<span class="value">
+										{$creditRoleTerms.roles[$credit.role]|escape}
+										{if $creditRoleTerms.degrees[$credit.degree]}
+											&nbsp;({$creditRoleTerms.degrees[$credit.degree]|escape})
+										{/if}
+									</span>
+									{if !$credit@last}{translate key="common.commaListSeparator"}{/if}
+								{/foreach}
+								{/strip}
 								</span>
 							{/if}
 						</li>
@@ -140,7 +170,6 @@
 			{/if}
 
 			{* DOI *}
-			{assign var=doiObject value=$article->getCurrentPublication()->getData('doiObject')}
 			{if $doiObject}
 				{assign var="doiUrl" value=$doiObject->getData('resolvingUrl')|escape}
 				<section class="item doi">
@@ -156,7 +185,6 @@
 				</section>
 			{/if}
 
-
 			{* Keywords *}
 			{if !empty($publication->getLocalizedData('keywords'))}
 			<section class="item keywords">
@@ -166,7 +194,7 @@
 				</h2>
 				<span class="value">
 					{foreach name="keywords" from=$publication->getLocalizedData('keywords') item="keyword"}
-						{$keyword|escape}{if !$smarty.foreach.keywords.last}{translate key="common.commaListSeparator"}{/if}
+						{$keyword.name|escape}{if !$smarty.foreach.keywords.last}{translate key="common.commaListSeparator"}{/if}
 					{/foreach}
 				</span>
 			</section>
@@ -180,10 +208,18 @@
 				</section>
 			{/if}
 
+			{* Plain language summary *}
+			{if $publication->getLocalizedData('plainLanguageSummary')}
+				<section class="item abstract">
+					<h2 class="label">{translate key="submission.plainLanguageSummary"}</h2>
+					{$publication->getLocalizedData('plainLanguageSummary')|strip_unsafe_html}
+				</section>
+			{/if}
+
 			{call_hook name="Templates::Article::Main"}
 
-			{* Usage statistics chart*}
-			{if $activeTheme->getOption('displayStats') != 'none'}
+			{* Usage statistics chart *}
+			{if $activeTheme && $activeTheme->getOption('displayStats') != 'none'}
 				{$activeTheme->displayUsageStatsGraph($article->getId())}
 				<section class="item downloads_chart">
 					<h2 class="label">
@@ -219,10 +255,10 @@
 						{if $author->getLocalizedData('biography')}
 							<li class="sub_item">
 								<div class="label">
-									{if $author->getLocalizedData('affiliation')}
+									{if $author->getLocalizedAffiliationNamesAsString()}
 										{capture assign="authorName"}{$author->getFullName()|escape}{/capture}
-										{capture assign="authorAffiliation"} {$author->getLocalizedData('affiliation')|escape} {/capture}
-										{translate key="submission.authorWithAffiliation" name=$authorName affiliation=$authorAffiliation}
+										{capture assign="authorAffiliations"} {$author->getLocalizedAffiliationNamesAsString(null, ', ')|escape} {/capture}
+										{translate key="submission.authorWithAffiliation" name=$authorName affiliation=$authorAffiliations}
 									{else}
 										{$author->getFullName()|escape}
 									{/if}
@@ -238,15 +274,15 @@
 			{/if}
 
 			{* References *}
-			{if $parsedCitations || $publication->getData('citationsRaw')}
+			{if count($parsedCitations) || (string) $publication->getData('citationsRaw')}
 				<section class="item references">
 					<h2 class="label">
 						{translate key="submission.citations"}
 					</h2>
 					<div class="value">
-						{if $parsedCitations}
+						{if count($parsedCitations)}
 							{foreach from=$parsedCitations item="parsedCitation"}
-								<p>{$parsedCitation->getCitationWithLinks()|strip_unsafe_html} {call_hook name="Templates::Article::Details::Reference" citation=$parsedCitation}</p>
+								<p>{$parsedCitation->getRawCitationWithLinks()|strip_unsafe_html} {call_hook name="Templates::Article::Details::Reference" citation=$parsedCitation}</p>
 							{/foreach}
 						{else}
 							{$publication->getData('citationsRaw')|escape|nl2br}
@@ -254,6 +290,16 @@
 					</div>
 				</section>
 			{/if}
+
+			{if $enablePublicComments}
+				<section id="public-comments" class="item comments" data-vue-root>
+					<h2 class="label">
+						{translate key="userComment.commentsOnThisPublication"}
+					</h2>
+        			<pkp-comments v-bind='{$userCommentsInitConfig|json_encode}'></pkp-comments>
+			    </section>
+			{/if}
+
 
 		</div><!-- .main_entry -->
 
@@ -293,6 +339,18 @@
 					</ul>
 				</div>
 			{/if}
+
+			{* JATS XML Link *}
+			{if isset($jatsDownloadUrl)}
+				<div class="item jats">
+					<span class="value jats_link">
+						<a class="obj_galley_link xml" href="{$jatsDownloadUrl|escape}">
+							{translate key="publication.jats.download"}
+						</a>
+					</span>
+				</div>
+			{/if}
+
 			{if $supplementaryGalleys}
 				<div class="item galleys">
 					<h3 class="pkp_screen_reader">
@@ -324,14 +382,13 @@
 						{/if}
 					</div>
 				</section>
-				{if count($article->getPublishedPublications()) > 1}
 					<section class="sub_item versions">
 						<h2 class="label">
 							{translate key="submission.versions"}
 						</h2>
 						<ul class="value">
 							{foreach from=array_reverse($article->getPublishedPublications()) item=iPublication}
-								{capture assign="name"}{translate key="submission.versionIdentity" datePublished=$iPublication->getData('datePublished')|date_format:$dateFormatShort version=$iPublication->getData('version')}{/capture}
+								{capture assign="name"}{translate key="submission.versionIdentity" datePublished=$iPublication->getData('datePublished')|date_format:$dateFormatShort version=$iPublication->getData('versionString')}{/capture}
 								<li>
 									{if $iPublication->getId() === $publication->getId()}
 										{$name}
@@ -344,22 +401,28 @@
 							{/foreach}
 						</ul>
 					</section>
-				{/if}
 			</div>
 			{/if}
 
 			{* Data Availability Statement *}
 			{if $publication->getLocalizedData('dataAvailability')}
-				<section class="item dataAvailability">
+				<section class="item dataAvailability" id="data-availability-statement">
 					<h2 class="label">{translate key="submission.dataAvailability"}</h2>
 					{$publication->getLocalizedData('dataAvailability')|strip_unsafe_html}
 				</section>
 			{/if}
 
-			{* Issue article appears in *}
-			{if $issue || $section || $categories}
-				<div class="item issue">
+			{* Funding Statement *}
+			{if $publication->getLocalizedData('fundingStatement')}
+				<section class="item fundingStatement" id="funding-statement">
+					<h2 class="label">{translate key="submission.fundingStatement"}</h2>
+					{$publication->getLocalizedData('fundingStatement')|strip_unsafe_html}
+				</section>
+			{/if}
 
+			{* Issue article appears in *}
+			{if $issue || $section || $categories || $publication->getData('articleNumber')}
+				<div class="item issue">
 					{if $issue}
 						<section class="sub_item">
 							<h2 class="label">
@@ -367,7 +430,7 @@
 							</h2>
 							<div class="value">
 								<a class="title" href="{url page="issue" op="view" path=$issue->getBestIssueId()}">
-									{$issue->getIssueIdentification()}
+									{$issue->getIssueIdentification()|escape}
 								</a>
 							</div>
 						</section>
@@ -392,21 +455,74 @@
 							<div class="value">
 								<ul class="categories">
 									{foreach from=$categories item=category}
-										<li><a href="{url router=\PKP\core\PKPApplication::ROUTE_PAGE page="catalog" op="category" path=$category->getPath()|escape}">{$category->getLocalizedTitle()|escape}</a></li>
+										<li><a href="{url router=PKP\core\PKPApplication::ROUTE_PAGE page="catalog" op="category" path=$category->getPath()|escape}">{$category->getLocalizedTitle()|escape}</a></li>
 									{/foreach}
 								</ul>
+							</div>
+						</section>
+					{/if}
+
+					{if $publication->getData('articleNumber')}
+						<section class="sub_item">
+							<h2 class="label">
+								{translate key="submission.articleNumber"}
+							</h2>
+							<div class="value">
+								{$publication->getData('articleNumber')|escape}
 							</div>
 						</section>
 					{/if}
 				</div>
 			{/if}
 
+			{* Funders *}
+			{if $article->getData('funders')->isNotEmpty()}
+			<section class="item funders" id="funding-data">
+				<h2 class="label">
+					{translate key="submission.funders"}
+				</h2>
+				<div class="value">
+					<ul>
+						{foreach from=$article->getData('funders') item=funder}
+							<li>
+								<span class="funder">
+									{$funder->getLocalizedData('name')|escape}
+									{if $funder->ror}<a href="{$funder->ror|escape}">{$rorIdIcon}</a>{/if}
+								</span>
+								{if $funder->grants}
+									<ul>
+										{foreach from=$funder->grants item=grant}
+											<li>
+												{if $grant.grantName}<span>{$grant.grantName|escape}</span><br />{/if}
+												{if $grant.grantNumber}<span>{translate key="submission.funders.funder.grant.number"} {$grant.grantNumber|escape}</span><br />{/if}
+												{if $grant.grantDoi}<span>{translate key="submission.funders.funder.grant.doi"} <a href="https://doi.org/{$grant.grantDoi|escape}">https://doi.org/{$grant.grantDoi|escape}</a></span>{/if}
+											</li>
+										{/foreach}
+									</ul>
+								{/if}
+							</li>
+						{/foreach}
+					</ul>
+				</div>
+			</section>
+			{/if}
+
+			{if $enablePublicComments}
+			    <div class="item comments">
+				    <section class="sub_item" data-vue-root>
+                        <h2 class="label"> {translate key="userComment.comments"} </h2>
+                        <pkp-scroll-to-comments></pkp-scroll-to-comments>
+				    </section>
+			    </div>
+			{/if}
+
+			{* AddThis sharing widget *}
 			{* PubIds (requires plugins) *}
 			{foreach from=$pubIdPlugins item=pubIdPlugin}
 				{if $pubIdPlugin->getPubIdType() == 'doi'}
 					{continue}
 				{/if}
-				{assign var=pubId value=$article->getStoredPubId($pubIdPlugin->getPubIdType())}
+				{assign var=pubId value=$publication->getStoredPubId($pubIdPlugin->getPubIdType())}
 				{if $pubId}
 					<section class="item pubid">
 						<h2 class="label">

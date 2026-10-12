@@ -994,9 +994,6 @@ msgstr ""
 msgid "reviewer.article.enterCompetingInterests"
 msgstr ""
 
-msgid "reviewer.competingInterests"
-msgstr ""
-
 msgid "reviewer.article.enterReviewA"
 msgstr ""
 
@@ -1393,12 +1390,6 @@ msgstr "Rreth Revistës"
 msgid "about.history"
 msgstr "Historia e Revistës"
 
-msgid "about.editorialTeam"
-msgstr "Redaksia"
-
-msgid "about.editorialTeam.biography"
-msgstr "Biografia"
-
 msgid "about.editorialPolicies"
 msgstr "Politikat Editoriale"
 
@@ -1736,9 +1727,11 @@ msgstr ""
 msgid "log.review.resubmit"
 msgstr ""
 
+#, fuzzy
 msgid "log.review.reviewDeclined"
 msgstr ""
 
+#, fuzzy
 msgid "log.review.reviewAccepted"
 msgstr ""
 
@@ -1923,9 +1916,6 @@ msgid "grid.catalogEntry.approvedRepresentation.removeMessage"
 msgstr ""
 
 msgid "search.cli.rebuildIndex.indexing"
-msgstr ""
-
-msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
 msgstr ""
 
 msgid "search.cli.rebuildIndex.unknownJournal"

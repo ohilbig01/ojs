@@ -47,7 +47,7 @@
 			"items": {
 				"type": "string",
 				"validation": [
-					"in:publication,representation,issue"
+					"in:publication,representation,issue,peerReview,authorResponse"
 				]
 			},
 		  	"default": ["publication"]
@@ -58,6 +58,12 @@
 		},
 		"doiIssueSuffixPattern": {
 			"type": "string",
+			"validation": [
+				"nullable"
+			]
+		},
+		"enableArticleNumber": {
+			"type": "boolean",
 			"validation": [
 				"nullable"
 			]
@@ -142,13 +148,6 @@
 					"type": "string"
 				}
 			}
-		},
-		"licenseTerms": {
-			"type": "string",
-			"multilingual": true,
-			"validation": [
-				"nullable"
-			]
 		},
 		"lockssLicense": {
 			"type": "string",
@@ -248,6 +247,13 @@
 			"type": "string",
 			"validation": [
 				"nullable"
+			]
+		},
+		"publisherUrl": {
+			"type": "string",
+			"validation": [
+				"nullable",
+				"url"
 			]
 		},
 		"publishingMode": {
@@ -370,6 +376,20 @@
 		  	"type": "boolean",
 		  	"default": false,
 		  	"description": "Whether each publication version should receive a unique DOI"
+		},
+		"reviewerSuggestionEnabled": {
+			"type": "boolean",
+			"validation": [
+				"nullable"
+			]
+		},
+		"reviewerSuggestionsHelp": {
+			"type": "string",
+			"multilingual": true,
+			"validation": [
+				"nullable"
+			],
+			"defaultLocaleKey": "default.submission.step.reviewerSuggestions"
 		}
 	}
 }

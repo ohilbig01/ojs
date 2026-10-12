@@ -1200,9 +1200,6 @@ msgstr ""
 "(faic <a target=\"_new\" class=\"action\" href="
 "\"{$competingInterestGuidelinesUrl}\">poileasaidh na còmhstri ùidhean</a>)."
 
-msgid "reviewer.competingInterests"
-msgstr "Còmhstri ùidhean"
-
 msgid "reviewer.article.enterReviewA"
 msgstr ""
 "Briog air an ìomhaigheag airson do lèirmheas air an tagradh seo a chur a-"
@@ -1711,12 +1708,6 @@ msgstr "Mun iris-leabhar"
 msgid "about.history"
 msgstr "Eachdraidh an iris-leabhair"
 
-msgid "about.editorialTeam"
-msgstr "An sgioba deasachaidh"
-
-msgid "about.editorialTeam.biography"
-msgstr "Beatha-eachdraidh"
-
 msgid "about.editorialPolicies"
 msgstr "Poileasaidhean deasachaidh"
 
@@ -2014,7 +2005,7 @@ msgstr ""
 "\n"
 "<p>Mòran taing airson <strong>Open Journal Systems</strong> aig a’ Public "
 "Knowledge Project a luchdadh a-nuas.\n"
-"Mus lean thu air adhart, leugh am faidhle <a href=\"{$baseUrl}/docs/README.md"
+"Mus lean thu air adhart, leugh am faidhle <a href=\"{$baseUrl}/README.md"
 "\">README</a> a tha ga ghabhail a-staigh leis a’ bhathar-bhog seo.\n"
 "Airson barrachd fiosrachaidh mun Public Knowledge Project agus na "
 "pròiseactan bathair-bhog aca, tadhail air <a href=\"http://pkp.sfu.ca/\" "
@@ -2108,6 +2099,7 @@ msgstr ""
 "a luchdadh suas agus feumaidh e a bhith so-sgrìobhte (faic “Roghainnean "
 "faidhle” gu h-ìosal.</p>"
 
+#, fuzzy
 msgid "installer.upgradeInstructions"
 msgstr ""
 "<h4>Tionndadh OJS {$version}</h4>\n"
@@ -2291,11 +2283,13 @@ msgstr ""
 msgid "log.review.resubmit"
 msgstr "Chaidh an tagradh {$submissionId} a chur airson ath-lèirmheas."
 
+#, fuzzy
 msgid "log.review.reviewDeclined"
 msgstr ""
 "Dhiùlt {$userName} lèirmheas cuairt {$round} mu choinneamh tagradh "
 "{$submissionId}."
 
+#, fuzzy
 msgid "log.review.reviewAccepted"
 msgstr ""
 "Ghabh {$reviewerName} ri lèirmheas cuairt {$round} mu choinneamh tagraidh "
@@ -2525,11 +2519,6 @@ msgstr "<p>Thoir an t-aonta air falbh on ghailearaidh seo.</p>"
 
 msgid "search.cli.rebuildIndex.indexing"
 msgstr "Ag inneacsadh “{$journalName}”"
-
-msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
-msgstr ""
-"Chan eil an gleus luirg seo a’ ceadachadh ath inneacsadh iris-leabhar air "
-"iris-leabhar."
 
 msgid "search.cli.rebuildIndex.unknownJournal"
 msgstr ""

@@ -12,6 +12,10 @@
  * @ingroup controllers_grid_pubIds
  *
  * @brief Handle exportable issues with pub ids list grid requests.
+ *
+ * @deprecated 3.4 Not embedded in any current
+ *   template; superseded by the submission/publication-level export plugins
+ *   built on PubObjectsExportPlugin.
  */
 
 namespace APP\controllers\grid\pubIds;
@@ -237,7 +241,7 @@ class PubIdExportIssuesListGridHandler extends GridHandler
      */
     protected function getFilterValues($filter)
     {
-        if (isset($filter['statusId']) && $filter['statusId'] != EXPORT_STATUS_ANY) {
+        if (isset($filter['statusId']) && $filter['statusId'] != PubObjectsExportPlugin::EXPORT_STATUS_ANY) {
             $statusId = $filter['statusId'];
         } else {
             $statusId = null;

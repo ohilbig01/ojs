@@ -16,6 +16,8 @@
  * @uses $journal Journal The journal currently being viewed.
  * @uses $primaryGalleys array List of article galleys that are not supplementary or dependent
  * @uses $supplementaryGalleys array List of article galleys that are supplementary
+ *
+ * @hook Templates::Article::Footer::PageFooter []
  *}
 {include file="frontend/components/header.tpl" pageTitleTranslated=$article->getCurrentPublication()->getLocalizedFullTitle(null, 'html')|strip_unsafe_html}
 
@@ -32,5 +34,4 @@
 	{call_hook name="Templates::Article::Footer::PageFooter"}
 
 </div><!-- .page -->
-
 {include file="frontend/components/footer.tpl"}

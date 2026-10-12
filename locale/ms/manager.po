@@ -405,12 +405,6 @@ msgstr "Hadkan jumlah perkataan abstrak untuk bahagian ini (0 tanpa had)"
 msgid "manager.setup"
 msgstr "Tetapan Jurnal"
 
-msgid "manager.setup.masthead"
-msgstr "Tajuk"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Kumpulan Editorial"
-
 msgid "manager.setup.homepageContent"
 msgstr "Kandungan Halaman Utama Jurnal"
 
@@ -474,11 +468,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Untuk muncul di Mengenai Jurnal) "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Wajib mengemukakan Pengarang untuk mengemukakan pernyataan Konflik "
-"Kepentingan dengan penyerahannya."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -789,14 +778,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Tajuk jurnal"
 
-msgid "manager.setup.keyInfo"
-msgstr "Maklumat Utama"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Berikan butiran ringkas mengenai jurnal anda dan kenal pasti editor, "
-"pengarah urusan dan ahli pasukan editorial anda yang lain."
-
 msgid "manager.setup.labelName"
 msgstr "Nama label"
 
@@ -835,12 +816,6 @@ msgstr ""
 "perpustakaan yang mengambil bahagian melalui halaman <a href="
 "\"{$lockssUrl}\" target=\"_blank\"> Publisher Manifest </a> LOCKSS."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"Lesen LOCKSS akan muncul di Mengenai Jurnal di bawah Pengarkiban: <a href="
-"\"http://www.lockss.org/community/publishers-titles-gln/\" target=\"_blank"
-"\"> LOCKSS License </a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "Penerangan Lesen LOCKSS"
 
@@ -860,11 +835,6 @@ msgstr ""
 "Dayakan CLOCKSS untuk menyimpan dan menyebarkan kandungan jurnal di "
 "perpustakaan yang mengambil bahagian melalui halaman CLOCKSS <a href="
 "\"{$clockssUrl}\" target=\"_blank\">Publisher Manifest</a>."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"Lesen CLOCKSS akan muncul di Mengenai Jurnal di bawah Pengarkiban: <a href="
-"\"http://clockss.org/\" target=\"_blank\"> Lesen CLOCKSS </a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "Penerangan Lesen CLOCKSS"
@@ -1992,11 +1962,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Kata Laluan"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Harap perhatikan bahawa kata laluan akan disimpan sebagai teks biasa, iaitu "
-"tidak disulitkan."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Sebarang Terbitan"
 
@@ -2023,9 +1988,6 @@ msgstr "Tanda didaftarkan"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Daftar"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Sahkan XML sebelum eksport dan pendaftaran."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Tiada objek yang dipilih."

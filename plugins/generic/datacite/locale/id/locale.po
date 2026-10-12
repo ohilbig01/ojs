@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2021-01-14 11:00+0000\n"
-"Last-Translator: Ramli Baharuddin <ramli.baharuddin@relawanjurnal.id>\n"
-"Language-Team: Indonesian <http://translate.pkp.sfu.ca/projects/ojs/"
-"importexport-datacite/id/>\n"
-"Language: id_ID\n"
+"PO-Revision-Date: 2024-12-29 04:52+0000\n"
+"Last-Translator: Muhammad Ihlasul Amal <ihlasulamal26@gmail.com>\n"
+"Language-Team: Indonesian <http://translate.pkp.sfu.ca/projects/plugins/"
+"datacite/id/>\n"
+"Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "plugins.importexport.datacite.displayName"
 msgstr "Plugin Expor/Pendaftaran DataCite"
@@ -23,16 +23,17 @@ msgid "plugins.importexport.datacite.settings.description"
 msgstr "Aturlah plugin ekspor DataCite sebelum digunakan untuk pertama kali."
 
 msgid "plugins.importexport.datacite.settings.label"
-msgstr ""
+msgstr "Pengaturan DataCite"
 
 msgid "plugins.importexport.datacite.registrationAgency.name"
-msgstr ""
+msgstr "DataCite"
 
+#, fuzzy
 msgid "plugins.importexport.datacite.intro"
 msgstr ""
 "\n"
 "\t\tJika Anda ingin mendaftar DOI pada DataCite, hubungilah Agen\n"
-"\t\tPengelola melalui <a href=\"https://datacite.org/contact.html\" target="
+"\t\tPengelola melalui <a href=\"https://datacite.org/contact\" target="
 "\"_blank\">Halaman Beranda\n"
 "\t\tDataCite</a>, yang akan mengarahkan Anda ke halaman Anggota DataCite. "
 "Sekali Anda\n"
@@ -63,6 +64,7 @@ msgstr ""
 "tergantung pada pengaturan cronjob Anda). Anda bisa memeriksa semua DOI yang "
 "belum terdaftar."
 
+#, fuzzy
 msgid "plugins.importexport.datacite.settings.form.testMode.description"
 msgstr ""
 "Gunakan prefiks tes DataCite untuk pendaftaran DOI. Jangan luoa menghapus "
@@ -77,11 +79,11 @@ msgstr "Tes Password"
 msgid "plugins.importexport.datacite.settings.form.testDOIPrefix"
 msgstr "Tes Prefiks DOI"
 
+#, fuzzy
 msgid "plugins.importexport.datacite.settings.form.testDOIPrefixRequired"
 msgstr ""
-
-msgid "plugins.importexport.datacite.settings.form.testUsernameRequired"
-msgstr ""
+"Awalan DOI pengujian diperlukan saat \"gunakan awalan uji untuk registrasi "
+"DOI\" dipilih."
 
 msgid "plugins.importexport.datacite.senderTask.name"
 msgstr "Tugas pendaftaran otomatis DataCite"
@@ -95,13 +97,13 @@ msgstr ""
 "galleys} objectId1 [objectId2] ...\n"
 
 msgid "plugins.generic.datacite.displayName"
-msgstr ""
+msgstr "Plugin DataCite Manager"
 
 msgid "plugins.generic.datacite.description"
-msgstr ""
+msgstr "Tangani penyetoran dan pengeksporan metadata DataCite"
 
 msgid "plugins.generic.datacite.registrationAgency.name"
-msgstr ""
+msgstr "DataCite"
 
 msgid "plugins.generic.datacite.deposit.unsuccessful"
-msgstr ""
+msgstr "Registrasi gagal! Harap periksa konfigurasi Anda dan coba lagi."

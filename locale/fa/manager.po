@@ -1,63 +1,69 @@
+# Kamdin Parsakia <kamdinparsakia@iranmehr.ac.ir>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:22+00:00\n"
-"PO-Revision-Date: 2019-11-19T10:49:22+00:00\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: fa_IR\n"
+"PO-Revision-Date: 2023-09-05 01:17+0000\n"
+"Last-Translator: Kamdin Parsakia <kamdinparsakia@iranmehr.ac.ir>\n"
+"Language-Team: Persian <http://translate.pkp.sfu.ca/projects/ojs/manager/fa/>"
+"\n"
+"Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.13.1\n"
 
 msgid "manager.distribution.access"
 msgstr "دسترسی"
 
 msgid "manager.distribution.copyrightYearBasis.description"
 msgstr ""
+"یک تاریخ پیشفرض برای حق نشر تعیین کنید. این تاریخ را پیشفرض می‌توانید بعداً "
+"برای هر مقاله به صورت دستی تغییر دهید. اگر مجله شما بدون رویه مشخصی چاپ می‌"
+"شود از انتخاب تاریخ شماره به عنوان تاریخ پیشفرض اجتناب کنید."
 
 msgid "manager.distribution.copyrightYearBasis.issue"
-msgstr ""
+msgstr "استفاده از تاریخ انتشار شماره"
 
 msgid "manager.distribution.copyrightYearBasis.submission"
-msgstr ""
+msgstr "استفاده از تاریخ انتشار مقاله"
 
 msgid "manager.distribution.publication"
-msgstr ""
+msgstr "انتشار"
 
 msgid "manager.distribution.publishingMode"
-msgstr ""
+msgstr "حالت انتشار"
 
 msgid "manager.distribution.publishingMode.none"
 msgstr "از OJS برای انتشار آنلاین محتوای مجله استفاده نخواهد شد."
 
 msgid "manager.distribution.publishingMode.openAccess"
-msgstr "این مجله دسترسی آزاد به محتوی خود را اجازه می‌دهد."
+msgstr "این مجله اجازه دسترسی باز به محتوای خود می‌دهد."
 
 msgid "manager.distribution.publishingMode.subscription"
-msgstr "برای دسترسی به بعضی یا تمامی محتوی این مجله ایجاد اشتراک لازم است."
+msgstr "برای دسترسی به بعضی یا تمامی محتوای این مجله اشتراک لازم است."
 
 msgid "manager.setup.enableDois.description"
-msgstr ""
+msgstr "اجازه استفاده از DOI برای مقالات منتشر شده در این مجله را بده."
 
-#, fuzzy
 msgid "doi.manager.settings.doiObjectsRequired"
-msgstr "لطفاً مواردی که بایستی شنایه DOI دریافت کنند را مشخص منید."
+msgstr "لطفاً مواردی که بایستی شناسه DOI دریافت کنند را مشخص کنید."
 
 msgid "doi.manager.settings.doiSuffixLegacy"
-msgstr ""
+msgstr "از الگوی پیشفرض استفاده کن."
 
 msgid "doi.manager.settings.doiCreationTime.copyedit"
-msgstr ""
+msgstr "به محض رسیدن به مرحله ویراستاری"
 
 msgid "manager.website.archiving"
 msgstr "بایگانی کردن"
 
 msgid "manager.files.note"
 msgstr ""
-"توجه: با مرورگر فایل می‌توانید به فایل‌ها یا پوشه‌های یک مجله  مستقیماً دسترسی "
-"داشته باشید"
+"توجه: با مرورگر فایل می‌توانید به فایل‌ها یا پوشه‌های یک مجله مستقیماً "
+"دسترسی داشته باشید."
 
 msgid "manager.journalManagement"
 msgstr "مدیریت مجله"
@@ -76,12 +82,12 @@ msgstr "این عمل باعث جایگزینی تمامی تنظیمات واب
 
 msgid "manager.languages.languageInstructions"
 msgstr ""
-"OJS  می‌تواند در دسترس کاربران زبان‌هایی که توسط سیستم حمایت می‌شود قرار گیرد. "
-"همچنین OJS می‌تواند به عنوان یک سیستم نسبتاً چند زبانی عمل کند و امکان تغییر "
-"زبان توسط کاربران در هر صفحه را فراهم کند. همچنین داده‌های خاصی را ممکن است "
-"بتوان حداکثر به دو زبان وارد کرد.<br /><br />چنانچه یک زبان مورد حمایت OJS "
-"در لیست زیر موجود نباشد از مدیر سایت بخواهید تا آن زبان را نصب کند. برای "
-"اطلاع از نحوه افزودن یک زبان جدید به مستندات OJS مراجعه کنید."
+"OJS می‌تواند در دسترس کاربران زبان‌هایی که توسط سیستم پشتیبانی می‌شود قرار "
+"گیرد. همچنین OJS می‌تواند به عنوان یک سیستم نسبتاً چند زبانی عمل کند و امکان "
+"تغییر زبان توسط کاربران در هر صفحه را فراهم کند. همچنین داده‌های خاصی را می‌"
+"توان حداکثر به دو زبان وارد کرد.<br /><br />چنانچه یک زبان مورد حمایت OJS در "
+"لیست زیر موجود نباشد از مدیر سایت بخواهید تا آن زبان را نصب کند. برای اطلاع "
+"از نحوه افزودن یک زبان جدید به مستندات OJS مراجعه کنید."
 
 msgid "manager.languages.noneAvailable"
 msgstr ""
@@ -92,7 +98,7 @@ msgid "manager.languages.primaryLocaleInstructions"
 msgstr "این زبان پیش‌فرض سایت مجله خواهد بود."
 
 msgid "manager.managementPages"
-msgstr "صفحات مدیریتی"
+msgstr "صفحات مدیریت"
 
 msgid "manager.payment.action"
 msgstr "اقدام"
@@ -107,19 +113,16 @@ msgid "manager.payment.authorFees"
 msgstr "هزینه‌های نویسنده"
 
 msgid "manager.payment.authorFeesDescription"
-msgstr ""
-"گزینه‌های انتخابی همراه با شرح و قیمت‌های آن (که در این قسمت قابل ویرایش است) "
-"در مرحله ۱ ارسال مقاله و در قسمت «درباره مجله» تحت قسمت ارسال مقاله, و "
-"همچنین هر جا که پرداخت لازم باشد, خواهد آمد."
+msgstr "مقادیر هزینه‌های پرداختی نویسنده را وارد کنید."
 
 msgid "manager.payment.currencymessage"
 msgstr ""
-"OJS هیچ تبدیل واحد پولی را انجام نمی‌دهد. چنانچه پرداخت برای اشتراک‌ها را قبول "
-"می‌کنید باید از تطابق واحد پولی پرداخت‌ها از آنچه در اینجا ذکر شده اطمینان "
-"حاصل کنید "
+"OJS هیچ تبدیل واحد پولی را انجام نمی‌دهد. چنانچه پرداخت برای اشتراک‌ها را "
+"قبول می‌کنید باید از مطابقت واحد پولی پرداخت‌ها از آنچه در اینجا ذکر شده "
+"اطمینان حاصل کنید."
 
 msgid "manager.payment.description"
-msgstr "توصیف"
+msgstr "توضیحات"
 
 msgid "manager.payment.details"
 msgstr "جزئیات"
@@ -139,14 +142,11 @@ msgstr "تمام هزینه‌ها باید مقادیر عددی مثبت با�
 msgid "manager.payment.generalFees"
 msgstr "هزینه‌های عمومی"
 
-#, fuzzy
 msgid "manager.payment.generalFeesDescription"
-msgstr ""
-"عضویت در انجمن در قسمت «درباره مجله» تحت قسمت سیاست‌ها خواهد آمد و لینک اهدا "
-"در بالای قسمت جستجو در نوار حاشیه نمایش داده خواهد شد.."
+msgstr "عضویت همکار در قسمت «درباره مجله» تحت قسمت سیاست‌ها خواهد آمد."
 
 msgid "manager.payment.generalOptions"
-msgstr "امکانات عمومی"
+msgstr "گزینه‌های عمومی"
 
 msgid "manager.payment.noPayments"
 msgstr "بدون پرداخت"
@@ -155,86 +155,86 @@ msgid "manager.payment.notFound"
 msgstr "پیدا نشد"
 
 msgid "manager.payment.options"
-msgstr "امکانات"
+msgstr "گزینه‌ها"
 
 msgid "manager.payment.options.acceptSubscriptionPayments"
 msgstr ""
-"این موجب فعال شدن سیستم پرداخت مشترکین می‌شود که در آن نوع, قیمت, مدت, و "
-"مشترکین توسط مدیر اشتراک اداره می‌شود"
+"این موجب فعال شدن سیستم پرداخت مشترکین می‌شود که در آن نوع، قیمت، مدت و "
+"اشتراکات توسط مدیر مجله اداره می‌شود."
 
 msgid "subscriptionManager.subscription.confirmRemove"
-msgstr "آیا مطمئنید که می‌خواهید این اشتراک را حذف کنید."
+msgstr "آیا مطمئنید که می‌خواهید این اشتراک را حذف کنید؟"
 
 msgid "manager.payment.options.enablePayments"
 msgstr ""
-"برای فعال‌سازی ماژول پرداخت اینجا را کلیک کنید. می‌بایست ابتدا با پر کردن فرم "
-"زیر, تنظیمات نحوه پرداخت را پیکره‌بندی کنید. توجه داشته باشید که کاربران باید "
-"برای پرداخت ابتدا وارد سیستم شوند."
+"برای فعال‌سازی ماژول پرداخت اینجا را کلیک کنید. می‌بایست ابتدا با پر کردن "
+"فرم زیر، تنظیمات نحوه پرداخت را پیکربندی کنید. توجه داشته باشید که کاربران "
+"باید برای پرداخت ابتدا وارد سیستم شوند."
 
 msgid "manager.payment.options.fee"
 msgstr "هزینه‌ها"
 
 msgid "manager.payment.options.feeDescription"
-msgstr "توصیف هزینه‌ها"
+msgstr "توضیح هزینه‌ها"
 
 msgid "manager.payment.options.feeName"
 msgstr "نام هزینه"
 
 msgid "manager.payment.options.membershipFee"
-msgstr "عضویت در انجمن"
+msgstr "عضویت همکار"
 
 msgid "manager.payment.options.onlypdf"
-msgstr "دسترسی فقط به نسخه PDF مسدود است"
+msgstr "فقط محدودیت دسترسی به نسخه PDF شماره‌ها و مقالات"
 
 msgid "manager.payment.options.publicationFee"
-msgstr "هزینه چاپ"
+msgstr "هزینه چاپ مقاله"
 
 msgid "manager.payment.options.purchaseArticleFee"
-msgstr "خرید مقاله"
+msgstr "سفارش مقاله"
 
 msgid "manager.payment.options.purchaseIssueFee"
-msgstr "خرید شماره"
+msgstr "سفارش شماره"
 
 msgid "manager.payment.options.text"
-msgstr "توصیف نحوه پرداخت"
+msgstr "توضیح نحوه پرداخت"
 
 msgid "manager.payment.paymentId"
-msgstr "شناسه پرداخت "
+msgstr "شناسه پرداخت"
 
 msgid "manager.payment.paymentMethod"
 msgstr "روش پرداخت"
 
 msgid "manager.payment.paymentMethod.description"
 msgstr ""
-"شما می‌توانید هرکدام از افزونه‌های مربوط به روش‌های پرداخت زیر را از طریق این "
-"صفحه تنظیم و پیکره‌بندی نمایید"
+"شما می‌توانید هرکدام از افزونه‌های مربوط به روش‌های پرداخت زیر را از طریق "
+"این صفحه تنظیم و پیکره‌بندی نمایید."
 
 msgid "manager.payment.paymentMethods"
-msgstr "روش‌های پرداخت"
+msgstr "روش‌های پرداخت هزینه"
 
 msgid "manager.payment.paymentType"
 msgstr "نوع پرداخت"
 
 msgid "manager.payment.readerFees"
-msgstr "قیمت برای خوانندگان"
+msgstr "هزینه‌های خواننده"
 
 msgid "manager.payment.readerFeesDescription"
 msgstr ""
-"گزینه‌های انتخابی همراه با شرح و قیمت‌های آن (که در این قسمت قابل ویرایش است) "
-"در قسمت «درباره مجله» تحت قسمت ارسال مقاله, و همچنین هر جا که پرداخت لازم "
-"باشد, خواهد آمد."
+"گزینه‌های انتخابی همراه با شرح و قیمت‌های آن (که در این قسمت قابل ویرایش است)"
+" در قسمت «درباره مجله» تحت قسمت ارسال مقاله و همچنین هر جا که پرداخت لازم "
+"باشد خواهد آمد."
 
 msgid "manager.payment.records"
 msgstr "رکوردها"
 
 msgid "manager.paymentTypes"
-msgstr "انواع پرداخت "
+msgstr "انواع پرداخت"
 
 msgid "manager.payment.userName"
 msgstr "شناسه پرداخت"
 
 msgid "manager.people.allEnrolledUsers"
-msgstr "کاربران این مجله"
+msgstr "کاربران ثبت نام شده در این مجله"
 
 msgid "manager.people.allJournals"
 msgstr "تمام مجلات"
@@ -244,7 +244,7 @@ msgstr ""
 "انتخاب یک کاربر از لیست کاربران این سایت و افزودن آن به کاربران این مجله"
 
 msgid "manager.people.showNoRole"
-msgstr "کاربران فاقد نقش را نشان بده"
+msgstr "نمایش کاربران بدون نقش"
 
 msgid "manager.people.allUsers"
 msgstr "تمام کاربران"
@@ -255,24 +255,24 @@ msgstr ""
 "نقش‌هایش در این مجله عزل خواهد کرد."
 
 msgid "manager.people.emailUsers.selectTemplate"
-msgstr "انتخاب یک الگو"
+msgstr "یک قالب انتخاب کنید"
 
 msgid "manager.people.enrollExistingUser"
-msgstr "اعطای نقش به کاربر موجود"
+msgstr "اعطای نقش به کاربر"
 
 msgid "manager.people.enrollSyncJournal"
 msgstr "با مجله"
 
 msgid "manager.people.mergeUsers.from.description"
 msgstr ""
-"کاربری را برای ادغام با حساب کاربر دیگر انتخاب کنید (مثال وقتی که شخصی دو "
-"حساب کاربری دارد ) حسابی که در ابتدا انتخاب شده پاک می‌شود و مقالات ارسالی, "
-"انتساب‌ها و غیره مربوط به آن حساب به حساب کاربری دوم نسبت داده می‌شود"
+"یک کاربر را برای ادغام با حساب کاربر دیگر انتخاب کنید (مثلاً، وقتی که شخصی "
+"دو حساب کاربری دارد ). حسابی که در ابتدا انتخاب شده پاک می‌شود و مقالات "
+"ارسالی، انتساب‌ها و غیره مربوط به آن حساب به حساب کاربر دوم نسبت داده می‌شود."
 
 msgid "manager.people.mergeUsers.into.description"
 msgstr ""
-"کاربری را که مسئولیت‌ها و انتساب‌های کاربر قبلی باید به آن نسبت داده شود را "
-"انتخاب نمایید"
+"کاربری را که مسئولیت‌ها و نقش‌های کاربر قبلی باید به آن نسبت داده شود را "
+"انتخاب نمایید."
 
 msgid "manager.people.roleEnrollment"
 msgstr "اعطای نقش {$role}"
@@ -287,7 +287,7 @@ msgid "manager.sections.abstractsNotRequired"
 msgstr "نیاز به چکیده ندارد"
 
 msgid "manager.sections.assigned"
-msgstr "دبیر این نوع مقاله"
+msgstr "دبیرهای این بخش"
 
 msgid "manager.sections.confirmDelete"
 msgstr ""
@@ -301,58 +301,59 @@ msgstr ""
 "انتقال دهید."
 
 msgid "manager.sections.create"
-msgstr "ایجاد نوع مقاله"
+msgstr "ایجاد بخش جدید"
 
 msgid "manager.section.sectionEditorInstructions"
 msgstr ""
 "از بین دبیران یک نفر را انتخاب و به عنوان دبیر این نوع مقاله انتخاب کنید."
 
 msgid "manager.sections.editorRestriction"
-msgstr "این نوع مقاله فقط توسط دبیران قابل ارسال است."
+msgstr "این نوع مقاله فقط توسط دبیران مجله قابل ارسال است."
 
 msgid "manager.sections.editors"
-msgstr "دبیر نوع مقاله"
+msgstr "دبیرهای بخش"
 
 msgid "manager.sections.confirmDeactivateSection.error"
 msgstr ""
+"حداقل یک بخش باید فعال باشد. برای غیرفعال کردن ارسال مقاله به تنظیمات جریان "
+"کار مراجعه کنید."
 
 msgid "manager.sections.form.abbrevRequired"
-msgstr "یک عنوان اختصاری برای نوع مقاله لازم است."
+msgstr "یک عنوان اختصاری برای بخش لازم است."
 
 msgid "manager.sections.form.mustAllowPermission"
-msgstr "به ازای هر دبیر نوع مقاله حداقل یکی از موارد تیک خورده باشد"
+msgstr "می‌بایست به ازای هر دبیر بخش حداقل یکی از موارد تیک خورده باشد."
 
 msgid "manager.sections.form.reviewFormId"
-msgstr "لطفاً مطمئن شوید که یک فرم داوری معتبر انتخاب کرده‌اید"
+msgstr "لطفاً مطمئن شوید که یک فرم داوری معتبر انتخاب کرده‌اید."
 
 msgid "manager.sections.form.titleRequired"
-msgstr "یک عنوان برای نوع مقاله لازم است."
+msgstr "یک عنوان برای بخش لازم است."
 
 msgid "manager.sections.hideTocAuthor"
 msgstr ""
-"در فهرست مقالات هر شماره مجله، نام نویسندگان برای مقالات از این نوع آورده "
-"نشود"
+"در فهرست مقالات هر شماره مجله، نام نویسندگان برای مقالات این بخش ظاهر نشود."
 
 msgid "manager.sections.hideTocTitle"
 msgstr "عنوان این قسمت در فهرست مطالب شماره‌های مجله ظاهر نشود."
 
 msgid "manager.sections.identifyType"
-msgstr "در نظر گرفتن مقالات منتشر شده از این نوع به عنوان"
+msgstr "مشخص کردن مقالات منتشر شده در این بخش به عنوان"
 
 msgid "manager.sections.identifyTypeExamples"
-msgstr "مثلاً مقالات داوری شده، مقالات داوری نشده، مقالات دعوت شده و غیره."
+msgstr "(مثلاً مقالات داوری شده، مقالات داوری نشده، مقالات پذیرفته شده و غیره)"
 
 msgid "manager.sections.indexed"
 msgstr "نمایه شده"
 
 msgid "manager.sections.noneCreated"
-msgstr "هیچ نوع مقاله تعریف نشده است."
+msgstr "هیچ بخشی تعریف نشده است."
 
 msgid "manager.sections.open"
 msgstr "مقالات ارسالی باز"
 
 msgid "manager.sections.policy"
-msgstr "سیاست‌گذاری این نوع مقاله"
+msgstr "سیاست‌گذاری بخش"
 
 msgid "manager.sections.readingTools"
 msgstr "ابزارهای خواندن"
@@ -367,7 +368,7 @@ msgid "manager.sections.submissionReview"
 msgstr "شامل داوری نمی‌شود."
 
 msgid "manager.section.submissionsToThisSection"
-msgstr "ارسال مقاله برای این نوع از مقاله قابل انجام است."
+msgstr "ارسال مقاله برای این بخش میسر است."
 
 msgid "manager.sections.unassigned"
 msgstr "دبیران موجود"
@@ -376,16 +377,10 @@ msgid "manager.sections.wordCount"
 msgstr "تعداد لغت"
 
 msgid "manager.sections.wordCountInstructions"
-msgstr "حداکثر تعداد کلمات برای این نوع مقاله (صفر تا بدون سقف)"
+msgstr "حداکثر تعداد کلمات برای این مقالات این بخش (صفر تا بدون سقف)"
 
 msgid "manager.setup"
-msgstr "نصب"
-
-msgid "manager.setup.masthead"
-msgstr "سربرگ"
-
-msgid "manager.setup.editorialTeam"
-msgstr ""
+msgstr "تنظیمات مجله"
 
 msgid "manager.setup.homepageContent"
 msgstr "محتوای صفحه اصلی مجله"
@@ -409,16 +404,16 @@ msgid "manager.setup.aboutItemContent"
 msgstr "محتوا"
 
 msgid "manager.setup.addAboutItem"
-msgstr "افزودن یک مورد در بخش درباره"
+msgstr "افزودن آیتم در بخش درباره"
 
 msgid "manager.setup.addChecklistItem"
 msgstr "افزودن یک مورد به چک‌لیست"
 
 msgid "manager.setup.addItem"
-msgstr "افزودن مورد"
+msgstr "افزودن آیتم"
 
 msgid "manager.setup.addItemtoAboutJournal"
-msgstr "افزودن یک مورد به موارد درباره مجله"
+msgstr "افزودن یک آیتم به قسمت درباره مجله"
 
 msgid "manager.setup.addNavItem"
 msgstr "افزودن مورد"
@@ -427,7 +422,7 @@ msgid "manager.setup.addReviewerDatabaseLink"
 msgstr "افزودن لینک بانک اطلاعاتی جدید"
 
 msgid "manager.setup.addSponsor"
-msgstr "افزودن سازمان حمایت کننده"
+msgstr "افزودن اسپانسر"
 
 msgid "manager.setup.alternateHeader"
 msgstr "سرتیتر جایگزین"
@@ -441,24 +436,20 @@ msgid "manager.setup.announcements"
 msgstr "اطلاعیه‌ها"
 
 msgid "manager.setup.announcementsIntroduction"
-msgstr ""
+msgstr "مقدمه"
 
 msgid "manager.setup.announcementsIntroduction.description"
 msgstr ""
-"اطلاعات تکمیلی را که می‌باید در معرض دید خوانندگان  در صفحه اطلاعیه‌ها قرار "
+"اطلاعات تکمیلی را که می‌بایست در معرض دید خوانندگان در صفحه اطلاعیه‌ها قرار "
 "گیرد وارد کنید."
 
 msgid "manager.setup.appearInAboutJournal"
-msgstr "(در قسمت درباره مجله نمایش داده می‌شود)"
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"لازم است که نویسنده ارسال کننده مقاله بیانیه تضاد منافع در رابطه با مقاله "
-"خود را اعلام کند."
+msgstr "(در قسمت درباره مجله نمایش داده می‌شود) "
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
-"لازم است داوران بیانیه تضاد منافع برای مقاله‌ای که داوری می‌کنند را اعلام کنند."
+"لازم است داوران بیانیه تعارض منافع برای مقاله‌ای که داوری می‌کنند را ارسال "
+"کنند."
 
 msgid "manager.setup.history"
 msgstr "تاریخچه مجله"
@@ -487,7 +478,7 @@ msgstr ""
 "شوند."
 
 msgid "manager.setup.discipline"
-msgstr "رشته تخصصی یا فوق تخصصی"
+msgstr "رشته و شاخه تخصصی"
 
 msgid "manager.setup.disciplineDescription"
 msgstr "زمانی کاربرد دارد که مجله چند رشته‌ای باشد."
@@ -496,7 +487,7 @@ msgid "manager.setup.disciplineExamples"
 msgstr "(مانند: تاریخ؛ آموزش؛ جامعه‌شناسی؛ روانشناسی؛ مطالعات فرهنگی؛ حقوق)"
 
 msgid "manager.setup.disciplineProvideExamples"
-msgstr "مثال‌هایی از رشته‌های تخصصی این مجله مشخص کنید"
+msgstr "نمونه‌هایی از رشته‌های تخصصی این مجله را ذکر کنید"
 
 msgid "manager.setup.displayCurrentIssue"
 msgstr "افزودن فهرست مطالب شماره جاری در صورت موجود بودن."
@@ -508,14 +499,14 @@ msgid "manager.setup.emailBounceAddress"
 msgstr "آدرس برگشت"
 
 msgid "manager.setup.emailBounceAddress.description"
-msgstr "اگر ایمیلی برگشت بخورد پیغامی به این آدرس ارسال می‌شود"
+msgstr "اگر ایمیلی برگشت بخورد پیغامی به این آدرس ارسال می‌شود."
 
 msgid "manager.setup.emailBounceAddress.disabled"
 msgstr ""
 "<strong>توجه:</strong> برای فعال ساختن این گزینه مدیر سایت می‌بایست گزینه "
-"<tt>allow_envelope_sender</tt> در فایل تنظیمات OJS فعال سازد. همچنین ممکن "
-"است امکانات خاصی در سرور نیز لازم باشد که ممکن است همه سرورها آن را نداشته "
-"باشند. برای اطلاعات بیشتر به مستندات OJS مراجعه کنید."
+"<code>allow_envelope_sender</code> در فایل تنظیمات OJS فعال سازد. همچنین "
+"ممکن است امکانات خاصی در سرور نیز لازم باشد که ممکن است همه سرورها آن را "
+"نداشته باشند. برای اطلاعات بیشتر به مستندات OJS مراجعه کنید."
 
 msgid "manager.setup.emails"
 msgstr "شناسایی ایمیل"
@@ -538,16 +529,18 @@ msgstr ""
 "اطلاعیه‌ها ظاهر می‌شود."
 
 msgid "manager.setup.numAnnouncementsHomepage"
-msgstr ""
+msgstr "نمایش در صفحه خانگی"
 
 msgid "manager.setup.numAnnouncementsHomepage.description"
 msgstr ""
+"تعداد اطلاعایه‌هایی که در صفحه خانگی نمایش داده شود. برای عدم نمایش اطلاعیه "
+"این بخش را خالی بگذارید."
 
 msgid "manager.setup.enableUserRegistration"
 msgstr "خوانندگان بتوانند در مجله ثبت‌نام کنند."
 
 msgid "manager.setup.focusAndScope"
-msgstr "زمینه مطالعاتی"
+msgstr "حوزه و زمینه مطالعاتی"
 
 msgid "manager.setup.focusAndScope.description"
 msgstr ""
@@ -555,69 +548,69 @@ msgstr ""
 "حیطه‌ای بوده و چه زمینه‌های مطالعاتی را پوشش می‌دهد."
 
 msgid "manager.setup.forAuthorsToIndexTheirWork"
-msgstr "برای نویسنده به منظور نمایه‌سازی پژوهش‌هایشان"
+msgstr "برای نویسندگان به منظور نمایه‌سازی مقالاتشان"
 
 msgid "manager.setup.forAuthorsToIndexTheirWorkDescription"
 msgstr ""
-"OJS  بر مبنای  پروتکل <a href=\"http://www.openarchives.org/\" target="
-"\"_blank\">Open Archives Initiative</a>  برای استخراج فراداده عمل می‌کند. این "
-"پروتکل استاندارد برای دسترسی کاملاً به منابع پژوهشی الکترونیکی نمایه شده در "
-"یک مقیاس جهانی می‌باشد. برای وارد کردن این اطلاعات فرم مشابهی در دسترس "
+"OJS بر مبنای پروتکل <a href=\"http://www.openarchives.org/\" target=\"_blank"
+"\">Open Archives Initiative</a>  برای استخراج فراداده عمل می‌کند. این پروتکل "
+"استاندارد برای دسترسی کاملاً به منابع پژوهشی الکترونیکی نمایه شده در یک "
+"مقیاس جهانی می‌باشد. برای وارد کردن این اطلاعات فرم مشابهی در دسترس "
 "نویسندگان قرار می‌گیرد تا فراداده‌های ارسال شده خود را وارد کنند. مدیر مجله "
 "می‌تواند قسمت‌هایی که مایل به نمایه کردن است را انتخاب کند. همچنین مثال‌هایی "
 "نیز برای نویسندگان فراهم نماید تا به آن‌ها در جهت نمایه کردن فعالیت‌های خود "
 "کمک کند."
 
 msgid "manager.setup.form.issnInvalid"
-msgstr "شاپای وارد شده نامعتبر است"
+msgstr "شاپای وارد شده نامعتبر است."
 
 msgid "manager.setup.form.contactEmailRequired"
-msgstr "برای اطلاعات تماس اصلی، وارد کردن ایمیل الزامی است"
+msgstr "برای اطلاعات تماس اصلی، وارد کردن ایمیل الزامی است."
 
 msgid "manager.setup.form.contactNameRequired"
-msgstr "برای اطلاعات تماس اصلی، وارد کردن نام الزامی است"
+msgstr "برای اطلاعات تماس اصلی، وارد کردن نام الزامی است."
 
 msgid "manager.setup.form.journalInitialsRequired"
-msgstr "حروف اول مجله لازم است"
+msgstr "حروف اول مجله لازم است."
 
 msgid "manager.setup.form.journalTitleRequired"
-msgstr "عنوان مجله لازم است"
+msgstr "عنوان مجله لازم است."
 
 msgid "manager.setup.form.numReviewersPerSubmission"
-msgstr "تعداد داور برای هر مورد ارسال شده لازم است"
+msgstr "تعداد داوران هر مقاله ارسالی لازم است."
 
 msgid "manager.setup.form.supportEmailRequired"
-msgstr "ایمیل حمایت کننده لازم است"
+msgstr "ایمیل پیشتیبانی لازم است."
 
 msgid "manager.setup.form.supportNameRequired"
-msgstr "نام حمایت کننده لازم است"
+msgstr "نام پشتیبانی لازم است."
 
 msgid "manager.setup.generalInformation"
 msgstr "اطلاعات عمومی"
 
 msgid "manager.setup.gettingDownTheDetails"
-msgstr "محله 1: وارد کردن جزئیات"
+msgstr "گام اول: وارد کردن جزئیات"
 
 msgid "manager.setup.guidelines"
-msgstr "دستورالعمل"
+msgstr "دستورالعمل‌ها"
 
 msgid "manager.setup.guidingSubmissions"
-msgstr "مرحله 3: ارسال مقاله"
+msgstr "گام سوم: ارسال مقاله"
 
 msgid "manager.setup.identity"
-msgstr ""
+msgstr "مشخصات مجله"
 
 msgid "manager.setup.includeCreativeCommons"
 msgstr ""
-"افزودن مجوز Creative Commons  به تمامی مقالات انتشاری برای مجلاتی که دسترسی "
-"آزاد فوری یا تأخیری دارند."
+"افزودن مجوز Creative Commons به تمامی مقالات برای مجلاتی که دسترسی آزاد فوری "
+"یا با تأخیر دارند."
 
 msgid "manager.setup.information"
 msgstr "اطلاعات"
 
 msgid "manager.setup.information.description"
 msgstr ""
-"توصیف مختصر مجله برای کتابخانه‌ها ، نویسندگان و خوانندگان که در قسمت اطلاعات "
+"توضیحات مختصر مجله برای کتابداران، نویسندگان و خوانندگان که در قسمت اطلاعات "
 "نوار حاشیه صفحات ظاهر می‌شود."
 
 msgid "manager.setup.information.forAuthors"
@@ -647,10 +640,12 @@ msgstr ""
 "می‌شوند."
 
 msgid "manager.setup.itemsPerPage"
-msgstr "تعداد موارد در هر صفحه"
+msgstr "تعداد آیتم‌های هر صفحه"
 
 msgid "manager.setup.itemsPerPage.description"
 msgstr ""
+"تعیین محدودیت برای تعداد آیتم‌ها (برای مثال، مقالات ارسالی، کاربران و غیره) "
+"جهت نمایش در فهرست قبل از این که آیتم‌های پیشین در یک صفحه دیگر ظاهر شوند."
 
 msgid "manager.setup.journalAbbreviation"
 msgstr "نام اختصاری مجله"
@@ -667,39 +662,39 @@ msgstr "درباره مجله"
 msgid "manager.setup.contextAbout.description"
 msgstr ""
 "وارد کردن اطلاعاتی درباره مجله که ممکن است مورد علاقه‌ی خوانندگان و داوران "
-"باشد. اطلاعات می‌تواند شامل سیاست‌های دسترسی آزاد ، زمینه مطالعاتی مجله، حق "
-"نشر، حامیان مجله، پیشینه‌ی مجله؛ بیانیه حفظ حریمی شخصی و ... باشد."
+"باشد. اطلاعات می‌تواند شامل سیاست‌های دسترسی آزاد، زمینه مطالعاتی مجله، حق "
+"نشر، حامیان مجله، پیشینه‌ی مجله، بیانیه حفظ حریمی شخصی و ... باشد."
 
 msgid "manager.setup.journalHomepageContent"
 msgstr "محتوای صفحه اصلی مجله"
 
 msgid "manager.setup.journalHomepageContentDescription"
 msgstr ""
-"به صورت پیش‌فرض محتوی صفحه اصلی شامل لینک‌های گشت‌وگذار می‌باشد. برای افزودن "
-"محتویات دیگر به صفحه خانگی می‌توانید گزینه‌های زیر را بکار ببرید که به ترتیب "
-"ظاهر می‌شود. توجه داشته باشید که شماره جاری مجله همیشه از منوی گشت‌وگذار قابل "
-"انتخاب است."
+"به صورت پیش‌فرض محتوای صفحه اصلی شامل لینک‌های گشت‌وگذار می‌باشد. برای "
+"افزودن محتویات دیگر به صفحه خانگی می‌توانید گزینه‌های زیر را بکار ببرید که "
+"به ترتیب ظاهر می‌شود. توجه داشته باشید که شماره جاری مجله همیشه از منوی گشت‌"
+"وگذار قابل انتخاب است."
 
 msgid "manager.setup.journalHomepageHeader"
-msgstr "سرتیتر صفحه اصلی مجله"
+msgstr "هدر صفحه اصلی مجله"
 
 msgid "manager.setup.journalHomepageHeader.altText"
-msgstr "سرتیتر صفحه اصلی مجله"
+msgstr "هدر صفحه اصلی مجله"
 
 msgid "manager.setup.journalHomepageHeaderDescription"
 msgstr ""
-"یک نسخه گرافیکی از عنوان و لوگو مجله (به‌صورت یک فایلgif، png یا jpg). می‌توان "
-"برای نمایش در صفحه اصلی آپلود کرد که جایگزین نسخه متنی می‌شود. در غیر این "
-"صورت نسخه متنی نمایش داده می‌شود."
+"می‌توان یک نسخه گرافیکی از عنوان و لوگو مجله (به‌صورت یک فایل gif، png یا "
+"jpg) برای نمایش در صفحه اصلی آپلود کرد که جایگزین نسخه متنی می‌شود. در غیر "
+"این صورت نسخه متنی نمایش داده می‌شود."
 
 msgid "manager.setup.contextInitials"
 msgstr "حروف اول مجله"
 
 msgid "manager.setup.selectCountry"
-msgstr ""
+msgstr "کشوری که مجله (یا ناشر) در آن قرار دارد را مشخص کنید."
 
 msgid "manager.setup.journalLayout"
-msgstr "طرح‌بندی مجله"
+msgstr "لایه مجله"
 
 msgid "manager.setup.journalLayoutDescription"
 msgstr ""
@@ -713,23 +708,23 @@ msgid "manager.setup.journalLogo.altText"
 msgstr "لوگوی مجله"
 
 msgid "manager.setup.journalPageFooter"
-msgstr "پاورقی صفحات مجله"
+msgstr "فوتر صفحات مجله"
 
 msgid "manager.setup.journalPageFooterDescription"
 msgstr ""
-"این قسمت مربوط به پاورقی صفحات مجله است. برای تغییر یا به‌روزرسانی آن ، متن "
-"HTML دلخواه خود را در جعبه متن زیر وارد کنید. به عنوان مثال می‌توانید یک منوی "
+"این قسمت مربوط به فوتر صفحات مجله است. برای تغییر یا به‌روزرسانی آن، متن "
+"HTML دلخواه خود را در باکس زیر وارد کنید. به عنوان مثال می‌توانید یک منوی "
 "گشت‌وگذار دیگر، یک شمارشگر بازدیدکننده‌ها و غیره در این قسمت وارد کرد. این "
-"پاورقی در تمام صفحات ظاهر می‌شود."
+"فوتر در تمام صفحات ظاهر می‌شود."
 
 msgid "manager.setup.journalPolicies"
-msgstr "مرحله 2: سیاست‌های مجله"
+msgstr "گام دوم: سیاست‌های مجله"
 
 msgid "manager.setup.journalSetup"
-msgstr "نصب مجله"
+msgstr "تنظیمات پایه مجله"
 
 msgid "manager.setup.journalSetupUpdated"
-msgstr "نصب مجله به‌روزرسانی شد"
+msgstr "تنظیمات پایه مجله به‌روزرسانی شد."
 
 msgid "manager.setup.journalStyleSheetInvalid"
 msgstr "فرمت استایل شیت مجله نامناسب است. فرمت قابل قبول .css است."
@@ -741,80 +736,69 @@ msgid "manager.setup.journalThumbnail"
 msgstr "تصویر کوچک (بندانگشتی) مجله"
 
 msgid "manager.setup.journalThumbnail.description"
-msgstr "یک لوگوی کوچک از مجله برای نمایش در لیست مجلات"
+msgstr "یک لوگوی کوچک از مجله برای نمایش در فهرست مجلات."
 
 msgid "manager.setup.contextTitle"
 msgstr "عنوان مجله"
-
-msgid "manager.setup.keyInfo"
-msgstr ""
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
 
 msgid "manager.setup.labelName"
 msgstr "نام برچسب"
 
 msgid "manager.setup.lists"
-msgstr "لیست‌ها"
+msgstr "فهرست‌ها"
 
 msgid "manager.setup.plnPluginEnable"
-msgstr ""
+msgstr "فعالسازی افزونه PKP PN"
 
 msgid "manager.setup.plnDescription"
 msgstr ""
+"شبکه نگهداری PKP (PN) خدمات نگهداری رایگان برای تمامی مجلاتی که از سامانه "
+"OJS استفاده می‌کنند و دارای معیارهای اولیه هستند را فراهم می‌کند."
 
 msgid "manager.setup.plnSettingsDescription"
 msgstr ""
+"مشاهده <button>تنظیمات افزونه</button> برای پذیرش قوانین استفاده از PKP PN."
 
 msgid "manager.setup.plnPluginArchiving"
-msgstr ""
+msgstr "شبکه نگهداری PKP (PN)"
 
 msgid "manager.setup.plnPluginNotInstalled"
 msgstr ""
+"شبکه نگهداری PKP (PN) برای مجلاتی که از سامانه OJS استفاده کرده و دارای "
+"شرایط و ملاک‌های اولیه هستند سرویس رایگان نگهداری خدمات فراهم می‌کند. برای "
+"بایگانی مجله در PN می‌توانید از ادمین وبسایت جهت نصب پلاگین مربوطه تقاضا "
+"کنید."
 
 msgid "manager.setup.otherLockss"
-msgstr ""
+msgstr "LOCKSS و CLOCKSS"
 
 msgid "manager.setup.lockssEnable"
 msgstr ""
-"فعال کردن  LOCKSS برای ذخیره و انتشار محتوای مجله در کتابخانه‌های ثبت‌نام شده "
-"از طریق صفحه  <a href=\"{$lockssUrl}\" target=\"_blank\">Publisher Manifest</"
-"a> "
-
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"یک مجوز LOCKSS در قسمت درباره مجله  و تحت عنوان بایگانی ظاهر می‌شود: <a href="
-"\"http://www.lockss.org/community/publishers-titles-gln/\" target=\"_blank"
-"\">LOCKSS License</a>"
+"فعال سازی LOCKSS برای ذخیره و انتشار محتوای مجله در کتابخانه‌های ثبت‌نام شده "
+"از طریق صفحه <a href=\"{$lockssUrl}\" target=\"_blank\">اظهارات ناشر</a>"
 
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "توضیح مجوز LOCKSS"
 
 msgid "manager.setup.lockssRegister"
 msgstr ""
-"6 الی 10 کتابخانه را انتخاب کنید تا مجله شما را ثبت کنند. برای این کار "
-"می‌توانید به دانشگاه‌ها و سایر مؤسساتی که یک یا چند نفر از اعضای شورای "
-"نویسندگان مجله از آنجا هستند و کتابخانه آن دانشگاه‌ها در سیستم LOCKSS استفاده "
-"می‌کنند، درخواست ارسال نمایید. برای اطلاع بیشتر  <a href=\"http://www.lockss."
-"org/community/\" target=\"_blank\"> لیست کتابخانه‌های عضو </a> را ببینید. "
-"برای این منظور می‌توانید از متن‌های آماده ایمیل برای دعوت از <a href="
+"6 الی 10 کتابخانه را که می‌خواهید مجله در آن ثبت شود انتخاب کنید. برای این "
+"کار می‌توانید به دانشگاه‌ها و سایر مؤسساتی که یک یا چند نفر از اعضای شورای "
+"نویسندگان مجله از آنجا هستند و کتابخانه آن دانشگاه‌ها در سیستم LOCKSS "
+"استفاده می‌کنند، درخواست ارسال نمایید. برای اطلاع بیشتر <a href=\"http://www."
+"lockss.org/community/\" target=\"_blank\"> لیست کتابخانه‌های عضو </a> را "
+"ببینید. برای این منظور می‌توانید از متن‌های آماده ایمیل برای دعوت از <a href="
 "\"{$lockssExistingArchiveUrl}\" target=\"_blank\">کتابخانه‌های عضو LOCKSS </"
-"a> و یا <a href=\"{$lockssNewArchiveUrl}\" target=\"_blank\">کتابخانه‌های غیر "
-"عضو </a> LOCKSS استفاده کنید."
+"a> و یا <a href=\"{$lockssNewArchiveUrl}\" target=\"_blank\">کتابخانه‌های "
+"غیر عضو </a> LOCKSS استفاده کنید."
 
 msgid "manager.setup.lockssTitle"
 msgstr "LOCKSS"
 
 msgid "manager.setup.clockssEnable"
 msgstr ""
-"فعال کردن CLOCKSS  برای ذخیره و انتشار محتوای مجله در کتابخانه‌های ثبت شده از "
-"طریق صفحه <a href=\"{$clockssUrl}\" target=\"_blank\">Publisher Manifest</a>."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"مجوز CLOCKSS در قسمت «درباره مجله» نمایش داده می‌شود:\t <a href=\"http://"
-"clockss.org/\" target=\"_blank\">مجوز CLOCKSS</a>"
+"فعال کردن CLOCKSS برای ذخیره و انتشار محتوای مجله در کتابخانه‌های ثبت شده از "
+"طریق صفحه <a href=\"{$clockssUrl}\" target=\"_blank\">اظهارات ناشر</a>."
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "توضیح مجوز CLOCKSS"
@@ -832,7 +816,7 @@ msgstr "شکل ظاهری"
 
 msgid "manager.setup.look.description"
 msgstr ""
-"سرتیتر صفحه اصلی، محتوی، سرتیتر مجله، پاورقی، منوهای گشت‌وگذار و استیل شیت"
+"سرتیتر صفحه اصلی، محتوی، سرتیتر مجله، پاورقی، منوهای گشت‌وگذار و استایل شیت"
 
 msgid "manager.setup.management"
 msgstr "مدیریت"
@@ -849,7 +833,7 @@ msgid "manager.setup.managingPublishingSetup"
 msgstr "مدیریت و راه‌اندازی انتشار"
 
 msgid "manager.setup.managingTheJournal"
-msgstr "مرحله 4: اداره مجله"
+msgstr "گام 4: مدیریت مجله"
 
 msgid "manager.setup.navigationBar"
 msgstr "منوی گشت‌وگذار"
@@ -859,8 +843,8 @@ msgstr "افزودن یا کاستن موارد منوی گشت‌وگذار"
 
 msgid "manager.setup.navItemIsAbsolute"
 msgstr ""
-"URL  وارد شده یک URL مستقیم است مانند \"http://www.example.com\" . بهتر است "
-"یک مسیر نسبی وارد شود. مانند  \"/manager/setup\"."
+"URL وارد شده یک URL مستقیم است مانند \"http://www.example.com\" . بهتر است "
+"یک مسیر نسبی وارد شود. مانند \"/manager/setup\"."
 
 msgid "manager.setup.navItemIsLiteral"
 msgstr ""
@@ -879,20 +863,20 @@ msgstr "یادداشت"
 msgid "manager.setup.notifications.submissionAckDisabled"
 msgstr ""
 "<strong>توجه:</strong> در حال حاضر ارسال رسید مقاله ارسالی غیرفعال است. برای "
-"استفاده از این گزینه ایمیل SUBMISSION_ACK در <a class=\"action\" href="
-"\"{$preparedEmailsUrl}\">نمونه ایمیل‌های از قبل آماده</a> را فعال کنید."
+"استفاده از این گزینه ایمیل «رسید مقاله ارسالی» در <a class=\"action\" href=\""
+"{$preparedEmailsUrl}\">نمونه ایمیل‌های از قبل آماده</a> را فعال کنید."
 
 msgid "manager.setup.numPageLinks"
-msgstr "تعداد لینک صفحات"
+msgstr "پیوندهای صفحه"
 
 msgid "manager.setup.numPageLinks.description"
-msgstr ""
+msgstr "محدود کردن تعداد پیوندها برای نمایش در صفحات بعدی فهرست."
 
 msgid "manager.setup.onlineIssn"
 msgstr "شاپا الکترونیک"
 
 msgid "manager.setup.pageNumberIdentifier"
-msgstr "گزینه‌های شماره‌گذاری صفحات"
+msgstr "گزینه شماره‌گذاری صفحه"
 
 msgid "manager.setup.policies"
 msgstr "سیاست‌ها"
@@ -910,10 +894,10 @@ msgstr "دستورالعمل بررسی نهائی"
 
 msgid "manager.setup.proofingInstructionsDescription"
 msgstr ""
-"دستورالعمل بازبینی نهائی در دسترس بازبینان نهائی ، نویسندگان ، صفحه‌آراها ، و "
+"دستورالعمل بازبینی نهائی در دسترس بازبینان نهائی، نویسندگان ، صفحه‌آراها و "
 "دبیران در مرحله ویراستاری مقاله ارسالی قرار می‌گیرد. متن زیر یک دستورالعمل "
-"بازبینی نهائی پیشنهادی به صورت HTML است که می‌توانید به دلخواه آن را هم اکنون "
-"و یا بعداً تغییر دهید."
+"بازبینی نهائی پیشنهادی به صورت HTML است که می‌توانید به دلخواه آن را هم "
+"اکنون و یا بعداً تغییر دهید."
 
 msgid "manager.setup.publicationSchedule"
 msgstr "زمان‌بندی چاپ"
@@ -935,13 +919,13 @@ msgid "manager.setup.publisher"
 msgstr "ناشر"
 
 msgid "manager.setup.referenceLinking"
-msgstr "لینک به مراجع"
+msgstr "پیوند به منابع"
 
 msgid "manager.setup.restrictArticleAccess"
-msgstr "برای دیدن متن کامل مقالات باید ثبت‌نام کنید"
+msgstr "برای دیدن متن کامل مقالات باید ثبت‌نام کنید."
 
 msgid "manager.setup.restrictSiteAccess"
-msgstr "برای دیدن سایت مجله باید ثبت‌نام کنید"
+msgstr "برای دیدن سایت مجله باید ثبت‌نام کنید."
 
 msgid "manager.setup.reviewGuidelines"
 msgstr "راهنمای داوری"
@@ -955,20 +939,20 @@ msgstr "ایمیل‌های خودکار یادآوری"
 msgid "manager.setup.reviewOptions.automatedRemindersDisabled"
 msgstr ""
 "<strong>توجه: </strong> برای فعال ساختن این گزینه مدیر سایت می‌بایست گزینه "
-"<tt>scheduled_tasks</tt> را در فایل تنظیمات سیستم فعال سازد، این تنظیم ممکن "
-"است نیازمند ویژگی‌های خاصی در سرور باشد که ممکن است در همه سرورها مقدور "
+"<tt>وظایف برنامه‌ریزی شده</tt> را در فایل تنظیمات سیستم فعال سازد، این تنظیم "
+"ممکن است نیازمند ویژگی‌های خاصی در سرور باشد که ممکن است در همه سرورها مقدور "
 "نباشد. در مستندات OJS به این موضوع اشاره شده است."
 
 msgid "manager.setup.reviewOptions.numWeeksPerReview"
-msgstr "متوسط مهلت داوری"
+msgstr "مهلت تکمیل داوری"
 
 msgid "manager.setup.reviewOptions.onQuality"
 msgstr ""
-"دبیر بر مبنای یک تا پنج نمره‌ای به داور در مورد کیفیت کار وی در مورد هر داوری "
+"دبیر بر مبنای مقیاس یک تا پنج نمره‌ای به داور در مورد کیفیت کار وی امتیاز "
 "می‌دهد."
 
 msgid "manager.setup.reviewOptions.restrictReviewerFileAccess"
-msgstr ""
+msgstr "محدود کردن دسترسی فایل"
 
 msgid "manager.setup.reviewOptions.restrictReviewerFileAccess.description"
 msgstr ""
@@ -978,7 +962,7 @@ msgid "manager.setup.reviewOptions.reviewerAccess"
 msgstr "دسترسی داور"
 
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled"
-msgstr "فعال ساختن گزینه تک کلیک دسترسی داور"
+msgstr "فعال ساختن گزینه دسترسی داور با یک کلیک"
 
 #, fuzzy
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled.description"
@@ -989,7 +973,7 @@ msgstr ""
 "ایمیل و رونوشت‌های آن را تغییر دهند."
 
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled.label"
-msgstr ""
+msgstr "در نظر گرفتن یک لینک امن در ایمیل دعوتنامه برای داوران."
 
 msgid "manager.setup.reviewOptions.reviewerRatings"
 msgstr "امتیاز داور"
@@ -998,26 +982,28 @@ msgid "manager.setup.reviewOptions.reviewerReminders"
 msgstr "یادآوری داور"
 
 msgid "manager.setup.reviewPolicy"
-msgstr "سیاست‌های داوری"
+msgstr "سیاست داوری"
 
 msgid "manager.setup.searchEngineIndexing"
 msgstr "نمایه در موتور جستجو"
 
 msgid "manager.setup.searchEngineIndexing.description"
 msgstr ""
-"برای کمک به موتورهای جستجو جهت نمایه کردن بهتر این مجله توصیف مختصری از مجله "
-"و کلیدواژه‌های مناسب که با سمی کولون از هم جدا هستند بیاورید."
+"برای کمک به موتورهای جستجو جهت نمایه کردن بهتر این مجله توضیح مختصری از مجله "
+"و کلیدواژه‌های مناسب که با نقطه ویرگول از هم جدا هستند بیاورید."
 
 msgid "manager.setup.searchDescription.description"
 msgstr ""
+"یک توضیح مختصر 50 الی 300 کلمه‌ای در مورد مجله برای شناسایی موتورهای جستجو و "
+"نمایش در فهرست نتایج جستجو بنویسید."
 
 msgid "manager.setup.sectionsAndSectionEditors"
-msgstr "انواع مقالات و دبیر آن‌ها"
+msgstr "بخش‌ها و دبیرهای بخش"
 
 msgid "manager.setup.sectionsDefaultSectionDescription"
 msgstr ""
-"(چنانچه انواع مقالات تعیین نشود ، نوع مقالات ارسالی به صورت پیش‌فرض «مقاله "
-"پژوهشی» خواهد بود.)"
+"(چنانچه بخش‌های مجله تعیین نشود، نوع مقالات ارسالی به صورت پیش‌فرض تعیین "
+"خواهد شد)"
 
 msgid "manager.setup.sectionsDescription"
 msgstr ""
@@ -1026,25 +1012,25 @@ msgstr ""
 "انتخاب کنند."
 
 msgid "manager.setup.selectEditorDescription"
-msgstr "دبیری که مسئول رسیدگی به مقاله است"
+msgstr "دبیر ناظر بر فرآیند داوری و دبیری مجلات"
 
 msgid "manager.setup.selectSectionDescription"
-msgstr "نوع مقاله که آیتم مورد نظر به آن تعلق دارد"
+msgstr "بخشی که آیتم مورد نظر به آن تعلق دارد."
 
 msgid "manager.setup.showGalleyLinksDescription"
-msgstr "نمایش لینک تمام متن و تذکر دسترسی محدود "
+msgstr "نمایش لینک تمام متن و تذکر دسترسی محدود"
 
 msgid "manager.setup.siteAccess.view"
-msgstr ""
+msgstr "دسترسی سایت"
 
 msgid "manager.setup.siteAccess.viewContent"
-msgstr ""
+msgstr "مشاهده محتوای مقاله"
 
 msgid "manager.setup.stepsToJournalSite"
-msgstr "مراحل پنج‌گانه نصب مجله"
+msgstr "مراحل پنج‌گانه راه اندازی وبسایت مجله"
 
 msgid "manager.setup.subjectExamples"
-msgstr "مانند: فتوسنتز; سیاه‌چاله; مسئله نقشه چهار رنگ; تئوری بازی"
+msgstr "(مانند: فتوسنتز؛ سیاه‌چاله؛ نظریه بازی)"
 
 msgid "manager.setup.subjectKeywordTopic"
 msgstr "کلیدواژه‌ها"
@@ -1063,21 +1049,27 @@ msgstr "راهنمای نویسندگان، حق نشر، نمایه‌سازی"
 
 msgid "manager.setup.disableSubmissions.description"
 msgstr ""
+"جلوگیری از کاربران برای ارسال مقالات جدید برای مجله. ارسال مقالات می‌تواند "
+"برای هر یک از بخش‌ها به طور مجزا غیرفعال شود."
 
 msgid "manager.setup.disableSubmissions.notAccepting"
 msgstr ""
+"مجله در حال حاضر مقاله دریافت نمی‌کند. برای فعال کردن دریافت مقالات به صفحه "
+"تنظیمات جریان کار مراجعه کنید."
 
 msgid "manager.setup.enableOai"
-msgstr ""
+msgstr "فعالسازی OAI"
 
 msgid "manager.setup.enableOai.description"
 msgstr ""
+"فراهم سازی فراداده برای سرویس‌های نمایه‌سازی: <a href=\"https://www."
+"openarchives.org/\">OAI</a>."
 
 msgid "manager.setup.typeExamples"
-msgstr "مانند: پرسشنامه تاریخچه‌ای؛ نیمه تجربی؛ آنالیز ادبی؛ مصاحبه"
+msgstr "(مانند: نیمه تجربی؛ پیمایش؛ مصاحبه)"
 
 msgid "manager.setup.typeMethodApproach"
-msgstr "نوع (روش/راهکار)"
+msgstr "نوع (روش/رویکرد)"
 
 msgid "manager.setup.typeProvideExamples"
 msgstr "مثال‌هایی برای انواع پژوهش، روش‌ها و راهکارها"
@@ -1087,14 +1079,14 @@ msgstr "شناسه منحصربه‌فرد"
 
 msgid "manager.setup.uniqueIdentifierDescription"
 msgstr ""
-"مقالات و شماره‌های مجله را می‌توان با یک شماره یا عبارت شناسایی مشخص کرد. برای "
-"این کار می‌توان از یک سیستم شناسایی مانند DOI استفاده کرد."
+"مقالات و شماره‌های مجله را می‌توان با یک شماره یا عبارت شناسایی مشخص کرد. "
+"برای این کار می‌توان از یک شناساگرهایی مانند DOI استفاده کرد."
 
 msgid "manager.setup.useEditorialReviewBoard"
-msgstr "این مجله دارای تیم سردبیری و داوران است"
+msgstr "این مجله دارای تیم سردبیری و داوری است"
 
 msgid "manager.setup.useThumbnail"
-msgstr "تصویرک"
+msgstr "تصویر کوچک"
 
 msgid "manager.setup.useImageTitle"
 msgstr "تصویر عنوان"
@@ -1112,13 +1104,13 @@ msgid "manager.statistics.statistics.articleViews"
 msgstr "تعداد موارد مشاهده مقاله (فقط برای نویسندگان)"
 
 msgid "manager.statistics.statistics.count.accept"
-msgstr "پذیرش شده"
+msgstr "پذیرش"
 
 msgid "manager.statistics.statistics.count.decline"
-msgstr "رد شده"
+msgstr "رد کردن"
 
 msgid "manager.statistics.statistics.count.revise"
-msgstr "دوباره ارسال شده"
+msgstr "ارسال مجدد"
 
 msgid "manager.statistics.statistics.daysPerReview"
 msgstr "متوسط مدت داوری (روز)"
@@ -1164,7 +1156,7 @@ msgid "manager.statistics.statistics.reviewerScore"
 msgstr "نمره ارزشیابی داور"
 
 msgid "manager.statistics.statistics.reviewsPerReviewer"
-msgstr "داوری به ازای هر داور"
+msgstr "تعداد داوران"
 
 msgid "manager.statistics.statistics.selectSections"
 msgstr "آمار کدام نوع از مقالات را می‌خواهید؟"
@@ -1191,12 +1183,12 @@ msgid "manager.subscriptionPolicies"
 msgstr "سیاست‌های اشتراک"
 
 msgid "manager.subscriptionPolicies.delayedOpenAccess"
-msgstr "دسترسی آزاد ( با تأخیر)"
+msgstr "دسترسی آزاد با تأخیر"
 
 msgid ""
 "manager.subscriptionPolicies."
 "enableSubscriptionExpiryReminderBeforeMonthsValid"
-msgstr "لطفاً تیک بزنید"
+msgstr "لطفاً تیک بزنید."
 
 msgid "manager.subscriptionPolicies.expiry"
 msgstr "انقضای اشتراک"
@@ -1204,19 +1196,19 @@ msgstr "انقضای اشتراک"
 msgid "manager.subscriptionPolicies.expiryDescription"
 msgstr ""
 "در صورت انقضای اشتراک دسترسی خوانندگان به تمام مقالات و یا به مقالاتی که بعد "
-"از انقضا منتشر شده است بسته می‌شود"
+"از انقضا منتشر شده است بسته می‌شود."
 
 msgid "manager.subscriptionPolicies.expiryFull"
 msgstr "انقضای کامل"
 
 msgid "manager.subscriptionPolicies.expiryFullDescription"
-msgstr "دسترسی خوانندگان به تمامی مقالات غیر آزاد بسته است"
+msgstr "دسترسی خوانندگان به تمامی مقالات غیر آزاد بسته است."
 
 msgid "manager.subscriptionPolicies.expiryPartial"
-msgstr "انقضای نسبی"
+msgstr "انقضای جزئی"
 
 msgid "manager.subscriptionPolicies.expiryPartialDescription"
-msgstr "دسترسی به مقالات مربوط به بعد از تاریخ انقضا بسته است"
+msgstr "دسترسی به مقالات مربوط به بعد از تاریخ انقضا بسته است."
 
 msgid "manager.subscriptionPolicies.xMonths"
 msgstr "{$x} ماه"
@@ -1228,13 +1220,13 @@ msgid "manager.subscriptionPolicies.expiryReminderAfterMonths"
 msgstr "اطلاع‌رسانی به مشترکین از طریق ایمیل پس از انقضای اشتراک"
 
 msgid "manager.subscriptionPolicies.expiryReminderAfterWeeks"
-msgstr "اطلاع‌رسانی به مشترکین از طریق ایمیل پس از انقضای اشتراک"
+msgstr "اطلاع‌رسانی به مشترکین از طریق ایمیل پس از انقضای اشتراک."
 
 msgid "manager.subscriptionPolicies.expiryReminderBeforeMonths"
-msgstr "اطلاع‌رسانی به مشترکین از طریق ایمیل قبل از انقضای اشتراک"
+msgstr "اطلاع‌رسانی به مشترکین از طریق ایمیل قبل از انقضای اشتراک."
 
 msgid "manager.subscriptionPolicies.expiryReminderBeforeWeeks"
-msgstr "اطلاع‌رسانی به مشترکین از طریق ایمیل قبل از انقضای اشتراک"
+msgstr "اطلاع‌رسانی به مشترکین از طریق ایمیل قبل از انقضای اشتراک."
 
 msgid "manager.subscriptionPolicies.expiryReminders"
 msgstr "یادآور انقضای اشتراک"
@@ -1242,7 +1234,7 @@ msgstr "یادآور انقضای اشتراک"
 msgid "manager.subscriptionPolicies.expiryRemindersDescription"
 msgstr ""
 "یادآوری خودکار با ایمیل که متن آن در قسمت ایمیل‌های از قبل تهیه شده قابل "
-"ویرایش است. این ایمیل قبل و بعد از انقضای اشتراک برای کاربر ارسال می‌شود"
+"ویرایش است. این ایمیل قبل و بعد از انقضای اشتراک برای کاربر ارسال می‌شود."
 
 msgid "manager.subscriptionPolicies.expiryRemindersDisabled"
 msgstr ""
@@ -1253,33 +1245,37 @@ msgstr ""
 "مراجعه کنید."
 
 msgid "manager.subscriptionPolicies.expirySelectOne"
-msgstr "لطفاً یکی از موارد زیر را انتخاب کنید"
+msgstr "لطفاً یکی از موارد زیر را انتخاب کنید:"
 
 msgid "manager.subscriptionPolicies.htmlInstructions"
 msgstr ""
 "HTML را می‌توان در نواحی متنی برای تنظیمات مختلف مثل اندازه فونت یا رنگ آن "
-"وارد کرد. در این متن‌ها انتهای پاراگراف به‌طور اتوماتیک با  <tt>&lt;br&gt;</"
+"وارد کرد. در این متن‌ها انتهای پاراگراف به‌طور اتوماتیک با <tt>&lt;br&gt;</"
 "tt> مشخص می‌شود. ویراستار HTML با مرورگر فایرفاکس کار می‌کند."
 
 msgid ""
 "manager.subscriptionPolicies.numMonthsAfterSubscriptionExpiryReminderValid"
 msgstr ""
-"لطفاً مقدار صحیحی برای تعداد ماه‌های باقیمانده بعد از انقضای اشتراک وارد کنید"
+"لطفاً مقدار صحیحی برای تعداد ماه‌های باقیمانده بعد از انقضای اشتراک وارد "
+"کنید."
 
 msgid ""
 "manager.subscriptionPolicies.numMonthsBeforeSubscriptionExpiryReminderValid"
 msgstr ""
-"لطفاً مقدار صحیحی برای تعداد ماه‌های باقیمانده قبل از انقضای اشتراک وارد کنید"
+"لطفاً مقدار صحیحی برای تعداد ماه‌های باقیمانده قبل از انقضای اشتراک وارد "
+"کنید."
 
 msgid ""
 "manager.subscriptionPolicies.numWeeksAfterSubscriptionExpiryReminderValid"
 msgstr ""
-"لطفاً مقدار صحیحی برای تعداد هفته‌های باقیمانده بعد از انقضای اشتراک وارد کنید"
+"لطفاً مقدار صحیحی برای تعداد هفته‌های باقیمانده بعد از انقضای اشتراک وارد "
+"کنید."
 
 msgid ""
 "manager.subscriptionPolicies.numWeeksBeforeSubscriptionExpiryReminderValid"
 msgstr ""
-"لطفاً مقدار صحیحی برای تعداد هفته‌های باقیمانده قبل از انقضای اشتراک وارد کنید"
+"لطفاً مقدار صحیحی برای تعداد هفته‌های باقیمانده قبل از انقضای اشتراک وارد "
+"کنید."
 
 msgid "manager.subscriptionPolicies.openAccessNotificationDescription"
 msgstr ""
@@ -1311,18 +1307,18 @@ msgid ""
 "manager.subscriptionPolicies."
 "enableSubscriptionOnlinePaymentNotificationPurchaseInstitutional"
 msgstr ""
-"پس از خرید آنلاین اشتراک سازمانی، با ایمیل به مدیر اشتراک اطلاع بده. (توصیه "
+"پس از خرید آنلاین اشتراک سازمانی، با ایمیل به مدیر اشتراک اطلاع بده (توصیه "
 "می‌شود)"
 
 msgid ""
 "manager.subscriptionPolicies."
 "enableSubscriptionOnlinePaymentNotificationRenewIndividual"
-msgstr "پس از تمدید آنلاین اشتراک شخصی، با ایمیل به مدیر اشتراک اطلاع بده"
+msgstr "پس از تمدید آنلاین اشتراک شخصی، با ایمیل به مدیر اشتراک اطلاع بده."
 
 msgid ""
 "manager.subscriptionPolicies."
 "enableSubscriptionOnlinePaymentNotificationRenewInstitutional"
-msgstr "پس از تمدید آنلاین اشتراک سازمانی، با ایمیل به مدیر اشتراک اطلاع بده"
+msgstr "پس از تمدید آنلاین اشتراک سازمانی، با ایمیل به مدیر اشتراک اطلاع بده."
 
 msgid ""
 "manager.subscriptionPolicies.onlinePaymentPurchaseInstitutionalDescription"
@@ -1363,7 +1359,7 @@ msgid "manager.subscriptionPolicies.subscriptionContactDescription"
 msgstr "آدرس تماس در قسمت درباره مجله تحت عنوان اشتراک مجله خواهد آمد."
 
 msgid "manager.subscriptionPolicies.subscriptionContactEmailValid"
-msgstr "لطفاً ایمیل صحیحی وارد کنید"
+msgstr "لطفاً ایمیل صحیحی وارد کنید."
 
 msgid "manager.subscriptions"
 msgstr "اشتراک"
@@ -1375,7 +1371,7 @@ msgid "manager.institutionalSubscriptions"
 msgstr "اشتراک‌های سازمانی"
 
 msgid "manager.subscriptions.confirmRenew"
-msgstr "آیا مطمئنید که می‌خواهید اشتراکتان را تمدید کنید."
+msgstr "آیا مطمئنید که می‌خواهید اشتراکتان را تمدید کنید؟"
 
 msgid "manager.subscriptions.confirmDelete"
 msgstr "آیا می‌خواهید این اشتراک را حذف کنید؟"
@@ -1423,7 +1419,7 @@ msgid "manager.subscriptions.form.status"
 msgstr "وضعیت"
 
 msgid "manager.subscriptions.form.statusRequired"
-msgstr "وضعیت اشتراک لازم است"
+msgstr "وضعیت اشتراک الزامی است."
 
 msgid "manager.subscriptions.form.statusValid"
 msgstr "لطفاً نوع معتبری از وضعیت اشتراک را انتخاب کنید."
@@ -1432,40 +1428,42 @@ msgid "manager.subscriptions.form.typeId"
 msgstr "نوع اشتراک"
 
 msgid "manager.subscriptions.form.typeIdRequired"
-msgstr "نوع اشتراک لازم است"
+msgstr "نوع اشتراک الزامی است."
 
 msgid "manager.subscriptions.form.typeIdValid"
-msgstr "لطفاً نوع صحیحی از اشتراک ایجاد کنید"
+msgstr "لطفاً نوع معتبری از اشتراک انتخاب کنید."
 
 msgid "manager.subscriptions.form.institution"
-msgstr ""
+msgstr "سازمان"
 
 msgid "manager.subscriptions.form.institutionIdValid"
-msgstr ""
+msgstr "لطفاً نوع سازمان معتبر انتخاب کنید."
 
 msgid "manager.subscriptions.form.dateStart"
 msgstr "تاریخ شروع"
 
 msgid "manager.subscriptions.form.dateStartRequired"
-msgstr "تاریخ شروع اشتراک لازم است"
+msgstr "تاریخ شروع اشتراک لازم است."
 
 msgid "manager.subscriptions.form.dateStartValid"
-msgstr "لطفاً تاریخ صحیحی برای شروع اشتراک وارد کنید"
+msgstr "لطفاً تاریخ صحیحی برای شروع اشتراک وارد کنید."
 
 msgid "manager.subscriptions.form.dateEnd"
 msgstr "تاریخ خاتمه"
 
 msgid "manager.subscriptions.form.dateEndRequired"
-msgstr "تاریخ خاتمه اشتراک لازم است"
+msgstr "تاریخ خاتمه اشتراک الزامی است."
 
 msgid "manager.subscriptions.form.dateStartEmpty"
 msgstr ""
+"این یک نوع اشتراک غیرقابل انقضاء است؛ لطفاً برای آن تاریخ شروع مشخص نکنید."
 
 msgid "manager.subscriptions.form.dateEndEmpty"
 msgstr ""
+"این یک نوع اشتراک غیرقابل انقضاء است؛ لطفاً برای آن تاریخ پایان مشخص نکنید."
 
 msgid "manager.subscriptions.form.dateEndValid"
-msgstr "لطفاً تاریخ صحیحی برای خاتمه اشتراک وارد کنید"
+msgstr "لطفاً تاریخ صحیحی برای خاتمه اشتراک وارد کنید."
 
 msgid "manager.subscriptions.form.userProfileInstructions"
 msgstr ""
@@ -1478,16 +1476,16 @@ msgid "manager.subscriptions.form.userContact"
 msgstr "تماس"
 
 msgid "manager.subscriptions.form.userIdRequired"
-msgstr "یک کاربر لازم است"
+msgstr "یک کاربر نیاز است."
 
 msgid "manager.subscriptions.form.userIdValid"
-msgstr "لطفاً یک کاربر معتبر انتخاب کنید"
+msgstr "لطفاً یک کاربر معتبر انتخاب کنید."
 
 msgid "manager.subscriptions.form.userCountryValid"
 msgstr "لطفاً یک کشور معتبر انتخاب کنید."
 
 msgid "manager.subscriptions.form.notifyEmail"
-msgstr "ارسال ایمیل حاوی نام کاربر و جزئیات اشتراک به کاربر."
+msgstr "ارسال ایمیل حاوی نام کاربری و جزئیات اشتراک به کاربر."
 
 msgid "manager.subscriptions.form.notifyEmailValid"
 msgstr "لطفاً از چک‌لیست محیا شده استفاده کنید."
@@ -1504,7 +1502,7 @@ msgstr ""
 "باشد لطفاً اطلاعات عضویت را وارد کنید."
 
 msgid "manager.subscriptions.form.membershipRequired"
-msgstr "نوع اشتراک انتخاب شده نیاز به اطلاعات عضویت دارد"
+msgstr "نوع اشتراک انتخاب شده نیاز به اطلاعات عضویت دارد."
 
 msgid "manager.subscriptions.form.notes"
 msgstr "یادداشت‌ها"
@@ -1516,7 +1514,7 @@ msgid "manager.subscriptions.form.institutionName"
 msgstr "نام سازمان"
 
 msgid "manager.subscriptions.form.institutionNameRequired"
-msgstr "نام سازمان لازم است"
+msgstr "نام سازمان لازم است."
 
 msgid "manager.subscriptions.form.institutionMailingAddress"
 msgstr "آدرس پستی"
@@ -1524,14 +1522,14 @@ msgstr "آدرس پستی"
 msgid "manager.subscriptions.form.domainInstructions"
 msgstr ""
 "چنانچه اشتراک برای موسسه خاصی است لطفاً دامنه آن را وارد کنید. در صورت وارد "
-"کردن دامنه ، وارد نمودن محدوده IP اختیاری است. (مانند lib.sfu.ca)"
+"کردن دامنه ، وارد نمودن محدوده IP اختیاری است (مانند lib.sfu.ca)."
 
 msgid "manager.subscriptions.form.domainIPRangeRequired"
 msgstr ""
 "نوع اشتراک انتخاب شده نیاز به یک دامنه یا محدوده IP برای احراز هویت دارد."
 
 msgid "manager.subscriptions.form.domainValid"
-msgstr "لطفاً دامنه صحیحی وارد کنید"
+msgstr "لطفاً دامنه صحیحی وارد کنید."
 
 msgid "manager.subscriptions.form.ipRange"
 msgstr "محدوده IP"
@@ -1550,7 +1548,7 @@ msgstr ""
 "142.58.106.*"
 
 msgid "manager.subscriptions.form.ipRangeValid"
-msgstr "لطفاً محدوده IP صحیحی وارد کنید"
+msgstr "لطفاً محدوده IP صحیحی وارد کنید."
 
 msgid "manager.subscriptions.form.deleteIpRange"
 msgstr "حذف"
@@ -1567,14 +1565,13 @@ msgstr ""
 "وارد شده باشد."
 
 msgid "manager.subscriptions.form.subscriptionExists"
-msgstr "این کاربر در حال حاضر مشترک این مجله است"
+msgstr "این کاربر در حال حاضر مشترک این مجله است."
 
 msgid "manager.subscriptions.form.typeRequired"
-msgstr ""
-"قبل از اینکه بتوان یک اشتراک جدید ایجاد کرد باید یک نوع اشتراک تعریف کرد."
+msgstr "قبل از اینکه بتوان یک اشتراک جدید ایجاد کرد باید نوع اشتراک تعریف کرد."
 
 msgid "manager.subscriptions.form.institutionRequired"
-msgstr ""
+msgstr "قبل از ایجاد اشتراک جدید سازمان باید ایجاد شود."
 
 msgid "manager.subscriptions.ipRange"
 msgstr "محدوده IP"
@@ -1600,7 +1597,7 @@ msgstr "انتخاب کاربر"
 msgid "manager.subscriptions.selectSubscriber.desc"
 msgstr ""
 "مجوزهای دستیابی اشتراک به‌صورت خودکار در دسترس مدیر مجله ، سردبیر و دبیران، "
-"ویراستاران،  صفحه‌آرا و بازبین نهائی قرار می‌گیرد."
+"ویراستاران، صفحه‌آرا و بازبین نهائی قرار می‌گیرد."
 
 msgid "manager.subscriptions.select"
 msgstr "انتخاب"
@@ -1615,7 +1612,7 @@ msgid "manager.subscriptions.user"
 msgstr "کاربر"
 
 msgid "manager.subscriptions.contact"
-msgstr "نام اطلاعات تماس"
+msgstr "نام مشترک"
 
 msgid "manager.subscriptions.institutionName"
 msgstr "نام سازمان"
@@ -1664,22 +1661,22 @@ msgstr ""
 "نکنید."
 
 msgid "manager.subscriptionTypes.form.costNumeric"
-msgstr "عدد قیمت می‌بایست عدد مثبت باشد."
+msgstr "قیمت می‌بایست عددی مثبت باشد."
 
 msgid "manager.subscriptionTypes.form.costRequired"
-msgstr "مبلغ قیمت لازم است"
+msgstr "تعیین مبلغ ضروری است."
 
 msgid "manager.subscriptionTypes.form.currency"
 msgstr "واحد پول"
 
 msgid "manager.subscriptionTypes.form.currencyRequired"
-msgstr "واحد پول لازم است"
+msgstr "واحد پول لازم است."
 
 msgid "manager.subscriptionTypes.form.currencyValid"
-msgstr "لطفاً واحد پول صحیحی انتخاب کنید"
+msgstr "لطفاً واحد پول صحیحی انتخاب کنید."
 
 msgid "manager.subscriptionTypes.form.description"
-msgstr "توصیف"
+msgstr "توضیح"
 
 msgid "manager.subscriptionTypes.form.nonExpiring.expiresAfter"
 msgstr "انقضا بعد از"
@@ -1691,40 +1688,40 @@ msgid "manager.subscriptionTypes.form.nonExpiring.neverExpires"
 msgstr "بدون انقضا"
 
 msgid "manager.subscriptionTypes.form.nonExpiringValid"
-msgstr "لطفاً از گزینه‌ها موجود استفاده کنید."
+msgstr "لطفاً از گزینه‌های موجود استفاده کنید."
 
 msgid "manager.subscriptionTypes.form.duration"
 msgstr "مدت زمان"
 
 msgid "manager.subscriptionTypes.form.durationInstructions"
-msgstr "مدت اشتراک برحسب ماه"
+msgstr "مدت اشتراک برحسب ماه (مثلاً 12)."
 
 msgid "manager.subscriptionTypes.form.durationNumeric"
 msgstr "مدت زمان می‌بایست مقدار عددی مثبت باشد."
 
 msgid "manager.subscriptionTypes.form.durationRequired"
-msgstr "مدت زمان لازم است"
+msgstr "مدت زمان الزامی است."
 
 msgid "manager.subscriptionTypes.form.format"
 msgstr "فرمت"
 
 msgid "manager.subscriptionTypes.form.formatRequired"
-msgstr "انتخاب فرمتی برای نوع اشتراک لازم است"
+msgstr "انتخاب فرمت برای نوع اشتراک لازم است."
 
 msgid "manager.subscriptionTypes.form.formatValid"
-msgstr "لطفاً فرمت صحیحی برای نوع اشتراک وارد کنید"
+msgstr "لطفاً فرمت معتبری برای نوع اشتراک وارد کنید."
 
 msgid "manager.subscriptionTypes.form.subscriptions"
 msgstr "اشتراک‌ها"
 
 msgid "manager.subscriptionTypes.form.individual"
-msgstr "شخصی. (تأیید هویت از طریق ورود به سیستم)"
+msgstr "شخصی (تأیید هویت از طریق ورود به سیستم)"
 
 msgid "manager.subscriptionTypes.form.institutional"
-msgstr "مشترکین می‌بایست از طریق دامنه یا IP تأیید هویت گردند"
+msgstr "سازمانی(کاربران می‌بایست از طریق دامنه یا IP احراز هویت گردند)"
 
 msgid "manager.subscriptionTypes.form.institutionalValid"
-msgstr "لطفاً از گزینه‌های موجود استفاده کنید"
+msgstr "لطفاً از گزینه‌های موجود استفاده کنید."
 
 msgid "manager.subscriptionTypes.form.membership"
 msgstr "مشترکین می‌بایست عضو یک انجمن یا سازمان باشند."
@@ -1736,22 +1733,22 @@ msgid "manager.subscriptionTypes.form.options"
 msgstr "گزینه‌ها"
 
 msgid "manager.subscriptionTypes.form.public"
-msgstr "عدم نمایش این نوع اشتراک در قسمت درباره مجله"
+msgstr "عدم نمایش این نوع اشتراک در قسمت درباره مجله."
 
 msgid "manager.subscriptionTypes.form.publicValid"
-msgstr "لطفاً از چک‌لیست محیا شده استفاده کنید."
+msgstr "لطفاً از چک‌لیست موجود شده استفاده کنید."
 
 msgid "manager.subscriptionTypes.form.saveAndCreateAnotherType"
 msgstr "ذخیره و ایجاد یک مورد دیگر"
 
 msgid "manager.subscriptionTypes.form.typeName"
-msgstr "نام"
+msgstr "اسم نوع"
 
 msgid "manager.subscriptionTypes.form.typeNameExists"
 msgstr "این نام نوع اشتراک در حال حاضر وجود دارد."
 
 msgid "manager.subscriptionTypes.form.typeNameRequired"
-msgstr "نامی برای نوع اشتراک لازم است"
+msgstr "یک اسم برای نوع اشتراک لازم است."
 
 msgid "manager.subscriptionTypes.name"
 msgstr "نوع اشتراک"
@@ -1763,7 +1760,7 @@ msgid "manager.subscriptionTypes.subscriptionTypeCreatedSuccessfully"
 msgstr "نوع اشتراک با موفقیت ایجاد شد."
 
 msgid "manager.navigationMenus.subscriptions.description"
-msgstr "لینک به صفحه توضیح نحوه اشتراک و انواع آن"
+msgstr "لینک به صفحه توضیح نحوه اشتراک و انواع آن."
 
 msgid "manager.navigationMenus.mySubscriptions.description"
 msgstr "لینک به صفحه‌ای که شامل اطلاعات اشتراک‌های کنونی و قبلی کاربر است."
@@ -1772,7 +1769,7 @@ msgid "manager.navigationMenus.mySubscriptions.conditionalWarning"
 msgstr "این لینک تنها زمانی نمایش داده می‌شود که کاربر وارد سیستم شده است."
 
 msgid "manager.setup.categories"
-msgstr "حوزه‌ها"
+msgstr "دسته‌بندی‌ها"
 
 msgid "manager.setup.categories.description"
 msgstr ""
@@ -1787,27 +1784,27 @@ msgstr "افزودن نوع"
 
 msgid "manager.setup.section.description"
 msgstr ""
-"مقالات چاپ شده در داخل شماره بر اساس نوع مقاله سازماندهی می‌شود، که معمولاً بر "
-"اساس نوع محتوا مشخص می‌شود(مقاله پژوهشی، مقاله مروری، ... )"
+"مقالات چاپ شده در داخل شماره بر اساس نوع مقاله سازماندهی می‌شود، که معمولاً "
+"بر اساس نوع محتوا مشخص می‌شود (مقاله پژوهشی، مقاله مروری، ...)"
 
 msgid "settings.roles.gridDescription"
 msgstr ""
-"نقش‌ها، گروه های کاربری است که اجازه دارند نسبت به سطح دسترسی تعریف شده برای "
-"آن‌ها، به قسمتهای مختلف مجله و گردش کار مقاله دسترسی داشته باشند. پنج سطح "
-"دسترسی مختلف در این سامانه تعریف شده است: مدیر مجله که به کل بخشها و تنظیمات "
-"مجله دسترسی دارد. دبیر بخش به کل محتویات ثبت شده دسترسی دارد. دستیار مجله به "
-"مقالات ثبت شده ای دسترسی دارد که توسط دبیر به آن کاربر انتساب شده است. "
-"داوران به مقالاتی که برای داوری به آن‌ها انتساب شده است دسترسی دارند. "
+"نقش‌ها گروه‌های کاربری هستند که اجازه دارند نسبت به سطح دسترسی تعریف شده "
+"برای آن‌ها، به قسمت‌های مختلف مجله و گردش کار مقاله دسترسی داشته باشند. پنج "
+"سطح دسترسی مختلف در این سامانه تعریف شده است: مدیر مجله که به کل بخش‌ها و "
+"تنظیمات مجله دسترسی دارد. دبیر بخش به کل محتویات ثبت شده دسترسی دارد. دستیار "
+"دبیر به مقالات ثبت شده ای دسترسی دارد که توسط دبیر به آن کاربر انتساب شده "
+"است. داوران به مقالاتی که برای داوری به آن‌ها انتساب شده است دسترسی دارند. "
 "نویسندگان تنها به اطلاعات محدودی از مقالات ثبت شده خود دسترسی داشته و می "
-"توانند آن‌ها را ویرایش کنند. البته پنج  مرحله مختلف برای چاپ هر مقاله وجود "
-"دارد (شامل ارسال مقاله، بررسی اولیه، داوری، ویراستیاری و انتشار) که نقش‌های "
-"مختلف ممکن است مجوز دسترسی به همه یا تعدادی از آن‌ها  را داشته باشند."
+"توانند آن‌ها را ویرایش کنند. البته پنج گام مختلف برای چاپ هر مقاله وجود دارد "
+"(شامل ارسال مقاله، بررسی اولیه، داوری، ویراستاری و انتشار) که نقش‌های مختلف "
+"ممکن است مجوز دسترسی به همه یا تعدادی از آن‌ها را داشته باشند."
 
 msgid "manager.publication.library"
 msgstr "کتابخانه ناشر"
 
 msgid "manager.setup.copyrightYearBasis"
-msgstr "پایه‌گذاری تاریخ حق نشر مقالات جدید بر"
+msgstr "قرار دادن تاریخ (سال) حق نشر مقالات جدید روی"
 
 msgid "manager.setup.copyrightYearBasis.article"
 msgstr "مقاله: سال پیش‌فرض از تاریخ انتشار این مقاله حساب خواهد شد."
@@ -1816,30 +1813,34 @@ msgid "manager.setup.copyrightYearBasis.issue"
 msgstr "شماره: سال پیش‌فرض از تاریخ انتشار این شماره‌حساب خواهد شد."
 
 msgid "manager.setup.resetPermissions"
-msgstr "رست کردن مجوزهای دسترسی مقالات"
+msgstr "ریست کردن مجوزهای دسترسی مقالات"
 
 msgid "manager.setup.resetPermissions.confirm"
 msgstr ""
-"آیا مطمئن هستید که می‌خواهید مجوزهای دسترسی انتساب داده شده به این مقاله رست "
-"شود."
+"آیا مطمئن هستید که می‌خواهید مجوزهای دسترسی انتساب داده شده به این مقاله "
+"ریست شود؟ این عملیات قابل بازگشت نیست."
 
 msgid "manager.setup.resetPermissions.description"
 msgstr ""
+"حذف اطلاعات بیانه حق نشر و گواهینامه برای هر مقاله منتشر شده آن را به "
+"تنظیمات پیشفرض مجله برمی‌گرداند. در برخی موارد شما از لحاظ قانونی مجاز به "
+"تغییر گواهینامه مقاله را ندارید. لذا لطفاً در استفاده از این ابزار احتیاط "
+"نمایید."
 
 msgid "manager.setup.resetPermissions.success"
-msgstr ""
+msgstr "تنظیمات دسترسی مقاله با موفقیت ریست شد."
 
 msgid "grid.genres.title.short"
 msgstr "اجزاء"
 
 msgid "grid.genres.title"
-msgstr "اجزاء مقاله"
+msgstr "اجزای مقاله"
 
 msgid "grid.genres.description"
 msgstr ""
-"این اجزاء در نام‌گذاری فایل‌ها و نمایش در منوی آپلود فایل استفاده خواهد شد.  "
+"این اجزاء در نام‌گذاری فایل‌ها و نمایش در منوی آپلود فایل استفاده خواهد شد. "
 "اجزائی که با ## مشخص شده‌اند این اجازه را به کاربر می‌دهند تا بتواند یک فایل "
-"را به تمامی مقاله ارسالی یا یک جزء خاص اختصاص دهد."
+"را به تمامی اجزای مقاله ارسالی یا یک جزء خاص اختصاص دهد."
 
 msgid "plugins.importexport.common.settings"
 msgstr "تنظیمات"
@@ -1851,17 +1852,17 @@ msgid "plugins.importexport.common.export.articles"
 msgstr "مقالات"
 
 msgid "plugins.importexport.common.export.issues"
-msgstr "شماره ها"
+msgstr "شماره‌ها"
 
 msgid "plugins.importexport.common.export.representations"
-msgstr "نسخ آماده به چاپ"
+msgstr "نسخه آماده به چاپ"
 
 msgid "plugins.importexport.common.missingRequirements"
-msgstr "نیازمندی های افزونه برقرار نمی باشد"
+msgstr "پیشنیازهای افزونه رعایت نشده است"
 
 msgid "plugins.importexport.common.error.DOIsNotAvailable"
 msgstr ""
-"برای استفاده از این افزونه به قسمت «شناسه عمومه» رفته افزونه DOI را فعال و "
+"برای استفاده از این افزونه به قسمت «شناسه عمومی» رفته افزونه DOI را فعال و "
 "تنطیم کنید و یک پسوند معتبر برای DOI مشخص نمایید."
 
 msgid "plugins.importexport.common.error.pluginNotConfigured"
@@ -1869,17 +1870,14 @@ msgstr "افزونه به صورت کامل تنظیم نشده است."
 
 msgid "plugins.importexport.common.error.noDOIContentObjects"
 msgstr ""
-"در افزونه شناسه DOI هیچ داده ای برای اختصاص DOI مشخص نشده است. بنابراین "
-"امکان برون دهی وجود ندارد."
+"در افزونه شناسه DOI هیچ داده‌ای برای اختصاص DOI مشخص نشده است. بنابراین "
+"امکان برون‌دهی (اکسپورت) وجود ندارد."
 
 msgid "plugins.importexport.common.settings.form.password"
-msgstr "رمز"
-
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr "توجه داشته باشید که رمز به صورت متنی و نه رمزگذاری شده ذخیره می شود."
+msgstr "رمز عبور"
 
 msgid "plugins.importexport.common.filter.issue"
-msgstr "هر شماره ای"
+msgstr "هر شماره‌ای"
 
 msgid "plugins.importexport.common.status.any"
 msgstr "هر وضعیتی"
@@ -1888,7 +1886,7 @@ msgid "plugins.importexport.common.status.notDeposited"
 msgstr "سپرده نشده"
 
 msgid "plugins.importexport.common.status.markedRegistered"
-msgstr "به عنوان ثبت شده علامت گزاری شده است."
+msgstr "به عنوان ثبت شده علامت گذاری شده است."
 
 msgid "plugins.importexport.common.status.registered"
 msgstr "ثبت شده"
@@ -1900,22 +1898,19 @@ msgid "plugins.importexport.common.action.export"
 msgstr "برون دهی"
 
 msgid "plugins.importexport.common.action.markRegistered"
-msgstr "به عنوان ثبت شده علامت گزاری شده است."
+msgstr "به عنوان ثبت شده علامت گذاری شده است."
 
 msgid "plugins.importexport.common.action.register"
 msgstr "ثبت‌نام"
 
-msgid "plugins.importexport.common.validation"
-msgstr "اعتبار سنجی  XML را قبل از برون دهی"
-
 msgid "plugins.importexport.common.error.noObjectsSelected"
-msgstr "داده ای انتخاب نشده است."
+msgstr "داده‌ای انتخاب نشده است."
 
 msgid "plugins.importexport.common.error.validation"
-msgstr "قابلیت تبدیل داده های مشخص شده امکان پذیر نیست."
+msgstr "داده‌های انتخاب شده قابل تبدیل نیستند."
 
 msgid "plugins.importexport.common.invalidXML"
-msgstr "XML غیرمعتبر:"
+msgstr "XML نامعتبر:"
 
 msgid "plugins.importexport.common.export.error.outputFileNotWritable"
 msgstr "فایل خرورجی {$param} قابل نوشتن نیست."
@@ -1924,223 +1919,231 @@ msgid "plugins.importexport.common.export.error.inputFileNotReadable"
 msgstr "فایل ورودی {$param} قابل خواندن نیست."
 
 msgid "plugins.importexport.common.register.error.mdsError"
-msgstr "ثبت‌نام موفق نبود، سرور ثبتنام DOI خطای زیر را برگرداند: '{$param}'"
+msgstr "ثبت‌نام موفق نبود، سرور ثبت نام DOI خطای زیر را برگرداند: '{$param}'"
 
 msgid "plugins.importexport.common.register.success"
 msgstr "ثبت‌نام با موفقیت انجام شد!"
 
 msgid "plugins.importexport.common.validation.success"
-msgstr ""
+msgstr "اعتبارسنجی با موفقیت انجام شد!"
 
 msgid "plugins.importexport.common.validation.fail"
-msgstr ""
+msgstr "اعتبارسنجی شکست خورد."
 
 msgid "plugins.importexport.common.senderTask.warning.noDOIprefix"
-msgstr "پیشوند DOI برای مجله مشخص شده در مسیر {$path} موجود نمی باشد."
+msgstr "پیشوند DOI برای مجله مشخص شده در مسیر {$path} موجود نمی‌باشد."
 
 msgid "plugins.importexport.common.error.unknownObjects"
-msgstr "داده مورد نظر یافت نشد"
+msgstr "داده مشخص شده یافت نشد."
 
 msgid "manager.setup.notifications.copyPrimaryContact"
 msgstr ""
 "ارسال یک کپی به آدرس اطلاعات تماس اصلی مجله که در مرحله اول نصب مجله وارد "
-"شده است"
+"شده است."
 
 msgid "stats.contextStats"
-msgstr ""
+msgstr "آمار مجله"
 
 msgid "stats.context.tooltip.text"
-msgstr ""
+msgstr "تعداد بازدیدکنندگان صفحه اصلی مجله."
 
 msgid "stats.context.tooltip.label"
-msgstr ""
+msgstr "درباره آمار مجله"
 
 msgid "stats.context.downloadReport.description"
-msgstr ""
+msgstr "دانلود فایل اکسل/CSV آمار استفاده این مجله مطابق پارامترهای زیر است."
 
 msgid "stats.context.downloadReport.downloadContext.description"
-msgstr ""
+msgstr "تعداد بازدید از صفحه اصلی مجله."
 
 msgid "stats.context.downloadReport.downloadContext"
-msgstr ""
+msgstr "دانلود مجله"
 
 msgid "stats.issueStats"
-msgstr ""
+msgstr "آمار شماره"
 
 msgid "stats.issues.details"
-msgstr ""
+msgstr "بازدیدها و دانلودها"
 
 msgid "stats.issues.searchIssueDescription"
-msgstr ""
+msgstr "جستجوی عدد، دوره و عنوان شماره"
 
 msgid "stats.issues.none"
-msgstr ""
+msgstr "هیچ شماره‌ای مطابق آمارهای استفاده بر اساس پارامترهای زیر یافت نشد."
 
 msgid "stats.issues.downloadReport.description"
-msgstr ""
+msgstr "دانلود فایل اکسل/CSV با آمار استفاده برای مجلات مطابق پارامترهای زیر."
 
 msgid "stats.issues.downloadReport.downloadIssues.description"
-msgstr ""
+msgstr "عدد بازدیدهای یکتا و دانلود برای هر شماره."
 
 msgid "stats.issues.downloadReport.downloadIssues"
-msgstr ""
+msgstr "دانلود شماره‌ها"
 
 msgid "stats.issues.countOfTotal"
-msgstr ""
+msgstr "{$count} از {$total} شماره"
 
 msgid "stats.issues.tooltip.label"
-msgstr ""
+msgstr "درباره آمار شماره"
 
 msgid "stats.issues.tooltip.text"
 msgstr ""
+"بازدیدها: تعداد بازدیدکننده‌های مشاهده کننده فهرست مطالب شماره هستند. "
+"دانلود‌ها: تعداد دانلود شماره در صورت وجود."
 
 msgid "stats.publicationStats"
-msgstr ""
+msgstr "آمار مقاله"
 
 msgid "stats.publications.details"
-msgstr ""
+msgstr "جزئیات مقاله"
 
 msgid "stats.publications.none"
-msgstr ""
+msgstr "هیچ مقاله‌ای طبق این پارامترها برای آمار استفاده یافت نشد."
 
 msgid "stats.publications.totalAbstractViews.timelineInterval"
-msgstr ""
+msgstr "همه مشاهدات چکیده بر اساس تاریخ"
 
 msgid "stats.publications.totalGalleyViews.timelineInterval"
-msgstr ""
+msgstr "همه مشاهدات فایل بر اساس تاریخ"
 
 msgid "stats.publications.countOfTotal"
-msgstr ""
+msgstr "{$count} از {$total} مقاله"
 
 msgid "stats.publications.abstracts"
-msgstr ""
+msgstr "چکیده‌ها"
 
 msgid "stats.publications.galleys"
-msgstr ""
+msgstr "فایل‌ها"
 
 msgid "stats.publications.downloadReport.description"
-msgstr ""
+msgstr "دانلود فایل اکسل/CSV برای آمار استفاده مقالات بر اساس پارامترهای زیر."
 
 msgid "stats.publications.downloadReport.downloadSubmissions"
-msgstr ""
+msgstr "دانلود مقالات"
 
 msgid "stats.publications.downloadReport.downloadSubmissions.description"
-msgstr ""
+msgstr "تعداد مشاهدات چکیده و دانلود فایل‌ها برای هر مقاله."
 
 msgid "manager.setup.notifications.copySubmissionAckPrimaryContact.description"
-msgstr ""
+msgstr "ارسال یک رونوشت از تصدیق مقاله ارسالی به اطلاعات تماس اصلی مجله."
 
 msgid ""
 "manager.setup.notifications.copySubmissionAckPrimaryContact.disabled."
 "description"
 msgstr ""
+"اطلاعات تماس اصلی برای این مجله تعریف نشده. می‌توانید آن را در تنظیمات مجله "
+"وارد نمایید."
 
 msgid "plugins.importexport.native.export.issues.results"
-msgstr ""
+msgstr "برون‌دهی نتایج شماره‌ها"
 
 msgid "plugins.importexport.issue.cli.display"
-msgstr ""
+msgstr "{$issueId} - {$issueIdentification}"
 
 msgid "plugins.importexport.issueGalleys.exportFailed"
-msgstr ""
+msgstr "خطا در فرآیند خواندن شماره"
 
 msgid "emailTemplate.variable.context.contextName"
-msgstr ""
+msgstr "نام مجله"
 
 msgid "emailTemplate.variable.context.contextUrl"
-msgstr ""
+msgstr "URL صفحه اصلی مجله"
 
 msgid "emailTemplate.variable.context.contactName"
-msgstr ""
+msgstr "نام اطلاعات تماس اصلی مجله"
 
 msgid "emailTemplate.variable.context.contextAcronym"
-msgstr ""
+msgstr "مخفف نام مجله"
 
 msgid "emailTemplate.variable.context.contextSignature"
-msgstr ""
+msgstr "امضای ایمیل برای ایمیل‌های خودکار"
 
 msgid "emailTemplate.variable.context.contactEmail"
-msgstr ""
+msgstr "آدرس ایمیل تماس‌گیرنده اصلی مجله"
 
 msgid "emailTemplate.variable.context.mailingAddress"
-msgstr ""
+msgstr "آدرس پستی مجله"
 
 msgid "emailTemplate.variable.queuedPayment.itemName"
-msgstr ""
+msgstr "نام نوع پرداخت"
 
 msgid "emailTemplate.variable.queuedPayment.itemCost"
-msgstr ""
+msgstr "مقدار پرداخت"
 
 msgid "emailTemplate.variable.queuedPayment.itemCurrencyCode"
-msgstr ""
+msgstr "واحد پول جهت پرداخت"
 
 msgid "emailTemplate.variable.site.siteTitle"
-msgstr ""
+msgstr "نام وبسایت (در صورتی که میزبان چند مجله است)"
 
 msgid "emailTemplate.variable.subscription.subscriberDetails"
-msgstr ""
+msgstr "نام، وابستگی سازمانی، شماره تلفن و ایمیل مشترک"
 
 msgid "emailTemplate.variable.subscription.subscriptionSignature"
-msgstr ""
+msgstr "جزئیات اطلاعات تماس مدیر اشتراک"
 
 msgid "emailTemplate.variable.subscription.subscriptionUrl"
-msgstr ""
+msgstr "URL صفحه اشتراک"
 
 msgid "emailTemplate.variable.subscription.expiryDate"
-msgstr ""
+msgstr "تاریخ پایان اشتراک"
 
 msgid "emailTemplate.variable.subscription.subscriptionType"
-msgstr ""
+msgstr "شرح مختصر نوع، نام، مدت زمان و هزینه اشتراک"
 
 msgid "emailTemplate.variable.subscription.membership"
-msgstr ""
+msgstr "اطلاعات عضویت مشترک"
 
 msgid "emailTemplate.variable.subscription.institutionName"
-msgstr ""
+msgstr "نام سازمان مشترک شده"
 
 msgid "emailTemplate.variable.subscription.institutionMailingAddress"
-msgstr ""
+msgstr "آدرس پستی سازمان مشترک شده"
 
 msgid "emailTemplate.variable.subscription.domain"
-msgstr ""
+msgstr "نام دامنه از آدرس IP متعبر برای این اشتراک"
 
 msgid "emailTemplate.variable.subscription.ipRanges"
-msgstr ""
+msgstr "محدوده IP معتبر برای این اشتراک"
 
 msgid "emailTemplate.variable.queuedPaymentUrl"
-msgstr ""
+msgstr "لینک URL به صفحه پرداخت"
 
 msgid "emailTemplate.variable.submissionGuidelinesUrl"
-msgstr ""
+msgstr "لینک URL صفحه راهنمای ارسال مقاله"
 
 msgid "emailTemplate.variable.statisticsReportNotify.publicationStatsLink"
-msgstr ""
+msgstr "لینک به صفحه آمار مقالات منتشر شده"
 
 msgid "emailTemplate.variable.issueId"
-msgstr ""
+msgstr "شناسه (ID) شماره"
 
 msgid "mailable.statisticsReportNotify.description"
 msgstr ""
+"این ایمیل به طور خودکار و به صورت ماهانه برای دبیران و مدیران مجله جهت اطلاع "
+"رسانی درباره وضعیت سلامت مجله ارسال می‌شود."
 
 msgid "mailable.validateEmailContext.name"
-msgstr ""
+msgstr "تأیید ایمیل (ثبت نام مجله)"
 
 msgid "mailable.validateEmailContext.description"
 msgstr ""
+"این ایمیل به طور خودکار به کاربر جدید هنگام ثبت نام در مجله و به منظور تأیید "
+"آدرس ایمیل ارسال شده است."
 
 msgid "doi.displayName"
 msgstr "DOI"
 
 msgid "doi.description"
 msgstr ""
-"این افزونه امکان اضافه کردن شناسه برای مقالات، شماره ها و کلیشه های چاپی را "
+"این افزونه امکان اضافه کردن DOI برای مقالات، شماره ها و کلیشه‌های چاپی را "
 "فراهم می سازد."
 
 msgid "doi.readerDisplayName"
-msgstr "DOI:"
+msgstr "DOI"
 
 msgid "doi.manager.displayName"
-msgstr ""
+msgstr "DOIها"
 
 msgid "doi.manager.settings.description"
 msgstr "برای استفاده و مدیریت شناسه DOI لطفاً تنظیمات آن را پیکربندی نمایید:"
@@ -2151,48 +2154,48 @@ msgstr ""
 "کنید:"
 
 msgid "doi.manager.settings.enableRepresentationDoi"
-msgstr "کلیشه های چاپی"
+msgstr "نمایه‌های مقاله"
 
 msgid "doi.manager.settings.galleysWithDescription"
-msgstr ""
+msgstr "نمایه‌های مقاله، مثل PDF منتشر شده"
 
 msgid "doi.manager.settings.doiPrefix"
 msgstr "پیشوند DOI"
 
 msgid "doi.manager.settings.doiPrefixPattern"
-msgstr "شناسه DOI باید به فرمت 10.xxxx باشد."
+msgstr "پیشوند شناسه DOI الزامی است و باید به فرمت 10.xxxx باشد."
 
 msgid "doi.manager.settings.doiSuffixPattern"
 msgstr ""
 "برای تولید پسوندهای DOI از الگوی زیر استفاده کنید. %j برای مجله، %v برای "
-"دوره، %i برای شماره، %Y برای سال، %a برای شناسه مقاله، %g برای شناسه کلیشه "
-"چاپی، %f برای شناسه فایل، %p برای شماره صفحه و %x برای شناسه سفارشی"
+"دوره، %i برای شماره، %Y برای سال، %a برای شناسه مقاله، %g برای نمایه چاپی، "
+"%f برای شناسه فایل، %p برای شماره صفحه و %x برای شناسه سفارشی "
 
 msgid "doi.manager.settings.doiSuffixPattern.example"
 msgstr ""
-"برای مثال از الگوی, vol%viss%ipp%p شناسه DOI هایی به صورت 10.1234/"
-"vol3iss2pp230 تولید می شود."
+"برای مثال از الگوی, vol%viss%ipp%p یک شناسه DOI به صورت 10.1234/"
+"vol3iss2pp230 تولید می‌شود."
 
 msgid "doi.manager.settings.doiSuffixPattern.issues"
-msgstr "برای شماره ها"
+msgstr "برای شماره‌ها"
 
 msgid "doi.manager.settings.doiSuffixPattern.submissions"
 msgstr "برای مقالات"
 
 msgid "doi.manager.settings.doiSuffixPattern.representations"
-msgstr "برای کلیشه های چاپی"
+msgstr "برای نمایه‌های چاپی"
 
 msgid "doi.manager.settings.doiIssueSuffixPatternRequired"
-msgstr "لطفاً الگوی پسوند شناسه DOI برای شماره ها را وارد کنید"
+msgstr "لطفاً الگوی پسوند شناسه DOI برای شماره‌ها را وارد کنید."
 
 msgid "doi.manager.settings.doiSubmissionSuffixPatternRequired"
-msgstr "لطفاً الگوی پسوند شناسه DOI برای مقالات را وارد کنید"
+msgstr "لطفاً الگوی پسوند شناسه DOI برای مقالات را وارد کنید."
 
 msgid "doi.manager.settings.doiRepresentationSuffixPatternRequired"
-msgstr "لطفاً الگوی پسوند شناسه DOI برای کلیشه های چاپی را وارد کنید"
+msgstr "لطفاً الگوی پسوند شناسه DOI برای نمایه‌های چاپی را وارد کنید."
 
 msgid "doi.manager.settings.doiReassign"
-msgstr "اختصاص مجدد شناسه هاس DOI"
+msgstr "اختصاص مجدد شناسه‌های DOI"
 
 msgid "doi.manager.settings.doiReassign.description"
 msgstr ""
@@ -2202,7 +2205,7 @@ msgstr ""
 "موجود نیز اعمال شود."
 
 msgid "doi.manager.settings.doiReassign.confirm"
-msgstr "آیا مطمئنید که می خواهید تمامی شناسه های DOI موجود را حذف کنید؟"
+msgstr "آیا مطمئنید که می‌خواهید تمامی شناسه‌های DOI موجود را حذف کنید؟"
 
 msgid "doi.manager.settings.doiAssignJournalWide"
 msgstr "اختصاص DOI"
@@ -2217,26 +2220,26 @@ msgstr ""
 
 msgid "doi.manager.settings.doiAssignJournalWide.confirm"
 msgstr ""
-"آیا مطمئنید که می‌خواهید به تمامی مقالات و داده‌های منتشر شده‌ای که DOI دریافت "
-"نکرده‌اند این شناسه را اختصاص دهید."
+"آیا مطمئنید که می‌خواهید به تمامی مقالات و داده‌های منتشر شده‌ای که DOI "
+"دریافت نکرده‌اند این شناسه را اختصاص دهید؟"
 
 msgid "doi.manager.settings.registrationAgency"
-msgstr ""
+msgstr "نمایندگی ثبت"
 
 msgid "doi.manager.settings.registrationAgency.description"
-msgstr ""
+msgstr "لطفاً نمایندگی ثبت شناسه DOI خود را انتخاب کنید."
 
 msgid "doi.manager.settings.registrationAgency.none"
-msgstr ""
+msgstr "هیچ"
 
 msgid "doi.editor.doi"
 msgstr "DOI"
 
 msgid "doi.editor.doi.description"
-msgstr ""
+msgstr "شناسه DOI باید با پیشوند {$prefix} شروع شود."
 
 msgid "doi.editor.doi.assignDoi"
-msgstr ""
+msgstr "اختصاص"
 
 msgid "doi.editor.doiObjectTypeIssue"
 msgstr "شماره"
@@ -2245,16 +2248,20 @@ msgid "doi.editor.doiObjectTypeSubmission"
 msgstr "مقاله"
 
 msgid "doi.editor.doiObjectTypeRepresentation"
-msgstr "کلیشه چاپی"
+msgstr "نمایه چاپی"
 
 msgid "doi.editor.customSuffixMissing"
-msgstr "به دلیل عدم تعریف پسوند، اختصاص شناسه DOI  قابل انجام نیست."
+msgstr "به دلیل عدم تعریف پسوند، اختصاص شناسه DOI قابل انجام نیست."
 
 msgid "doi.editor.missingIssue"
 msgstr ""
+"تا وقتی که این مقاله در یک شماره قرار نگرفته باشد نمی‌توانید شناسه DOI تولید "
+"کنید."
 
 msgid "doi.editor.missingParts"
 msgstr ""
+"به دلیل ناقص بودن اطلاعات نمی‌توانید شناسه DOI تولید کنید. لطفاً از این که "
+"مقاله در یک شماره قرار دارد و شماره صفحات آن مشخص شده باشد اطمینان حاصل کنید."
 
 msgid "doi.editor.patternNotResolved"
 msgstr "به دلیل وجود یک الگوی نامعتبر، اختصاص شناسه DOI قابل انجام نیست."
@@ -2282,81 +2289,82 @@ msgid "doi.editor.clearIssueObjectsDoi"
 msgstr "پاک کردن شناسه DOI شماره"
 
 msgid "doi.editor.clearIssueObjectsDoi.confirm"
-msgstr "آیا مطمئنید که می خواهید تمامی شناسه های DOI این شماره را حذف نمایید؟"
+msgstr "آیا مطمئنید که می‌خواهید تمامی شناسه های DOI این بخش را حذف نمایید؟"
 
 msgid "doi.editor.clearIssueObjectsDoi.description"
 msgstr ""
-"برای پاک کردن شناسه DOI تمامی موارد (مقالات و کلیشه های چاپی) این شماره، از "
+"برای پاک کردن شناسه DOI تمامی موارد (مقالات و نمایه‌های چاپی) این شماره، از "
 "گزینه زیر استفاده نمایید."
 
 msgid "doi.editor.assignDoi"
 msgstr "اختصاص شناسه {$pubId} به {$pubObjectType}"
 
 msgid "doi.editor.assignDoi.emptySuffix"
-msgstr "به دلیل عدم تعریف پسوند، اختصاص شناسه DOI  قابل انجام نیست."
+msgstr "به دلیل عدم تعریف پسوند، اختصاص شناسه DOI قابل انجام نیست."
 
 msgid "doi.editor.assignDoi.pattern"
 msgstr "به دلیل وجود یک الگوی نامعتبر، اختصاص شناسه {$pubId} قابل انجام نیست."
 
 msgid "doi.editor.assignDoi.assigned"
-msgstr "شنایه {$pubId} اختصاص داده شد."
+msgstr "شناسه {$pubId} اختصاص داده شد."
 
 msgid "doi.editor.assignDoi.toBeAssigned"
-msgstr ""
+msgstr "شناسه DOI {$pubId} به مقاله اختصاص داده خواهد شد."
 
 msgid "doi.editor.missingPrefix"
-msgstr ""
+msgstr "شناسه DOI باید با پیشوند {$doiPrefix} شروع شود."
 
 msgid "doi.editor.preview.publication"
-msgstr ""
+msgstr "شناسه DOI برای این مقاله به شکل {$doi} خواهد بود."
 
 msgid "doi.editor.preview.publication.none"
-msgstr ""
+msgstr "هیچ شناسه DOIای به این مقاله اختصاص داده نشده است."
 
 msgid "doi.editor.preview.galleys"
-msgstr ""
+msgstr "نمایه چاپی: {$galleyLabel}"
 
 msgid "doi.editor.preview.objects"
-msgstr ""
+msgstr "مورد"
 
 msgid "api.galley.403.publicationDidNotMatch"
-msgstr ""
+msgstr "نمایه چاپی درخواست شده به این مقاله مربوط نیست."
 
 msgid "api.galley.403.canEditPublishedDoi"
-msgstr ""
+msgstr "فقط شناسه‌های DOI می‌توانند بعد از انتشار مقاله ویرایش شوند"
 
 msgid "api.issue.400.invalidDoi"
-msgstr ""
+msgstr "شناسه DOI ثبت شده معتبر نیست"
 
 msgid "api.issue.403.canEditPublishedDoi"
-msgstr ""
+msgstr "فقط شناسه‌های DOI می‌توانند پس از انتشار مقاله ویرایش شوند"
 
 msgid "api.issue.404.issuesNotFound"
-msgstr ""
+msgstr "شماره‌هایی که درخواست کردید یافت نشد"
 
 msgid "doi.manager.submissionDois"
-msgstr ""
+msgstr "شناسه‌های DOI مقاله"
 
 msgid "doi.manager.issueDois"
-msgstr ""
+msgstr "شناسه‌های DOI شماره"
 
 msgid "mailable.decision.initialDecline.notifyAuthor.description"
 msgstr ""
+"این ایمیل به نویسنده اطلاع می‌دهد که مقاله ارسالی ایشان به علت عدم رعایت "
+"پیشنیازهای انتشار مقاله در این مجله، قبل از مرحله داوری رد شده است."
 
 msgid "manager.institutions.noContext"
-msgstr ""
+msgstr "این نهاد مجله پیدا نشد."
 
 msgid "mailable.subscriptionNotify.name"
-msgstr ""
+msgstr "اطلاع رسانی اشتراک"
 
 msgid "mailable.subscriptionNotify.description"
 msgstr ""
-"This email notifies a registered reader that the Manager has created a "
-"subscription for them. It provides the journal's URL along with instructions "
-"for access."
+"این ایمیل به خواننده ثبت نام شده اطلاع می‌دهد که مدیریت یک اشتراک برای ایشان "
+"ساخته و می‌تواند از طریق وبسایت مجله برای دسترسی به آن اقدام نماید."
 
 msgid "mailable.subscriptionExpiresSoon.name"
-msgstr ""
+msgstr "اشتراک به زودی منقضی می‌شود"
 
 msgid "mailable.subscriptionExpiresSoon.description"
 msgstr ""
@@ -2364,7 +2372,7 @@ msgstr ""
 "It provides the journal's URL along with instructions for access."
 
 msgid "mailable.subscriptionExpired.name"
-msgstr ""
+msgstr "اشتراک منقضی شد"
 
 msgid "mailable.subscriptionExpired.description"
 msgstr ""
@@ -2372,7 +2380,7 @@ msgstr ""
 "provides the journal's URL along with instructions for access."
 
 msgid "mailable.subscriptionExpiredLast.name"
-msgstr ""
+msgstr "اشتراک منقضی شده"
 
 msgid "mailable.subscriptionExpiredLast.description"
 msgstr ""
@@ -2380,63 +2388,79 @@ msgstr ""
 "provides the journal's URL along with instructions for access."
 
 msgid "mailable.subscriptionPurchaseIndividual.name"
-msgstr ""
+msgstr "سفارش اشتراک شخصی"
 
 msgid "mailable.subscriptionPurchaseIndividual.description"
 msgstr ""
+"این ایمیل به مدیریت اشتراک اطلاع می‌دهد که یک اشتراک شخصی به صورت آنلاین "
+"سفارش داده شده است و حاوی اطلاعاتی در مورد اشتراک و جزئیات سفارش است."
 
 msgid "mailable.subscriptionPurchaseInstitutional.name"
-msgstr ""
+msgstr "سفارش اشتراک سازمانی"
 
 msgid "mailable.subscriptionPurchaseInstitutional.description"
 msgstr ""
+"این ایمیل به مدیریت اشتراک اطلاع می‌دهد که یک اشتراک سازمانی به صورت آنلاین "
+"سفارش داده شده است و حاوی اطلاعاتی در مورد اشتراک و جزئیات سفارش است."
 
 msgid "mailable.subscriptionRenewIndividual.name"
-msgstr ""
+msgstr "تمدید اشتراک شخصی"
 
 msgid "mailable.subscriptionRenewIndividual.description"
 msgstr ""
+"این ایمیل به مدیریت اشتراک اطلاع می‌دهد که یک اشتراک شخصی به صورت آنلاین "
+"تمدید شده است و حاوی اطلاعاتی در مورد جزئیات اشتراک تمدید شده است."
 
 msgid "mailable.subscriptionRenewInstitutional.name"
-msgstr ""
+msgstr "تمدید اشتراک سازمانی"
 
 msgid "mailable.subscriptionRenewInstitutional.description"
 msgstr ""
+"این ایمیل به مدیریت اشتراک اطلاع می‌دهد که یک اشتراک سازمانی به صورت آنلاین "
+"تمدید شده است و حاوی اطلاعاتی در مورد جزئیات اشتراک تمدید شده است."
 
 msgid "mailable.openAccessNotify.name"
-msgstr ""
+msgstr "اطلاع رسانی دسترسی باز"
 
 msgid "mailable.openAccessNotify.description"
 msgstr ""
-"This email is sent to registered readers who have requested to receive a "
-"notification email when an issue becomes open access."
+"این ایمیل به خوانندگان ثبت نام شده که درخواست دریافت ایمیل اطلاع‌رسانی در "
+"مورد باز شدن دسترسی یک شماره داده بودند ارسال شد."
 
 msgid "mailable.issuePublishNotify.name"
-msgstr ""
+msgstr "اطلاع رسانی شماره منتشر شده"
 
 msgid "mailable.issuePublishNotify.description"
 msgstr ""
+"این ایمیل به طور خودکار به کاربران برای اطلاع رسانی انتشار شماره جدید ارسال "
+"شد."
 
 msgid "manager.manageEmails.description"
-msgstr ""
+msgstr "ویرایش پیام‌های ارسالی ایمیل‌های مجله."
 
 msgid "mailable.layoutComplete.name"
-msgstr ""
+msgstr "نمایه‌ای چاپی کامل"
 
 msgid "mailable.publicationVersionNotify.name"
-msgstr ""
+msgstr "نسخه جدید ساخته شد"
 
 msgid "mailable.publicationVersionNotify.description"
 msgstr ""
+"این ایمیل به طور خودکار به دبیران تعیین شده ایجاد نسخه جدید مقاله ارسالی را "
+"اطلاع می‌دهد."
 
 msgid "mailable.submissionNeedsEditor.description"
 msgstr ""
+"این ایمیل به مدیران مجله ارسال شده تا به آن‌ها اطلاع دهد که دبیری برای مقاله "
+"ارسالی جدید تعیین نشده است."
 
 msgid "mailable.paymentRequest.name"
-msgstr ""
+msgstr "درخواست پرداخت"
 
 msgid "mailable.paymentRequest.description"
 msgstr ""
+"این ایمیل به طور خودکار به نویسنده برای اطلاع رسانی هزینه‌های چاپ پس از "
+"پذیرش مقاله ارسال شده."
 
 #~ msgid "manager.setup.masthead.description"
 #~ msgstr "لیست دبیران، مدیران و سایر افرادی که با این مجله همکاری می‌کنند."
@@ -2462,3 +2486,14 @@ msgstr ""
 
 #~ msgid "doi.manager.settings.enableSubmissionDoi"
 #~ msgstr "مقالات"
+
+msgid "plugins.importexport.common.error.issueGalleyFileMissing"
+msgstr ""
+"نسخه شماه {$id} قابل برون‌دهی نیست و فایل مربوط به آن در مسیر \"{$path}\" "
+"یافت نشد."
+
+msgid "plugins.importexport.common.error.import.issueGalleyFileMissing"
+msgstr "یکی از شماره‌های قابل ایمپورت شدن نیست یا فایل مربوطه یافت نمی‌شود."
+
+msgid "plugins.importexport.common.error.issueCoverImageMissing"
+msgstr "تصویر جلد شماره {$id} و فایل مربوط به آن در مسیر \"{$path}\" یافت نشد."

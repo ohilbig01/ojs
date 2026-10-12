@@ -21,10 +21,12 @@ namespace APP\template;
 use APP\core\Application;
 use APP\core\PageRouter;
 use APP\file\PublicFileManager;
+use APP\journal\Journal;
+use APP\publication\Publication;
+use PKP\core\PKPSessionGuard;
 use PKP\facades\Locale;
 use PKP\i18n\LocaleMetadata;
 use PKP\security\Role;
-use PKP\session\SessionManager;
 use PKP\site\Site;
 use PKP\template\PKPTemplateManager;
 
@@ -43,8 +45,7 @@ class TemplateManager extends PKPTemplateManager
         $this->assign([
             'brandImage' => 'templates/images/ojs_brand.png',
         ]);
-
-        if (!SessionManager::isDisabled()) {
+        if (!PKPSessionGuard::isSessionDisable()) {
             /**
              * Kludge to make sure no code that tries to connect to
              * the database is executed (e.g., when loading
@@ -58,6 +59,8 @@ class TemplateManager extends PKPTemplateManager
             $siteFilesDir = $request->getBaseUrl() . '/' . $publicFileManager->getSiteFilesPath();
             $this->assign('sitePublicFilesDir', $siteFilesDir);
             $this->assign('publicFilesDir', $siteFilesDir); // May be overridden by journal
+
+            $this->registerClass(Journal::class, Journal::class);
 
             if ($site->getData('styleSheet')) {
                 $this->addStyleSheet(
@@ -113,10 +116,18 @@ class TemplateManager extends PKPTemplateManager
     {
         parent::setupBackendPage();
 
+        $this->setConstants([
+            'publication' => [
+                'STATUS_READY_TO_PUBLISH' => Publication::STATUS_READY_TO_PUBLISH,
+                'STATUS_READY_TO_SCHEDULE' => Publication::STATUS_READY_TO_SCHEDULE,
+            ],
+        ]);
+
         $request = Application::get()->getRequest();
-        if (SessionManager::isDisabled()
-                || !$request->getContext()
-                || !$request->getUser()) {
+        if (PKPSessionGuard::isSessionDisable() ||
+            !$request->getContext() ||
+            !$request->getUser()) {
+
             return;
         }
 
@@ -127,27 +138,45 @@ class TemplateManager extends PKPTemplateManager
 
         $menu = (array) $this->getState('menu');
 
-        // Add issues after submissions items
+        // Add content before statistics menu
         if (count(array_intersect([Role::ROLE_ID_MANAGER, Role::ROLE_ID_SITE_ADMIN], $userRoles))) {
-            $issuesLink = [
+            $contentSubmenu = [];
+
+            if ($request->getContext()->getData('enablePublicComments')) {
+                $contentSubmenu['userComments'] = [
+                    'name' => __('manager.userComment.comments'),
+                    'url' => $router->url($request, null, 'management', 'settings', ['userComments']),
+                    'isCurrent' => $router->getRequestedPage($request) === 'management' && in_array('userComments', (array) $router->getRequestedArgs($request)),
+                ];
+            }
+
+            $contentSubmenu['issues'] = [
                 'name' => __('editor.navigation.issues'),
                 'url' => $router->url($request, null, 'manageIssues'),
                 'isCurrent' => $request->getRequestedPage() === 'manageIssues',
             ];
-            $index = array_search('submissions', array_keys($menu));
-            if ($index === false || count($menu) <= $index + 1) {
-                $menu['issues'] = $issuesLink;
+
+            $contentLink = [
+                'name' => __('navigation.content'),
+                'icon' => 'Content',
+                'submenu' => $contentSubmenu
+            ];
+
+            $index = false;
+            $index = array_search('statistics', array_keys($menu));
+            if ($index === false || $index === count($menu) - 1) {
+                $menu['content'] = $contentLink;
             } else {
-                $menu = array_slice($menu, 0, $index + 1, true)
-                    + ['issues' => $issuesLink]
-                    + array_slice($menu, $index + 1, null, true);
+                $menu = array_slice($menu, 0, $index, true) +
+                    ['content' => $contentLink] +
+                    array_slice($menu, $index, null, true);
             }
         }
 
         if (count(array_intersect([Role::ROLE_ID_MANAGER, Role::ROLE_ID_SITE_ADMIN, Role::ROLE_ID_SUB_EDITOR], $userRoles))) {
             $statsIssuesLink = [
                 'name' => __('editor.navigation.issues'),
-                'url' => $router->url($request, null, 'stats', 'issues', 'issues'),
+                'url' => $router->url($request, null, 'stats', 'issues', ['issues']),
                 'isCurrent' => $router->getRequestedPage($request) === 'stats' && $router->getRequestedOp($request) === 'issues',
             ];
             $statsPublicationsIndex = array_search('publications', array_keys($menu['statistics']));
@@ -162,10 +191,11 @@ class TemplateManager extends PKPTemplateManager
                 'name' => __('common.payments'),
                 'url' => $router->url($request, null, 'payments'),
                 'isCurrent' => $request->getRequestedPage() === 'payments',
+                'icon' => 'Payment'
             ];
 
             $index = array_search('settings', array_keys($menu));
-            if ($index === false || count($menu) === $index) {
+            if ($index === false || $index === count($menu) - 1) {
                 $menu['payments'] = $paymentsLink;
             } else {
                 $menu = array_slice($menu, 0, $index, true) +
@@ -176,8 +206,9 @@ class TemplateManager extends PKPTemplateManager
             // add institutions menu if needed
             $institutionsLink = [
                 'name' => __('institution.institutions'),
-                'url' => $router->url($request, null, 'management', 'settings', 'institutions'),
-                'isCurrent' => $request->getRequestedPage() === 'management' && in_array('institutions', (array) $request->getRequestedArgs()),
+                'url' => $router->url($request, null, 'management', 'settings', ['institutions']),
+                'isCurrent' => $request->getRequestedPage() === 'management' && in_array('institutions', $request->getRequestedArgs()),
+                'icon' => 'Institutes'
             ];
             $paymentsIndex = array_search('payments', array_keys($menu));
             $menu = array_slice($menu, 0, $paymentsIndex, true) +
@@ -187,8 +218,4 @@ class TemplateManager extends PKPTemplateManager
 
         $this->setState(['menu' => $menu]);
     }
-}
-
-if (!PKP_STRICT_MODE) {
-    class_alias('\APP\template\TemplateManager', '\TemplateManager');
 }

@@ -1,9 +1,9 @@
-# Cyril Kamburov <cc@intermedia.bg>, 2021, 2022, 2023.
+# Cyril Kamburov <cc@intermedia.bg>, 2021, 2022, 2023, 2025.
 # Albena Vassileva <albena.ava@gmail.com>, 2022.
 # Pencho Toncgev <ptonchev@gmail.com>, 2022.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2023-03-06 18:33+0000\n"
+"PO-Revision-Date: 2025-03-05 20:25+0000\n"
 "Last-Translator: Cyril Kamburov <cc@intermedia.bg>\n"
 "Language-Team: Bulgarian <http://translate.pkp.sfu.ca/projects/ojs/manager/"
 "bg/>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "Достъп"
@@ -411,12 +411,6 @@ msgstr ""
 msgid "manager.setup"
 msgstr "Настройки за списание"
 
-msgid "manager.setup.masthead"
-msgstr "Входни данни"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Редакторски екип"
-
 msgid "manager.setup.homepageContent"
 msgstr "Съдържание на заглавната страница на списанието"
 
@@ -482,11 +476,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(Да се появи в \"За списанието\") "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Изисквайте подаването на авторите да подадат декларация за конкурентни "
-"интереси (CI) с тяхното подаване на материали."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -802,14 +791,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Заглавие на списанието"
 
-msgid "manager.setup.keyInfo"
-msgstr "Ключова информация"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Предоставете кратко описание на вашето списание и посочете редактори, "
-"управляващи директори и други членове на вашия редакторски екип."
-
 msgid "manager.setup.labelName"
 msgstr "Име на етикета"
 
@@ -848,12 +829,6 @@ msgstr ""
 "участващите библиотеки чрез страницата LOCKSS <a href=\"{$lockssUrl}\" "
 "target=\"_blank\">Издателски манифест</a>."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"Лиценз LOCKSS ще се появи в „За списанието“ под „Архивиране“: <a href="
-"\"http://www.lockss.org/community/publishers-titles-gln/\" target=\"_blank"
-"\">LOCKSS лиценз</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "Описание на LOCKSS лиценза"
 
@@ -873,11 +848,6 @@ msgstr ""
 "Активирайте DLOCKSS да съхранява и разпространява съдържание на списания в "
 "участващите библиотеки чрез страницата CLOCKSS <a href=\"{$clockssUrl}\" "
 "target=\"_blank\">Издателски манифест</a>."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"Лиценз CLOCKSS ще се появи в „За списанието“ под „Архивиране“:<a href="
-"\"http://clockss.org/\" target=\"_blank\">CLOCKSS лиценз</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "Описание на CLOCKSS лиценза"
@@ -2015,11 +1985,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Парола"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Моля, обърнете внимание, че паролата ще бъде запазена като обикновен текст, "
-"т.е. не е криптирана."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Произволен брой"
 
@@ -2046,9 +2011,6 @@ msgstr "Маркирай като регистриран"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Регистриране"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Проверете XML преди експортирането и регистрацията."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Не са избрани обекти."
@@ -2664,3 +2626,12 @@ msgid "plugins.importexport.common.error.issueGalleyFileMissing"
 msgstr ""
 "Типография на брой {$id} не може да бъде експортирана, нейният файл не е "
 "намерен в пътя „{$path}“."
+
+msgid "manager.setup.contextSummary.description"
+msgstr ""
+"Предложете кратко описание на вашето списание, за да предоставите представа "
+"за неговото съдържание и цел."
+
+msgid "emailTemplate.variable.issue.issueTableOfContents"
+msgstr ""
+"Съдържанието на броя, като списък на всички свързани подадени материали."

@@ -1,20 +1,21 @@
 # Pavel Pisklakov <ppv1979@mail.ru>, 2021, 2022, 2023.
+# Aleksandr Rakhmangulov <prtrans@gmail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:31+00:00\n"
-"PO-Revision-Date: 2023-05-01 18:49+0000\n"
-"Last-Translator: Pavel Pisklakov <ppv1979@mail.ru>\n"
+"PO-Revision-Date: 2025-06-21 23:39+0000\n"
+"Last-Translator: Aleksandr Rakhmangulov <prtrans@gmail.com>\n"
 "Language-Team: Russian <http://translate.pkp.sfu.ca/projects/ojs/manager/ru/>"
 "\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.13.1\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgid "manager.distribution.access"
 msgstr "Доступ"
@@ -413,12 +414,6 @@ msgstr ""
 msgid "manager.setup"
 msgstr "Настройки журнала"
 
-msgid "manager.setup.masthead"
-msgstr "Выходные данные"
-
-msgid "manager.setup.editorialTeam"
-msgstr "Редакция"
-
 msgid "manager.setup.homepageContent"
 msgstr "Контент главной страницы журнала"
 
@@ -483,11 +478,6 @@ msgstr ""
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(появится в разделе «О журнале») "
-
-msgid "manager.setup.competingInterests.requireAuthors"
-msgstr ""
-"Требовать от авторов представлять Декларацию о конфликте интересов вместе с "
-"отправляемым материалом."
 
 msgid "manager.setup.competingInterests.requireReviewers"
 msgstr ""
@@ -805,14 +795,6 @@ msgstr ""
 msgid "manager.setup.contextTitle"
 msgstr "Название журнала"
 
-msgid "manager.setup.keyInfo"
-msgstr "Ключевая информация"
-
-msgid "manager.setup.keyInfo.description"
-msgstr ""
-"Введите краткое описание журнала и укажите редакторов, управляющих и других "
-"членов редколлегии."
-
 msgid "manager.setup.labelName"
 msgstr "Название метки"
 
@@ -853,12 +835,6 @@ msgstr ""
 "участвующим библиотекам через страницу <a href=\"{$lockssUrl}\" target="
 "\"_blank\">Манифеста издателя</a> LOCKSS."
 
-msgid "manager.setup.lockssLicenseDescription"
-msgstr ""
-"Лицензия LOCKSS появится в разделе «О журнале» под заголовком «Архивация "
-"журнала»: <a href=\"http://www.lockss.org/community/publishers-titles-gln/\" "
-"target=\"_blank\">Лицензия LOCKSS</a>"
-
 msgid "manager.setup.lockssLicenseLabel"
 msgstr "Описание лицензии LOCKSS"
 
@@ -878,12 +854,6 @@ msgstr ""
 "Включить CLOCKSS для хранения и распространения контента журнала по "
 "участвующим библиотекам через страницу <a href=\"{$clockssUrl}\" target="
 "\"_blank\">Манифеста издателя</a> CLOCKSS."
-
-msgid "manager.setup.clockssLicenseDescription"
-msgstr ""
-"Лицензия CLOCKSS появится в разделе «О журнале» под заголовком «Архивация "
-"журнала»: <a href=\"http://clockss.org/\" target=\"_blank\">лицензия "
-"CLOCKSS</a>"
 
 msgid "manager.setup.clockssLicenseLabel"
 msgstr "Описание лицензии CLOCKSS"
@@ -2042,11 +2012,6 @@ msgstr ""
 msgid "plugins.importexport.common.settings.form.password"
 msgstr "Пароль"
 
-msgid "plugins.importexport.common.settings.form.password.description"
-msgstr ""
-"Обратите внимание, что пароль будет сохранен в виде обычного текста, то есть "
-"не будет зашифрован."
-
 msgid "plugins.importexport.common.filter.issue"
 msgstr "Любой выпуск"
 
@@ -2073,9 +2038,6 @@ msgstr "Отметить как зарегистрированный"
 
 msgid "plugins.importexport.common.action.register"
 msgstr "Зарегистрировать"
-
-msgid "plugins.importexport.common.validation"
-msgstr "Проверять XML перед экспортом и регистрацией."
 
 msgid "plugins.importexport.common.error.noObjectsSelected"
 msgstr "Нет выбранных объектов."
@@ -2689,3 +2651,11 @@ msgid "plugins.importexport.common.error.issueCoverImageMissing"
 msgstr ""
 "Изображение обложки выпуска {$id} не было экспортировано, его файл не был "
 "найден по пути «{$path}»."
+
+msgid "manager.setup.contextSummary.description"
+msgstr ""
+"Дайте краткое описание вашего журнала, чтобы дать представление о его "
+"содержании и целях."
+
+msgid "emailTemplate.variable.issue.issueTableOfContents"
+msgstr "Содержание выпуска, как список всех связанных материалов."

@@ -21,11 +21,6 @@ msgstr "New Submission"
 msgid "author.track"
 msgstr "Active Submissions"
 
-msgid "author.competingInterests"
-msgstr ""
-"Competing interests <a target=\"_new\" class=\"action\" href=\""
-"{$competingInterestGuidelinesUrl}\">CI Policy</a>"
-
 msgid "author.submit.submitArticle"
 msgstr "Submit an Article"
 
@@ -116,7 +111,6 @@ msgstr "No submissions."
 msgid "author.submit.journalSection"
 msgstr "Journal Section"
 
-#, fuzzy
 msgid "author.submit.journalSectionDescription"
 msgstr "Submissions must be made to one of the journal's sections."
 

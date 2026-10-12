@@ -19,6 +19,7 @@ namespace APP\services\queryBuilders;
 
 use APP\core\Application;
 use APP\statistics\StatisticsHelper;
+use Exception;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use PKP\plugins\Hook;
@@ -69,7 +70,7 @@ class StatsIssueQueryBuilder extends PKPStatsQueryBuilder
     {
         return $this->_getObject()
             ->select([StatisticsHelper::STATISTICS_DIMENSION_ISSUE_ID])
-            ->distinct();
+            ->groupBy(StatisticsHelper::STATISTICS_DIMENSION_ISSUE_ID);
     }
 
     /**
@@ -96,12 +97,18 @@ class StatsIssueQueryBuilder extends PKPStatsQueryBuilder
 
     /**
      * @copydoc PKPStatsQueryBuilder::_getObject()
+     *
+     * @hook StatsIssue::queryObject [[&$q, $this]]
      */
     protected function _getObject(): Builder
     {
         $q = DB::table('metrics_issue');
 
-        if (!empty($this->contextIds)) {
+        if (empty($this->contextIds)) {
+            throw new Exception('Statistics cannot be retrieved without a context id. Pass the Application::SITE_CONTEXT_ID_ALL wildcard to get statistics from all contexts.');
+        }
+
+        if (!in_array(Application::SITE_CONTEXT_ID_ALL, $this->contextIds)) {
             $q->whereIn(StatisticsHelper::STATISTICS_DIMENSION_CONTEXT_ID, $this->contextIds);
         }
 

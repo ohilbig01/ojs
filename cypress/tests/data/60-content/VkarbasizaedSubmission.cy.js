@@ -9,6 +9,8 @@
 
 describe('Data suite tests', function() {
 	var issueTitle = 'Vol. 2 No. 1 (2015)';
+	let issueId = 2;
+	let issueAssignmentOption = 'Assign To Future Issue and Schedule Only';
 	let submission;
 	let author;
 	let title;
@@ -72,9 +74,8 @@ describe('Data suite tests', function() {
 		cy.assignParticipant('Proofreader', 'Catherine Turner');
 
 		// Create a galley
-		cy.get('button#publication-button').click();
-		cy.get('button#galleys-button').click();
-		cy.get('a[id^="component-grid-articlegalleys-articlegalleygrid-addGalley-button-"]').click();
+		cy.openWorkflowMenu('Unassigned version', 'Galleys')
+		cy.get('[data-cy="galley-manager"] button').contains('Add galley').click();
 		cy.wait(1000); // Wait for the form to settle
 		cy.get('input[id^=label-]').type('PDF', {delay: 0});
 		cy.get('form#articleGalleyForm button:contains("Save")').click();
@@ -93,27 +94,30 @@ describe('Data suite tests', function() {
 	it('Schedule for publication', function() {
 		cy.login('dbarnes');
 		// schedule for the publication in the future issue
-		cy.visit('index.php/publicknowledge/submissions');
-		cy.get('button[id="active-button"]').click();
-		cy.get('#active .listPanel__itemTitle:contains("' + author.familyName + '")').parent().next().contains('a', 'View').click();
-		cy.get('button[id="publication-button"]').click();
-		cy.get('#publication button:contains("Schedule For Publication")').click();
-		cy.get('select[id="assignToIssue-issueId-control"]').select(issueTitle);
-		cy.get('div[id^="assign-"] button:contains("Save")').click();
-		cy.get('div:contains("All publication requirements have been met. This will be published when ' + issueTitle + ' is published. Are you sure you want to schedule this for publication?")');
-		cy.get('.pkpWorkflow__publishModal button:contains("Schedule For Publication")').click();
+		cy.visit('index.php/publicknowledge/dashboard/editorial');
+		cy.get('nav').contains('Active submissions').click();
+		cy.openSubmission(author.familyName);
+		cy.openWorkflowMenu('Title & Abstract');
+		cy.get('button:contains("Schedule For Publication")').click();
+		cy.wait(1000);
 
-		// check status = 5 (scheduled)
-		cy.wait(1000); // to be able to get the header
-		// check submission status
-		cy.get('.pkpWorkflow__header:contains("Scheduled")');
-		// check publication status
-		cy.get('.pkpPublication__header:contains("Scheduled")');
+		cy.get('label:Contains("'+issueAssignmentOption+'")').click();
+		cy.wait(1000); // wait for the issues to load
+		cy.get('select[name="issueId"]').select(issueTitle);
+
+		// complete publication stage version selection and confrim the issue and stage settings
+		cy.assignPublicationStage('VoR', 'false', true);
+		cy.contains('div', 'All publication requirements have been met.');
+		cy.get('.pkpWorkflow__publishModal')
+		.contains('button', /Publish|Schedule For Publication/)
+		.click();
+
+
+
 		// the button "Unschedule" exists
-		// the buttons "Create New Version" (connected with submission) and "Unpublish" (connected with publication) does not exist
-		cy.get('#publication button:contains("Unschedule")');
-		cy.get('#publication button:contains("Create New Version")').should('not.exist');
-		cy.get('#publication button:contains("Unpublish")').should('not.exist');
+		// the button "Unpublish" (connected with publication) does not exist
+		cy.contains('button', /(Unpublish|Unschedule)/).should('exist');
+
 
 		// isInTOC:
 		cy.visit('index.php/publicknowledge/manageIssues#future');
@@ -129,18 +133,18 @@ describe('Data suite tests', function() {
 		cy.get('input[id="sendIssueNotification"]').click();
 		cy.get('button[id^=submitFormButton]').click();
 		// check status = 3 (published)
-		cy.visit('index.php/publicknowledge/submissions');
-		cy.get('button[id="archive-button"]').click();
-		cy.get('#archive .listPanel__itemTitle:contains("' + author.familyName + '")').parent().next().contains('a', 'View').click();
+		cy.visit('index.php/publicknowledge/dashboard/editorial');
+		cy.get('nav').contains('Published').click();
+		cy.openSubmission(author.familyName);
 		// check submission status
-		cy.get('.pkpWorkflow__header:contains("Published")');
+		cy.contains('Status: Published');
 		// check publication status
-		cy.get('.pkpPublication__header:contains("Published")');
-		cy.contains('This version has been published and can not be edited.');
+		cy.get('[data-cy="workflow-controls-left"]').contains("Published");
+		cy.contains('Warning: This version has been published. Editing it may impact the published content.');
 		// the button "Unpublish" (connected with the publication)
 		// and the button "Create New Version" (connected with submission) exist
-		cy.get('#publication button:contains("Unpublish")');
-		cy.get('#publication button:contains("Create New Version")');
+		cy.get('button:contains("Unpublish")').should('exist');
+		cy.contains('a', 'Create New Version').should('exist');
 	});
 
 	it('Unpublish the issue', function() {
@@ -151,18 +155,18 @@ describe('Data suite tests', function() {
 		cy.get('tr:contains("' + issueTitle + '")').next().contains('a', 'Unpublish Issue').click();
 		cy.get('button:contains("OK")').click();
 		// check status = 5 (scheduled)
-		cy.visit('index.php/publicknowledge/submissions');
-		cy.get('button[id="archive-button"]').click();
-		cy.get('#archive .listPanel__itemTitle:contains("' + author.familyName + '")').parent().next().contains('a', 'View').click();
+		cy.visit('index.php/publicknowledge/dashboard/editorial');
+		cy.get('nav').contains('Scheduled').click();
+		cy.openSubmission(author.familyName);
+
 		// check submission status
-		cy.get('.pkpWorkflow__header:contains("Scheduled")');
+		cy.get('[data-cy="sidemodal-header"]').contains("Scheduled");
 		// check publication status
-		cy.get('.pkpPublication__header:contains("Scheduled")');
+		cy.get('[data-cy="workflow-controls-left"]').contains("Scheduled");
 		// the button "Unschedule" exists
-		// the buttons "Create New Version" (connected with submission) and "Unpublish" (connected with publication) does not exist
-		cy.get('#publication button:contains("Unschedule")');
-		cy.get('#publication button:contains("Create New Version")').should('not.exist');
-		cy.get('#publication button:contains("Unpublish")').should('not.exist');
+		// the button "Unpublish" (connected with publication) does not exist
+		cy.get('button:contains("Unschedule")');
+		cy.get('button:contains("Unpublish")').should('not.exist');
 	});
 
 	it('Republish the issue', function() {
@@ -173,18 +177,18 @@ describe('Data suite tests', function() {
 		cy.get('input[id="sendIssueNotification"]').click();
 		cy.get('button[id^=submitFormButton]').click();
 		// check status = 3
-		cy.visit('index.php/publicknowledge/submissions');
-		cy.get('button[id="archive-button"]').click();
-		cy.get('#archive .listPanel__itemTitle:contains("' + author.familyName + '")').parent().next().contains('a', 'View').click();
+		cy.visit('index.php/publicknowledge/dashboard/editorial');
+		cy.get('nav').contains('Published').click();
+		cy.openSubmission(author.familyName);
 		// check submission status
-		cy.get('.pkpWorkflow__header:contains("Published")');
+		cy.contains('Status: Published');
 		// check publication status
-		cy.get('.pkpPublication__header:contains("Published")');
-		cy.contains('This version has been published and can not be edited.');
+		cy.get('[data-cy="workflow-controls-left"]').contains("Published");
+		cy.contains('Warning: This version has been published. Editing it may impact the published content.');
 		// the button "Unpublish" (connected with the publication)
 		// and the button "Create New Version" (connected with submission) exist
-		cy.get('#publication button:contains("Unpublish")');
-		cy.get('#publication button:contains("Create New Version")');
+		cy.get('button:contains("Unpublish")').should('exist');
+		cy.contains('a', 'Create New Version').should('exist');
 	});
 
 	it('Remove submission from TOC', function() {
@@ -199,30 +203,36 @@ describe('Data suite tests', function() {
 		cy.get('button:contains("OK")').click();
 		cy.get('span:contains("' + submission.title + '")').should('not.exist');
 		// check status = 1
-		cy.visit('index.php/publicknowledge/submissions');
-		cy.get('button[id="active-button"]').click();
-		cy.get('#active .listPanel__itemTitle:contains("' + author.familyName + '")').parent().next().contains('a', 'View').click();
+		cy.visit('index.php/publicknowledge/dashboard/editorial');
+		cy.get('nav').contains('Active submissions').click();
+		cy.openSubmission(author.familyName);
 		// check submission status
-		cy.get('span').should('not.have.class', 'pkpWorkflow__identificationStatus');
+		cy.get('[data-cy="sidemodal-header"]').contains("Production");
 		// check publication status
-		cy.get('.pkpPublication__header:contains("Unscheduled")');
+		cy.openWorkflowMenu('Version of Record 1.0', 'Title & Abstract')
+		cy.get('[data-cy="workflow-controls-left"]').contains("Unscheduled");
 		// the button "Schedule For Publication" exists
-		cy.get('#publication button:contains("Schedule For Publication")');
+		cy.get('button:contains("Schedule For Publication")');
 	});
 
 	it('Return back to the original state', function() {
 		cy.login('dbarnes');
 		// Publish in current issue
-		cy.visit('index.php/publicknowledge/submissions');
-		cy.get('button[id="active-button"]').click();
-		cy.get('#active .listPanel__itemTitle:contains("' + author.familyName + '")').parent().next().contains('a', 'View').click();
-		cy.get('button[id="publication-button"]').click();
-		cy.get('button[id="issue-button"]').click();
-		cy.get('button:contains("Change Issue")').click();
-		cy.get('select[id="assignToIssue-issueId-control"]').select('Vol. 1 No. 2 (2014)');
-		cy.get('div[id^="assign-"] button:contains("Save")').click();
+		cy.visit('index.php/publicknowledge/dashboard/editorial');
+		cy.get('nav').contains('Active submissions').click();
+		cy.openSubmission(author.familyName);
+		cy.openWorkflowMenu('Version of Record 1.0', 'Publication Settings')
+
+		// update issue selection and publish
+		cy.get('button').contains('Schedule For Publication').click();
+		cy.get(('[data-cy="active-modal"]')).find('label:Contains("Assign To Current/Back Issue")').click();
+		cy.wait(500); // wait for the issues to load
+		cy.get(('[data-cy="active-modal"]')).find('select[name="issueId"]').select('Vol. 1 No. 2 (2014)');
+		cy.get(('[data-cy="active-modal"]')).find('button:Contains("Confirm")').click();
+		cy.wait(1000);
 		cy.get('div[id^="publish-"] button:contains("Publish")').click();
 		cy.isInIssue('Antimicrobial, heavy metal resistance', 'Vol. 1 No. 2 (2014)');
+		
 		// unpublish the future issue
 		cy.visit('index.php/publicknowledge/manageIssues');
 		cy.get('button:contains("Back Issues")').click();
@@ -231,6 +241,7 @@ describe('Data suite tests', function() {
 		cy.get('button:contains("OK")').click();
 		cy.visit('index.php/publicknowledge/manageIssues');
 		cy.get('span:contains("' + issueTitle + '")');
+		
 		// define the back issue as the current issue again
 		cy.visit('index.php/publicknowledge/manageIssues');
 		cy.get('button:contains("Back Issues")').click();

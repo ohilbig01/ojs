@@ -1172,9 +1172,6 @@ msgstr ""
 "này (xem <a target=\"_new\" class=\"action\" href="
 "\"{$competingInterestGuidelinesUrl}\">CI&nbsp;Policy</a>)."
 
-msgid "reviewer.competingInterests"
-msgstr "Xung đột lợi ích"
-
 msgid "reviewer.article.enterReviewA"
 msgstr ""
 "Nhấp vào biểu tượng để nhập (hoặc dán) đánh giá của bạn về bài gửi này."
@@ -1645,12 +1642,6 @@ msgstr "Giới thiệu về Tạp chí"
 msgid "about.history"
 msgstr "Lịch sử Tạp chí"
 
-msgid "about.editorialTeam"
-msgstr "Ban biên tập"
-
-msgid "about.editorialTeam.biography"
-msgstr "Tiểu sử"
-
 msgid "about.editorialPolicies"
 msgstr "Chính sách biên tập"
 
@@ -1940,7 +1931,7 @@ msgstr ""
 "\n"
 "<p>ảm ơn bạn đã tải xuống <strong>Open Journal Systems</strong> của Dự án "
 "Public Knowledge. Trước khi tiếp tục, vui lòng đọc tập tin <a href="
-"\"{$baseUrl}/docs/README.md\">README</a> đi kèm với phần mềm này. Để biết "
+"\"{$baseUrl}/README.md\">README</a> đi kèm với phần mềm này. Để biết "
 "thêm thông tin về Public Knowledge Project và các dự án phần mềm của nó, vui "
 "lòng truy cập trang web <a href=\"http://pkp.sfu.ca/\" target=\"_blank\">PKP "
 "web site</a>. Nếu bạn có báo cáo lỗi hoặc yêu cầu hỗ trợ kỹ thuật về Open "
@@ -2012,6 +2003,7 @@ msgstr ""
 "<p>2. Một thư mục để lưu trữ các tệp đã tải lên phải được tạo và ghi lại "
 "(xem \"Cài đặt tệp\" bên dưới).</p>"
 
+#, fuzzy
 msgid "installer.upgradeInstructions"
 msgstr ""
 "<h4>Phiên bản OJS {$version}</h4>\n"
@@ -2181,11 +2173,13 @@ msgstr ""
 msgid "log.review.resubmit"
 msgstr "Bài gửi {$submissionId} đã được gửi lại để đánh giá tiếp."
 
+#, fuzzy
 msgid "log.review.reviewDeclined"
 msgstr ""
 "{$reviewerName} đã từ chối vòng phản biện {$round} của bài gửi "
 "{$submissionId}."
 
+#, fuzzy
 msgid "log.review.reviewAccepted"
 msgstr ""
 "{$reviewerName} đã chấp nhận vòng phản biện {$round} của bài gửi "
@@ -2410,10 +2404,6 @@ msgstr "<p>Xóa phê duyệt của bản in này.</p>"
 
 msgid "search.cli.rebuildIndex.indexing"
 msgstr "Lập chỉ mục \"{$journalName}\""
-
-msgid "search.cli.rebuildIndex.indexingByJournalNotSupported"
-msgstr ""
-"Việc thực hiện tìm kiếm này không cho phép lập chỉ mục lại trên mỗi tạp chí."
 
 msgid "search.cli.rebuildIndex.unknownJournal"
 msgstr ""
